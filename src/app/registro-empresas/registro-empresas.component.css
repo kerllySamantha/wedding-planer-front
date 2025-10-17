@@ -1,0 +1,69 @@
+/* ----- Estructura general ----- */
+.main-layout {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ----- COLUMNA IZQUIERDA (imagen) ----- */
+.image-side {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-side img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  /* se adapta al contenedor */
+  -o-object-position: center;
+     object-position: center;
+  filter: brightness(0.8);
+  /* elimina el azul y da tono neutro */
+  display: block;
+}
+
+/* ----- Capa negra con blur ----- */
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+  /* ligera oscuridad */
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+  /* sutil desenfoque */
+  z-index: 1;
+}
+
+/* ----- COLUMNA DERECHA (formulario) ----- */
+#layoutMain {
+  max-width: 650px;
+  width: 100%;
+}
+
+/* ----- Ajustes visuales del formulario ----- */
+.form-label {
+  font-weight: 500;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: none;
+}
+
+/* ----- RESPONSIVE ----- */
+@media (max-width: 992px) {
+  .col-5.image-side {
+    display: none;
+  }
+  .col-7.content-side {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+  #layoutMain {
+    padding: 2rem 1rem;
+  }
+}
+.color-icon {
+  color: red;
+}/*# sourceMappingURL=registro-empresas.component.css.map */

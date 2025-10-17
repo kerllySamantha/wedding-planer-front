@@ -1,0 +1,24 @@
+h1 {
+    font-family: "Merriweather";
+    font-size: 2em;
+    line-height: 2.25rem;
+}
+
+
+.carousel {
+    .carousel-inner {
+        height: 18em;
+    }
+
+    .carousel-item {
+        height: 100%;
+    }
+
+    .carousel-item img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+    }
+}

@@ -1,0 +1,350 @@
+@if(esRutaHome()){
+<nav class="navbar navbar-expand-lg bg-white py-2">
+    <div class="container-fluid align-items-center justify-content-between">
+
+        <!-- 🔹 Botón hamburguesa (izquierda) -->
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#mainMenuOffcanvas" aria-controls="mobileMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <!-- 🔹 Logo (centrado en móvil, izquierda en desktop) -->
+        <a class="navbar-brand" [routerLink]="['/']">
+            <img src="assets/images/logo2.png" alt="Logo" width="300">
+        </a>
+
+        <!-- 🔹 Icono persona (derecha solo móvil) -->
+        <a class="btn btn-light border-0 d-lg-none order-3" [routerLink]="['login']" data-bs-toggle="collapse"
+            data-bs-target="#userMenu" aria-expanded="false" aria-controls="userMenu">
+            <!-- ✅ SVG ORIGINAL -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person"
+                viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1
+              1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516
+              10.68 10.289 10 8 10s-3.516.68-4.168
+              1.332c-.678.678-.83 1.418-.832 1.664z" />
+            </svg>
+        </a>
+
+        <!-- 🔹 Menú central -->
+        <!-- Menú central para escritorio -->
+        <div class="d-none d-lg-flex justify-content-center flex-grow-1">
+            <ul class="navbar-nav flex-row gap-3">
+                <li class="nav-item"><a class="nav-link active" [routerLink]="['mi-boda']">Mi Boda</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+            </ul>
+        </div>
+
+        <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mainMenuOffcanvas"
+            aria-labelledby="mainMenuOffcanvasLabel">
+            <div class="offcanvas-header border-bottom">
+                <h5 class="offcanvas-title" id="mobileMenuLabel">Menú</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav flex-column gap-3 text-start">
+                    <li class="nav-item"><a class="nav-link" (click)="irARuta('mi-boda', $event)">Mi Boda</a></li>
+                    <li class="nav-item"><a class="nav-link" (click)="irARuta('dashboard-proveedores', $event)" >Proveedores</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="d-none d-lg-flex align-items-end ms-auto order-lg-2">
+            @if(autServicectx.auth()){
+            <div class="d-flex flex-row align-items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" fill="currentColor"
+                    class="bi bi-suit-heart-fill color-icon" viewBox="0 0 16 16">
+                    <path
+                        d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1" />
+                </svg>
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-envelope" viewBox="0 0 16 16">
+                    <path
+                        d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+                </svg>
+
+                <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <!-- Botón del avatar que abre el menú, sin ripple ni efecto azul -->
+                            <button mat-button [matMenuTriggerFor]="userMenu" class="p-0 avatar-button" disableRipple>
+                                <div mat-card-avatar
+                                    class="example-header-image d-flex justify-content-center align-items-center avatar-circle">
+                                    {{ nombreU() }}
+                                </div>
+                            </button>
+
+                            <!-- Menú Angular Material -->
+                            <mat-menu #userMenu="matMenu" xPosition="before">
+                                <button mat-menu-item [routerLink]="['/']">Inicio</button>
+                                <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
+                                <button mat-menu-item [routerLink]="['/configuracion']">Configuración</button>
+                                <mat-divider></mat-divider>
+                                <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
+                            </mat-menu>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            }
+            @else {
+            <div class="d-flex flex-column align-items-end gap-2">
+                <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
+                    [routerLink]="['dashboard-empresas']">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="16" fill="currentColor"
+                        class="bi bi-briefcase " viewBox="0 0 16 16">
+                        <path
+                            d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5m1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0M1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                    <span class="area-empresas">Área Empresas</span>
+                </a>
+
+                <div class="d-flex flex-row gap-3" id="registro">
+                    <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
+                    <a [routerLink]="['registerUser']" class="nav-link p-0">Regístrate</a>
+                </div>
+            </div>
+            }
+        </div>
+
+
+        <!-- <div class="collapse position-absolute end-0 mt-3 bg-white shadow rounded-3 p-3 d-lg-none text-end"
+                id="userMenu" style="z-index: 1050;">
+                <a class="d-block mb-2 text-dark text-decoration-none" [routerLink]="['dashboard-empresas']">
+                    Área Empresas
+                </a>
+                <a href="#" class="d-block mb-2 text-dark text-decoration-none">Accede</a>
+                <a href="#" class="d-block text-dark text-decoration-none">Regístrate</a>
+            </div> -->
+    </div>
+</nav>
+
+}
+@else if (estaEnRuta('dashboard-empresas') ) {
+
+<nav class="navbar navbar-expand-lg">
+    <div class="row  w-100 ">
+        <div class="col d-flex align-items-center justify-content-center">
+            <a class="navbar-brand" [routerLink]="['/']">
+                <img src="assets/images/logo2.png" alt="Logo" width="300">
+            </a>
+        </div>
+    </div>
+
+</nav>
+
+
+<!-- <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <div class="row w-100 align-items-center">
+            <div class="col-2">
+                <a class="navbar-brand" [routerLink]="['/']">
+                    <img src="assets/images/logo2.png" alt="Logo" width="300">
+                </a>
+            </div>
+            <div class="col-8">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-center" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" [routerLink]="['dashboard-empresas']">Acceso Empresas</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" [routerLink]="['/']">Acceso Bodas</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</nav> -->
+
+}
+
+@else if (estaEnRuta('login') || estaEnRuta('registerUser')) {
+<nav class="navbar navbar-expand-lg  fondo py-2 d-flex  align-items-center justify-content-center">
+    <div class="row">
+        <div class="col d-flex align-items-center">
+            <a class="navbar-brand" [routerLink]="['/']">
+                <img src="assets/images/logo2R.png" alt="Logo" width="300">
+            </a>
+        </div>
+    </div>
+
+</nav>
+}
+
+@else {
+
+<nav class="navbar navbar-expand-lg bg-white py-2">
+    <div class="container-fluid align-items-center justify-content-between">
+
+        <!-- 🔹 Botón hamburguesa (izquierda) -->
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#mainMenuOffcanvas" aria-controls="mobileMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <!-- 🔹 Logo (centrado en móvil, izquierda en desktop) -->
+        <a class="navbar-brand" [routerLink]="['/']">
+            <img src="assets/images/logo2.png" alt="Logo" width="300">
+        </a>
+
+        <!-- 🔹 Icono persona (derecha solo móvil) -->
+
+        <a class="btn btn-light border-0 d-lg-none order-3" [routerLink]="['login']" data-bs-toggle="collapse"
+            data-bs-target="#userMenu" aria-expanded="false" aria-controls="userMenu">
+            <!-- ✅ SVG ORIGINAL -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person"
+                viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1
+              1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516
+              10.68 10.289 10 8 10s-3.516.68-4.168
+              1.332c-.678.678-.83 1.418-.832 1.664z" />
+            </svg>
+        </a>
+
+        <!-- 🔹 Menú central -->
+        <!-- Menú central para escritorio -->
+        <div class="d-none d-lg-flex justify-content-center flex-grow-1">
+            <ul class="navbar-nav flex-row gap-3">
+
+
+                <li class="nav-item">
+                    <a class="nav-link" [class.active]="estaEnRuta('mi-boda')" href="#"
+                        (click)="irARuta('mi-boda', $event)">
+                        Mi Boda
+                    </a>
+                </li>
+                <li class="nav-item"><a class="nav-link" (click)="irARuta('dashboard-proveedores', $event)" >Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+            </ul>
+        </div>
+
+        <!-- Disparador del menú
+        <button mat-button [matMenuTriggerFor]="menu">
+            Menú de ejemplo
+        </button>
+        
+        Panel del menú 
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item>Opción 1</button>
+            <button mat-menu-item>Opción 2</button>
+            <button mat-menu-item>Opción 3</button>
+        </mat-menu> -->
+
+        <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mainMenuOffcanvas"
+            aria-labelledby="mainMenuOffcanvasLabel">
+            <div class="offcanvas-header border-bottom">
+                <h5 class="offcanvas-title" id="mobileMenuLabel">Menú</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav flex-column gap-3 text-start">
+                    <li class="nav-item"><a class="nav-link" (click)="irARuta('dashboard-proveedores', $event)" >Mi Boda</a></li>
+                    <li class="nav-item"><a class="nav-link" (click)="irARuta('dashboard-proveedores', $event)" >Proveedores</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- 🔹 Columna derecha visible solo en escritorio -->
+        <div class="d-none d-lg-flex align-items-end ms-auto order-lg-2">
+            @if(autServicectx.auth()){
+            <div class="d-flex flex-row align-items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" fill="currentColor"
+                    class="bi bi-suit-heart-fill color-icon" viewBox="0 0 16 16">
+                    <path
+                        d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1" />
+                </svg>
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-envelope" viewBox="0 0 16 16">
+                    <path
+                        d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
+                </svg>
+
+
+                <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <!-- Botón del avatar que abre el menú, sin ripple ni efecto azul -->
+                            <button mat-button [matMenuTriggerFor]="userMenu" class="p-0 avatar-button" disableRipple>
+                                <div mat-card-avatar
+                                    class="example-header-image d-flex justify-content-center align-items-center avatar-circle">
+                                    {{ nombreU() }}
+                                </div>
+                            </button>
+
+                            <!-- Menú Angular Material -->
+                            <mat-menu #userMenu="matMenu" xPosition="before">
+                                <button mat-menu-item [routerLink]="['/']">Inicio</button>
+                                <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
+                                <button mat-menu-item [routerLink]="['/configuracion']">Configuración</button>
+                                <mat-divider></mat-divider>
+                                <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
+                            </mat-menu>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            }
+            @else {
+            <div class="d-flex flex-column align-items-end gap-2">
+                <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
+                    [routerLink]="['dashboard-empresas']">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="16" fill="currentColor"
+                        class="bi bi-briefcase " viewBox="0 0 16 16">
+                        <path
+                            d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5m1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0M1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                    <span class="area-empresas">Área Empresas</span>
+                </a>
+
+                <div class="d-flex flex-row gap-3" id="registro">
+                    <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
+                    <a [routerLink]="['registerUser']" class="nav-link p-0">Regístrate</a>
+                </div>
+            </div>
+            }
+        </div>
+
+
+        <!-- <div class="collapse position-absolute end-0 mt-3 bg-white shadow rounded-3 p-3 d-lg-none text-end"
+                id="userMenu" style="z-index: 1050;">
+                <a class="d-block mb-2 text-dark text-decoration-none" [routerLink]="['dashboard-empresas']">
+                    Área Empresas
+                </a>
+                <a href="#" class="d-block mb-2 text-dark text-decoration-none">Accede</a>
+                <a href="#" class="d-block text-dark text-decoration-none">Regístrate</a>
+            </div> -->
+    </div>
+</nav>
+
+
+
+}

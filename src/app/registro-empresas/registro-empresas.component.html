@@ -1,0 +1,107 @@
+<router-outlet></router-outlet>
+<div class="row container-fluid d-flex align-items-stretch main-layout">
+    <!-- Columna izquierda con imagen -->
+    <div class="col-5 p-0 image-side">
+        <div class="image-overlay"></div>
+        <img src="assets/images/empresas.jpg" alt="Empresas">
+    </div>
+
+    <!-- Columna derecha con contenido -->
+    <div class="col-7 content-side d-flex justify-content-center mt-4">
+        <div id="layoutMain" class="container ">
+            <section class="text-center mb-4">
+                <a class="navbar-brand" [routerLink]="['../dashboard-empresas']">
+                    <img src="assets/images/logo2.png" alt="Logo" width="300">
+                </a>
+            </section>
+            <section class=" p-4">
+                <h1 class="h4 text-center mb-4">
+                    Prueba gratis Bodas.net y haz crecer tu negocio
+                </h1>
+        
+                <form action="/emp-AltaRun.php" method="POST">
+                    <!-- DATOS DE CONTACTO -->
+                    <div class="mb-4">
+                        <h2 class="h5 mb-3">Datos de contacto</h2>
+        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="business_name" class="form-label">Nombre de la empresa</label>
+                                <input type="text" class="form-control" id="business_name" name="Nombre">
+                            </div>
+        
+                            <div class="col-md-6">
+                                <label for="Location" class="form-label">Población</label>
+                                <input type="text" class="form-control" id="Location" name="Location">
+                            </div>
+        
+                            <div class="col-md-6">
+                                <label for="group" class="form-label">Tipo de sector</label>
+                                <select id="group" name="vendorGroup" class="form-select">
+                                    <option value="">Selecciona grupo</option>
+                                    <option value="1">Banquetes</option>
+                                    <option value="2">Proveedores</option>
+                                    <option value="3">Novias</option>
+                                    <option value="4">Novios</option>
+                                </select>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <label for="category" class="form-label">Sector de actividad</label>
+                                <select id="category" name="Sector" class="form-select" disabled>
+                                    <option value="">Selecciona una opción</option>
+                                </select>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" id="email" name="Mail">
+                            </div>
+        
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="phone" name="Telefono">
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- DATOS DE ACCESO -->
+                    <div class="mb-4">
+                        <h3 class="h5 mb-3">Datos de acceso</h3>
+        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="Name" class="form-label">Nombre de usuario</label>
+                                <input type="text" class="form-control" id="Name" name="Login" minlength="5">
+                                <div class="form-text">Debe tener al menos 5 caracteres.</div>
+                            </div>
+        
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="password" name="Password">
+                                <div class="form-text">
+                                    Entre 8 y 48 caracteres, con minúscula, mayúscula y número, sin espacios.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- POLÍTICAS -->
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="confirm" name="confirm">
+                        <label class="form-check-label" for="confirm">
+                            Acepto las <a href="https://www.bodas.net/condiciones-legales.php" target="_blank">condiciones de
+                                uso</a>
+                            y el <a href="https://www.bodas.net/legal/privacy.php" target="_blank">aviso de privacidad</a>.
+                        </label>
+                    </div>
+        
+                    <!-- BOTÓN -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Crea tu cuenta</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>

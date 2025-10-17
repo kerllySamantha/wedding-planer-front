@@ -1,0 +1,82 @@
+<app-navbar></app-navbar>
+
+<hr class="my-4">
+
+<div class="container mt-3">
+    <div class="row align-items-start justify-content-between">
+
+        <!-- Columna izquierda: Detalles de la boda -->
+        <div class="col-lg-6 col-md-7 mb-4">
+            <div class="card card-margin shadow-sm rounded-3 p-4">
+                <div class="widget-49">
+                    <div class="widget-49-title-wrapper mb-3">
+                        <div class="widget-49-date-primary me-3">
+                            <span class="widget-49-date-day">{{ fechaCountdown()?.days }}</span>
+                            <span class="widget-49-date-month">{{ fechaCountdown()?.months }}</span>
+                        </div>
+                        <div class="widget-49-meeting-info">
+                            <h2 class=" mb-1">{{ perfil()?.usuario?.name }}</h2>
+                            <h5 class="text-muted mb-0">{{ perfil()?.direccion }}</h5>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <ul class="widget-49-meeting-points list-unstyled">
+                        <li class="widget-49-meeting-item mb-2">
+                            <span>📅 Fecha de la boda: <strong>{{ fechaFormateada() }}</strong></span>
+                        </li>
+                        <li class="widget-49-meeting-item mb-2">
+                            <span>📍 Ubicación: <strong>{{ bodaEncontrada()?.ubicacion }}</strong></span>
+                        </li>
+                        <li class="widget-49-meeting-item mb-2">
+                            <!-- <span>👥 Invitados confirmados: <strong>{{ bodaEncontrada()?.invitadosConfirmados -->
+                                    <!-- }}</strong></span> -->
+                        </li>
+                        <li class="widget-49-meeting-item mb-2">
+                            <span>💰 Presupuesto gastado: <strong>{{ bodaEncontrada()?.presupuesto }} €</strong></span>
+                        </li>
+                        <li class="widget-49-meeting-item">
+                            <!-- <span>✅ Tareas realizadas: <strong>{{ bodaEncontrada()?.tareasHechas }}</strong></span> -->
+                        </li>
+                    </ul>
+
+                    <!-- <div class="widget-49-meeting-action text-center mt-3">
+                        <button class="btn btn-sm btn-flash-border-primary rounded-pill px-4">
+                            Ver detalles completos
+                        </button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna derecha: Contador -->
+        <div class="col-lg-4 col-md-5">
+            <div class="card card-margin text-center shadow-sm rounded-3 p-3">
+                <div class="card-header bg-light fw-semibold border-bottom">
+                    🕐 Faltan para mi boda...
+                </div>
+                <div class="card-body py-3">
+                    <div class="d-flex justify-content-center align-items-center gap-3">
+                        <div>
+                            <span class="fs-4 fw-bold">{{ fechaCountdown()?.days }}</span>
+                            <small class="d-block text-muted">días</small>
+                        </div>
+                        <div>
+                            <span class="fs-4 fw-bold">{{ fechaCountdown()?.hours }}</span>
+                            <small class="d-block text-muted">hrs</small>
+                        </div>
+                        <div>
+                            <span class="fs-4 fw-bold">{{ fechaCountdown()?.minutes }}</span>
+                            <small class="d-block text-muted">min</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <small class="text-muted">{{ fechaFormateada() }}</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

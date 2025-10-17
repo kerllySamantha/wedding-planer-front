@@ -1,0 +1,15 @@
+.carousel .carousel-inner {
+  height: 18em;
+}
+.carousel .carousel-item {
+  height: 100%;
+}
+.carousel .carousel-item img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+  display: block;
+}/*# sourceMappingURL=card-empresa.component.css.map */

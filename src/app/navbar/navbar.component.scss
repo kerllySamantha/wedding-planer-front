@@ -1,0 +1,118 @@
+$fondo :#e91e63;
+$fondo2 : #f76c6f;
+
+.fondo {
+    background-color: #f0f0f0;
+}
+
+a {
+    font-family: "ProximaNova";
+    font-size: 1.2em;
+}
+
+.navbar-nav .nav-link {
+    position: relative;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background-color:  $fondo;
+    transition: width 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color:  $fondo;
+}
+
+.navbar-nav .nav-link:hover::after {
+    width: 100%;
+}
+
+#registro {
+    color: #f76c6f;
+    font-size: 0.87rem;
+    font-family: "ProximaNova";
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.area-empresas {
+    font-family: "ProximaNova";
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: right;
+}
+
+.registro-empresa:hover {
+    color: #000;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-brand img {
+        width: 160px;
+    }
+}
+
+/* OFFCANVAS móvil: quitar subrayado y hover rosa */
+#mainMenuOffcanvas.show .nav-link {
+    transition: none !important;
+    color: black !important;
+    /* Quitar hover rosa */
+    display: block !important;
+    /* Ocupa todo el ancho */
+    padding: 0.5rem 0 !important;
+    /* Ajusta espacio */
+}
+
+#mainMenuOffcanvas.show .nav-link::after {
+    width: 0 !important;
+    /* Quitar subrayado */
+    transition: none !important;
+    content: none !important;
+}
+
+.example-header-image {
+    border-radius: 50%;
+    background-color: $fondo2;
+    width: 50px;
+    height: 50px;
+    color: white;
+    font-weight: bold;
+}
+
+.avatar-circle {
+    // width: 40px;
+    // height: 40px;
+    // border-radius: 50%;
+    background-color: $fondo2;
+    /* solo el círculo azul */
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar-button {
+    background: transparent;
+    /* quitar fondo del botón */
+    border: none;
+    padding: 0;
+    min-width: 0;
+    /* elimina ancho extra de mat-button */
+}
+
+.color-icon {
+    color: $fondo2;
+}

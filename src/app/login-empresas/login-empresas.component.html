@@ -1,0 +1,45 @@
+<section class="vendor-section">
+    <div class="vendor-content container-fluid">
+
+        <div class=" text-center flex-fill">
+            <button [routerLink]="['../registerEmpresa']" class="btn accede fw-semibold px-4 py-2">Regístrate gratis</button>
+        </div>
+
+        <!-- Formulario de login -->
+        <div class="card border-0 shadow-none me-5">
+            <div class="card-body py-5 px-md-5 d-flex align-items-center">
+                <form class="vendor-login-form text-white mx-auto" name="frmAcceso"
+                    action="https://www.bodas.net/emp-Login.php" method="post">
+
+                    <h2 class="mb-4 fw-semibold text-center">Acceso empresas</h2>
+
+                    <!-- Usuario -->
+                    <div class="mb-3 position-relative">
+                        <div class="input-group bg-light">
+                            <span class="input-group-text rounded-start-2 border-end-0">
+                                <i class="bi bi-person"></i>
+                            </span>
+                            <input type="text" class="form-control text-dark border-start-0 rounded-end-2"
+                                placeholder="Usuario" name="Login" id="Login" required>
+                        </div>
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="mb-3 position-relative">
+                        <div class="input-group bg-light">
+                            <span class="input-group-text border-end-0 rounded-start-2">
+                                <i class="bi bi-key"></i>
+                            </span>
+                            <input type="password" class="form-control border-start-0 rounded-end-2 text-dark"
+                                placeholder="Contraseña" name="Password" id="Password" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn fw-semibold mt-3">Accede</button>
+                    <a href="#" class="d-block mt-3 text-center">¿Has olvidado tu contraseña?</a>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>

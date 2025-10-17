@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "ProximaNova";
+  src: url("./assets/fonts/ProximaNova-regular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Merriweather";
+  src: url("./assets/fonts/Merriweather-Bold.woff2");
+}
+@font-face {
+  font-family: "ProximaNovaSemi";
+  src: url("./assets/fonts/ProximaNova-semibold.woff2");
+}
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}/*# sourceMappingURL=styles.css.map */

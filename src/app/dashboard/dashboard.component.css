@@ -1,0 +1,49 @@
+body {
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+h1 {
+  font-family: "Merriweather";
+  font-size: 2em;
+  line-height: 2.25rem;
+}
+
+.searcher__submit {
+  color: #fff;
+  background-color: #f76c6f;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  background-position: center;
+  display: inline-block;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-weight: 600;
+  font-size: 1.13rem;
+  flex-shrink: 0;
+  border: none;
+}
+
+.searcher_input {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.searcher__submit:hover {
+  background-color: #ff5255;
+  transform: translateY(-2px);
+}
+
+.searcher__submit:active {
+  transform: translateY(0);
+  background-color: #e04c4e;
+}
+
+.h1-tittle {
+  padding: 2.5em 0 0.5em 0;
+}
+
+.tittle-header {
+  border-bottom: rgba(191, 191, 191, 0.89) solid 1px !important;
+  padding-bottom: 5em;
+  margin: 0% !important;
+}/*# sourceMappingURL=dashboard.component.css.map */

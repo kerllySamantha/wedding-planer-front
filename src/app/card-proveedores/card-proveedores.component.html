@@ -1,0 +1,25 @@
+<div class="col">
+    <div class="card-flip">
+        <!-- Carrusel de imágenes -->
+        <div id="carousel{{empresa()?.id}}" class="carousel slide card-front" data-bs-ride="carousel">
+            <div class="carousel-inner">
+
+                @for (imagen of empresa()?.fotos; track imagen.url ; let idx = $index) {
+                <!-- Primera imagen -->
+                <div class="carousel-item" [class.active]="idx === 0">
+                    <img class="card-img-top" [src]="imagen.url" class="d-block w-100" [alt]="empresa()?.usuario?.name">
+                </div>
+                }
+
+            </div>
+        </div>
+
+        <!-- Info proveedor -->
+        <div class="card-back">
+            <h5 class="card-title fw-bold mb-1">{{empresa()?.nombre_empresa}}</h5>
+            <p class="card-text text-muted mb-2">{{empresa()?.descripcion}}</p>
+            <p class="card-text"><small class="text-secondary">{{empresa()?.telefono}}</small></p>
+            <a href="#" class="btn btn-outline-primary btn-sm">Ver detalles</a>
+        </div>
+    </div>
+</div>

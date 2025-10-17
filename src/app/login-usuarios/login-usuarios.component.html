@@ -1,0 +1,105 @@
+<div class="fondo vh-100">
+
+    <app-navbar></app-navbar>
+
+    <div class="d-flex justify-content-center align-items-center vh-95">
+        <div class="row login-row">
+
+            <!-- Columna de la imagen -->
+            <div class="col-md-5 image-fondo"></div>
+
+            <!-- Columna del login -->
+            <div class="col-md-7 column-login">
+                <div class="login-content">
+
+                    <h2 class="text-center mb-3">Accede a tu cuenta</h2>
+                    <p class="text-center mb-4">
+                        ¿No dispones de cuenta?
+                        <a [routerLink]="['../registerUser']">Regístrate</a>
+                    </p>
+
+                    <div id="error_email" class="alert alert-danger d-none">
+                        La dirección de correo o la contraseña son incorrectas.
+                    </div>
+
+                    <form action="" class="" (ngSubmit)="onSubmit($event)" [formGroup]="form">
+                        <input type="hidden" id="urlR" name="urlR" value="">
+                        <input type="hidden" name="isJsArchitectureEnabled" value="true">
+                        <!--
+                        <div class="mb-3">
+                            <input id="Mail" name="Mail" type="email" class="form-control" placeholder="Tu email"
+                                required>
+                        </div> -->
+                        <div class="input-group mb-3">
+                            <span class="input-group-text border-end-0 rounded-start-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-person" viewBox="0 0 16 16">
+                                    <path
+                                        d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4" />
+                                </svg>
+                            </span>
+                            <input id="Mail" name="email" type="email" formControlName="email" class="form-control"
+                                placeholder="Tu email" required [ngClass]="{
+                               'is-invalid': form.get('email')?.errors && (form.get('email')?.touched || form.get('email')?.dirty),
+                               'is-valid': !form.get('email')?.errors && (form.get('email')?.touched || form.get('email')?.dirty)
+                           } " required>
+                            <div class="invalid-feedback">
+                                @if (form.get('email')?.errors && (form.get('email')?.touched ||
+                                form.get('email')?.dirty)){
+                                @if(form.get('email')?.hasError?.('required')){El campo es obligatorio}
+                                @if(form.get('email')?.hasError?.('email')){Debe contener formato de correo
+                                ejemploejemplo.com}
+                                <!-- @if(form.get('email')?.hasError?.('nombreExistente')){Ya existe una empresa registrada -->
+                                }
+
+                            </div>
+
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text border-end-0 rounded-start-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-key" viewBox="0 0 16 16">
+                                    <path
+                                        d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5" />
+                                </svg>
+                            </span>
+                            <input id="password" name="password" type="password" formControlName="password"
+                                class="form-control border-start-0 rounded-end-2" placeholder="Tu contraseña"
+                                autocomplete="off" required [ngClass]="{
+                               'is-invalid': form.get('password')?.errors && (form.get('password')?.touched || form.get('password')?.dirty),
+                               'is-valid': !form.get('password')?.errors && (form.get('password')?.touched || form.get('password')?.dirty)
+                           } " required>
+                            <div class="invalid-feedback">
+                                @if (form.get('password')?.errors && (form.get('password')?.touched ||
+                                form.get('password')?.dirty)){
+                                @if(form.get('password')?.hasError?.('required')){El campo es obligatorio}
+                                @if(form.get('password')?.hasError?.('pattern')){Debe incluir una mayúscula, un simbolo
+                                y un número}
+                                <!-- @if(form.get('email')?.hasError?.('nombreExistente')){Ya existe una empresa registrada -->
+                                }
+
+                            </div>
+
+                            <!-- } -->
+
+                        </div>
+
+                        <div class="mb-3 text-end">
+                            <a href="/users-recover-password.php">¿Has olvidado tu contraseña?</a>
+                        </div>
+                        <div class="d-grid mb-4">
+                            <button type="submit" class="btn submit-button btn-lg">Accede</button>
+                        </div>
+
+                        <p class="text-center mb-2">¿Eres profesional?</p>
+                        <div class="text-center">
+                            <a class="fw-bold" [routerLink]="['../dashboard-empresas']">Acceso para empresas</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

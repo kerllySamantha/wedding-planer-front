@@ -1,0 +1,44 @@
+.fondo {
+  background-color: #f0f0f0;
+}
+
+.submit-button {
+  background-color: #f76c6f;
+  color: white;
+  font-weight: 600;
+}
+.submit-button:hover {
+  background-color: rgb(244.3677419355, 59.6322580645, 63.6193548387);
+}
+
+.image-fondo {
+  background-image: url("../../assets/images/loginuser.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.login-row {
+  width: 60%;
+  max-width: 900px;
+  min-height: 460px;
+  border: 1px solid #e8e8e8;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: white;
+}
+.login-row .column-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-row .column-login .login-content {
+  width: 80%;
+  max-width: 400px;
+}
+
+h2 {
+  font-family: "Merriweather";
+  font-size: 2em;
+  line-height: 2.25rem;
+}/*# sourceMappingURL=login-usuarios.component.css.map */

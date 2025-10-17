@@ -1,0 +1,153 @@
+.vendor-section {
+    min-height: 80vh;
+    background: url('../../assets/images/fondo4.jpg') center/cover no-repeat;
+    display: flex;
+    align-items: stretch;
+    /* 🔹 hace que los hijos ocupen toda la altura */
+    position: relative;
+    padding: 2rem 5rem;
+    margin-top: 0.7em;
+}
+
+/* Contenedor general que incluye el botón y el formulario */
+.vendor-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    /* 🔥 alinea el botón y el formulario al fondo */
+    width: 100%;
+}
+
+/* --- TARJETA DEL FORMULARIO --- */
+.vendor-section .col-lg-6.mb-5.mb-lg-0 {
+    background: rgba(228, 228, 228, 0.4);
+    border-radius: 12px 0 0 12px;
+    padding: 3rem;
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- CARD / FORMULARIO CON FONDO OPACO --- */
+.card {
+    background: rgba(0, 0, 0, 0.3);
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+}
+
+.card-body {
+    width: 25em;
+    color: black;
+}
+
+/* --- FORMULARIO --- */
+.vendor-login-form {
+    font-size: 16px;
+    line-height: 24px;
+    font-family: 'Proxima Nova', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.vendor-login-form .input-group {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.vendor-login-form .input-group:hover,
+.vendor-login-form .input-group:focus-within {
+    border-color: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+.vendor-login-form .input-group-text {
+    color: black;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 14px;
+}
+
+.vendor-login-form .form-control {
+    background-color: transparent !important;
+    border: none;
+    padding-left: 0;
+}
+
+.vendor-login-form .form-control::placeholder {
+    color: rgb(88, 84, 84);
+    opacity: 1;
+}
+
+.vendor-login-form .form-control:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+/* --- BOTÓN DENTRO DEL FORMULARIO --- */
+.vendor-login-form button {
+    border-radius: 8px;
+    padding: 12px 20px;
+    background: #f76c6f;
+    color: #fff;
+    border: 0;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.vendor-login-form button:hover {
+    background: #ff8083;
+}
+
+/* --- ENLACE "¿Olvidaste tu contraseña?" --- */
+.vendor-login-form a {
+    font-size: 0.9rem;
+    color: #fff;
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+.vendor-login-form a:hover {
+    text-decoration: underline;
+    opacity: 1;
+}
+
+/* --- BOTÓN "REGÍSTRATE GRATIS" --- */
+.accede {
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f76c6f;
+    padding: 0.5em !important;
+    color: #fff;
+    border: 0;
+    width: 40%;
+    cursor: pointer;
+    font-size: 1.5em !important;
+    transition: background 0.3s ease;
+    margin-bottom: 2rem;
+    /* 🔹 leve separación del fondo */
+}
+
+.accede:hover {
+    background: #ff8083;
+}
+
+h2 {
+    font-family: "Merriweather";
+    font-size: 2em;
+    line-height: 2.25rem;
+}
+

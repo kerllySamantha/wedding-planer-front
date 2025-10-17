@@ -1,0 +1,134 @@
+.boda-style {
+    // display: flex;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+    height: 9em;
+    margin: 0 1em;
+}
+
+.boda-style .col-8,
+.boda-style .col-4 {
+    padding: 0;
+    height: 100%;
+}
+
+.info-boda {
+    padding: 1rem !important;
+    padding-left: 5em;
+
+}
+
+.boda1 {
+    background-repeat: repeat;
+    background-position: center;
+    background-size: cover;
+    // transition: transform 0.3s ease, opacity 0.3s ease;
+
+    /* solo redondea los bordes derechos */
+    border-radius: 0 .5rem .5rem 0;
+}
+
+.boda1:hover {
+    transform: scale(1.05);
+    // opacity: 0.;
+
+    .boda-style {
+        border: 1px solid #ccc;
+        // padding-right: inherit !important;
+    }
+
+    border-radius: 0 .5rem .5rem 0;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.info-boda h5 {
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    
+}
+
+.info-boda p {
+    font-size: 0.9rem;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.counterItem__label {
+    font-size: 0.75rem;
+    color: white;
+}
+
+.counterItem__value {
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+}
+
+.img-see {
+    width: 4.5em;
+    height: auto;
+    margin-bottom: 0.5em;
+}
+
+.img-see2 {
+    height: 5em;
+}
+
+.service-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+}
+.fondo-imagen {
+    position: relative;
+    height: 250px;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+
+    .boda-bg {
+        background-image: url("../../assets/images/boda1.jpg");
+        background-size: cover;
+        background-position: center;
+    }
+
+    .info-boda {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        height: 100%;
+        color: #fff;
+        border-radius:  16px;
+
+        .info-boda-content {
+            backdrop-filter: blur(4px);
+            background-color: rgba(0, 0, 0, 0.35);
+            border-radius: 16px;
+            width: 100%;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        dl {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+        .counterItem__label {
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .counterItem__value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1;
+        }
+    }
+}

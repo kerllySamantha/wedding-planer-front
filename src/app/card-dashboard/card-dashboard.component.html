@@ -1,0 +1,38 @@
+
+    <div class="col">
+        <div class="card">
+            <!-- Carrusel de imágenes -->
+            <div id="carousel{{resenia()?.id}}" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+
+                    @for (imagen of resenia()?.fotos; track imagen.url ; let idx = $index) {
+                    <!-- Primera imagen -->
+                    <div class="carousel-item" [class.active]="idx === 0">
+                        <img class="card-img-top" [src]="imagen.url" class="d-block w-100"
+                            [alt]="resenia()?.usuario?.name">
+                    </div>
+                    }
+
+                </div>
+
+                <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carousel' + resenia()?.id"
+                    data-bs-slide="prev">
+
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" [attr.data-bs-target]="'#carousel' + resenia()?.id"
+                    data-bs-slide="next">
+
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+
+            <!-- Info proveedor -->
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-1">{{resenia()?.empresa?.nombre}}</h5>
+                <p class="card-text text-muted mb-2">{{resenia()?.cometario}}</p>
+                <p class="card-text"><small class="text-secondary">Desde 995 €</small></p>
+                <a href="#" class="btn btn-outline-primary btn-sm">Ver detalles</a>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,21 @@
+<mat-card class="example-card" appearance="outlined">
+    <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title>{{empresa()?.nombre_empresa}}</mat-card-title>
+        <!-- <mat-card-subtitle>{{empresa()?.descripcion}}</mat-card-subtitle> -->
+    </mat-card-header>
+    @for (imagen of empresa()?.fotos; track imagen.url ; let idx = $index) { @if(idx === 0){
+    <img mat-card-image [src]="imagen.url">
+    }
+
+    }
+    <mat-card-content class="py-4">
+        <p>
+            {{empresa()?.descripcion}}
+        </p>
+    </mat-card-content>
+    <mat-card-actions>
+        <!-- <button mat-button>LIKE</button>
+        <button mat-button>SHARE</button> -->
+    </mat-card-actions>
+</mat-card>
