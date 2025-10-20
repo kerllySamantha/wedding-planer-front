@@ -20,12 +20,14 @@ import { CategoriasApiServiceService } from './Services/Catergorias/categoria-ap
 import { AuthenticationService } from './Services/Autentication/authenticationService';
 import { AutenticarHttpClientService } from './Services/Autentication/autenticar-http-client.service';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { RegionsServer } from './Services/Regiones/regiones-abstract.server';
+import { RegionesApiServer } from './Services/Regiones/regiones-api.server';
 const url_back = 'http://localhost:8000/api';
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   //  provideHttpClient(withInterceptors([authInterceptor])),
-    provideHttpClient(),
-    provideAnimations(),
+  provideHttpClient(),
+  provideAnimations(),
   provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   { provide: UsuariosServiceService, useExisting: UsuariosApiServiceService },
   { provide: EmpresasServiceServiceService, useExisting: EmpresasApiServiceService },
@@ -34,7 +36,8 @@ export const appConfig: ApplicationConfig = {
   { provide: PerfilServiceServiceService, useExisting: PerfilApiServiceService },
   { provide: CategoriasServiceService, useExisting: CategoriasApiServiceService },
   { provide: AuthenticationService, useExisting: AutenticarHttpClientService },
-  { provide: API_URL, useValue: url_back }
+  { provide: API_URL, useValue: url_back },
+  { provide: RegionsServer, useExisting: RegionesApiServer }
 
 
   ]

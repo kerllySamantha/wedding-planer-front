@@ -9,12 +9,17 @@ import { state, style, transition, trigger, animate } from '@angular/animations'
   styleUrl: './card-proveedores.component.scss', 
   animations: [
     trigger('flip', [
-      state('false', style({ transform: 'none' })),
-      state('true', style({ transform: 'rotateY(180deg)' })),
-      transition('false <=> true', animate('0.8s ease-in-out'))
+      state('front', style({ transform: 'rotateY(0deg)' })),
+      state('back', style({ transform: 'rotateY(180deg)' })),
+      transition('front <=> back', animate('0.6s ease-in-out'))
     ])
   ]
 })
 export class CardProveedoresComponent {
   empresa = input<Empresa | null>();
+  flip: 'front' | 'back' = 'front';
+
+  toggleFlip() {
+    this.flip = this.flip === 'front' ? 'back' : 'front';
+  }
 }

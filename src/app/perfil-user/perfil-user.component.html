@@ -16,7 +16,7 @@
                         </div>
                         <div class="widget-49-meeting-info">
                             <h2 class=" mb-1">{{ perfil()?.usuario?.name }}</h2>
-                            <h5 class="text-muted mb-0">{{ perfil()?.direccion }}</h5>
+                            <h5 class="text-muted mb-0">{{ bodaEncontrada()?.ubicacion }}</h5>
                         </div>
                     </div>
 
@@ -27,7 +27,7 @@
                             <span>📅 Fecha de la boda: <strong>{{ fechaFormateada() }}</strong></span>
                         </li>
                         <li class="widget-49-meeting-item mb-2">
-                            <span>📍 Ubicación: <strong>{{ bodaEncontrada()?.ubicacion }}</strong></span>
+                            <span>📍 Ubicación: <strong>{{ bodaEncontrada()?.provincia?.nombre }}, {{bodaEncontrada()?.poblacion?.nombre}}</strong></span>
                         </li>
                         <li class="widget-49-meeting-item mb-2">
                             <!-- <span>👥 Invitados confirmados: <strong>{{ bodaEncontrada()?.invitadosConfirmados -->

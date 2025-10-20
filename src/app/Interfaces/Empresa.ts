@@ -1,6 +1,7 @@
 import { CreateUser, User } from './User';
 import { Categoria } from './Categoria';
 import { Foto } from './Resenia';
+import { Poblacion, Provincia } from './CIudades';
 
 
 export interface Empresas {
@@ -20,6 +21,8 @@ export interface EmpresaBase {
   descripcion: string;
   logo?: string;
   fotos: Foto[] | null;
+  poblacion: Poblacion,
+  provincia: Provincia
 }
 
 
@@ -30,8 +33,8 @@ export interface Empresa extends EmpresaBase {
 
 
 export interface CreateEmpresa extends EmpresaBase {
-  categoria_id: number; 
-  name: string;         
+  categoria_id: number;
+  name: string;
   email: string;
   password: string;
   rol: string;

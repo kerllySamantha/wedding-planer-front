@@ -1,0 +1,23 @@
+
+
+.offcanvas {
+    z-index: 1050;
+}
+
+.cdk-overlay-container {
+    z-index: 1100; 
+}
+
+.busqueda {
+    border: 2px solid #ff5255; // borde más grueso y visible
+    border-radius: 8px; // bordes redondeados
+    padding: 0.5rem 1rem; // espacio interno
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:focus-within {
+        border-color: #ff1744; // color más intenso al enfocar
+        box-shadow: 0 0 8px rgba(255, 82, 85, 0.3); // sombra ligera
+    }
+}
+
+

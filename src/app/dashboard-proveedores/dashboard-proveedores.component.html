@@ -1,11 +1,15 @@
 <app-navbar></app-navbar>
-<hr>
-<div class="container">
+<hr class="mb-0">
+<app-buscador></app-buscador>
+<div class="container-fluid mt-4">
     <div class="row">
-        <div class="col-3"></div>
-        <div class="col-9">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                @for (empresa of empresas$(); track empresa.id) {
+        <app-filtro-proveedores></app-filtro-proveedores>
+        <div class="col-2">
+
+        </div>
+        <div class="col-9 offset-1 ">
+            <div class="row row-cols-1 row-cols-md-3 g-4 d-flex justify-content-between id ">
+                @for (empresa of empresas(); track empresa.id) {
                 <app-card-proveedores [empresa]="empresa"></app-card-proveedores>
                 }
             </div>

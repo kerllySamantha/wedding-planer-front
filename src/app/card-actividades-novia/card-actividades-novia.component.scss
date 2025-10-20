@@ -15,36 +15,41 @@
 
 
 .info-boda {
-    padding: 1rem !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 5em;
+    padding: 5em;
 }
-
 .boda1 {
+    flex: 1;
+    /* Ocupa todo el espacio restante en el flex */
     background-image: url("../../assets/images/boda1.jpg");
-    background-repeat: repeat;
+    background-repeat: no-repeat;
+    /* No repetir */
     background-position: center;
+    /* Centrar */
     background-size: cover;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    /* Cubrir todo el contenedor */
     border-radius: 0 .5rem .5rem 0;
+    /* Redondear solo la derecha */
 }
 
-.boda1:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
+// .info-boda {
+//     padding-left: 5em;
+//     /* Esto reduce el ancho disponible para .boda1 */
+//}
 
-    .boda-style {
-        border: 1px solid #ccc;
-        // padding-right: inherit !important;
-    }
+// .boda1:hover {
+//     transform: scale(1.05);
+//     opacity: 0.9;
 
-    border-radius: 0 .5rem .5rem 0;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-}
+//     .boda-style {
+//         border: 1px solid #ccc;
+//         // padding-right: inherit !important;
+//     }
+
+//     border-radius: 0 .5rem .5rem 0;
+//     overflow: hidden;
+//     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+//     background-color: #fff;
+// }
 
 .info-boda h5 {
     font-weight: 600;
@@ -83,6 +88,7 @@
     font-size: 0.9rem;
     font-weight: 500;
     color: #333;
+    text-align: center;
 
 }
 

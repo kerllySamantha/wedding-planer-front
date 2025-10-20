@@ -1,12 +1,12 @@
-<div class="d-flex flex-row flex-wrap justify-content-around pt-4 mt-4 text-center">
+<div class="row pt-4 mt-4 gx-3 gy-3 justify-content-between">
 
     <!-- Tarjeta principal -->
-    <div class="boda-style card  mb-3 ">
-        <div class="d-flex h-100 ">
-            <div class="info-boda h-100 d-flex flex-column ">
-                <h5 class="ps-4 pe-4">{{bodaEncontrada()?.nombre_pareja}}</h5>
+    <div class="col-lg-4 col-md-4 boda-style pe-0">
+        <div class="d-flex h-100">
+            <div class="info-boda d-flex flex-column justify-content-center ps-4 pe-5">
+                <h5>{{bodaEncontrada()?.nombre_pareja}}</h5>
                 <p>{{fechaFormateada()}}</p>
-                <dl class="row g-2 text-start mb-0 ps-1 ">
+                <dl class="row g-2 text-start mb-0">
                     <div class="col-3">
                         <dt class="counterItem__label">días</dt>
                         <dd class="counterItem__value app-count-down-days">{{fechaCountdown()?.days}}</dd>
@@ -25,33 +25,29 @@
                     </div>
                 </dl>
             </div>
-            <div class="boda1 " style="width:200px;"></div>
+            <div class="boda1"></div>
         </div>
     </div>
 
     <!-- Tarjetas secundarias -->
-    <div class="boda-style secundaria  d-flex flex-column align-items-center justify-content-center me-2 mb-3 "
-        style="flex: 0 0 120px;">
+    <div class="col-6 col-md-2 boda-style d-flex secundaria flex-column align-items-center justify-content-center">
         <img class="img-see mb-2" src="assets/images/agenda.png" alt="Agenda" />
-        <span class="service-text">0 Servicios Contratados</span>
+        <span class="service-text">0 Servicios<br>Contratados</span>
     </div>
 
-    <div class="boda-style d-flex secundaria flex-column align-items-center justify-content-center me-2 mb-3"
-        style="flex: 0 0 120px;">
+    <div class="col-6 col-md-2 boda-style d-flex secundaria flex-column align-items-center justify-content-center">
         <img class="img-see mb-2" src="assets/images/tareas2.jpg" alt="Icono" />
-        <span class="service-text">Tareas completadas</span>
+        <span class="service-text">Tareas<br> completadas</span>
     </div>
 
-    <div class="boda-style d-flex secundaria flex-column align-items-center justify-content-center me-2 mb-3"
-        style="flex: 0 0 120px;">
+    <div class="col-6 col-md-2 boda-style d-flex secundaria flex-column align-items-center justify-content-center">
         <img class="img-see mb-2" src="assets/images/persona3.png" alt="Icono" />
-        <span class="service-text">Invitados conformados</span>
+        <span class="service-text">Invitados <br> conformados</span>
     </div>
 
-    <div class="boda-style d-flex flex-column align-items-center justify-content-center me-2 mb-3 secundaria"
-        style="flex: 0 0 120px;">
+    <div class="col-6 col-md-2 boda-style d-flex secundaria flex-column align-items-center justify-content-center">
         <img class="img-see mb-2" src="assets/images/calculadora4.png" alt="Icono" />
-        <span class="service-text">Presupuesto Gastado</span>
+        <span class="service-text">Presupuesto <br> Gastado</span>
     </div>
 
 </div>

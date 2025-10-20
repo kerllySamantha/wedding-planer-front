@@ -1,16 +1,26 @@
 <div class="col">
-    <div class="card-flip">
+    <div class="card-flip tp-box" (click)="toggleFlip()" [@flip]="flip">
+
         <!-- Carrusel de imágenes -->
         <div id="carousel{{empresa()?.id}}" class="carousel slide card-front" data-bs-ride="carousel">
             <div class="carousel-inner">
-
-                @for (imagen of empresa()?.fotos; track imagen.url ; let idx = $index) {
-                <!-- Primera imagen -->
+                @for (imagen of empresa()?.fotos; track imagen.url; let idx = $index) {
                 <div class="carousel-item" [class.active]="idx === 0">
                     <img class="card-img-top" [src]="imagen.url" class="d-block w-100" [alt]="empresa()?.usuario?.name">
                 </div>
-                }
+                <div class="card-overlay">
+                    <!-- Categoría arriba -->
+                    <span class="card-category">
+                        {{ empresa()?.categoria?.nombre }}
+                    </span>
 
+                    <!-- Nombre de la empresa abajo -->
+                    <!-- <h5 class="card-title fw-bold mb-0">
+                        {{ empresa()?.nombre_empresa }}
+                    </h5> -->
+                </div>
+
+                }
             </div>
         </div>
 

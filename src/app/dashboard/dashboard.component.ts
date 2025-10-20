@@ -13,10 +13,11 @@ import { Boda } from '../Interfaces/Boda';
 import { BodaServiceServiceService } from '../Services/Bodas/boda-service-service.service';
 import { CardBodaComponent } from '../card-boda/card-boda.component';
 import { CardActividadesNoviaComponent } from "../card-actividades-novia/card-actividades-novia.component";
+import { BuscadorComponent } from "../buscador/buscador.component";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, NavbarComponent, CardEmpresaComponent, CardBodaComponent, CardActividadesNoviaComponent],
+  imports: [CommonModule, NavbarComponent, CardEmpresaComponent, CardBodaComponent, CardActividadesNoviaComponent, BuscadorComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

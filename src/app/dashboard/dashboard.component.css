@@ -46,4 +46,8 @@ h1 {
   border-bottom: rgba(191, 191, 191, 0.89) solid 1px !important;
   padding-bottom: 5em;
   margin: 0% !important;
+}
+
+.personal-container {
+  margin: 0 4em;
 }/*# sourceMappingURL=dashboard.component.css.map */

@@ -1,0 +1,157 @@
+<!-- Botón para abrir offcanvas -->
+<!-- <button class="btn busqueda" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+    aria-controls="staticBackdrop">
+    Filtra los Servicios
+</button> -->
+
+<button mat-raised-button color="primary" type="button" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+    aria-controls="staticBackdrop">FILTROS</button>
+
+<!-- Offcanvas -->
+<div class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop"
+    aria-labelledby="staticBackdropLabel">
+    <div class="offcanvas-header d-flex justify-content-center">
+        <h5 class="offcanvas-title text-center" id="staticBackdropLabel">FILTRAR</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex justify-content-around">
+        <form class="row g-3" novalidate [formGroup]="form" (submit)="submit($event)" (reset)="onReset()">
+            <!-- Campo Nombre -->
+            <mat-form-field appearance="outline" color="accent" class="custom-input full-width">
+                <mat-label>Nombre</mat-label>
+                <mat-icon matPrefix>search</mat-icon>
+                <input matInput placeholder="Buscar por nombre" formControlName="nombre" name="nombre" />
+            </mat-form-field>
+
+            <!-- Provincia -->
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Provincia</mat-label>
+                <mat-select formControlName="provincia" placeholder="Selecciona provincia">
+                    @for (provincia of provincias$ | async; track provincia.id) {
+                    <mat-option [value]="provincia">{{ provincia.nombre }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Localidad -->
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Localidad</mat-label>
+                <mat-select formControlName="localidad" placeholder="Selecciona localidad" panelClass="offcanvas-panel">
+                    @for (poblacion of poblaciones$ | async; track poblacion.id) {
+                    <mat-option [value]="poblacion">{{ poblacion.nombre }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Categoría -->
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Categoría</mat-label>
+                <mat-select formControlName="categoria" placeholder="Selecciona categoría">
+                    @for (categoria of categorias$ | async; track categoria.id) {
+                    <mat-option [value]="categoria">{{ categoria.nombre }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+  
+
+            <!-- Botones de acción -->
+            <div class="d-flex justify-content-between mt-3">
+                <button mat-raised-button  data-bs-dismiss="offcanvas" color="primary" type="submit">Ver Proveedores</button>
+                <button mat-stroked-button color="warn" type="reset">Limpiar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- <div class="row">
+    <form class="row g-3 offset-1" novalidate (submit)="submit($event)" [formGroup]="form" (reset)="onReset()">
+        <div class="input-group">
+            <span class="input-group-text"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                    fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path
+                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                </svg></span>
+            <input type="text" formControlName="nombre" directive-restric="*#" name="nombre" class="form-control"
+                placeholder="Nombre" />
+        </div>
+        <div class="input-group">
+            <div class="col-md-12">
+                <label for="provincias" class="form-label">Provincia</label>
+                <select class="form-select" formControlName="provincia" id="provincias" name="provincia">
+                    <option [disabled]="true"></option>
+                    @for (provincia of (provincias$ | async); track provincia.id) {
+                    <option [ngValue]="provincia">{{provincia.nombre}}</option>
+
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="col-md-12">
+                <label for="localidad" class="form-label">Localidad</label>
+                <select class="form-select" formControlName="localidad" name="localidad" id="localidad"> -->
+<!-- @if (errorsProvincia) { -->
+<!-- <option value="" selected disabled></option>
+                    @for (ciudad of (poblaciones$ | async) ; track ciudad.id) {
+                    <option [ngValue]="ciudad">{{ciudad.nombre}}</option>
+                    }
+                    @empty {
+                    <option value="" disabled>No se ha seleccionado ninguna provincia</option>
+                    } -->
+<!-- }
+                     @else {
+                     <option value="" disabled>No se ha seleccionado ninguna provincia</option> -->
+<!-- }   -->
+<!-- 
+                </select>
+            </div>
+        </div>
+        <div class="input-group">
+            <div class="col-md-12">
+                <label for="categoria" class="form-label">Categoria</label>
+                <select class="form-select" id="categoria" name="categoria" formControlName="categoria">
+                    <option [ngValue]="0" selected disabled></option>
+                    @for (categoria of categorias$ |async ; track categoria) {
+                    <option [ngValue]="categoria">{{categoria.nombre}} </option>
+                    }
+                </select>
+            </div>
+        </div> -->
+<!-- <div class="input-group">
+            <div class="col-md-12">
+                <label for="servicio" class="form-label">Servicio</label>
+                <select class="form-select" id="servicio" name="servicio" formControlName="servicio">
+                    <option value="" selected disabled></option>
+                    @for (servicio of servicios$ | async; track servicio) {
+                    <option [ngValue]="servicio">{{servicio.nombre}} </option>
+                    }
+                </select>
+            </div> -->
+
+<!-- </div> -->
+<!-- <div class="d-grid gap-2 col-9 mx-auto">
+            <div class="row justify-content-center"> -->
+<!-- <div class="col-auto">
+                    <button class="btn enviar " type="submit">Aplicar Filtros</button>
+                </div> -->
+<!-- <mat-slide-toggle></mat-slide-toggle>
+
+                <div class="col-auto">
+                    <button title="filtro" type="reset" name="restablecer" class="mt-4 btn color"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
+                            <path
+                                d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466" />
+                        </svg></button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </form>
+</div> -->

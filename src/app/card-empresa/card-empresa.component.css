@@ -12,4 +12,8 @@
   -o-object-position: center;
      object-position: center;
   display: block;
+}
+
+.card-img-top {
+  height: 2em !important;
 }/*# sourceMappingURL=card-empresa.component.css.map */

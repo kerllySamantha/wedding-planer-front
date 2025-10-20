@@ -1,1 +1,1 @@
-{"version":3,"sources":["card-empresa.component.scss","card-empresa.component.css"],"names":[],"mappings":"AACI;EACI,YAAA;ACAR;ADGI;EACI,YAAA;ACDR;ADII;EACI,YAAA;EACA,WAAA;EACA,oBAAA;KAAA,iBAAA;EACA,0BAAA;KAAA,uBAAA;EACA,cAAA;ACFR","file":"card-empresa.component.css"}
+{"version":3,"sources":["card-empresa.component.scss","card-empresa.component.css"],"names":[],"mappings":"AACI;EACI,YAAA;ACAR;ADGI;EACI,YAAA;ACDR;ADII;EACI,YAAA;EACA,WAAA;EACA,oBAAA;KAAA,iBAAA;EACA,0BAAA;KAAA,uBAAA;EACA,cAAA;ACFR;;ADMA;EACI,sBAAA;ACHJ","file":"card-empresa.component.css"}
