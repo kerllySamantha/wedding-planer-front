@@ -12,11 +12,16 @@ import { BuscadorComponent } from "../buscador/buscador.component";
 import { NgClass } from '@angular/common';
 import { FiltroProveedoresComponent } from '../filtro-proveedores/filtro-proveedores.component';
 import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
+import { VisualizadorProveedoresCardsComponent } from "../visualizador-proveedores-cards/visualizador-proveedores-cards.component";
+import { HorizontalCardProveedoresComponent } from "../horizontal-card-proveedores/horizontal-card-proveedores.component";
+import { ImagenesContenedorProveedoresComponent } from '../imagenes-contenedor-proveedores/imagenes-contenedor-proveedores.component';
 
 
 @Component({
   selector: 'app-dashboard-proveedores',
-  imports: [NavbarComponent, CardProveedoresComponent, BuscadorComponent, FiltroProveedoresComponent],
+  imports: [NavbarComponent, CardProveedoresComponent, BuscadorComponent, FiltroProveedoresComponent,
+    VisualizadorProveedoresCardsComponent, HorizontalCardProveedoresComponent,
+    NgClass, ImagenesContenedorProveedoresComponent],
   templateUrl: './dashboard-proveedores.component.html',
   styleUrl: './dashboard-proveedores.component.scss'
 })
@@ -37,8 +42,17 @@ export class DashboardProveedoresComponent {
   // empresas = signal<Empresa[]>([]);
   bodas = signal<Boda[]>([]);
 
+  modo = signal<'listado' | 'imagenes' | 'mapa'>('listado');
+
+ 
+
   loading = signal(true);
   error = signal<string | null>(null);
+
+  cambiarModo(nuevo: 'listado' | 'imagenes' | 'mapa') {
+    this.modo.set(nuevo);
+    console.log(this.modo())
+  }
   // empresas$ = computed(() => this.empresas());
 
   // ngOnInit(): void {

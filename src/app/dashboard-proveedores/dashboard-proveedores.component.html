@@ -1,18 +1,52 @@
 <app-navbar></app-navbar>
 <hr class="mb-0">
 <app-buscador></app-buscador>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6">
+            <app-filtro-proveedores></app-filtro-proveedores>
+        </div>
+        <div class="col-6">
+            <app-visualizador-proveedores-cards
+                (visualizador)="cambiarModo($event)"></app-visualizador-proveedores-cards>
+        </div>
+    </div>
+</div>
 <div class="container-fluid mt-4">
     <div class="row">
-        <app-filtro-proveedores></app-filtro-proveedores>
-        <div class="col-2">
+        <div class="col-1"></div>
+        <div class="col-9 offset-2 ">
+            <!-- <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+                @for (empresa of empresas(); track empresa.id) {
+                <app-card-proveedores [empresa]="empresa"></app-card-proveedores> 
+                 <app-horizontal-card-proveedores [empresa]="empresa"></app-horizontal-card-proveedores>
+                }
+            </div> -->
 
-        </div>
-        <div class="col-9 offset-1 ">
-            <div class="row row-cols-1 row-cols-md-3 g-4 d-flex justify-content-between id ">
+            <!-- <div class="row d-flex justify-contend-end">
+                @for (empresa of empresas(); track empresa.id) {
+                <app-card-proveedores [empresa]="empresa"></app-card-proveedores>
+                <app-horizontal-card-proveedores [empresa]="empresa"></app-horizontal-card-proveedores>
+                }
+            </div> -->
+
+            @if(modo() === 'imagenes'){
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
                 @for (empresa of empresas(); track empresa.id) {
                 <app-card-proveedores [empresa]="empresa"></app-card-proveedores>
                 }
             </div>
+
+            }
+
+            @if(modo() === 'listado'){
+            <div class="row d-flex justify-contend-end">
+                @for (empresa of empresas(); track empresa.id) {
+                <app-horizontal-card-proveedores [empresa]="empresa"></app-horizontal-card-proveedores>
+                }
+            </div>
+            }
         </div>
     </div>
 </div>

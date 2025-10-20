@@ -1,0 +1,34 @@
+<div class="card mb-3 shadow-sm border-0" style="max-width: 540px;">
+    <div class="row g-0">
+        <!-- Imagen -->
+        <div class="col-md-4">
+            @for (item of empresa()?.fotos; track item.path; let idx = $index) {
+            @if (idx === 0) {
+            <img [src]="item.url" [alt]="empresa()?.nombre_empresa"
+                class="img-fluid rounded-start h-100 object-fit-cover" />
+            }
+            }
+        </div>
+
+        <!-- Contenido -->
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title mb-2">
+                    {{ empresa()?.nombre_empresa }}
+                </h5>
+
+                <p class="card-text mb-2 text-muted small">
+                    {{ empresa()?.descripcion }}
+                </p>
+
+                <p class="card-text mb-0">
+                    <small class="text-body-secondary">
+                        <i class="bi bi-geo-alt-fill me-1 text-danger"></i>
+                        {{ empresa()?.direccion }}
+                    </small>
+                </p>
+                <button class="btn" type="button">Solicitar Presupuesto</button>
+            </div>
+        </div>
+    </div>
+</div>
