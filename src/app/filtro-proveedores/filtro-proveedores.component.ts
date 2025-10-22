@@ -7,7 +7,7 @@ import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
 import { RegionsServer } from '../Services/Regiones/regiones-abstract.server';
 import { Provincia, Town } from '../Interfaces/CIudades';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButtonModule, MatFabButton } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -19,7 +19,8 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'app-filtro-proveedores',
   standalone: true,
   imports: [AsyncPipe, CommonModule, ReactiveFormsModule, MatSlideToggleModule, FormsModule, MatFormFieldModule,
-    MatInputModule, MatSelectModule, MatSlideToggleModule, MatIconModule, MatButtonModule
+    MatInputModule, MatSelectModule, MatSlideToggleModule, MatIconModule,
+    MatButtonModule, MatFabButton
 
   ],
   templateUrl: './filtro-proveedores.component.html',

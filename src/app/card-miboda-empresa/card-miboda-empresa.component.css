@@ -1,0 +1,68 @@
+@charset "UTF-8";
+.example-card {
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+}
+
+/* Efecto hover */
+.example-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(72, 71, 71, 0.2);
+}
+
+/* Cabecera de la card */
+.example-card mat-card-header {
+  padding: 10px 20px 2px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Avatar circular */
+.example-header-image {
+  border-radius: 50%;
+  background-color: #cfd8dc;
+}
+
+/* Imagen principal de la card */
+.example-card img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  height: 200px;
+  width: 100%;
+  transition: transform 0.3s;
+}
+
+/* Zoom sutil al hover sobre la imagen */
+.example-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Contenido */
+.example-card mat-card-content p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Acciones (aunque ahora estén comentadas) */
+.example-card mat-card-actions {
+  padding: 8px 16px;
+  border-top: 1px solid #eee;
+}
+
+/* Grid responsive: añade espacio entre filas */
+.row > * {
+  margin-bottom: 20px;
+}
+
+h6 {
+  font-family: ProximaNova, ProximanovaBold-fallback, sans-serif;
+  font-weight: 800;
+  font-size: 1em;
+}/*# sourceMappingURL=card-miboda-empresa.component.css.map */

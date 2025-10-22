@@ -14,14 +14,15 @@ import { FiltroProveedoresComponent } from '../filtro-proveedores/filtro-proveed
 import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
 import { VisualizadorProveedoresCardsComponent } from "../visualizador-proveedores-cards/visualizador-proveedores-cards.component";
 import { HorizontalCardProveedoresComponent } from "../horizontal-card-proveedores/horizontal-card-proveedores.component";
-import { ImagenesContenedorProveedoresComponent } from '../imagenes-contenedor-proveedores/imagenes-contenedor-proveedores.component';
+import { RouterOutlet } from '@angular/router';
 
 
 @Component({
   selector: 'app-dashboard-proveedores',
   imports: [NavbarComponent, CardProveedoresComponent, BuscadorComponent, FiltroProveedoresComponent,
     VisualizadorProveedoresCardsComponent, HorizontalCardProveedoresComponent,
-    NgClass, ImagenesContenedorProveedoresComponent],
+    RouterOutlet
+   ],
   templateUrl: './dashboard-proveedores.component.html',
   styleUrl: './dashboard-proveedores.component.scss'
 })

@@ -2,6 +2,7 @@ import { CreateUser, User } from './User';
 import { Categoria } from './Categoria';
 import { Foto } from './Resenia';
 import { Poblacion, Provincia } from './CIudades';
+import { Servicio } from './Servicio';
 
 
 export interface Empresas {
@@ -23,6 +24,7 @@ export interface EmpresaBase {
   fotos: Foto[] | null;
   poblacion: Poblacion,
   provincia: Provincia
+  servicios: Servicio[]
 }
 
 

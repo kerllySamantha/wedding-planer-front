@@ -1,13 +1,14 @@
 <div class="col">
-    <div class="card">
+
+    <div class="card shadow-5">
         <!-- Carrusel de imágenes -->
         <div id="carousel{{empresa()?.id}}" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
+            <div class="carousel-inner pb-0 mb-0">
 
                 @for (imagen of empresa()?.fotos; track imagen.url ; let idx = $index) {
                 <!-- Primera imagen -->
                 <div class="carousel-item" [class.active]="idx === 0">
-                    <img class="card-img-top" [src]="imagen.url" class="d-block w-100" [alt]="empresa()?.usuario?.name">
+                    <img class="card-img-top" [src]="imagen.url" class="d-block w-90 " [alt]="empresa()?.usuario?.name">
                 </div>
                 }
 
@@ -24,13 +25,19 @@
                 <span class="carousel-control-next-icon"></span>
             </button>
         </div>
+        <a class="text-decoration-none" [routerLink]="['proveedores/detalles', empresa()?.id]">
 
-        <!-- Info proveedor -->
-        <div class="card-body">
-            <h5 class="card-title fw-bold mb-1">{{empresa()?.nombre_empresa}}</h5>
-            <p class="card-text text-muted mb-2">{{empresa()?.descripcion}}</p>
-            <p class="card-text"><small class="text-secondary">{{empresa()?.telefono}}</small></p>
-            <a href="#" class="btn btn-outline-primary btn-sm">Ver detalles</a>
-        </div>
+
+            <div class="card-body">
+                <h6 class=" mb-1">{{empresa()?.nombre_empresa}}</h6>
+                <!-- <p class="card-text text-muted mb-2">{{verTexto()}}</p> -->
+                <p class="card-text"><small class="text-secondary">{{empresa()?.direccion}}</small></p>
+                <!-- <a href="#" class="btn btn-outline-primary btn-sm">Ver detalles</a> -->
+            </div>
+        </a>
+
+
     </div>
+
+
 </div>

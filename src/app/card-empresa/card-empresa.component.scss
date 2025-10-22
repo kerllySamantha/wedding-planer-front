@@ -1,22 +1,50 @@
 .carousel {
     .carousel-inner {
-        height: 18em;
+        height: 13em;
+        border-radius: 7px 7px 0 0 !important;
     }
 
     .carousel-item {
-        height: 100%;
+        height: 105%;
     }
 
     .carousel-item img {
-        height: 100%;
+        height: 90%;
         width: 100%;
         object-fit: cover;
         object-position: center;
-        display: block;
+    border-radius: 7px 7px 0 0 !important;
     }
 }
 
 .card-img-top {
-    height: 2em !important;
+
+    height: 5em;
 }
 
+.card-body {
+    border-radius: 0 0 7px 7px !important;
+    border-radius: 7px 7px 0 0 !important;
+
+}
+
+
+h6 {
+    font-family: ProximaNova, ProximanovaBold-fallback, sans-serif;
+    font-weight: 800;
+    font-size: 1em;
+}
+
+a {
+    color: rgb(29, 28, 28);
+}
+
+img {
+    height: 20em;
+}
+
+.card {
+
+    box-shadow: 0.5rem 0.5rem 1.5rem rgba(187, 184, 184, 0.665);
+    border-color: rgb(255, 255, 255);
+}

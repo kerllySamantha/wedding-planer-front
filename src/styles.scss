@@ -8,9 +8,10 @@ html {
   @include mat.theme((
     color: (
       theme-type: light,
-      primary: mat.$orange-palette,
-      tertiary: mat.$orange-palette,
-    ),
+      primary: mat.$red-palette,
+      tertiary: mat.$red-palette,
+
+      ),
     typography: ProximaNovaSemi ,
     density: 0,
   ));
@@ -90,5 +91,8 @@ body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -1,12 +1,12 @@
-@use '@angular/material' as mat;
+// @use '@angular/material' as mat;
 
-:host {
-    @include mat.card-overrides((elevated-container-color: orange,
-            elevated-container-elevation: red,
-            title-text-font: red,
+// :host {
+//     @include mat.card-overrides((elevated-container-color: orange,
+//             elevated-container-elevation: red,
+//             title-text-font: red,
 
-        ));
-}
+//         ));
+// }
 
 .example-card {
     border-radius: 15px;
@@ -22,13 +22,13 @@
 /* Efecto hover */
 .example-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 24px rgba(72, 71, 71, 0.2);
 }
 
 /* Cabecera de la card */
 .example-card mat-card-header {
-    background-color: #f8f9fa;
-    padding: 16px;
+    // background-color: #f8f9fa;
+    padding: 10px 20px 2px 20px;
     border-bottom: 1px solid #eee;
 }
 
@@ -36,8 +36,8 @@
     .example-header-image {
         border-radius: 50%;
         background-color: #cfd8dc;
-        width: 50px;
-        height: 50px;
+        // width: 50px;
+        // height: 50px;
     }
 
 /* Imagen principal de la card */
@@ -71,3 +71,10 @@
 .row>* {
     margin-bottom: 20px;
 }
+
+h6 {
+    font-family: ProximaNova, ProximanovaBold-fallback, sans-serif;
+    font-weight: 800;
+    font-size: 1em;
+}
+

@@ -8,17 +8,24 @@ import { RegistroEmpresasComponent } from './registro-empresas/registro-empresas
 import { MiBodaComponent } from './mi-boda/mi-boda.component';
 import { PerfilUserComponent } from './perfil-user/perfil-user.component';
 import { DashboardProveedoresComponent } from './dashboard-proveedores/dashboard-proveedores.component';
+import { DetallesProveedoresComponent } from './detalles-proveedores/detalles-proveedores.component';
+import { empresaResolver } from './Resolver/company.resolver';
 
 export const routes: Routes = [
     { path: "", component: DashboardComponent },
     { path: "mi-boda", component: MiBodaComponent },
-    { path: "dashboard-empresas", component: DashboardEmpresasComponent },
+    {
+        path: "dashboard-empresas", component: DashboardEmpresasComponent
+    },
     { path: "login", component: LoginUsuariosComponent },
     { path: "registerUser", component: RegistroUsuariosComponent },
     { path: "registerEmpresa", component: RegistroEmpresasComponent },
-    {path: 'dashboard-proveedores', component: DashboardProveedoresComponent}, 
     {
-        path: "perfil-user", component: PerfilUserComponent
-    }
+        path: 'dashboard-proveedores', component: DashboardProveedoresComponent
+    },
+
+    { path: "perfil-user", component: PerfilUserComponent },
+    { path: "proveedores/detalles/:id", component: DetallesProveedoresComponent, resolve: { proveedor: empresaResolver } },
+
     // { path: "dashboard-empresas/login-empresas", component: LoginEmpresasComponent}
 ];

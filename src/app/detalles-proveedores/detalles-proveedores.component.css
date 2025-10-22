@@ -1,0 +1,66 @@
+@charset "UTF-8";
+.container-personal {
+  padding: 0 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.container-personal .container-imagenes {
+  display: flex;
+  margin-top: 2rem;
+}
+.container-personal img {
+  display: block;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.container-personal .img-grande-izq {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-top-left-radius: 1.5rem;
+  border-bottom-left-radius: 1.5rem;
+}
+.container-personal .img-pequeña {
+  width: 100%;
+  height: 15em;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.container-personal .img-end {
+  border-top-right-radius: 1.5rem;
+}
+.container-personal .img-derecha-bottom {
+  width: 100%;
+  height: 19.9em;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-bottom-right-radius: 0.625rem;
+}
+
+h1 {
+  font-family: ProximaNova, ProximanovaBold-fallback, sans-serif;
+}
+
+.searcher__submit {
+  color: #fff;
+  background-color: #f76c6f;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  margin: 2em 0;
+  font-size: 1rem;
+  border: none;
+}
+
+svg {
+  color: rgb(5, 91, 47);
+}
+
+@media (min-width: 992px) {
+  .sticky-container {
+    position: sticky;
+    top: 3em;
+  }
+}/*# sourceMappingURL=detalles-proveedores.component.css.map */

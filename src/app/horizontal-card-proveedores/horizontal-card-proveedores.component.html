@@ -1,18 +1,18 @@
-<div class="card mb-3 shadow-sm border-0" style="max-width: 540px;">
+<div class="card mb-4 border-0 border-bottom mt-4">
     <div class="row g-0">
         <!-- Imagen -->
         <div class="col-md-4">
             @for (item of empresa()?.fotos; track item.path; let idx = $index) {
             @if (idx === 0) {
             <img [src]="item.url" [alt]="empresa()?.nombre_empresa"
-                class="img-fluid rounded-start h-100 object-fit-cover" />
+                class="img-fluid rounded-4 h-80 object-fit-cover" />
             }
             }
         </div>
 
         <!-- Contenido -->
-        <div class="col-md-8">
-            <div class="card-body">
+        <div class="col-md-8 mb-5">
+            <div class="card-body ms-4 ">
                 <h5 class="card-title mb-2">
                     {{ empresa()?.nombre_empresa }}
                 </h5>
@@ -27,7 +27,9 @@
                         {{ empresa()?.direccion }}
                     </small>
                 </p>
-                <button class="btn" type="button">Solicitar Presupuesto</button>
+                <div class="row d-flex justify-content-end mt-4">
+                  <button [routerLink]="['../proveedores/detalles', empresa()?.id]" class="btn searcher__submit col-4 text-center justify-content-center" type="button">Detalles</button>
+                </div>
             </div>
         </div>
     </div>

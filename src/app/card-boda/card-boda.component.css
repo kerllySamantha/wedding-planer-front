@@ -4,4 +4,8 @@
 
 .card {
   box-shadow: 0.5rem 0.5rem 1rem rgba(144, 134, 134, 0.665);
+}
+
+.personal-container {
+  margin: 0 4em;
 }/*# sourceMappingURL=card-boda.component.css.map */

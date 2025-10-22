@@ -1,42 +1,40 @@
-<app-navbar></app-navbar>   
+<app-navbar></app-navbar>
 <hr>
 <div class="container">
-  
+
     <app-menu-mi-boda></app-menu-mi-boda>
-    
+
     <app-actividades-mi-boda></app-actividades-mi-boda>
-    
+
     <div class="row">
         <h1>Crea tu equipo soñado</h1>
-        <div class="row justify-content-center">
-            <p class="col-6">Lee las opiniones, guarda tus favoritos y contáctalos</p>
-    
+        <div class="row justify-content-center ">
+            <p class="col-5 pe-0 me-0 ">Lee las opiniones, guarda tus favoritos y contáctalos</p>
+
             <div class="col-4 ms-0 ps-0">
-                <div class="input-group my-3 row ">
-                    <div class="col-md-12">
-                        <label for="categorias" class="form-label fw-bold">Categorías</label>
-    
-                        <select class="form-select" id="categorias" name="categoria" (change)="onCategoriaChange($event)">
-                            <option value="" disabled selected>Seleccione una categoría</option>
-    
-                            @for (categoria of categorias$ | async; track categoria.id) {
-                            <option [value]="categoria.id">
-                                {{ categoria.nombre }}
-                            </option>
-                            }
-                        </select>
-                    </div>
-                </div>
+                <select class="form-select" id="categorias" name="categoria" (change)="onCategoriaChange($event)">
+                    <option value="" disabled selected>Seleccione una categoría</option>
+
+                    @for (categoria of categorias$ | async; track categoria.id) {
+                    <option [value]="categoria.id">
+                        {{ categoria.nombre }}
+                    </option>
+                    }
+                </select>
             </div>
-    
-        </div>
-    
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            @for (empresa of companies(); track empresa.id) {
-                <app-card-miboda-empresa [empresa]="empresa"></app-card-miboda-empresa>
-            }
 
         </div>
-    
+
     </div>
+</div>
+
+<div class="personal-container">
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+        @for (empresa of companies(); track empresa.id) {
+        <app-card-miboda-empresa [empresa]="empresa"></app-card-miboda-empresa>
+        }
+
+    </div>
+
 </div>

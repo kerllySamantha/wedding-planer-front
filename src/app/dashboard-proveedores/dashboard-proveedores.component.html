@@ -1,13 +1,14 @@
 <app-navbar></app-navbar>
+<router-outlet></router-outlet>
 <hr class="mb-0">
 <app-buscador></app-buscador>
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-6">
+    <div class="row mt-4">
+        <div class="col-3 offset-1 d-flex flex-column align-items-start">
             <app-filtro-proveedores></app-filtro-proveedores>
         </div>
-        <div class="col-6">
+        <div class="offset-1 col-6">
             <app-visualizador-proveedores-cards
                 (visualizador)="cambiarModo($event)"></app-visualizador-proveedores-cards>
         </div>
