@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { Empresa } from '../Interfaces/Empresa';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -12,5 +12,14 @@ import { RouterLink } from '@angular/router';
 export class HorizontalCardProveedoresComponent {
 
   empresa = input<Empresa>();
+
+  verTexto = computed(() => {
+    const empresa = this.empresa();
+    if (!empresa?.descripcion) return false;
+    return empresa.descripcion.length > 120
+      ? empresa.descripcion.slice(0, 120) + '...'
+      : empresa.descripcion;
+
+  });
 
 }

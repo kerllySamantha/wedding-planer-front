@@ -21,6 +21,9 @@
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transform-style: preserve-3d;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
 }
 
 /* Estado inicial */
@@ -62,8 +65,7 @@
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  text-align: center;
+  justify-content: space-evenly;
 }
 
 .carousel .carousel-inner {
@@ -80,4 +82,20 @@
   -o-object-position: center;
      object-position: center;
   display: block;
+}
+
+.btn-outline-pink {
+  color: #f76c6f;
+  border: 2px solid #f76c6f;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  padding: 0.2em 1em;
+}
+
+.btn.btn-outline-pink:hover,
+.btn.btn-outline-pink:focus {
+  background-color: #f76c6f;
+  color: #fff;
+  border-color: #f76c6f;
 }/*# sourceMappingURL=card-proveedores.component.css.map */

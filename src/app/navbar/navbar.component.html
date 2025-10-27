@@ -1,6 +1,6 @@
 @if(esRutaHome()){
 <nav class="navbar navbar-expand-lg bg-white py-2">
-    <div class="container-fluid align-items-center justify-content-between">
+    <div class="container-fluid align-items-center justify-content-between ">
 
         <!-- 🔹 Botón hamburguesa (izquierda) -->
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
@@ -75,19 +75,18 @@
                 <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <!-- Botón del avatar que abre el menú, sin ripple ni efecto azul -->
-                            <button mat-button [matMenuTriggerFor]="userMenu" class="p-0 avatar-button" disableRipple>
+                            <button mat-button [matMenuTriggerFor]="userMenu" class=" avatar-button" disableRipple>
                                 <div mat-card-avatar
                                     class="example-header-image d-flex justify-content-center align-items-center avatar-circle">
                                     {{ nombreU() }}
                                 </div>
                             </button>
 
-                            <!-- Menú Angular Material -->
-                            <mat-menu #userMenu="matMenu" xPosition="before">
+                        <mat-menu #userMenu="matMenu" overlapTrigger="false" xPosition="before" yPosition="below">
+
                                 <button mat-menu-item [routerLink]="['/']">Inicio</button>
                                 <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
-                                <button mat-menu-item [routerLink]="['/configuracion']">Configuración</button>
+                                <button mat-menu-item [routerLink]="['']">Configuración</button>
                                 <mat-divider></mat-divider>
                                 <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
                             </mat-menu>

@@ -1,64 +1,62 @@
 <!-- Bootstrap 5 Navigation -->
-<nav class="navbar bg-white shadow-sm mb-3 border-bottom py-4 ">
-    <div class="container d-flex justify-content-center">
-        <ul class="nav">
+<nav class="navbar bg-white shadow-sm mb-3 border-bottom py-4">
+    <div class="container-fluid">
+        <ul class="nav w-100 d-flex justify-content-evenly align-items-center ms-5 me-5">
             <!-- Mi boda -->
             <li class="nav-item">
                 <a class="nav-link text-center active" (click)="irARuta('mi-boda', $event)">
-                    <img src="assets/images/anillos.svg" alt="Mi boda"
-                        width="24" height="24" class="mb-1">
+                    <img src="assets/images/anillos.svg" alt="Mi boda" width="40" height="40" class="mb-1">
                     <div>Mi boda</div>
                 </a>
             </li>
+
             <!-- Tareas -->
             <li class="nav-item">
-                <a class="nav-link text-center" href="https://www.bodas.net/tools/Checklist">
-                    <img src="assets/images/provedor1.svg" alt="Tareas"
-                        width="24" height="24" class="mb-1">
+                <a class="nav-link text-center" (click)="irARuta('tools/presupuesto', $event)">
+                    <img src="assets/images/provedor1.svg" alt="Tareas" width="40" height="40" class="mb-1">
                     <div>Tareas</div>
                 </a>
             </li>
+
             <!-- Proveedores -->
             <li class="nav-item">
                 <a class="nav-link text-center" href="https://www.bodas.net/tools/Vendors">
-                    <img src="assets/images/provedor2.svg"
-                        alt="Proveedores" width="24" height="24" class="mb-1">
+                    <img src="assets/images/provedor2.svg" alt="Proveedores" width="40" height="40" class="mb-1">
                     <div>Proveedores</div>
                 </a>
             </li>
+
             <!-- Invitados -->
             <li class="nav-item">
                 <a class="nav-link text-center" href="https://www.bodas.net/tools/Guests">
-                    <img src="assets/images/1.png" alt="Invitados"
-                        width="24" height="24" class="mb-1">
+                    <img src="assets/images/1.png" alt="Invitados" width="40" height="40" class="mb-1">
                     <div>Invitados</div>
                 </a>
             </li>
+
             <!-- Mesas -->
             <li class="nav-item">
                 <a class="nav-link text-center" href="https://www.bodas.net/tools/Tables">
-                    <img src="assets/images/2.png" alt="Mesas"
-                        width="24" height="24" class="mb-1">
+                    <img src="assets/images/2.png" alt="Mesas" width="40" height="40" class="mb-1">
                     <div>Mesas</div>
                 </a>
             </li>
+
             <!-- Presupuesto -->
             <li class="nav-item">
-                <a class="nav-link text-center" href="https://www.bodas.net/tools/Budget">
-                    <img src="assets/images/3.png" alt="Presupuesto"
-                        width="24" height="24" class="mb-1">
+                <a class="nav-link text-center" (click)="irARuta('tools/presupuesto', $event)" >
+                    <img src="assets/images/3.png" alt="Presupuesto" width="40" height="40" class="mb-1">
                     <div>Presupuesto</div>
                 </a>
             </li>
+
             <!-- Vestidos -->
             <li class="nav-item">
                 <a class="nav-link text-center" href="https://www.bodas.net/tools/DressList">
-                    <img src="assets/images/4.png" alt="Vestidos"
-                        width="24" height="24" class="mb-1">
+                    <img src="assets/images/4.png" alt="Vestidos" width="40" height="40" class="mb-1">
                     <div>Vestidos</div>
                 </a>
             </li>
-           
         </ul>
     </div>
 </nav>

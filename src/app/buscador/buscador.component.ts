@@ -4,7 +4,7 @@ import { Component, computed, signal } from '@angular/core';
 
 @Component({
   selector: 'app-buscador',
-  imports: [CommonModule, NgClass, NgStyle],
+  imports: [CommonModule, NgStyle],
   templateUrl: './buscador.component.html',
   styleUrl: './buscador.component.scss'
 })

@@ -1,3 +1,4 @@
+$color_principal : #f76c6f;
 .card-flip {
     perspective: 1000px;
     width: 100%;
@@ -20,6 +21,9 @@
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transform-style: preserve-3d;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
 }
 
 /* Estado inicial */
@@ -69,8 +73,8 @@
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    text-align: center;
+    justify-content: space-evenly;
+    
 }
 
 .carousel {
@@ -89,4 +93,23 @@
         object-position: center;
         display: block;
     }
+}
+
+
+.btn-outline-pink {
+    color:  $color_principal;
+    border: 2px solid $color_principal;
+    // background-color: transparent;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    padding: 0.2em 1em;
+}
+
+.btn.btn-outline-pink:hover,
+.btn.btn-outline-pink:focus {
+    background-color: $color_principal;
+    color: #fff;
+    border-color: $color_principal;
+    // transform: scale(1.03);
 }

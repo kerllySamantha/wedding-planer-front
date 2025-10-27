@@ -13,13 +13,12 @@ import { map } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardEmpresaComponent } from '../card-empresa/card-empresa.component';
 import { CardMibodaEmpresaComponent } from '../card-miboda-empresa/card-miboda-empresa.component';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-mi-boda',
   imports: [MenuMiBodaComponent, NavbarComponent, ActividadesMiBodaComponent,
-    MatCardModule, MatButtonModule, AsyncPipe, ReactiveFormsModule, CardMibodaEmpresaComponent
-  ],
+    MatCardModule, MatButtonModule, AsyncPipe, ReactiveFormsModule, CardMibodaEmpresaComponent, RouterOutlet],
   templateUrl: './mi-boda.component.html',
   styleUrl: './mi-boda.component.scss'
 })

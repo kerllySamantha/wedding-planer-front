@@ -17,12 +17,14 @@ export class MenuMiBodaComponent {
   irARuta(ruta: string, event: Event): void {
     event.preventDefault();
     const urlActual = this.router.url;
-    console.log(urlActual)
 
     if (urlActual.includes(ruta)) {
       console.log(`Ya estás en la ruta ${ruta}, no se navega nuevamente.`);
       return;
     }
+
+    this.router.navigate([ruta]);
   }
+
 
 }
