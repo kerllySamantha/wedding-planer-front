@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Categoria, Categorias } from '../../Interfaces/Categoria';
+import { Categoria, CategoriaIndividual, Categorias, InfoCategoria } from '../../Interfaces/Categoria';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -9,4 +9,5 @@ export abstract class CategoriasServiceService {
     constructor() { }
     abstract getCategorias(): Observable<Categorias | null>;
     abstract postCategoria(Categoria: Categoria): Observable<Object | null>;
+    abstract getCategoria(idCategoria: CategoriaIndividual):Observable<CategoriaIndividual | null>
 }

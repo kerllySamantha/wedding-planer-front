@@ -1,0 +1,22 @@
+$color-border : rgb(237, 230, 230);
+$fondo2 : #f76c6f;
+.btn-selected {
+    background-color: $color-border !important;
+    color: rgb(7, 7, 7) !important;
+    border: 1px solid $color-border !important;
+    // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    // transform: scale(1.05);
+    // transition: all 0.2s ease-in-out;
+}
+
+.btn-unselected {
+    background-color: rgb(253, 253, 253);
+    color: #cdd4e9;
+    border: 1px solid $color-border !important;
+    // transition: all 0.2s ease-in-out;
+}
+
+.bi-plus-circle{
+    color: $fondo2;
+    font-weight: 800;
+}

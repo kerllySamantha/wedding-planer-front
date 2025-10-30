@@ -52,7 +52,7 @@ export class EmpresasApiServiceService  extends EmpresasServiceServiceService{
       telefono: empresa.telefono,
       descripcion: empresa.descripcion,
       nombre_empresa: empresa.nombre_empresa,
-      categoria_id: empresa.categoria_id
+      // categoria_id: empresa.categoria_id
     
     }
     return this.http.post<CreateEmpresa>(`${this.apiUrl}/empresas`, postObject);
@@ -70,7 +70,7 @@ export class EmpresasApiServiceService  extends EmpresasServiceServiceService{
       telefono: empresa.telefono,
       descripcion: empresa.descripcion,
       nombre_empresa: empresa.nombre_empresa,
-      categoria_id: empresa.categoria_id
+      // categoria_id: empresa.categoria_id
     }
     return this.http.put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject)
   }

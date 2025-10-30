@@ -3,11 +3,7 @@ import { Categoria } from './Categoria';
 import { Foto } from './Resenia';
 import { Poblacion, Provincia } from './CIudades';
 import { Servicio } from './Servicio';
-
-
-export interface Empresas {
-  data: Empresa[]
-}
+import {  ProductoEmpresa } from './Producto';
 
 export interface EmpresaLigera {
   id: number;
@@ -23,19 +19,27 @@ export interface EmpresaBase {
   logo?: string;
   fotos: Foto[] | null;
   poblacion: Poblacion,
-  provincia: Provincia
-  servicios: Servicio[]
+  provincia: Provincia,
+  tipo_servicio: string
+  // servicios: Servicio[]
 }
+
+export interface Empresas {
+  data: Empresa[]
+}
+
 
 
 export interface Empresa extends EmpresaBase {
   usuario: User;
-  categoria: Categoria;
+  productos: ProductoEmpresa[];
+  // categoria: Categoria;
 }
 
 
+
 export interface CreateEmpresa extends EmpresaBase {
-  categoria_id: number;
+  // categoria_id: number;
   name: string;
   email: string;
   password: string;

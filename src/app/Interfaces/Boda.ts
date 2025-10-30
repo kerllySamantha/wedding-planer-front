@@ -8,7 +8,7 @@ export interface Boda {
     fecha_boda: Date,
     ubicacion: string,
     usuario: User,
-    presupuesto: number,
+    presupuesto_total: number,
     notas: string
     fotos: Foto[],
     poblacion: Poblacion,

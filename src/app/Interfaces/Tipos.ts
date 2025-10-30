@@ -1,0 +1,24 @@
+import { CategoriaSimple } from "./Categoria";
+
+export interface TipoBase{
+    id: number,
+    nombre: string,
+    description: Text,
+}
+
+export interface TipoData extends TipoBase{
+    categoria: CategoriaSimple 
+}
+
+export interface TipoSimple {
+    id: number,
+    nombre: string,
+}
+
+export interface Tipos{
+    data: TipoData[]
+}
+
+export interface CreateTipo extends TipoBase{
+    
+}

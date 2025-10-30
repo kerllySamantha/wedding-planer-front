@@ -1,13 +1,14 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, effect, input, signal } from '@angular/core';
 import { Empresa } from '../Interfaces/Empresa';
 import { state, style, transition, trigger, animate } from '@angular/animations';
 import { RouterLink } from "@angular/router";
+import { ProductoEmpresa } from '../Interfaces/Producto';
 
 @Component({
   selector: 'app-card-proveedores',
   imports: [RouterLink],
   templateUrl: './card-proveedores.component.html',
-  styleUrl: './card-proveedores.component.scss', 
+  styleUrl: './card-proveedores.component.scss',
   animations: [
     trigger('flip', [
       state('front', style({ transform: 'rotateY(0deg)' })),
@@ -23,6 +24,20 @@ export class CardProveedoresComponent {
   toggleFlip() {
     this.flip = this.flip === 'front' ? 'back' : 'front';
   }
+
+  productos = signal<ProductoEmpresa[]>([]);
+
+
+  constructor() {
+    effect(() => {
+
+      const productos = this.empresa()?.productos || [];
+      this.productos.set(productos);
+
+    });
+  }
+
+
 
   verTexto = computed(() => {
     const empresa = this.empresa();

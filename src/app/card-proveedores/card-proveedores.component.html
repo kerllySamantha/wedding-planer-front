@@ -10,8 +10,15 @@
                 </div>
                 <div class="card-overlay">
                     <!-- Categoría arriba -->
-                    <span class="card-category">
-                        {{ empresa()?.categoria?.nombre }}
+                    <span class="card-category text-center">
+
+                        @for (producto of empresa()?.productos; track producto.nombre; let idx = $index) {
+                        @if(idx == 0 || producto.categoria.nombre !== productos()[idx-1].categoria.nombre){
+                        {{ producto.categoria.nombre }}
+                        }
+                        }
+
+
                     </span>
 
                     <!-- Nombre de la empresa abajo -->

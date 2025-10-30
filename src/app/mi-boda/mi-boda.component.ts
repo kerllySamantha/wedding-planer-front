@@ -1,17 +1,14 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { MenuMiBodaComponent } from "../menu-mi-boda/menu-mi-boda.component";
 import { NavbarComponent } from "../navbar/navbar.component";
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { CardActividadesNoviaComponent } from '../card-actividades-novia/card-actividades-novia.component';
 import { ActividadesMiBodaComponent } from '../actividades-mi-boda/actividades-mi-boda.component';
 import { FiltroEmpresasServiceService } from '../filtro-empresas-service.service';
-import { Categoria, Categorias } from '../Interfaces/Categoria';
 import { AsyncPipe } from '@angular/common';
 import { CategoriasServiceService } from '../Services/Catergorias/categoria-service.service';
 import { map } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CardEmpresaComponent } from '../card-empresa/card-empresa.component';
 import { CardMibodaEmpresaComponent } from '../card-miboda-empresa/card-miboda-empresa.component';
 import { Router, RouterOutlet } from '@angular/router';
 

@@ -1,10 +1,28 @@
+import { TipoSimple } from "./Tipos"
+
 export interface Categoria{
     id: number, 
-    nombre: string, 
-    descripcion: string
+    nombre: string,
+    icono?: string,
+    slug?: string
+    descripcion?: string
 }
 
 
-export interface Categorias{
-    data: Categoria[]
+
+export interface CategoriaSimple{
+    id: number,
+    nombre: string
+}
+
+export interface InfoCategoria extends Categoria{
+    tipos: TipoSimple[]
+}
+
+export interface CategoriaIndividual{
+    data : InfoCategoria[]
+}
+
+export interface Categorias  {
+    data: InfoCategoria[]
 }

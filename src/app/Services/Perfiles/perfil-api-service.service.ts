@@ -37,7 +37,7 @@ export class PerfilApiServiceService  extends PerfilServiceServiceService{
         return null;
       }),
       catchError((error: Error) => {
-        console.error("Error en getUsuario:", error);
+        console.error("Error en getPerfil:", error);
         return throwError(() => error);
       })
     );

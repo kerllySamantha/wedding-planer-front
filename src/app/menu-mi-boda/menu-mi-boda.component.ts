@@ -4,7 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-menu-mi-boda',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './menu-mi-boda.component.html',
   styleUrl: './menu-mi-boda.component.scss'
 })

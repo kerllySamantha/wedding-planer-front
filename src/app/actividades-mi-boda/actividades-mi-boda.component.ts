@@ -22,8 +22,6 @@ dayjs.locale('es');
 })
 export class ActividadesMiBodaComponent {
 
-  // bodaservicectx = inject(BodaServiceServiceService);
-  // authService = inject(AuthenticationService);
   countdownService = inject(CountdownServiceService);
 
   ngOnInit() {

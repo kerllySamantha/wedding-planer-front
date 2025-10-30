@@ -36,7 +36,7 @@ export class ReservasApiServiceService extends ReservasServiceServiceService {
         return null;
       }),
       catchError((error: Error) => {
-        console.error("Error en getResenia:", error);
+        console.error("Error en getReserva:", error);
         return throwError(() => error);
       })
     );

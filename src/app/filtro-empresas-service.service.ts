@@ -30,8 +30,16 @@ export class FiltroEmpresasServiceService {
   empresasFiltradas = computed(() => {
     const idSeleccionado = this.categoriaSeleccionadaId();
     const todas = this.empresasRecibidas();
-    return idSeleccionado ? todas.filter(e => e.categoria.id === idSeleccionado) : todas;
+
+    if (!idSeleccionado) return todas;
+
+    return todas.filter(empresa =>
+      empresa.productos.some(categoria =>
+        categoria.categoria.id === idSeleccionado
+      )
+    );
   });
+
 
   seleccionarCategoria(id: number | null) {
     this.categoriaSeleccionadaId.set(id);
