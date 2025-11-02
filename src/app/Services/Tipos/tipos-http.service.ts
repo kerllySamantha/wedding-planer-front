@@ -13,5 +13,6 @@ export abstract class TiposHttpService {
     abstract getTipo(idTipo: bigint): Observable<TipoData | null>;
     abstract postTipo(tipo: CreateTipo): Observable<CreateTipo | null>;
     abstract editartipo(idTipo: string | null, usuario: CreateTipo): Observable<Object | null>;
-    abstract deleteTipo(idTipo: bigint): Observable<Object | null>;
+  abstract deleteTipo(idTipo: bigint): Observable<Object | null>;
+  // abstract CategoriaTipo(idCategoria: bigint)
 }
