@@ -7,12 +7,12 @@ import { Observable } from 'rxjs';
 })
 export abstract class PerfilServiceServiceService {
 
-   constructor() { }
-   abstract getPerfiles(): Observable<Perfiles|null>;
-   abstract getPerfil(idUsuario: bigint): Observable<PerfilResponse|null>;
-   abstract postPerfil(usuario: CreatePerfilUsuario): Observable<CreatePerfilUsuario|null>;
-   abstract editarPerfil(idUsuario: string|null, usuario: CreatePerfilUsuario): Observable<Object|null>;
-  abstract deleteUsuario(idUsuario: bigint): Observable<Object | null>;
+  constructor() { }
+  abstract getPerfiles(): Observable<Perfiles | null>;
+  abstract getPerfil(idUsuario: bigint): Observable<PerfilResponse | null>;
+  abstract postPerfil(usuario: CreatePerfilUsuario): Observable<CreatePerfilUsuario | null>;
+  abstract editarPerfil(idUsuario: string | null, usuario: CreatePerfilUsuario): Observable<Object | null>;
+  abstract deletePresupuesto(idUsuario: bigint): Observable<Object | null>;
   abstract getPerfilByUserId(usuarioId: number): Observable<PerfilResponse | null>
- }
+}
 

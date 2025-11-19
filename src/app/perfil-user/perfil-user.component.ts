@@ -39,6 +39,15 @@ export class PerfilUserComponent {
 
   }
 
+  presupuestoGastado(): number {
+    const boda = this.bodaEncontrada();
+    if (!boda || !boda.presupuestos) return 0;
+
+   
+    return boda.presupuestos.reduce((total, p) => total + p.monto_total, 0);
+  }
+
+
 
 
 

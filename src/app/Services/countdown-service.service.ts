@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { Timespan } from '../Interfaces/Timespan';
 import countdown from 'countdown';
 import { BodaServiceServiceService } from './Bodas/boda-service-service.service';
@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 @Injectable({
   providedIn: 'root'
 })
-export class  CountdownServiceService {
+export class CountdownServiceService {
 
   bodaservicectx = inject(BodaServiceServiceService);
   authService = inject(AuthenticationService);
@@ -21,6 +21,11 @@ export class  CountdownServiceService {
   public error = signal<string | null>(null);
   public fechaFormateada = signal<string>('');
   public bodaEncontrada = computed(() => this.boda());
+  public costeEstimado = computed(() => {
+    const boda = this.bodaEncontrada();
+    const presupuestos = boda?.presupuestos ?? [];
+    return presupuestos.reduce((total, p) => total + (p.monto_total ?? 0), 0);
+  });
 
 
   start(targetDate: Date) {
@@ -100,5 +105,18 @@ export class  CountdownServiceService {
 
   ngOnDestroy() {
     this.stopCountdown();
+  }
+
+
+
+  constructor() {
+
+    effect(() => {
+      // this.costeEstimado();
+
+      // const boda = this.countdownService.bodaEncontrada();
+      // const total = boda?.presupuestos?.reduce((acc, p) => acc + p.monto_total, 0) ?? 0;
+      // this.totalEstimado.set(total);
+    });
   }
 }

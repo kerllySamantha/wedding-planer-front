@@ -19,6 +19,10 @@ export interface Tipos{
     data: TipoData[]
 }
 
+export interface TipoCategoria{
+    data: TipoSimple[];
+}
+
 export interface CreateTipo extends TipoBase{
     
 }

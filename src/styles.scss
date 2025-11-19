@@ -1,20 +1,31 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
+@use 'theme-colors.scss' as theme;
+
+
+// html {
+//   @include mat.theme((
+//     color: (
+//       theme-type: light,
+//       primary: mat.$red-palette,
+//       tertiary: mat.$red-palette,
+
+//       ),
+//     typography: ProximaNovaSemi ,
+//     density: 0,
+//   ));
+// }
 
 
 html {
-  @include mat.theme((
-    color: (
-      theme-type: light,
-      primary: mat.$red-palette,
-      tertiary: mat.$red-palette,
-
-      ),
-    typography: ProximaNovaSemi ,
-    density: 0,
-  ));
+    @include mat.theme((color: (theme-type: light,
+                primary: theme.$primary-palette ,
+                tertiary: theme.$primary-palette,
+            ),
+            typography: ProximaNovaSemi,
+            density: 0,
+        ));
 }
 
 @include mat.list-overrides((active-indicator-color: red,
@@ -24,7 +35,7 @@ html {
 
 @include mat.form-field-overrides((disabled-input-text-placeholder-color: green,
         disabled-leading-icon-color: blue,
-                active-indicator-color: red,
+        active-indicator-color: red,
     ));
 
 // Custom Theming for Angular Material
@@ -91,8 +102,23 @@ body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}

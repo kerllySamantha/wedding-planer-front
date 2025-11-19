@@ -1,5 +1,12 @@
 $color-border : rgb(237, 230, 230);
 $fondo2 : #f76c6f;
+
+.container-personal {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0;
+}
+
 .btn-selected {
     background-color: $color-border !important;
     color: rgb(7, 7, 7) !important;
@@ -16,7 +23,49 @@ $fondo2 : #f76c6f;
     // transition: all 0.2s ease-in-out;
 }
 
-.bi-plus-circle{
+.bi-plus-circle {
     color: $fondo2;
     font-weight: 800;
 }
+
+img {
+    width: 25px;
+    height: auto;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+
+.categoria-item {
+    cursor: pointer;
+    padding: 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    position: relative;
+    transition: all 0.2s ease;
+    border: 1px solid transparent; 
+}
+
+.categoria-item:hover {
+    border-right: 2px solid rgb(160, 158, 158);
+    background-color: rgba($fondo2, 0.03); 
+}
+
+.categoria-item.active {
+    border: 1px solid transparent; 
+    border-right: 3px solid $fondo2;
+    background-color: rgba($fondo2, 0.1);
+    color: black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    z-index: 10; 
+}
+
+.categoria-item img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    flex-shrink: 0; 
+}
+

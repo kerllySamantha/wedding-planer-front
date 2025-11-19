@@ -1,10 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { TiposHttpService } from './tipos-http.service';
-import { CreateTipo, TipoData, Tipos } from '../../Interfaces/Tipos';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { CreateTipo, TipoCategoria, TipoData, Tipos, TipoSimple } from '../../Interfaces/Tipos';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { API_URL } from '../../Tokens/serviceTokens';
 import { Reserva } from '../../Interfaces/Reserva';
+import { CategoriaSimple } from '../../Interfaces/Categoria';
 
 @Injectable({
   providedIn: 'root'
@@ -66,4 +67,6 @@ export class TiposApiService extends TiposHttpService {
     return this.http.delete(`${this.apiUrl}/tipos/${idTipo.toString()}`);
 
   }
+
+
 }

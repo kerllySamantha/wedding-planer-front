@@ -22,11 +22,17 @@ import { AutenticarHttpClientService } from './Services/Autentication/autenticar
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { RegionsServer } from './Services/Regiones/regiones-abstract.server';
 import { RegionesApiServer } from './Services/Regiones/regiones-api.server';
+import { TiposHttpService } from './Services/Tipos/tipos-http.service';
+import { TiposApiService } from './Services/Tipos/tipos-api.service';
+import { ItemsDetallesService } from './Services/ItemDetalles/items-detalles.service';
+import { ItemsDetallesApiService } from './Services/ItemDetalles/items-detalles-api.service';
+import { PresupuestoHttpService } from './Services/Presupuesto/presupuesto-http-service.service';
+import { PresupuestoApiService } from './Services/Presupuesto/presupuesto-api.service';
 const url_back = 'http://localhost:8000/api';
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
-  //  provideHttpClient(withInterceptors([authInterceptor])),
-  provideHttpClient(),
+   provideHttpClient(withInterceptors([authInterceptor])),
+  // provideHttpClient(),
   provideAnimations(),
   provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   { provide: UsuariosServiceService, useExisting: UsuariosApiServiceService },
@@ -37,7 +43,10 @@ export const appConfig: ApplicationConfig = {
   { provide: CategoriasServiceService, useExisting: CategoriasApiServiceService },
   { provide: AuthenticationService, useExisting: AutenticarHttpClientService },
   { provide: API_URL, useValue: url_back },
-  { provide: RegionsServer, useExisting: RegionesApiServer }
+  { provide: RegionsServer, useExisting: RegionesApiServer },
+  { provide: TiposHttpService, useExisting: TiposApiService },
+  { provide: ItemsDetallesService, useExisting: ItemsDetallesApiService },
+  { provide: PresupuestoHttpService, useExisting: PresupuestoApiService }
 
 
   ]

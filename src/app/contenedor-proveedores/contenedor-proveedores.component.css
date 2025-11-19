@@ -1,0 +1,64 @@
+.container-personal {
+  width: 90%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.btn-selected {
+  background-color: rgb(237, 230, 230) !important;
+  color: rgb(7, 7, 7) !important;
+  border: 1px solid rgb(237, 230, 230) !important;
+}
+
+.btn-unselected {
+  background-color: rgb(253, 253, 253);
+  color: #cdd4e9;
+  border: 1px solid rgb(237, 230, 230) !important;
+}
+
+.bi-plus-circle {
+  color: #f76c6f;
+  font-weight: 800;
+}
+
+img {
+  width: 25px;
+  height: auto;
+  -o-object-fit: contain;
+     object-fit: contain;
+  vertical-align: middle;
+}
+
+.categoria-item {
+  cursor: pointer;
+  padding: 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  position: relative;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.categoria-item:hover {
+  border-right: 2px solid rgb(160, 158, 158);
+  background-color: rgba(247, 108, 111, 0.03);
+}
+
+.categoria-item.active {
+  border: 1px solid transparent;
+  border-right: 3px solid #f76c6f;
+  background-color: rgba(247, 108, 111, 0.1);
+  color: black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.categoria-item img {
+  width: 22px;
+  height: 22px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  flex-shrink: 0;
+}/*# sourceMappingURL=contenedor-proveedores.component.css.map */

@@ -1,9 +1,7 @@
 import { computed, inject, Injectable, resource, signal } from '@angular/core';
 import { EmpresasServiceServiceService } from './Services/Empresas/empresas-service-service.service';
 import { firstValueFrom } from 'rxjs';
-import { CategoriasServiceService } from './Services/Catergorias/categoria-service.service';
-import { Categoria } from './Interfaces/Categoria';
-import { Empresa } from './Interfaces/Empresa';
+
 
 @Injectable({
   providedIn: 'root'

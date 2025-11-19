@@ -71,7 +71,7 @@ export class PerfilApiServiceService  extends PerfilServiceServiceService{
     return this.http.put(`${this.apiUrl}/perfiles/${idPerfil}`, putObject)
   }
 
-  override deleteUsuario(idPerfil: bigint): Observable<Object | null> {
+  override deletePresupuesto(idPerfil: bigint): Observable<Object | null> {
     return this.http.delete(`${this.apiUrl}/perfiles/${idPerfil.toString()}`);
   }
 
@@ -84,7 +84,7 @@ export class PerfilApiServiceService  extends PerfilServiceServiceService{
           return null;
         }),
         catchError((error: Error) => {
-          console.error("Error en boda:", error);
+          console.error("Error en perfil:", error);
           return throwError(() => error);
         })
       

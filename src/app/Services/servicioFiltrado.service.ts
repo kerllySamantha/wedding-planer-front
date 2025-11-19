@@ -78,8 +78,8 @@ export class ServicioFiltrado {
       empresas = empresas.filter(empresa =>
         (!nombre || empresa.nombre_empresa.toLowerCase().includes(nombre.toLowerCase())) &&
         (!poblacion || empresa.poblacion.id === poblacion) &&
-        (!provincia || empresa.provincia.id === provincia) 
-        // (!categoria || empresa.categoria.id === categoria)
+        (!provincia || empresa.provincia.id === provincia) && 
+        (!categoria || empresa.productos.some(producto => producto.categoria.id === categoria))
 
       );
     }

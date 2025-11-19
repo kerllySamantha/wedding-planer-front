@@ -10,6 +10,11 @@ export interface ProductoBase{
     precio_min: number,
 }
 
+export interface ProductoSimple{
+    id: number,
+    nombre: string,
+}
+
 export interface ProductoEmpresa extends ProductoBase {
     tipo_producto: TipoSimple;
     categoria: CategoriaSimple

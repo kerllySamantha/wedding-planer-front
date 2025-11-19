@@ -1,0 +1,55 @@
+<form (submit)="guardar($event)">
+
+    @if (cargando()) {
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <mat-spinner></mat-spinner>
+    </div>
+
+    }
+    @else if (categoriaIdSeleccionada() !== null) {
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">CONCEPTO</th>
+                <th scope="col">COSTE ESTIMADO</th>
+                <th scope="col">COSTE FINAL</th>
+                <th scope="col">PAGADO</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <div>Categoria seleccionada: {{ categoriaIdSeleccionada() }}</div>
+
+
+            @for (detalle of (detallesPorCategoria()[categoriaIdSeleccionada()!] || []); track $index;){
+
+            <tr>
+                <!-- <td>{{ detalle.nombre_tipo_personalizado }}</td> -->
+                <!-- <td class="col-5"> <input type="text" [(ngModel)]="detalle.nombre_tipo_personalizado"
+                        name="{{detalle.nombre_tipo_personalizado}}" (input)="detalle.es_personalizado = true; detalle.tipo_producto_id = 0"
+                        class="form-control"> -->
+                <td>{{detalle.nombre_tipo_personalizado}}</td>
+                
+                <!-- <td><input type="number" [(ngModel)]="detalle.monto_asignado" name="monto_asignado"
+                        class="form-control" /></td> -->
+                <td><input type="number" [(ngModel)]="detalle.precio_unitario" name="precio_unitario_{{detalle.tipo_producto_id}}"
+                        class="form-control"> </td>
+                <td><input type="number" [(ngModel)]="detalle.cantidad" name="cantidad_{{detalle.tipo_producto_id}}"
+                        class="form-control" class="form-control" />
+                </td>
+                <td><input type="number" [(ngModel)]="detalle.total_item" name="total_item_{{detalle.tipo_producto_id}}"
+                        class="form-control" class="form-control" />
+                </td>
+            </tr>
+
+
+            }
+        </tbody>
+
+
+
+    </table>
+    }
+
+    <button class="btn btn-lg-warning" type="submit"> enviacar</button>
+</form>

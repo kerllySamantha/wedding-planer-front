@@ -53,9 +53,9 @@
   align-self: flex-start;
   background: rgba(133, 131, 131, 0.6);
   color: #fff;
-  padding: 0.3rem 0.6rem;
+  padding: 0.5rem 0.4rem;
   border-radius: 0.3rem;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }

@@ -1,4 +1,5 @@
 import { Poblacion, Provincia } from "./CIudades";
+import { Presupuesto } from "./Presupuesto";
 import { Foto } from "./Resenia";
 import { User } from "./User";
 
@@ -8,11 +9,13 @@ export interface Boda {
     fecha_boda: Date,
     ubicacion: string,
     usuario: User,
-    presupuesto_total: number,
+    // presupuesto_total: number,
     notas: string
     fotos: Foto[],
     poblacion: Poblacion,
     provincia: Provincia
+    presupuestos: Presupuesto[],
+    
 }
 
 export interface InfoBoda{
