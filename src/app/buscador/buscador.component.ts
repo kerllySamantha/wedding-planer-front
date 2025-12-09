@@ -15,7 +15,6 @@ export class BuscadorComponent {
   constructor(private http: HttpClient) { }
 
   anchoVentana = signal(window.innerWidth);
-  pantallaMedium = computed(() => this.anchoVentana() <= 1180);
   fondoUrl = signal<string>('');
 
   urlFondo = computed(() => this.fondoUrl())
@@ -33,10 +32,6 @@ export class BuscadorComponent {
       });
 
 
-    window.addEventListener('resize', () => {
-      this.anchoVentana.set(window.innerWidth);
-      console.log('Pantalla mediana:', this.pantallaMedium());
-    });
   }
 
 

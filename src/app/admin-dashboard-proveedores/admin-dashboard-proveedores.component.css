@@ -1,0 +1,12 @@
+.container-fluid {
+  margin-top: 70px;
+}
+
+.content-area {
+  background-image: url("../../assets/images/fondo-poli-7.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  padding: 20px;
+}/*# sourceMappingURL=admin-dashboard-proveedores.component.css.map */

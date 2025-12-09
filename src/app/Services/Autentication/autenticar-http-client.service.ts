@@ -12,10 +12,7 @@ import { User, UserResponse } from '../../Interfaces/User';
 export class AutenticarHttpClientService extends AuthenticationService {
   constructor(protected http: HttpClient, @Inject(API_URL) public apiUrl: string) {
     super();
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      this.auth.set(JSON.parse(storedUser));
-    }
+    
   }
 
 

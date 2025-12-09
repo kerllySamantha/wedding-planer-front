@@ -1,0 +1,34 @@
+<!-- <div class="col-6 col-md-3 card-gap d-flex"> -->
+<div class="card boda-card text-center">
+    <h6 class="h5">{{tittle()}}</h6>
+
+    @if (loading()) {
+    <div class="placeholder-glow w-100">
+        <h3 class="placeholder col-6 mb-2"></h3>
+        <span class="placeholder col-7"></span>
+    </div>
+    }
+    @else if (error()) {
+    <p class="text-danger">{{ error() }}</p>
+    }
+    @else if (reservas()!.length > 0) {
+
+    <span class="service-text">
+        {{ today() | date:'MMMM':'': 'es' | titlecase }}
+    </span>
+
+    <div class="h1">
+        {{ reservas()!.length }}
+
+
+    </div>
+
+    <span class="service-text">Total este mes</span>
+
+    }
+    @else {
+    <p>No hay reservas.</p>
+    }
+
+</div>
+<!-- </div> -->

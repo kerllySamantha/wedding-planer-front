@@ -1,0 +1,69 @@
+<div class="row pt-4 mt-4 gx-4 gy-4 justify-content-evenly">
+    <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCompletadas()" [today]="today()"
+        tittle="Reservas Confirmadas"></app-card-info-admin>
+    <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasPendientes()" [today]="today()"
+        tittle="Reservas Pendientes"></app-card-info-admin>
+    <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCanceladas()" [today]="today()"
+        tittle="Reservas Canceladas"></app-card-info-admin>
+
+
+
+    <!-- <div class="col-6 col-md-3 card-gap">
+        <div class="card boda-card text-center">
+
+            @if (loading()) {
+            <div class="placeholder-glow w-100">
+                <h3 class="placeholder col-6 mb-2"></h3>
+                <span class="placeholder col-7"></span>
+            </div>
+            }
+            @else if (error()) {
+            <p class="text-danger">{{ error() }}</p>
+            }
+            @else if (reservas()!.length > 0) {
+
+            <h6 class="h5">Reservas confirmadas</h6>
+            <span class="service-text">
+                {{ today() | date:'MMMM':'': 'es' | titlecase }}
+            </span>
+
+            <div class="h1">
+                {{ reservas()!.length }}
+               
+                
+            </div>
+
+            <span class="service-text">Total este mes</span>
+
+            }
+            @else {
+            <p>No hay reservas.</p>
+            }
+
+        </div>
+    </div> -->
+
+    <!-- CARD 2 -->
+    <!-- <div class="col-6 col-md-3 card-gap">
+        <div class="card boda-card">
+            <span class="service-text">Tareas completadas</span>
+        </div>
+    </div> -->
+
+    <!-- CARD 3 -->
+    <!-- <div class="col-6 col-md-3 card-gap">
+        <div class="card boda-card">
+            <span class="service-text">Invitados confirmados</span>
+        </div>
+    </div> -->
+
+
+    <!-- CARD 4 -->
+    <!-- <div class="col-6 col-md-3 card-gap">
+        <div class="card boda-card">
+            <span class="service-text">Presupuesto gastado</span>
+        </div>
+    </div> -->
+    <!-- </div> -->
+
+</div>

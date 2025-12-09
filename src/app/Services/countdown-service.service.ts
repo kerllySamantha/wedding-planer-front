@@ -16,6 +16,7 @@ export class CountdownServiceService {
 
   public countdownValue = signal<Timespan | null>(null);
   private intervalId: number | null = null;
+  
   public boda = signal<Boda | null>(null);
   public loading = signal(true);
   public error = signal<string | null>(null);

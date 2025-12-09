@@ -4,12 +4,14 @@ import { Router, RouterLink } from '@angular/router';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { UserResponse } from '../Interfaces/User';
+import { MatCardModule } from '@angular/material/card';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { tap } from 'rxjs';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login-usuarios',
-  imports: [NavbarComponent, RouterLink, ReactiveFormsModule, NgClass],
+  imports: [NavbarComponent, RouterLink, ReactiveFormsModule, NgClass, MatCardModule, MatIcon],
   templateUrl: './login-usuarios.component.html',
   styleUrl: './login-usuarios.component.scss'
 })
@@ -21,6 +23,7 @@ export class LoginUsuariosComponent {
 
   authServicectx = inject(AuthenticationService);
   nombreU = signal<string>('');
+  message = signal<string>('');
 
 
   form = new FormGroup({
@@ -44,11 +47,22 @@ export class LoginUsuariosComponent {
         this.nombreU.set(response.data.name);
         localStorage.setItem('nombre', this.nombreU());
         localStorage.setItem('rol', JSON.stringify(response.data.rol));
-        this.router.navigate(['/']);
+        if (response?.data.rol !== "usuario") {
+          this.message.set("Las credenciales ingresadas no son correctas.");
+        } else {
+          this.message.set("");
+          this.router.navigate(['/']);
+        }
+
+
       },
+
       error: (err) => {
         console.error('Error en login', err);
+        this.message.set("No se pudo iniciar sesión. Verifica tu conexión o inténtalo más tarde.");
+
       }
+
     });
 
 

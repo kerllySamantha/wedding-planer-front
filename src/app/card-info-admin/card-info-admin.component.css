@@ -1,0 +1,83 @@
+@charset "UTF-8";
+/* Separación entre cards */
+card-gap {
+  padding-left: 0.3em !important;
+  padding-right: 0.3em !important;
+}
+
+.boda-card {
+  border-radius: 16px;
+  padding: 0.6em;
+  background: rgba(255, 255, 255, 0.166);
+  -webkit-backdrop-filter: blur(15px);
+          backdrop-filter: blur(15px);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  width: 100%;
+  aspect-ratio: 1/1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.boda-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+}
+
+.card-icon svg {
+  width: 32px;
+  height: 32px;
+  opacity: 0.95;
+  transition: transform 0.3s ease;
+}
+
+.boda-card:hover .card-icon svg {
+  transform: scale(1.1);
+}
+
+/* Texto secundario */
+.service-text {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  text-align: center;
+}
+
+/* Número principal */
+.boda-card .h1 {
+  font-size: 2.2rem;
+  margin: 2px 0 6px 0;
+}
+
+/* Animación de entrada */
+.boda-card {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeInCard 0.45s ease forwards;
+}
+
+@keyframes fadeInCard {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Skeleton */
+.placeholder-glow .placeholder {
+  height: 22px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, rgba(220, 220, 220, 0.45), rgba(255, 255, 255, 0.75), rgba(220, 220, 220, 0.45));
+  background-size: 200% 100%;
+  animation: skeletonShine 1.4s infinite;
+}
+
+@keyframes skeletonShine {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}/*# sourceMappingURL=card-info-admin.component.css.map */

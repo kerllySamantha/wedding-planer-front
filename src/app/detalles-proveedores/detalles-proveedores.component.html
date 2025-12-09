@@ -4,6 +4,45 @@
 <div class="container-personal">
     <div class="row">
         <div class="col-8">
+            <!-- <mat-grid-list cols="12" rowHeight="120px" gutterSize="8px">
+    
+        @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
+        @if (idx === 0) {
+        <mat-grid-tile colspan="5" rowspan="6">
+            <img [src]="foto.url" class="w-100 h-100 object-cover" />
+        </mat-grid-tile>
+        }
+        }
+    
+        @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
+        @if (idx === 1) {
+        <mat-grid-tile colspan="3" rowspan="3">
+            <img [src]="foto.url" class="w-100 h-100 object-cover" />
+        </mat-grid-tile>
+        }
+        }
+    
+        @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
+        @if (idx === 2) {
+        <mat-grid-tile colspan="4" rowspan="3">
+            <img [src]="foto.url" class="w-100 h-100 object-cover" />
+        </mat-grid-tile>
+        }
+        }
+    
+        @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
+        @if (idx === 3) {
+        <mat-grid-tile colspan="7" rowspan="3">
+            <img [src]="foto.url" class="w-100 h-100 object-cover" />
+        </mat-grid-tile>
+        }
+        }
+    
+    </mat-grid-list> -->
+
+
+
+
             <div class="container-imagenes">
                 <div class="row gx-0">
                     <div class="col-5 p-0 pe-2">
@@ -15,7 +54,7 @@
                     </div>
 
                     <div class="col-7 p-0">
-                        <div class="row gx-0 gy-0"> <!-- sin gap en ambas direcciones -->
+                        <div class="row gx-0 gy-0">
                             <div class="col-6 p-0 pe-1">
                                 @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
                                 @if (idx === 1) {

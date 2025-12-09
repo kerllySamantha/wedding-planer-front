@@ -65,7 +65,10 @@ export class NavbarComponent {
   logout(event?: Event): void {
     event?.preventDefault();
     this.autServicectx.logout().subscribe({
-      next: () => console.log('Sesión cerrada correctamente'),
+      next: () => {
+        console.log('Sesión cerrada correctamente'); 
+        this.router.navigate(['']);
+      },
       error: err => console.error('Error al cerrar sesión', err)
     });
   }

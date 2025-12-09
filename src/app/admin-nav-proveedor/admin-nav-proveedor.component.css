@@ -1,0 +1,8 @@
+.nav {
+  /* debajo del topbar */
+  height: 100vh;
+  background-color: #9b6bff;
+  padding: 20px;
+  position: fixed;
+  width: 16.6vw;
+}/*# sourceMappingURL=admin-nav-proveedor.component.css.map */

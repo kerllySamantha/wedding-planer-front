@@ -2,7 +2,7 @@
 
     <app-navbar></app-navbar>
 
-    <div class="d-flex justify-content-center align-items-center vh-95">
+    <div class="d-flex justify-content-center align-items-center vh-95 mb-5">
         <div class="row login-row">
 
             <!-- Columna de la imagen -->
@@ -30,59 +30,97 @@
                             <input id="Mail" name="Mail" type="email" class="form-control" placeholder="Tu email"
                                 required>
                         </div> -->
-                        <div class="input-group mb-3">
-                            <span class="input-group-text border-end-0 rounded-start-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-person" viewBox="0 0 16 16">
-                                    <path
-                                        d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4" />
-                                </svg>
-                            </span>
-                            <input id="Mail" name="email" type="email" formControlName="email" class="form-control"
-                                placeholder="Tu email" required [ngClass]="{
-                               'is-invalid': form.get('email')?.errors && (form.get('email')?.touched || form.get('email')?.dirty),
-                               'is-valid': !form.get('email')?.errors && (form.get('email')?.touched || form.get('email')?.dirty)
-                           } " required>
-                            <div class="invalid-feedback">
-                                @if (form.get('email')?.errors && (form.get('email')?.touched ||
-                                form.get('email')?.dirty)){
-                                @if(form.get('email')?.hasError?.('required')){El campo es obligatorio}
-                                @if(form.get('email')?.hasError?.('email')){Debe contener formato de correo
-                                ejemploejemplo.com}
-                                <!-- @if(form.get('email')?.hasError?.('nombreExistente')){Ya existe una empresa registrada -->
-                                }
+                        <!-- EMAIL (estructura final) -->
+                        <div class="bloque-total mb-3">
+
+                            <!-- BLOQUE 1: solo input + span, aquí va el borde -->
+                            <div class="bloque-input" [ngClass]="{
+                                 'group-invalid': form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty),
+            
+                             'group-valid': form.get('email')?.valid && (form.get('email')?.touched || form.get('email')?.dirty)
+         }">
+
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0 rounded-start-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                                            <path
+                                                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4" />
+                                        </svg>
+                                    </span>
+
+                                    <input type="email" formControlName="email" placeholder="Tu email"
+                                        class="form-control border-start-0 rounded-end-2">
+                                </div>
 
                             </div>
 
+                            <!-- BLOQUE 2: contiene BLOQUE 1 + mensaje -->
+                            <div class="bloque-info">
+                                <div class="text-danger small ms-1">
+                                    @if(form.get('email')?.errors && (form.get('email')?.touched ||
+                                    form.get('email')?.dirty)){
+                                    @if(form.get('email')?.hasError?.('required')){El campo es obligatorio}
+                                    @if(form.get('email')?.hasError?.('email')){Debe contener formato válido}
+                                    }
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text border-end-0 rounded-start-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                    class="bi bi-key" viewBox="0 0 16 16">
-                                    <path
-                                        d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5" />
-                                </svg>
-                            </span>
-                            <input id="password" name="password" type="password" formControlName="password"
-                                class="form-control border-start-0 rounded-end-2" placeholder="Tu contraseña"
-                                autocomplete="off" required [ngClass]="{
-                               'is-invalid': form.get('password')?.errors && (form.get('password')?.touched || form.get('password')?.dirty),
-                               'is-valid': !form.get('password')?.errors && (form.get('password')?.touched || form.get('password')?.dirty)
-                           } " required>
-                            <div class="invalid-feedback">
-                                @if (form.get('password')?.errors && (form.get('password')?.touched ||
-                                form.get('password')?.dirty)){
-                                @if(form.get('password')?.hasError?.('required')){El campo es obligatorio}
-                                @if(form.get('password')?.hasError?.('pattern')){Debe incluir una mayúscula, un simbolo
-                                y un número}
-                                <!-- @if(form.get('email')?.hasError?.('nombreExistente')){Ya existe una empresa registrada -->
-                                }
+
+
+                        <!-- PASSWORD (misma estructura exacta) -->
+                        <div class="bloque-total">
+
+                            <div class="bloque-input" [ngClass]="{
+            'group-invalid': form.get('password')?.invalid && (form.get('password')?.touched || form.get('password')?.dirty),
+            'group-valid': form.get('password')?.valid && (form.get('password')?.touched || form.get('password')?.dirty)
+         }">
+
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0 rounded-start-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
+                                            <path
+                                                d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5" />
+                                        </svg>
+                                    </span>
+
+                                    <input type="password" formControlName="password" placeholder="Tu contraseña"
+                                        class="form-control border-start-0 rounded-end-2" autocomplete="off">
+                                </div>
 
                             </div>
 
-                            <!-- } -->
+                            <div class="bloque-info">
+                                <div class="text-danger small ms-1">
+                                    @if(form.get('password')?.errors && (form.get('password')?.touched ||
+                                    form.get('password')?.dirty)){
+                                    @if(form.get('password')?.hasError?.('required')){El campo es obligatorio}
+                                    @if(form.get('password')?.hasError?.('pattern')){Debe incluir una mayúscula, un
+                                    simbolo y un número}
+                                    }
+                                </div>
+                            </div>
 
                         </div>
+
+
+                        <!-- } -->
+
+                        @if(message()){
+                        <mat-card class="error-message mt-4 mb-4">
+
+
+                            <span class="me-4">{{ message() }}<mat-icon class="me-4">error_outline</mat-icon></span> 
+
+
+                        </mat-card>
+                        }
+
+
+
+
 
                         <div class="mb-3 text-end">
                             <a href="/users-recover-password.php">¿Has olvidado tu contraseña?</a>
@@ -90,6 +128,8 @@
                         <div class="d-grid mb-4">
                             <button type="submit" class="btn submit-button btn-lg">Accede</button>
                         </div>
+
+
 
                         <p class="text-center mb-2">¿Eres profesional?</p>
                         <div class="text-center">

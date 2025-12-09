@@ -11,15 +11,41 @@ import { DashboardProveedoresComponent } from './dashboard-proveedores/dashboard
 import { DetallesProveedoresComponent } from './detalles-proveedores/detalles-proveedores.component';
 import { empresaResolver } from './Resolver/company.resolver';
 import { ContenedorProveedoresComponent } from './contenedor-proveedores/contenedor-proveedores.component';
+import { AdminDashboardProveedoresComponent } from './admin-dashboard-proveedores/admin-dashboard-proveedores.component';
+import { rolredirectGuard } from './Guardias/rolredirect.guard';
+import { rolGuard } from './Guardias/rol.guard';
+import { CalendarProveedoresComponent } from './calendar-proveedores/calendar-proveedores.component';
+
 
 export const routes: Routes = [
-    { path: "", component: DashboardComponent },
     {
-        path: "mi-boda", component: MiBodaComponent, children: [
+        path: "",
+        canActivate: [rolredirectGuard],
+        children: []
+    },
+
+    { path: 'dashboard', component: DashboardComponent },
+    {
+        path: 'proveedor-dashboard',
+        component: AdminDashboardProveedoresComponent,
+        canActivate: [rolGuard],
+        data: { rol: ['empresa'] }
+    },
+    {
+        path: 'proveedor-dashboard/calendar-proveedor', component: CalendarProveedoresComponent,
+        canActivate: [rolGuard],
+        data: { rol: ['empresa'] }
+    },
+
+    {
+        path: 'mi-boda',
+        component: MiBodaComponent,
+        canActivate: [rolGuard],
+        data: { rol: ['usuario'] }, children: [
             // { path: 'tools/presupuesto', component: ContenedorProveedoresComponent },
         ]
     },
-    { path: 'tools/presupuesto', component: ContenedorProveedoresComponent },
+    { path: 'tools/presupuesto', component: ContenedorProveedoresComponent, canActivate: [rolredirectGuard] },
     {
         path: "dashboard-empresas", component: DashboardEmpresasComponent
     },
@@ -28,7 +54,7 @@ export const routes: Routes = [
     { path: "registerEmpresa", component: RegistroEmpresasComponent },
 
     {
-        path: 'dashboard-proveedores', component: DashboardProveedoresComponent
+        path: 'dashboard-proveedores', component: DashboardProveedoresComponent, canActivate: [rolGuard]
     },
 
 

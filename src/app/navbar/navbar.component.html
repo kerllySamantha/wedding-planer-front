@@ -98,7 +98,7 @@
             @else {
             <div class="d-flex flex-column align-items-end gap-2">
                 <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
-                    [routerLink]="['dashboard-empresas']">
+                  (click)="irARuta('/../dashboard-empresas', $event)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="16" fill="currentColor"
                         class="bi bi-briefcase " viewBox="0 0 16 16">
                         <path
@@ -109,7 +109,7 @@
 
                 <div class="d-flex flex-row gap-3" id="registro">
                     <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
-                    <a [routerLink]="['registerUser']" class="nav-link p-0">Regístrate</a>
+                    <a  (click)="irARuta('/../registerUser', $event)" class="nav-link p-0">Regístrate</a>
                 </div>
             </div>
             }
@@ -315,7 +315,7 @@
             @else {
             <div class="d-flex flex-column align-items-end gap-2">
                 <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
-                    [routerLink]="['dashboard-empresas']">
+                     (click)="irARuta('dashboard-empresas', $event)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="16" fill="currentColor"
                         class="bi bi-briefcase " viewBox="0 0 16 16">
                         <path
@@ -326,7 +326,7 @@
 
                 <div class="d-flex flex-row gap-3" id="registro">
                     <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
-                    <a [routerLink]="['registerUser']" class="nav-link p-0">Regístrate</a>
+                    <a   (click)="irARuta('registerUser',  $event)" class="nav-link p-0">Regístrate</a>
                 </div>
             </div>
             }

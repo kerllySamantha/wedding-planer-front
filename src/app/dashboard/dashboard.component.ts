@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, resource, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CardDashboardComponent } from "../card-dashboard/card-dashboard.component";
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
@@ -51,10 +51,25 @@ export class DashboardComponent {
   empresas$ = computed(() => this.empresas());
   bodas$ = computed(() => this.bodas());
 
+  constructor(private router: Router){
+    
+  }
+
+
   ngOnInit(): void {
     this.cargarEmpresas();
     this.cargarResenias();
-    this.cargarBodas()
+    this.cargarBodas(); 
+
+    const rol = JSON.parse(localStorage.getItem('rol') || 'null');
+
+    if (rol === 'empresa') {
+      this.router.navigate(['/proveedor-dashboard']);
+    }
+
+    // if (rol === 'usuario') {
+    //   this.router.navigate(['/mi-boda']);
+    // }
   }
 
   cargarResenias(): void {

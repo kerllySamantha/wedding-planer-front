@@ -20,7 +20,7 @@ import { MatInputModule } from '@angular/material/input';
   standalone: true,
   imports: [AsyncPipe, CommonModule, ReactiveFormsModule, MatSlideToggleModule, FormsModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatSlideToggleModule, MatIconModule,
-    MatButtonModule, MatFabButton
+    MatButtonModule
 
   ],
   templateUrl: './filtro-proveedores.component.html',

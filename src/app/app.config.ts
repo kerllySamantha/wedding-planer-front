@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
@@ -28,16 +28,19 @@ import { ItemsDetallesService } from './Services/ItemDetalles/items-detalles.ser
 import { ItemsDetallesApiService } from './Services/ItemDetalles/items-detalles-api.service';
 import { PresupuestoHttpService } from './Services/Presupuesto/presupuesto-http-service.service';
 import { PresupuestoApiService } from './Services/Presupuesto/presupuesto-api.service';
+import { ReservasApiServiceService } from './Services/Reservas/reservas-api-service.service';
+import { ReservasServiceServiceService } from './Services/Reservas/reservas-service-service.service';
 const url_back = 'http://localhost:8000/api';
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
-   provideHttpClient(withInterceptors([authInterceptor])),
+  provideHttpClient(withInterceptors([authInterceptor])),
   // provideHttpClient(),
   provideAnimations(),
   provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   { provide: UsuariosServiceService, useExisting: UsuariosApiServiceService },
   { provide: EmpresasServiceServiceService, useExisting: EmpresasApiServiceService },
   { provide: ReseniasServiceServiceService, useExisting: ReseniasApiServiceService },
+  { provide: ReservasServiceServiceService, useExisting: ReservasApiServiceService },
   { provide: BodaServiceServiceService, useExisting: BodaApiServiceService },
   { provide: PerfilServiceServiceService, useExisting: PerfilApiServiceService },
   { provide: CategoriasServiceService, useExisting: CategoriasApiServiceService },
@@ -46,7 +49,9 @@ export const appConfig: ApplicationConfig = {
   { provide: RegionsServer, useExisting: RegionesApiServer },
   { provide: TiposHttpService, useExisting: TiposApiService },
   { provide: ItemsDetallesService, useExisting: ItemsDetallesApiService },
-  { provide: PresupuestoHttpService, useExisting: PresupuestoApiService }
+  { provide: PresupuestoHttpService, useExisting: PresupuestoApiService },
+  { provide: LOCALE_ID, useValue: 'es' }
+
 
 
   ]

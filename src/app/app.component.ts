@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
+import { AutenticarHttpClientService } from './Services/Autentication/autenticar-http-client.service';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +10,18 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'wedding-planer-front';
+
+ 
+  constructor(private auth: AutenticarHttpClientService, private router: Router) {
+    this.auth.restoreSession(); 
+    window.addEventListener('pageshow', event => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    });
+  }
+  
+
+
+
 }

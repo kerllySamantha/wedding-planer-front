@@ -13,17 +13,12 @@ export abstract class AuthenticationService {
 
   username = computed(() => this.auth()?.name);
 
+  rol = computed(() => this.auth()?.rol);
+
 
 
   constructor() {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        this.auth.set(JSON.parse(storedUser));
-      } catch {
-        localStorage.removeItem('user');
-      }
-    }
+    this.restoreSession();
   }
 
 
@@ -42,5 +37,18 @@ export abstract class AuthenticationService {
 
 
   abstract logout(): Observable<void>
+  
+
+  restoreSession() {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        this.auth.set(JSON.parse(storedUser));
+      } catch {
+        localStorage.removeItem('user');
+      }
+    
+    }
+  }
 
 }

@@ -9,7 +9,7 @@ import { catchError, map, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class ReservasApiServiceService extends ReservasServiceServiceService {
-
+ 
 
   constructor(protected http: HttpClient, @Inject(API_URL) public apiUrl: string) {
     super();
@@ -66,4 +66,27 @@ export class ReservasApiServiceService extends ReservasServiceServiceService {
     return this.http.delete(`${this.apiUrl}/reservas/${idReserva.toString()}`);
 
   }
+
+  override getRersevaPorConfirmar(idEmresa: string, estado: string): Observable<Reservas | null> {
+    return this.http.get<Reservas>(`${this.apiUrl}/reservas/empresa/${idEmresa}/estado/${estado}`).pipe(
+      map(response => {
+        if (response) {
+          return response;
+        }
+        return null;
+      })
+    );
+  }
+
+  override getReservaEmpresa(idEmresa: string): Observable<Reservas | null> {
+    return this.http.get<Reservas>(`${this.apiUrl}/reservas/empresa/${idEmresa}`).pipe(
+      map(response => {
+        if (response) {
+          return response;
+        }
+        return null;
+      })
+    );
+  }
+
 }

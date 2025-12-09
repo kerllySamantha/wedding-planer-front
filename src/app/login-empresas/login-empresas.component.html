@@ -5,33 +5,33 @@
             <button [routerLink]="['../registerEmpresa']" class="btn accede fw-semibold px-4 py-2">Regístrate gratis</button>
         </div>
 
-        <!-- Formulario de login -->
+       
         <div class="card border-0 shadow-none me-5">
             <div class="card-body py-5 px-md-5 d-flex align-items-center">
-                <form class="vendor-login-form text-white mx-auto" name="frmAcceso"
-                    action="https://www.bodas.net/emp-Login.php" method="post">
+                <form class="vendor-login-form text-white mx-auto" name="form" (submit)="onSubmit($event)"
+                    action=""[formGroup]="form" >
 
                     <h2 class="mb-4 fw-semibold text-center">Acceso empresas</h2>
 
-                    <!-- Usuario -->
+                   
                     <div class="mb-3 position-relative">
                         <div class="input-group bg-light">
                             <span class="input-group-text rounded-start-2 border-end-0">
                                 <i class="bi bi-person"></i>
                             </span>
                             <input type="text" class="form-control text-dark border-start-0 rounded-end-2"
-                                placeholder="Usuario" name="Login" id="Login" required>
+                                placeholder="Usuario" name="email" id="Login" formControlName="email" required>
                         </div>
                     </div>
 
-                    <!-- Contraseña -->
+                 
                     <div class="mb-3 position-relative">
                         <div class="input-group bg-light">
                             <span class="input-group-text border-end-0 rounded-start-2">
                                 <i class="bi bi-key"></i>
                             </span>
                             <input type="password" class="form-control border-start-0 rounded-end-2 text-dark"
-                                placeholder="Contraseña" name="Password" id="Password" required>
+                                placeholder="Contraseña" name="password" id="Password" formControlName="password" required>
                         </div>
                     </div>
 

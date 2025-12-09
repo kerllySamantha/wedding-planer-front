@@ -7,10 +7,11 @@ import { Empresa } from '../Interfaces/Empresa';
 import { Foto } from '../Interfaces/Resenia';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { ProductoEmpresa } from '../Interfaces/Producto';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 @Component({
   selector: 'app-detalles-proveedores',
-  imports: [CommonModule, NavbarComponent],
+  imports: [CommonModule, NavbarComponent, MatGridListModule],
   templateUrl: './detalles-proveedores.component.html',
   standalone: true,
   styleUrl: './detalles-proveedores.component.scss'
