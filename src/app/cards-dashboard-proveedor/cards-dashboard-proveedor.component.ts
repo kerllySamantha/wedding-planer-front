@@ -27,6 +27,7 @@ export class CardsDashboardProveedorComponent {
   reservasPendientes = signal<Reserva[]>([]);
   reservasCanceladas = signal<Reserva[]>([]);
   reservasCompletadas = signal<Reserva[]>([]);
+  reservasBloqueadas = signal<Reserva[]>([]);
 
 
   error = signal<string | null>(null);
@@ -64,6 +65,9 @@ export class CardsDashboardProveedorComponent {
 
           this.reservasCompletadas.set(
             data.filter(r => r.estado === 'confirmada')
+          );
+          this.reservasBloqueadas.set(
+            data.filter(r => r.estado === 'bloqueada')
           );
 
           this.loading.set(false);

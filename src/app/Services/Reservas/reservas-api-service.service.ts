@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { API_URL } from '../../Tokens/serviceTokens';
 import { ReservasServiceServiceService } from './reservas-service-service.service';
-import { CreateReserva, Reserva, Reservas } from '../../Interfaces/Reserva';
+import { CreateReserva, Reserva, ReservaEvent, Reservas } from '../../Interfaces/Reserva';
 import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable({
@@ -88,5 +88,18 @@ export class ReservasApiServiceService extends ReservasServiceServiceService {
       })
     );
   }
+
+  override getCalendarioEmpresa(idEmresa: string): Observable<ReservaEvent[] | null> {
+    return this.http.get<ReservaEvent[]>(`${this.apiUrl}/reservas/calendario/empresa/${idEmresa}`).pipe(
+      map(response => {
+        if (response) {
+          return response;
+        }
+        return null;
+      })
+    );
+  }
+
+
 
 }

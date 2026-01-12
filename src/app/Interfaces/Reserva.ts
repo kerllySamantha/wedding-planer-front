@@ -10,7 +10,7 @@ export interface Reserva {
     notas: string
 }
 
-export type EstadoReserva = 'pendiente' | 'confirmada' | 'cancelada';
+export type EstadoReserva = 'pendiente' | 'confirmada' | 'cancelada' | 'bloqueada';
 
 
 
@@ -53,3 +53,14 @@ export interface CreateReserva {
     fecha: string;       
     estado: 'pendiente' | 'confirmada' | 'cancelada';
 }
+
+export interface ReservaEvent {
+    id: string;
+    title: string;
+    start: string;
+    end: string
+    backgroundColor: string;
+    borderColor: string;
+    estado: string;
+}
+

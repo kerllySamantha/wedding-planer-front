@@ -1,166 +1,158 @@
+@charset "UTF-8";
 /* ================================
    CONTENEDOR GENERAL
 ================================ */
-
 .container-fluid {
-    margin-top: 70px;
+  margin-top: 70px;
 }
 
 /* Columna principal (10/12) */
 .content-area {
-    background: #f6f7fb;
-    min-height: calc(100vh - 70px);
-    padding: 32px;
+  background: #f6f7fb;
+  min-height: calc(100vh - 70px);
+  padding: 32px;
 }
 
 /* Centrado del contenido */
 .calendar-inner {
-    max-width: 960px;
-    margin: 0 auto;
+  max-width: 960px;
+  margin: 0 auto;
 }
 
 /* Card blanca del calendario */
 .calendar-wrapper {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
 }
 
 /* ================================
    FULLCALENDAR - BASE
 ================================ */
-
 .fc {
-    font-family: 'Inter', 'Roboto', sans-serif;
-    overflow-x: hidden;
+  font-family: "Inter", "Roboto", sans-serif;
+  overflow-x: hidden;
 }
 
 /* ================================
    TOOLBAR
 ================================ */
-
 .fc-toolbar {
-    margin-bottom: 24px;
+  margin-bottom: 24px;
 }
 
 .fc-toolbar-title {
-    font-size: 1.35rem;
-    font-weight: 600;
-    color: #2c2c2c;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #2c2c2c;
 }
 
 /* Botones */
 .fc-button {
-    background: #f3f4f6 !important;
-    border: none !important;
-    color: #444 !important;
-    border-radius: 10px !important;
-    padding: 6px 14px !important;
-    font-weight: 500;
-    transition: background 0.2s ease;
+  background: #f3f4f6 !important;
+  border: none !important;
+  color: #444 !important;
+  border-radius: 10px !important;
+  padding: 6px 14px !important;
+  font-weight: 500;
+  transition: background 0.2s ease;
 }
 
 .fc-button:hover {
-    background: #e6e7eb !important;
+  background: #e6e7eb !important;
 }
 
 .fc-button-primary:not(:disabled).fc-button-active {
-    background: #7a42ff !important;
-    color: #ffffff !important;
+  background: #7a42ff !important;
+  color: #ffffff !important;
 }
 
 /* ================================
    CABECERA DÍAS
 ================================ */
-
 .fc-col-header-cell {
-    padding: 10px 0;
+  padding: 10px 0;
 }
 
 .fc-col-header-cell-cushion {
-    font-weight: 500;
-    font-size: 0.85rem;
-    color: #555;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #555;
 }
 
 /* ================================
    DÍAS DEL CALENDARIO
 ================================ */
-
 .fc-daygrid-day {
-    border-radius: 10px;
-    transition: background 0.15s ease;
+  border-radius: 10px;
+  transition: background 0.15s ease;
 }
 
 .fc-daygrid-day:hover {
-    background: rgba(0, 0, 0, 0.02);
-    cursor: pointer;
+  background: rgba(0, 0, 0, 0.02);
+  cursor: pointer;
 }
 
 /* Día actual */
 .fc-day-today {
-    background: rgba(122, 66, 255, 0.08) !important;
+  background: rgba(122, 66, 255, 0.08) !important;
 }
 
 /* ================================
    EVENTOS (RESERVAS)
 ================================ */
-
 .fc-event {
-    border-radius: 8px !important;
-    padding: 4px 6px !important;
-    font-size: 0.75rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: transform 0.15s ease, opacity 0.15s ease;
+  border-radius: 8px !important;
+  padding: 4px 6px !important;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .fc-event:hover {
-    opacity: 0.9;
-    transform: scale(1.01);
+  opacity: 0.9;
+  transform: scale(1.01);
 }
 
 /* Texto del evento */
 .fc-event-title {
-    white-space: normal;
-    line-height: 1.2;
+  white-space: normal;
+  line-height: 1.2;
 }
 
 /* ================================
    VISTA SEMANAL / DIARIA
 ================================ */
-
 .fc-timegrid-slot {
-    height: 52px;
+  height: 52px;
 }
 
 .fc-timegrid-axis {
-    font-size: 0.75rem;
-    color: #777;
+  font-size: 0.75rem;
+  color: #777;
 }
 
 /* ================================
    SCROLLS
 ================================ */
-
 .fc-scroller {
-    scrollbar-width: thin;
+  scrollbar-width: thin;
 }
 
 .fc-scroller::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .fc-scroller::-webkit-scrollbar-thumb {
-    background-color: #d1d5db;
-    border-radius: 10px;
+  background-color: #d1d5db;
+  border-radius: 10px;
 }
 
 /* ================================
    UTILIDADES
 ================================ */
-
 .text-primary {
-    color: #7a42ff !important;
-}
+  color: #7a42ff !important;
+}/*# sourceMappingURL=calendar-proveedores.component.css.map */
