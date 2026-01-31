@@ -1,0 +1,54 @@
+/* modal-calendar-form.component.css */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  animation: fadeIn .2s ease;
+}
+
+.modal-box {
+  background: #fff;
+  width: 650px;
+  max-width: 95%;
+  border-radius: .5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,.3);
+  animation: slideDown .25s ease;
+}
+
+.modal-header,
+.modal-footer {
+  padding: 1rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  justify-content: end;
+  gap: .5rem;
+}
+
+.modal-body {
+  padding: 1rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

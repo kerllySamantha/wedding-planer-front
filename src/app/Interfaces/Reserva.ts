@@ -1,13 +1,16 @@
-import { BodaLigera } from "./Boda";
-import { UsuarioLigero } from "./User";
+import { Boda, BodaLigera } from "./Boda";
+import { Producto, ProductoCalendario } from "./Producto";
+import { UsuarioLigero, Usuarios } from "./User";
 
 export interface Reserva {
     usuario: UsuarioLigero,
-    fecha: string, 
-    estado: EstadoReserva, 
+    fecha_inicio: string,
+    fecha_fin: string,
+    estado: EstadoReserva,
     boda: BodaLigera,
     presupuesto: number,
     notas: string
+    producto: ProductoCalendario
 }
 
 export type EstadoReserva = 'pendiente' | 'confirmada' | 'cancelada' | 'bloqueada';
@@ -48,19 +51,74 @@ export interface MetaLink {
 }
 
 export interface CreateReserva {
-    user_id: number;      
-    empresa_id: number;   
-    fecha: string;       
-    estado: 'pendiente' | 'confirmada' | 'cancelada';
+    user_id: number;
+    empresa_id: number;
+    fecha_inicio: string;
+    fecha_fin: string,
+    origen: string
+    estado: 'pendiente' | 'bloqueada' | 'confirmada' | 'cancelada';
+    notas: string
+    boda_id?: number
 }
 
 export interface ReservaEvent {
-    id: string;
+    id?: string;
     title: string;
     start: string;
-    end: string
-    backgroundColor: string;
-    borderColor: string;
-    estado: string;
+    end: string;
+    backgroundColor?: string;
+    borderColor?: string;
+    extendedProps: ExtendedReservaProps;
+    allDay?: boolean
 }
+
+export interface ExtendedReservaProps {
+    estado: 'bloqueada' | 'confirmada' | 'cancelada' | 'pendiente';
+    origen?: string;
+    notas?: string;
+    cliente?: UsuarioLigero;
+    empresa?: {
+        id: number;
+        nombre_empresa: string;
+    };
+    boda?: Boda;
+    producto: ProductoCalendario
+    fechaFin?: string;
+
+}
+
+export interface CalendarSelection {
+    start: Date;
+    end: Date;
+    allDay: boolean;
+    startStr: string;
+    endStr: string;
+}
+
+export interface SaveReservaPayload {
+    form: ReservaFormValue;
+    id?: string;
+}
+
+
+export interface ReservaFormValue {
+    id?: string;
+    titulo: string;
+    fecha: FechaReserva;
+    estado: EstadoReserva;
+    notas?: string;
+    producto: ProductoCalendario;
+}
+
+
+export interface FechaReserva {
+    inicio: string;
+    fin: string;
+    horaInicio?: string;
+    horaFin?: string;
+    allDay: boolean;
+}
+
+
+
 

@@ -5,6 +5,8 @@ import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
 import { catchError, map, of, pipe } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { isSameMonth, parseISO } from 'date-fns';
+
 import { VisualizadorProveedoresCardsComponent } from "../visualizador-proveedores-cards/visualizador-proveedores-cards.component";
 import { CardInfoAdminComponent } from "../card-info-admin/card-info-admin.component";
 registerLocaleData(localeEs);
@@ -36,9 +38,9 @@ export class CardsDashboardProveedorComponent {
 
   loading = signal(true);
 
-  
 
-  idEmpresa = computed(() => localStorage.getItem('id'));
+
+  idEmpresa = computed(() => localStorage.getItem('idEmpresa')!);
   ngOnInit() {
     this.cargarReservas();
   }
@@ -53,21 +55,28 @@ export class CardsDashboardProveedorComponent {
 
           const data = resp?.data ?? [];
 
-          this.reservas.set(data);
+          const reservasMesActual = data.filter(r =>
+            isSameMonth(
+              parseISO(r.fecha_inicio),
+              new Date()
+            )
+          );
+
+          this.reservas.set(reservasMesActual);
 
           this.reservasPendientes.set(
-            data.filter(r => r.estado === 'pendiente')
+            reservasMesActual.filter(r => r.estado === 'pendiente')
           );
 
           this.reservasCanceladas.set(
-            data.filter(r => r.estado === 'cancelada')
+            reservasMesActual.filter(r => r.estado === 'cancelada')
           );
 
           this.reservasCompletadas.set(
-            data.filter(r => r.estado === 'confirmada')
+            reservasMesActual.filter(r => r.estado === 'confirmada')
           );
           this.reservasBloqueadas.set(
-            data.filter(r => r.estado === 'bloqueada')
+            reservasMesActual.filter(r => r.estado === 'bloqueada')
           );
 
           this.loading.set(false);

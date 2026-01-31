@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CreateEmpresa, Empresa, Empresas } from '../../Interfaces/Empresa';
+import { CreateEmpresa, Empresa, EmpresaResponse, Empresas } from '../../Interfaces/Empresa';
 import { Observable } from 'rxjs';
 import { CreateUser } from '../../Interfaces/User';
 
@@ -15,4 +15,6 @@ export abstract class EmpresasServiceServiceService {
   abstract postEmpresa(usuario: CreateEmpresa): Observable<CreateEmpresa | null>;
   abstract editEmpresa(idUsuario: string | null, usuario: CreateUser): Observable<Object | null>;
   abstract deleteEmpresa(idUsuario: bigint): Observable<Object | null>;
+   abstract getEmpresaByUser(idUsuario: number): Observable<EmpresaResponse | null>;
+
 }

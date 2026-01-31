@@ -24,7 +24,10 @@ export const routes: Routes = [
         children: []
     },
 
-    { path: 'dashboard', component: DashboardComponent },
+    { path: 'dashboard', component: DashboardComponent, 
+    canActivate: [rolGuard],
+    data: { rol: ['usuario'] }
+     },
     {
         path: 'proveedor-dashboard',
         component: AdminDashboardProveedoresComponent,
@@ -58,7 +61,7 @@ export const routes: Routes = [
     },
 
 
-    { path: "perfil-user", component: PerfilUserComponent },
+    { path: "perfil-user", component: PerfilUserComponent, canActivate: [rolGuard] },
     { path: "proveedores/detalles/:id", component: DetallesProveedoresComponent, resolve: { proveedor: empresaResolver } },
 
     // { path: "dashboard-empresas/login-empresas", component: LoginEmpresasComponent}

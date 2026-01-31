@@ -31,10 +31,16 @@ export interface Productos extends Producto{
 }
 
 
-
-
-
-
 export interface ProductosPorCategoria {
     data: ProductoEmpresa[];
 }
+
+export interface ProductoCalendario {
+    id: number;
+    categoria: string;
+    nombre: string;
+    tipo_producto: string;
+    modalidad: 'producto' | 'servicio';
+
+}
+

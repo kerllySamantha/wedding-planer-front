@@ -1,0 +1,151 @@
+<div class="modal fade" id="calendarModal" tabindex="-1" aria-hidden="true" aria-labelledby="modalReservaLabel">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title d-flex align-items-center" id="modalReservaLabel">
+                    <i class="bi bi-calendar-event me-2 text-primary"></i>
+                    {{ mode() === 'edit' ? 'Editar' : mode() === 'create' ? 'Nueva' : 'Detalles de' }} Reserva
+                </h5>
+                <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+
+                @if(mode() === 'create' || mode() === 'edit') {
+                <form [formGroup]="form" novalidate>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-uppercase text-muted">Título de la Reserva</label>
+                        <input type="text" class="form-control form-control-lg" formControlName="titulo"
+                            placeholder="Ej: Bloqueo por mantenimiento"
+                            [class.is-invalid]="form.get('titulo')?.invalid && form.get('titulo')?.touched">
+                        @if(form.get('titulo')?.hasError('required') && form.get('titulo')?.touched){
+                        <div class="invalid-feedback">El título es obligatorio para identificar la reserva.</div>
+                        }
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-uppercase text-muted d-block">¿Qué deseas
+                            bloquear?</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" formControlName="tipo" value="producto" id="tipoProd">
+                            <label class="btn btn-outline-primary" for="tipoProd">📦 Producto</label>
+
+                            <input type="radio" class="btn-check" formControlName="tipo" value="servicio" id="tipoServ">
+                            <label class="btn btn-outline-primary" for="tipoServ">👤 Servicio</label>
+                        </div>
+                    </div>
+
+                    <div formGroupName="fecha" class="p-3 border rounded shadow-sm bg-white mb-4">
+
+                        @if(form.get('tipo')?.value === 'producto') {
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Fecha Entrega</label>
+                                <input type="date" class="form-control" formControlName="inicio">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Fecha Recogida</label>
+                                <input type="date" class="form-control" formControlName="fin">
+                            </div>
+                        </div>
+                        }
+
+                        @if(form.get('tipo')?.value === 'servicio') {
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" formControlName="allDay"
+                                        id="allDaySwitch">
+                                    <label class="form-check-label" for="allDaySwitch">Ocupa todo el día</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small fw-bold">Fecha del Servicio</label>
+                                <input type="date" class="form-control" formControlName="inicio">
+                            </div>
+                            @if(!form.get('fecha.allDay')?.value) {
+                            <div class="col-6">
+                                <label class="small text-muted">Inicio</label>
+                                <input type="time" class="form-control" formControlName="horaInicio">
+                            </div>
+                            <div class="col-6">
+                                <label class="small text-muted">Fin</label>
+                                <input type="time" class="form-control" formControlName="horaFin">
+                            </div>
+                            }
+                        </div>
+                        }
+
+                        @if(form.hasError('fechaFinInvalida')){
+                        <div class="text-danger small mt-2">
+                            <i class="bi bi-exclamation-triangle-fill"></i> La fecha/hora de fin no puede ser anterior
+                            al inicio.
+                        </div>
+                        }
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-uppercase text-muted">Estado de la Reserva</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            @for(est of ['pendiente', 'confirmada', 'cancelada', 'bloqueada']; track est) {
+                            <input type="radio" class="btn-check" [formControlName]="'estado'" [value]="est"
+                                [id]="'st-'+est">
+                            <label class="btn btn-sm btn-outline-secondary flex-fill" [for]="'st-'+est">
+                                {{ est | titlecase }}
+                            </label>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label fw-bold small text-uppercase text-muted">Notas Internas</label>
+                        <textarea class="form-control" rows="2" formControlName="notas"
+                            placeholder="Información adicional..."></textarea>
+                    </div>
+                </form>
+                }
+
+                @if(mode() === 'view') {
+                <div class="view-details">
+                    <h3 class="mb-1">{{ event()?.title }}</h3>
+                    <div class="mb-3">
+                        <span class="badge rounded-pill px-3 py-2" [style.background]="event()?.backgroundColor">
+                            {{ event()?.extendedProps?.['estado'] | titlecase }}
+                        </span>
+                    </div>
+
+                    <div class="card bg-light border-0">
+                        <div class="card-body">
+                            <p class="mb-2"><strong>📅 Fecha:</strong> {{ event()?.start | date:'longDate' }}</p>
+                            @if(!event()?.allDay){
+                            <p class="mb-2"><strong>🕒 Horario:</strong> {{ event()?.start | date:'HH:mm' }} - {{
+                                event()?.end | date:'HH:mm' }}</p>
+                            }
+                            <p class="mb-2"><strong>🏢 Empresa:</strong> {{
+                                event()?.extendedProps?.['empresa']?.nombre_empresa || 'N/A' }}</p>
+                            @if(event()?.extendedProps?.['notas']){
+                            <hr>
+                            <p class="mb-0 text-muted italic">"{{ event()?.extendedProps?.['notas'] }}"</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <div class="modal-footer bg-light border-top-0">
+                @if(mode() === 'create' || mode() === 'edit') {
+                <button class="btn btn-light px-4" (click)="cerrar.emit()">Cancelar</button>
+                <button class="btn btn-primary px-4 shadow-sm" [disabled]="form.invalid" (click)="guardar()">
+                    {{ mode() === 'edit' ? 'Actualizar Cambios' : 'Crear Reserva' }}
+                </button>
+                }
+                @if(mode() === 'view') {
+                <button class="btn btn-outline-danger me-auto" (click)="cerrar.emit()">Eliminar</button>
+                <button class="btn btn-primary px-4" (click)="edit()">Modificar</button>
+                }
+            </div>
+
+        </div>
+    </div>

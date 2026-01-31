@@ -9,7 +9,8 @@ import { catchError, map, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class ReservasApiServiceService extends ReservasServiceServiceService {
- 
+
+
 
   constructor(protected http: HttpClient, @Inject(API_URL) public apiUrl: string) {
     super();
@@ -45,8 +46,12 @@ export class ReservasApiServiceService extends ReservasServiceServiceService {
     const postObject = {
       "empresa_id": `${reserva.empresa_id}`,
       "user_id": `${reserva.user_id}`,
-      "fecha": `${reserva.fecha}`,
+      "fecha_inicio": `${reserva.fecha_inicio}`,
+      "fecha_fin": `${reserva.fecha_fin}`,
+      "origen": `${reserva.origen}`,
+      "notas": `${reserva.notas}`,
       "estado": `${reserva.estado}`,
+      "boda_id": `${reserva.boda_id}`
 
     }
     return this.http.post<CreateReserva>(`${this.apiUrl}/reservas`, postObject);
@@ -55,8 +60,12 @@ export class ReservasApiServiceService extends ReservasServiceServiceService {
     const putObject = {
       "empresa_id": `${reserva.empresa_id}`,
       "user_id": `${reserva.user_id}`,
-      "fecha": `${reserva.fecha}`,
+      "fecha_inicio": `${reserva.fecha_inicio}`,
+      "fecha_fin": `${reserva.fecha_fin}`,
+      "origen": `${reserva.origen}`,
+      "notas": `${reserva.notas}`,
       "estado": `${reserva.estado}`,
+      "boda_id": `${reserva.boda_id}`
     }
     console.log(putObject)
     return this.http.put(`${this.apiUrl}/reservas/${idReserva}`, putObject)
@@ -89,8 +98,8 @@ export class ReservasApiServiceService extends ReservasServiceServiceService {
     );
   }
 
-  override getCalendarioEmpresa(idEmresa: string): Observable<ReservaEvent[] | null> {
-    return this.http.get<ReservaEvent[]>(`${this.apiUrl}/reservas/calendario/empresa/${idEmresa}`).pipe(
+  override getCalendarioEmpresa(idEmpresa: string): Observable<ReservaEvent[] | null> {
+    return this.http.get<ReservaEvent[]>(`${this.apiUrl}/reservas/calendario/empresa/${idEmpresa}`).pipe(
       map(response => {
         if (response) {
           return response;

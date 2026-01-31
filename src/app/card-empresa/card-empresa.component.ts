@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+  import { Component, computed, input } from '@angular/core';
 import { Empresa } from '../Interfaces/Empresa';
 import { RouterLink } from "@angular/router";
 

@@ -7,7 +7,7 @@ export const rolGuard: CanActivateFn = (route, state) => {
   const role = localStorage.getItem('rol');
   const allowed: string[] = route.data?.['rol'] ?? [];
 
-  console.log('PROTECT-GUARD role:', role, 'allowed:', allowed);
+  console.log('rol:', role, 'allowed:', allowed);
 
   if (state.url === '/' || state.url === '') {
     if (role === 'empresa') return router.parseUrl('/proveedor-dashboard');

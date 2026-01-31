@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { EmpresasServiceServiceService } from './empresas-service-service.service';
 import { HttpClient } from '@angular/common/http';
 import { API_URL } from '../../Tokens/serviceTokens';
-import { CreateEmpresa, Empresa, Empresas } from '../../Interfaces/Empresa';
+import { CreateEmpresa, Empresa, EmpresaResponse, Empresas } from '../../Interfaces/Empresa';
 import { catchError, map, Observable, throwError } from 'rxjs';
 
 @Injectable({
@@ -25,10 +25,10 @@ export class EmpresasApiServiceService  extends EmpresasServiceServiceService{
     );
   }
 
-  override getEmpresa(idPerfil: bigint): Observable<Empresa | null> {
-    console.log("idUsuario: " + idPerfil);
+  override getEmpresa(idEmpresa: bigint): Observable<Empresa | null> {
+    console.log("idEmpresa: " + idEmpresa);
 
-    return this.http.get<Empresa>(`${this.apiUrl}/empresas/${idPerfil.toString()}`).pipe(
+    return this.http.get<Empresa>(`${this.apiUrl}/empresas/${idEmpresa.toString()}`).pipe(
       map(response => {
         if (response) {
           return response;
@@ -77,5 +77,23 @@ export class EmpresasApiServiceService  extends EmpresasServiceServiceService{
 
   override deleteEmpresa(idEmpresa: bigint): Observable<Object | null> {
     return this.http.delete(`${this.apiUrl}/empresas/${idEmpresa.toString()}`);
+  }
+
+
+    override getEmpresaByUser(idUser: number): Observable<EmpresaResponse | null> {
+    console.log("idUsuario: " + idUser);
+
+    return this.http.get<EmpresaResponse>(`${this.apiUrl}/empresas/usuario/${idUser.toString()}`).pipe(
+      map(response => {
+        if (response) {
+          return response;
+        }
+        return null;
+      }),
+      catchError((error: Error) => {
+        console.error("Error en geEmpresa:", error);
+        return throwError(() => error);
+      })
+    );
   }
 }

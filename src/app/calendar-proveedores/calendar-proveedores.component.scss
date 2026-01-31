@@ -11,6 +11,8 @@
     background: #f6f7fb;
     min-height: calc(100vh - 70px);
     padding: 32px;
+    height: 80vh;;
+    // overflow-y: auto;
 }
 
 /* Centrado del contenido */
@@ -24,6 +26,7 @@
     background: #ffffff;
     border-radius: 16px;
     padding: 24px;
+    min-height: 100%;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
 }
 
@@ -163,4 +166,26 @@
 
 .text-primary {
     color: #7a42ff !important;
+}
+
+.fc-event {
+    color: white !important;
+}
+
+.fc-daygrid-event {
+    color: white;
+}
+
+
+.fc-daygrid-event {
+    background-color: var(--fc-event-bg-color, #198754) !important;
+}
+
+.fc-daygrid-event .fc-event-title {
+    color: white !important;
+}
+
+.fc-event.fc-event-all-day {
+    background-color: red !important;
+    border-color: red !important;
 }

@@ -42,11 +42,11 @@ export class LoginUsuariosComponent {
       next: (response: UserResponse) => {
 
         this.authServicectx['auth'].set(response.data);
-        localStorage.setItem('id', JSON.stringify(response.data.id));
+        localStorage.setItem('id', response.data.id.toString());
         localStorage.setItem('user', JSON.stringify(response.data));
         this.nombreU.set(response.data.name);
         localStorage.setItem('nombre', this.nombreU());
-        localStorage.setItem('rol', JSON.stringify(response.data.rol));
+        localStorage.setItem('rol', response.data.rol);
         if (response?.data.rol !== "usuario") {
           this.message.set("Las credenciales ingresadas no son correctas.");
         } else {

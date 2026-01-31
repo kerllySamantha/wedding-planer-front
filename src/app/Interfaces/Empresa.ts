@@ -28,6 +28,10 @@ export interface Empresas {
   data: Empresa[]
 }
 
+export interface EmpresaResponse{
+  data: Empresa
+}
+
 
 
 export interface Empresa extends EmpresaBase {
