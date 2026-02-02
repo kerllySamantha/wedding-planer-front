@@ -82,7 +82,8 @@ export interface ExtendedReservaProps {
         nombre_empresa: string;
     };
     boda?: Boda;
-    producto: ProductoCalendario
+    producto?:  ProductoCalendario
+    modalidad?: 'producto' | 'servicio' | 'dia';
     fechaFin?: string;
 
 }
@@ -107,9 +108,8 @@ export interface ReservaFormValue {
     fecha: FechaReserva;
     estado: EstadoReserva;
     notas?: string;
-    producto: ProductoCalendario;
+    modalidad?: 'producto' | 'servicio';
 }
-
 
 export interface FechaReserva {
     inicio: string;

@@ -3,6 +3,8 @@ import { CalendarSelection, CreateReserva, ReservaEvent, ReservaFormValue, SaveR
 import * as bootstrap from 'bootstrap';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ProductoCalendario } from '../Interfaces/Producto';
+import { single } from 'rxjs';
 
 @Component({
   selector: 'app-modal-calendar-form',
@@ -21,7 +23,7 @@ export class ModalCalendarFormComponent {
   mode = input<'create' | 'view' | 'edit'>();
   editar = output<void>();
 
-  
+
 
 
   form = new FormGroup({
@@ -31,14 +33,24 @@ export class ModalCalendarFormComponent {
       fin: new FormControl<string | null>(null),
       horaInicio: new FormControl<string | null>(null),
       horaFin: new FormControl<string | null>(null),
-
-      allDay: new FormControl(false)
+      allDay: new FormControl(false),
+      singleDay: new FormControl(false)
     }),
-    tipo: new FormControl<'servicio' | 'producto'>('producto', Validators.required),
-    producto: new FormControl<any>(null, Validators.required),
+    modalidad: new FormControl<'producto' | 'servicio' | 'dia' | null>(null, Validators.required),
     estado: new FormControl<'pendiente' | 'confirmada' | 'cancelada' | 'bloqueada'>('pendiente', Validators.required),
     notas: new FormControl('')
-  }, { validators: [this.fechasValidator(), this.productoValidator()] });
+  }, {
+    validators: [
+      this.fechasValidator(),
+      this.estadoNotasValidator(),
+
+    ]
+  });
+
+
+  get fechaGroup() {
+    return this.form.get('fecha') as FormGroup;
+  }
 
 
 
@@ -48,86 +60,122 @@ export class ModalCalendarFormComponent {
       const eventoExistente = this.event();
 
       if (eventoExistente) {
-
-        this.form.patchValue({
+        this.form.reset({
           titulo: eventoExistente.title,
+          modalidad: eventoExistente.extendedProps.modalidad,
           fecha: {
-            inicio: eventoExistente.start?.split('T')[0],
-            fin: eventoExistente.end?.split('T')[0],
-            horaInicio: eventoExistente.start?.split('T')[1]?.substring(0, 5) || '00:00',
-            horaFin: eventoExistente.end?.split('T')[1]?.substring(0, 5) || '00:00',
-            allDay: eventoExistente.allDay
+            inicio: eventoExistente.start.split('T')[0],
+            fin: eventoExistente.end?.split('T')[0] ?? eventoExistente.start.split('T')[0],
+            horaInicio: eventoExistente.start.includes('T') ? eventoExistente.start.split('T')[1].substring(0, 5) : '00:00',
+            horaFin: eventoExistente.end?.includes('T') ? eventoExistente.end.split('T')[1].substring(0, 5) : '00:00',
+            allDay: eventoExistente.allDay,
+            singleDay: false
           },
           estado: eventoExistente.extendedProps.estado,
+          notas: eventoExistente.extendedProps.notas
         });
-
       } else if (seleccion) {
         const [fIni, hIni] = seleccion.startStr.split('T');
         const [fFin, hFin] = seleccion.endStr.split('T');
-
-        this.form.patchValue({
+        this.form.reset({
           titulo: '',
           fecha: {
             inicio: fIni,
             fin: fFin || fIni,
-            horaInicio: hIni ? hIni.substring(0, 5) : '00:00',
-            horaFin: hFin ? hFin.substring(0, 5) : '00:00',
-            allDay: seleccion.allDay
-          }
+            horaInicio: hIni?.substring(0, 5) ?? '00:00',
+            horaFin: hFin?.substring(0, 5) ?? '00:00',
+            allDay: seleccion.allDay,
+            singleDay: fIni === fFin || !fFin
+          },
+          modalidad: null,
+          estado: 'pendiente',
+          notas: ''
         });
       }
-
-      this.form.markAsDirty();
-      console.log(this.form.errors);
     });
 
 
   }
+
+
 
 
   ngOnInit() {
-    this.form.get('tipo')?.valueChanges.subscribe(tipo => {
-      if (tipo === 'producto') {
-        this.form.get('fecha')?.get('allDay')?.setValue(true);
-        this.form.get('fecha')?.get('horaInicio')?.setValue('10:00');
-        this.form.get('fecha')?.get('horaFin')?.setValue('17:00');
+
+    this.form.valueChanges.subscribe(() => {
+      
+      if (this.form.errors){
+        console.log('Errores de validación:', this.form.errors);
       }
     });
+
+    this.form.get('modalidad')?.valueChanges.subscribe(modalidad => {
+      const fecha = this.form.get('fecha') as FormGroup;
+      if (modalidad === 'producto' || modalidad === 'dia') {
+        fecha.patchValue({
+          allDay: true,
+          horaInicio: null,
+          horaFin: null,
+          fin: fecha.get('inicio')?.value
+        }, { emitEvent: false });
+      } else if (modalidad === 'servicio') {
+        fecha.patchValue({
+          allDay: false,
+          fin: fecha.get('inicio')?.value
+        }, { emitEvent: false });
+      }
+      this.form.updateValueAndValidity();
+    });
+
+    this.form.get('fecha')?.get('singleDay')?.valueChanges.subscribe(single => {
+      const fecha = this.form.get('fecha') as FormGroup;
+      if (single) {
+        fecha.patchValue({ fin: fecha.get('inicio')?.value }, { emitEvent: false });
+      }
+      this.form.updateValueAndValidity();
+    });
   }
+
+
+
 
 
 
 
 
   fechasValidator(): ValidatorFn {
-    return (g: AbstractControl) => {
-      const tipo = g.get('tipo')?.value;
-      const estado = g.get('estado')?.value;
-      const fecha = g.get('fecha') as FormGroup;
-
+    return (control: AbstractControl) => {
+      const modalidad = control.get('modalidad')?.value;
+      const fecha = control.get('fecha') as FormGroup;
       if (!fecha) return null;
 
-      if (estado === 'bloqueada') return null;
-
       const inicio = fecha.get('inicio')?.value;
-      const fin = fecha.get('fin')?.value;
-      const hIni = fecha.get('horaInicio')?.value;
+      const fin = fecha.get('fin')?.value ?? inicio;
+      const hInicio = fecha.get('horaInicio')?.value;
       const hFin = fecha.get('horaFin')?.value;
+      const singleDay = fecha.get('singleDay')?.value; // <-- nuevo
 
-      if (tipo === 'servicio') {
-        if (!hIni || !hFin) return { horasRequeridas: true };
-        return hFin <= hIni ? { horaFinInvalida: true } : null;
+      if (!inicio) return null;
+
+      // Producto / Día (solo validar fin si NO es singleDay)
+      if ((modalidad === 'producto' || modalidad === 'dia') && !singleDay) {
+        if (new Date(fin) < new Date(inicio)) {
+          return { fechaFinInvalida: true };
+        }
       }
 
-      if (!inicio || !fin) return null;
+      // Servicio: validar horas
+      if (modalidad === 'servicio' && hInicio && hFin) {
+        const start = new Date(`${inicio}T${hInicio}`);
+        const end = new Date(`${inicio}T${hFin}`);
+        if (isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
+          return { horaInvalida: true };
+        }
+      }
 
-      const start = new Date(`${inicio}T${hIni || '00:00'}`);
-      const end = new Date(`${fin}T${hFin || '00:00'}`);
-
-      return end <= start ? { fechaFinInvalida: true } : null;
+      return null;
     };
   }
-
 
 
 
@@ -145,23 +193,9 @@ export class ModalCalendarFormComponent {
   }
 
 
-  productoValidator(): ValidatorFn {
-    return (g: AbstractControl) => {
-      const tipo = g.get('tipo')?.value;
-      const estado = g.get('estado')?.value;
-      const producto = g.get('producto')?.value;
 
-      if (estado === 'bloqueada') return null;
-
-      if (tipo === 'servicio') return null;
-
-      return producto ? null : { productoRequerido: true };
-    };
-  }
-
-
-
-  guardar() {
+  guardar(event: Event) {
+    event.preventDefault();
 
 
     if (this.form.invalid) {
@@ -169,28 +203,11 @@ export class ModalCalendarFormComponent {
       return;
     }
 
-    // const f = this.form.getRawValue();
-    // const datosEvento: ReservaFormValue = {
-    //   titulo: f.titulo!,
-    //   fechaInicio: f.fechaInicio!,
-    //   fechaFin: f.fechaFin!,
-    //   horaInicio: f.horaInicio!,
-    //   horaFin: f.horaFin!,
-    //   allDay: !!f.allDay!,
-    //   estado: f.estado!,
-    //   notas: f.notas!
-    // };
-
-    // this.guardarReserva.emit(datosEvento as any);
     this.guardarReserva.emit({
       form: this.form.getRawValue() as ReservaFormValue,
       id: this.mode() === 'edit' ? this.event()?.id : undefined
     });
 
-    console.log('Datos del formulario a guardar:', this.form.getRawValue());
-
-
-    this.cerrarModal();
   }
 
   // private cerrarModal() {
@@ -212,6 +229,12 @@ export class ModalCalendarFormComponent {
 
     // Emitir al padre
     this.cerrar.emit();
+
+    this.form.reset({
+      estado: 'pendiente',
+      fecha: { inicio: '', fin: '', allDay: false, singleDay: false }
+    });
+
   }
 
 
@@ -240,16 +263,14 @@ export class ModalCalendarFormComponent {
         horaFin: endTime,
         allDay: ev.allDay,
       },
-      tipo: ev.extendedProps?.['producto']?.modalidad || 'producto', // Mapeamos modalidad
-      producto: ev.extendedProps?.['producto'] || null,
+      modalidad: ev.extendedProps?.['modalidad'],
       estado: ev.extendedProps?.['estado'],
       notas: ev.extendedProps?.['notas'] || ''
     });
 
-    // 4. Cambiar el modo y notificar
-    // Nota: Si 'mode' es un Signal de entrada (input), no puedes usar .set(). 
-    // Deberías manejar el estado internamente o mediante el output 'editar'.
+
     this.editar.emit();
+
   }
 
 }

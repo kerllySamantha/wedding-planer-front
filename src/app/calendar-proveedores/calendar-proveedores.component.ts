@@ -5,7 +5,7 @@ import * as bootstrap from 'bootstrap';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { DateClickArg, EventResizeDoneArg } from '@fullcalendar/interaction';
-import { CalendarSelection, CreateReserva, ReservaEvent, ReservaFormValue, SaveReservaPayload } from '../Interfaces/Reserva';
+import { CalendarSelection, CreateReserva, ExtendedReservaProps, ReservaEvent, ReservaFormValue, SaveReservaPayload } from '../Interfaces/Reserva';
 import { TopBarAdminComponent } from "../top-bar-admin/top-bar-admin.component";
 import { AdminNavProveedorComponent } from "../admin-nav-proveedor/admin-nav-proveedor.component";
 import { ReservasServiceServiceService } from '../Services/Reservas/reservas-service-service.service';
@@ -13,6 +13,7 @@ import { DateSelectArg, EventApi, EventClickArg, EventContentArg, EventDropArg, 
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ModalCalendarFormComponent } from "../modal-calendar-form/modal-calendar-form.component";
 import { ProductoCalendario } from '../Interfaces/Producto';
+
 import { tap } from 'rxjs';
 
 @Component({
@@ -31,51 +32,16 @@ import { tap } from 'rxjs';
 })
 export class CalendarProveedoresComponent implements OnInit {
 
-
   reservasctx = inject(ReservasServiceServiceService);
   events = signal<ReservaEvent[]>([]);
   idEmpresa = computed(() => localStorage.getItem('idEmpresa')!);
   loading = signal<boolean>(false);
   modalData!: CalendarSelection;
-  modalMode = signal<'create' | 'view' | 'edit' | 'create'>('create');
+  modalMode = signal<'create' | 'view' | 'edit'>('create');
   selectedEvent = signal<ReservaEvent | null>(null);
-  // isModalOpen = signal(false);
-
-
-  mapEvent(event: EventApi): ReservaEvent {
-    return {
-      id: event.id,
-      title: event.title,
-      start: event.start?.toISOString() ?? '',
-      end: event.end?.toISOString() ?? '',
-      allDay: event.allDay,
-      backgroundColor: event.backgroundColor,
-      borderColor: event.borderColor,
-      extendedProps: {
-        estado: event.extendedProps['estado'],
-        notas: event.extendedProps['notas'],
-        empresa: event.extendedProps['empresa'],
-        origen: event.extendedProps['origen'],
-        producto: event.extendedProps['producto'],
-        cliente: event.extendedProps['cliente']
-      }
-      ,
-
-    };
-  }
-
-
-  constructor() {
-    effect(() => {
-      console.log(this.idEmpresa())
-
-    });
-  }
-
 
   ngOnInit(): void {
     this.getReservas();
-
   }
 
   calendarOptions = computed(() => ({
@@ -85,12 +51,16 @@ export class CalendarProveedoresComponent implements OnInit {
     selectable: true,
     events: this.events(),
     select: this.crearReservaDesdeSeleccion.bind(this),
-    dateClick: this.crearReservaRapida.bind(this),
+    // dateClick: this.crearReservaRapida.bind(this),
     eventClick: this.abrirDetalleReserva.bind(this),
     eventDisplay: 'block',
     showNonCurrentDates: false,
     fixedWeekCount: false,
     displayEventTime: false,
+    selectAllow: (selectInfo: CalendarSelection) => {
+      return !this.isDateBlocked(selectInfo.start, selectInfo.end);
+    },
+
     eventClassNames: (arg: EventContentArg) => {
       return [`estado-${arg.event.extendedProps['estado']}`];
     },
@@ -107,142 +77,52 @@ export class CalendarProveedoresComponent implements OnInit {
 
 
   crearReservaDesdeSeleccion(info: DateSelectArg) {
-    this.modalData = {
-      start: info.start,
-      end: info.end,
-      allDay: info.allDay,
-      startStr: info.startStr,
-      endStr: info.endStr
-    };
-
+    this.modalData = info;
     this.modalMode.set('create');
-    this.selectedEvent.set(null); // Asegurar que no hay evento previo
+    this.selectedEvent.set(null);
     this.mostrarModalBootstrap();
-    // this.isModalOpen.set(true);
-    // console.log(this.isModalOpen());
-  }
-
-
-
-
-
-
-
-
-
-  crearReservaRapida(info: DateClickArg) {
-    console.log(info.dateStr);
   }
 
   abrirDetalleReserva(info: EventClickArg) {
-    this.selectedEvent.set(this.mapEvent(info.event));
+    // Mapeo simple de lo que viene de FullCalendar a nuestra interfaz
+    const ev = info.event;
+    this.selectedEvent.set({
+      id: ev.id,
+      title: ev.title,
+      start: ev.startStr,
+      end: ev.endStr,
+      allDay: ev.allDay,
+      extendedProps: { ...ev.extendedProps } as ExtendedReservaProps
+    });
     this.modalMode.set('view');
-    // this.isModalOpen.set(true);
-    console.log(info.event._def);
+    console.log(ev._def )
     this.mostrarModalBootstrap();
   }
 
+  guardarReserva(payload: { form: ReservaFormValue; id?: string }) {
+    const { form, id } = payload;
+    const nuevoEvento = this.formToReservaEvent(form, id);
 
-  eventDrop(info: EventDropArg) {
-    console.log(info.event.start);
+    this.events.update(current => {
+      if (id) {
+        return current.map(e => e.id === id ? nuevoEvento : e);
+      }
+      return [...current, nuevoEvento];
+    });
+
+    this.cerrarModal();
+    // Aquí llamarías a tu servicio: this.reservasctx.save(nuevoEvento).subscribe(...)
   }
 
-  eventResize(info: EventResizeDoneArg) {
-    console.log(info.event.end);
-  }
-
-
-  getReservas() {
-    this.reservasctx.getCalendarioEmpresa(this.idEmpresa())
-      .pipe(
-        tap(data => {
-          console.log(this.idEmpresa(), "id empresa calendario");
-        })
-      )
-      .subscribe({
-
-        next: (data) => {
-          // this.events.set(data!);
-          console.log('Sincronización de eventos:', data);
-          if (data) {
-            this.loading.set(true);
-          }
-          const eventosMapeados = data?.map(r => ({
-            id: r.id,
-            title: r.title,
-            start: r.start,
-            end: r.end,
-            allDay: r.allDay,
-            backgroundColor: r.backgroundColor,
-            borderColor: r.borderColor,
-            extendedProps: r.extendedProps
-          }));
-
-
-          this.events.set(eventosMapeados || []);
-
-        },
-        error: (err) => {
-          console.log(err, "error al cargar reservas calendario");
-        }
-
-      })
-
-  }
-
-
-  private mostrarModalBootstrap() {
-    const modalElem = document.getElementById('calendarModal');
-    if (modalElem) {
-      const modal = bootstrap.Modal.getOrCreateInstance(modalElem);
-      modal.show();
-    }
-  }
-
-  // cerrarModal() {
-  //   this.isModalOpen.set(false);
-  //   this.selectedEvent.set(null);
-  //   this.modalMode.set('create');
-  // }
-
-  cerrarModal() {
-    const modalElem = document.getElementById('calendarModal');
-    if (modalElem) {
-      const modal = bootstrap.Modal.getInstance(modalElem);
-      modal?.hide();
-    }
-    this.selectedEvent.set(null);
-  }
-
-
-
-
-
-
-  formToReservaEvent(form: ReservaFormValue, id?: string): ReservaEvent {
-
-    const colores: Record<string, string> = {
-      'pendiente': '#E6AF2E',
-      'confirmada': '#198754',
-      'bloqueada': '#6c757d',
-      'cancelada': '#dc3545'
-    };
-
-    const colorAsignado = colores[form.estado] || '#E6AF2E';
-    const esProducto = form.producto?.modalidad === 'producto';
-
-    const allDay = esProducto ? true : form.fecha.allDay;
+  private formToReservaEvent(form: ReservaFormValue, id?: string): ReservaEvent {
+    const colores = { pendiente: '#E6AF2E', confirmada: '#198754', bloqueada: '#6c757d', cancelada: '#dc3545' };
 
     let start = form.fecha.inicio;
-    let end = form.fecha.fin;
+    let end = form.fecha.fin || form.fecha.inicio;
 
-    if (allDay) {
-      const dateEnd = new Date(form.fecha.fin + 'T12:00:00');
-      dateEnd.setDate(dateEnd.getDate() + 1); // El +1 necesario para FullCalendar
-      end = dateEnd.toISOString().split('T')[0];
-    } else {
-      start = `${form.fecha.inicio}T${form.fecha.horaInicio || '00:00'}`;
-      end = `${form.fecha.fin}T${form.fecha.horaFin || '00:00'}`;
+    if (form.modalidad === 'servicio' && !form.fecha.allDay) {
+      start = `${form.fecha.inicio}T${form.fecha.horaInicio}`;
+      end = `${form.fecha.inicio}T${form.fecha.horaFin}`;
     }
 
     return {
@@ -251,46 +131,45 @@ export class CalendarProveedoresComponent implements OnInit {
       start,
       end,
       allDay: form.fecha.allDay,
-      backgroundColor: colorAsignado,
-      borderColor: colorAsignado,
+      backgroundColor: colores[form.estado],
       extendedProps: {
         estado: form.estado,
         notas: form.notas,
-        fechaFin: form.fecha.fin,
-        producto: form.producto
-        // puedes añadir origen, cliente, empresa, boda, producto si quieres
+        modalidad: form.modalidad
       }
     };
   }
 
+  isDateBlocked(start: Date, end?: Date): boolean {
+    return this.events().some(ev => {
+      const evStart = new Date(ev.start);
+      const evEnd = ev.end ? new Date(ev.end) : evStart;
 
-  guardarReserva(payload: { form: ReservaFormValue; id?: string }) {
-    const { form, id } = payload;
-
-    console.log("Intentando editar ID:", id);
-
-    this.events.update(events => {
-
-      const index = events.findIndex(ev => String(ev.id) === String(id));
-
-      if (id && index !== -1) {
-        const nuevosEventos = [...events];
-        nuevosEventos[index] = this.formToReservaEvent(form, id);
-        return nuevosEventos;
-
-      } else {
-        return [...events, this.formToReservaEvent(form)];
-      }
+      return (
+        start < evEnd &&
+        (end ?? start) > evStart
+      );
     });
-
-    this.cerrarModal();
   }
 
 
+  private mostrarModalBootstrap() {
+    const modalElem = document.getElementById('calendarModal');
+    if (modalElem) bootstrap.Modal.getOrCreateInstance(modalElem).show();
+  }
 
+  cerrarModal() {
+    const modalElem = document.getElementById('calendarModal');
+    if (modalElem) bootstrap.Modal.getInstance(modalElem)?.hide();
+    this.selectedEvent.set(null);
+  }
 
-
-
-
+  getReservas() {
+    this.loading.set(false);
+    this.reservasctx.getCalendarioEmpresa(this.idEmpresa()).subscribe(data => {
+      this.events.set(data || []);
+      this.loading.set(true);
+    });
+  }
 
 }
