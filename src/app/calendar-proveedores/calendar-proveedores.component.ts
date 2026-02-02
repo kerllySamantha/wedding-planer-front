@@ -42,6 +42,18 @@ export class CalendarProveedoresComponent implements OnInit {
 
   ngOnInit(): void {
     this.getReservas();
+
+  }
+
+
+  constructor() {
+    effect(() => {
+      console.log('MODAL STATE', {
+        mode: this.modalMode(),
+        event: this.selectedEvent()
+      });
+    });
+
   }
 
   calendarOptions = computed(() => ({
@@ -84,8 +96,8 @@ export class CalendarProveedoresComponent implements OnInit {
   }
 
   abrirDetalleReserva(info: EventClickArg) {
-    // Mapeo simple de lo que viene de FullCalendar a nuestra interfaz
     const ev = info.event;
+
     this.selectedEvent.set({
       id: ev.id,
       title: ev.title,
@@ -94,13 +106,20 @@ export class CalendarProveedoresComponent implements OnInit {
       allDay: ev.allDay,
       extendedProps: { ...ev.extendedProps } as ExtendedReservaProps
     });
-    this.modalMode.set('view');
-    console.log(ev._def )
+
+    this.modalMode.set('view'); // 👍 bien
     this.mostrarModalBootstrap();
   }
 
+
   guardarReserva(payload: { form: ReservaFormValue; id?: string }) {
     const { form, id } = payload;
+
+    if (this.modalMode() === 'edit' && !id) {
+      console.warn('Intento de edición sin ID, cancelado');
+      return;
+    }
+
     const nuevoEvento = this.formToReservaEvent(form, id);
 
     this.events.update(current => {
@@ -111,18 +130,23 @@ export class CalendarProveedoresComponent implements OnInit {
     });
 
     this.cerrarModal();
-    // Aquí llamarías a tu servicio: this.reservasctx.save(nuevoEvento).subscribe(...)
   }
+
+
 
   private formToReservaEvent(form: ReservaFormValue, id?: string): ReservaEvent {
     const colores = { pendiente: '#E6AF2E', confirmada: '#198754', bloqueada: '#6c757d', cancelada: '#dc3545' };
 
-    let start = form.fecha.inicio;
-    let end = form.fecha.fin || form.fecha.inicio;
+    let start = form.fecha.start;
+    let end = form.fecha.end || form.fecha.start;
 
     if (form.modalidad === 'servicio' && !form.fecha.allDay) {
-      start = `${form.fecha.inicio}T${form.fecha.horaInicio}`;
-      end = `${form.fecha.inicio}T${form.fecha.horaFin}`;
+      start = `${form.fecha.
+        start
+        }T${form.fecha.startStr}`;
+      end = `${form.fecha.
+        start
+        }T${form.fecha.endStr}`;
     }
 
     return {
@@ -162,6 +186,7 @@ export class CalendarProveedoresComponent implements OnInit {
     const modalElem = document.getElementById('calendarModal');
     if (modalElem) bootstrap.Modal.getInstance(modalElem)?.hide();
     this.selectedEvent.set(null);
+    this.modalMode.set('create');
   }
 
   getReservas() {

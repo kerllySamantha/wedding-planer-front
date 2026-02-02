@@ -94,6 +94,7 @@ export interface CalendarSelection {
     allDay: boolean;
     startStr: string;
     endStr: string;
+    singleDay?: boolean
 }
 
 export interface SaveReservaPayload {
@@ -112,10 +113,11 @@ export interface ReservaFormValue {
 }
 
 export interface FechaReserva {
-    inicio: string;
-    fin: string;
-    horaInicio?: string;
-    horaFin?: string;
+    start: string;
+    end: string;
+    
+    startStr?: string;
+    endStr?: string;
     allDay: boolean;
 }
 

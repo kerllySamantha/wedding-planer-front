@@ -1,5 +1,5 @@
 <div class="modal fade" id="calendarModal" tabindex="-1" aria-hidden="true" aria-labelledby="modalReservaLabel">
-    <form [formGroup]="form" (ngSubmit)="guardar($event)" novalidate>
+    <form [formGroup]="form" (ngSubmit)="mode() !== 'view' && guardar($event)" novalidate>
 
 
         <div class="modal-dialog modal-dialog-centered">
@@ -55,12 +55,12 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Fecha Entrega</label>
-                                <input type="date" class="form-control" formControlName="inicio"
-                                    [class.is-invalid]="fechaGroup.get('inicio')?.invalid && fechaGroup.get('inicio')?.touched">
+                                <input type="date" class="form-control" formControlName="start"
+                                    [class.is-invalid]="fechaGroup.get('start')?.invalid && fechaGroup.get('start')?.touched">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Fecha Recogida</label>
-                                <input type="date" class="form-control" formControlName="fin">
+                                <input type="date" class="form-control" formControlName="end">
                             </div>
                         </div>
                         }
@@ -77,22 +77,22 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold">Fecha del Servicio</label>
-                                <input type="date" class="form-control" formControlName="inicio"
-                                    [class.is-invalid]="fechaGroup.get('inicio')?.invalid && fechaGroup.get('inicio')?.touched || fechaGroup.get('inicio')?.dirty || form.getError('horaInvalida')"
-                                    [class.is-valid]="fechaGroup.get('inicio')?.valid && (fechaGroup.get('inicio')?.touched || fechaGroup.get('inicio')?.dirty) && !form.getError('horaInvalida')">
+                                <input type="date" class="form-control" formControlName="start"
+                                    [class.is-invalid]="fechaGroup.get('start')?.invalid && fechaGroup.get('start')?.touched || fechaGroup.get('start')?.dirty || form.getError('horaInvalida')"
+                                    [class.is-valid]="fechaGroup.get('start')?.valid && (fechaGroup.get('start')?.touched || fechaGroup.get('start')?.dirty) && !form.getError('horaInvalida')">
                             </div>
                             @if(!form.get('fecha')?.get('allDay')?.value){
                             <div class="col-6">
-                                <label class="small text-muted">Inicio</label>
-                                <input type="time" class="form-control" formControlName="horaInicio" [class.is-invalid]="(fechaGroup.get('horaInicio')?.invalid && (fechaGroup.get('horaInicio')?.touched || fechaGroup.get('horaInicio')?.dirty)) || form.getError('horaInvalida')
+                                <label class="small text-muted">start</label>
+                                <input type="time" class="form-control" formControlName="startStr" [class.is-invalid]="(fechaGroup.get('startStr')?.invalid && (fechaGroup.get('startStr')?.touched || fechaGroup.get('startStr')?.dirty)) || form.getError('horaInvalida')
                                     "
-                                    [class.is-valid]="(fechaGroup.get('horaInicio')?.valid && (fechaGroup.get('horaInicio')?.touched || fechaGroup.get('horaInicio')?.dirty)) && !form.getError('horaInvalida')">
+                                    [class.is-valid]="(fechaGroup.get('startStr')?.valid && (fechaGroup.get('startStr')?.touched || fechaGroup.get('startStr')?.dirty)) && !form.getError('horaInvalida')">
                             </div>
                             <div class="col-6">
-                                <label class="small text-muted">Fin</label>
-                                <input type="time" class="form-control" formControlName="horaFin"
-                                    [class.is-invalid]="(fechaGroup.get('horaFin')?.invalid && (fechaGroup.get('horaFin')?.touched || fechaGroup.get('horaFin')?.dirty)) || form.getError('horaInvalida')"
-                                    [class.is-valid]="(fechaGroup.get('horaFin')?.valid && (fechaGroup.get('horaFin')?.touched || fechaGroup.get('horaFin')?.dirty)) && !form.getError('horaInvalida')">
+                                <label class="small text-muted">endç</label>
+                                <input type="time" class="form-control" formControlName="endStr"
+                                    [class.is-invalid]="(fechaGroup.get('endStr')?.invalid && (fechaGroup.get('endStr')?.touched || fechaGroup.get('endStr')?.dirty)) || form.getError('horaInvalida')"
+                                    [class.is-valid]="(fechaGroup.get('endStr')?.valid && (fechaGroup.get('endStr')?.touched || fechaGroup.get('endStr')?.dirty)) && !form.getError('horaInvalida')">
                             </div>
                             }
                         </div>
@@ -110,19 +110,19 @@
                                 </div>
                             </div>
 
-                            <!-- Fecha inicio -->
+                            <!-- Fecha start -->
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Fecha de inicio</label>
-                                <input type="date" class="form-control" formControlName="inicio"
-                                    [class.is-invalid]="fechaGroup.get('inicio')?.invalid && fechaGroup.get('inicio')?.touched">
+                                <label class="form-label small fw-bold">Fecha de start</label>
+                                <input type="date" class="form-control" formControlName="start"
+                                    [class.is-invalid]="fechaGroup.get('start')?.invalid && fechaGroup.get('start')?.touched">
                             </div>
 
-                            <!-- Fecha fin (solo si no es singleDay) -->
+                            <!-- Fecha end (solo si no es singleDay) -->
                             @if(!form.get('fecha')?.get('singleDay')?.value){
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Fecha de fin</label>
-                                <input type="date" class="form-control" formControlName="fin"
-                                    [class.is-invalid]="fechaGroup.get('fin')?.invalid && fechaGroup.get('fin')?.touched">
+                                <label class="form-label small fw-bold">Fecha de end</label>
+                                <input type="date" class="form-control" formControlName="end"
+                                    [class.is-invalid]="fechaGroup.get('end')?.invalid && fechaGroup.get('end')?.touched">
                             </div>
                             }
 
@@ -131,8 +131,8 @@
 
                         @if(form.hasError('fechaFinInvalida')){
                         <div class="text-danger small mt-2">
-                            <i class="bi bi-exclamation-triangle-fill"></i> La fecha/hora de fin no puede ser anterior
-                            al inicio.
+                            <i class="bi bi-exclamation-triangle-fill"></i> La fecha/hora de end no puede ser anterior
+                            al start.
                         </div>
                         }
 
