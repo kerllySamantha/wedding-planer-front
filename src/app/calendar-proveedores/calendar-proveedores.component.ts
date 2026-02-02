@@ -134,19 +134,24 @@ export class CalendarProveedoresComponent implements OnInit {
 
 
 
-  private formToReservaEvent(form: ReservaFormValue, id?: string): ReservaEvent {
+  private formToReservaEvent(
+    form: ReservaFormValue,
+    id?: string
+  ): ReservaEvent {
+
     const colores = { pendiente: '#E6AF2E', confirmada: '#198754', bloqueada: '#6c757d', cancelada: '#dc3545' };
+
+    // Busca el evento original si existe
+    const original = id
+      ? this.events().find(e => e.id === id)
+      : null;
 
     let start = form.fecha.start;
     let end = form.fecha.end || form.fecha.start;
 
     if (form.modalidad === 'servicio' && !form.fecha.allDay) {
-      start = `${form.fecha.
-        start
-        }T${form.fecha.startStr}`;
-      end = `${form.fecha.
-        start
-        }T${form.fecha.endStr}`;
+      start = `${form.fecha.start}T${form.fecha.startStr}`;
+      end = `${form.fecha.start}T${form.fecha.endStr}`;
     }
 
     return {
@@ -157,6 +162,7 @@ export class CalendarProveedoresComponent implements OnInit {
       allDay: form.fecha.allDay,
       backgroundColor: colores[form.estado],
       extendedProps: {
+        ...original?.extendedProps,
         estado: form.estado,
         notas: form.notas,
         modalidad: form.modalidad

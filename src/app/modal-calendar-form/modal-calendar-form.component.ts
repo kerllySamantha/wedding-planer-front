@@ -254,6 +254,7 @@ export class ModalCalendarFormComponent implements OnChanges {
 
 
   edit() {
+    console.log(this.event())
     if (!this.event()) return;
     this.editar.emit();
   }
