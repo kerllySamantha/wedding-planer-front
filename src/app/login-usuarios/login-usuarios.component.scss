@@ -1,6 +1,8 @@
 $primary-color: #f76c6f;
 $border-color: #e8e8e8;
 
+@use "sass:color";
+
 .fondo {
     background-color: #f0f0f0;
 }
@@ -11,7 +13,7 @@ $border-color: #e8e8e8;
     font-weight: 600;
 
     &:hover {
-        background-color: darken($primary-color, 10%);
+       @debug color.scale($primary-color, $lightness: -10%);
     }
 }
 

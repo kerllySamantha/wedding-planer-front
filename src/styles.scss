@@ -28,15 +28,15 @@ html {
         ));
 }
 
-@include mat.list-overrides((active-indicator-color: red,
-        active-indicator-shape: 5px,
-        list-item-hover-trailing-icon-color: red,
-    ));
 
-@include mat.form-field-overrides((disabled-input-text-placeholder-color: green,
-        disabled-leading-icon-color: blue,
-        active-indicator-color: red,
-    ));
+@include mat.form-field-overrides((
+  filled-active-indicator-color: #ff4081,
+  filled-focus-active-indicator-color: #e91e63,
+  filled-hover-active-indicator-color: #f06292,
+  filled-label-text-color: #666,
+  filled-input-text-color: #000,
+));
+
 
 // Custom Theming for Angular Material
 // For more information: https://material.angular.dev/guide/theming

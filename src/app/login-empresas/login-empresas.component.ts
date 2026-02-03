@@ -1,14 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators, ɵInternalFormsSharedModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { UserResponse } from '../Interfaces/User';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
-import { MatCard } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
-import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
 import { switchMap, tap } from 'rxjs';
-import { Empresa, EmpresaResponse } from '../Interfaces/Empresa';
+
 
 
 
@@ -16,8 +12,6 @@ import { Empresa, EmpresaResponse } from '../Interfaces/Empresa';
   selector: 'app-login-empresas',
   imports: [RouterLink,
     ɵInternalFormsSharedModule,
-    MatCard,
-    MatIcon,
     ReactiveFormsModule],
   templateUrl: './login-empresas.component.html',
   styleUrl: './login-empresas.component.scss'
