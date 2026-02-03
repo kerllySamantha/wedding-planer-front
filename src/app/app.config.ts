@@ -1,7 +1,7 @@
-import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-
+import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { routes } from './app.routes';
 import { authInterceptor } from './Interceptors/auth.interceptor';
 import { UsuariosServiceService } from './Services/Users/usuarios-service.service';
@@ -50,7 +50,8 @@ export const appConfig: ApplicationConfig = {
   { provide: TiposHttpService, useExisting: TiposApiService },
   { provide: ItemsDetallesService, useExisting: ItemsDetallesApiService },
   { provide: PresupuestoHttpService, useExisting: PresupuestoApiService },
-  { provide: LOCALE_ID, useValue: 'es' }
+  { provide: LOCALE_ID, useValue: 'es' },
+  importProvidersFrom(SweetAlert2Module.forRoot())
 
 
 

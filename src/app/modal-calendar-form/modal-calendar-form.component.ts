@@ -14,8 +14,8 @@ import { single } from 'rxjs';
 })
 export class ModalCalendarFormComponent implements OnChanges {
 
-
-
+  private modalidadAnterior: 'producto' | 'servicio' | 'dia' | null = null;
+  private saltarConfirmacionModalidad = false;
 
 
   data = input<CalendarSelection>();
@@ -112,6 +112,24 @@ export class ModalCalendarFormComponent implements OnChanges {
 
 
     this.form.get('modalidad')?.valueChanges.subscribe(modalidad => {
+      if (this.saltarConfirmacionModalidad) {
+        this.modalidadAnterior = modalidad ?? null;
+        return;
+      }
+
+      const anterior = this.modalidadAnterior;
+      if (anterior && modalidad && anterior !== modalidad) {
+        const confirmar = window.confirm('¿Seguro que quieres cambiar la modalidad? Esto puede modificar la reserva.');
+        if (!confirmar) {
+          this.saltarConfirmacionModalidad = true;
+          this.form.get('modalidad')?.setValue(anterior, { emitEvent: false });
+          this.saltarConfirmacionModalidad = false;
+          return;
+        }
+      }
+
+      this.modalidadAnterior = modalidad ?? null;
+
       const fecha = this.fechaGroup;
       if (modalidad === 'producto' || modalidad === 'dia') {
         fecha.patchValue({
