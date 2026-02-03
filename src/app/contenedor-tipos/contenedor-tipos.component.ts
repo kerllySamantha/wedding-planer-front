@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -13,7 +13,7 @@ import { PresupuestoHttpService } from '../Services/Presupuesto/presupuesto-http
 @Component({
   selector: 'app-contenedor-tipos',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatProgressSpinnerModule],
+  imports: [FormsModule, MatProgressSpinnerModule],
   templateUrl: './contenedor-tipos.component.html',
   styleUrls: ['./contenedor-tipos.component.scss']
 })

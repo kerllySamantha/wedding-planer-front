@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import * as bootstrap from 'bootstrap';
@@ -20,13 +20,12 @@ import { tap } from 'rxjs';
   selector: 'app-calendar-proveedores',
   standalone: true,
   imports: [
-    CommonModule,
     FullCalendarModule,
     TopBarAdminComponent,
     AdminNavProveedorComponent,
     MatProgressSpinner,
     ModalCalendarFormComponent
-  ],
+],
   templateUrl: './calendar-proveedores.component.html',
   styleUrl: './calendar-proveedores.component.scss'
 })

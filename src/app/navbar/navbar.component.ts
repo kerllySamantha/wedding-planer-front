@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,7 +10,7 @@ import { AuthenticationService } from '../Services/Autentication/authenticationS
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterLink, MatSidenavModule, MatCheckboxModule, MatButtonModule, MatMenuModule, MatDividerModule],
+  imports: [RouterLink, MatSidenavModule, MatCheckboxModule, MatButtonModule, MatMenuModule, MatDividerModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })

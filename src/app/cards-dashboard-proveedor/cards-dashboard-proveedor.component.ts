@@ -1,7 +1,7 @@
 import { Component, computed, inject, LOCALE_ID, signal } from '@angular/core';
 import { ReservasServiceServiceService } from '../Services/Reservas/reservas-service-service.service';
 import { Reserva, Reservas } from '../Interfaces/Reserva';
-import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { catchError, map, of, pipe } from 'rxjs';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
@@ -15,7 +15,7 @@ registerLocaleData(localeEs);
 
 @Component({
   selector: 'app-cards-dashboard-proveedor',
-  imports: [CommonModule, CardInfoAdminComponent],
+  imports: [CardInfoAdminComponent],
   templateUrl: './cards-dashboard-proveedor.component.html',
   styleUrl: './cards-dashboard-proveedor.component.scss'
 })

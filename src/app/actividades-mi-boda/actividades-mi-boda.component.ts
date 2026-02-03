@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, resource, signal } from '@angular/core';
 import { BodaServiceServiceService } from '../Services/Bodas/boda-service-service.service';
-import { CommonModule } from '@angular/common';
+
 import { count, firstValueFrom, map, tap } from 'rxjs';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { Boda } from '../Interfaces/Boda';;
@@ -16,7 +16,7 @@ dayjs.locale('es');
 
 @Component({
   selector: 'app-actividades-mi-boda',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './actividades-mi-boda.component.html',
   styleUrl: './actividades-mi-boda.component.scss'
 })

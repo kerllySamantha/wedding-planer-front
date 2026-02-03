@@ -1,7 +1,6 @@
 import { ApplicationConfig, importProvidersFrom, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { routes } from './app.routes';
 import { authInterceptor } from './Interceptors/auth.interceptor';
 import { UsuariosServiceService } from './Services/Users/usuarios-service.service';
@@ -19,7 +18,6 @@ import { CategoriasServiceService } from './Services/Catergorias/categoria-servi
 import { CategoriasApiServiceService } from './Services/Catergorias/categoria-api-service.service';
 import { AuthenticationService } from './Services/Autentication/authenticationService';
 import { AutenticarHttpClientService } from './Services/Autentication/autenticar-http-client.service';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { RegionsServer } from './Services/Regiones/regiones-abstract.server';
 import { RegionesApiServer } from './Services/Regiones/regiones-api.server';
 import { TiposHttpService } from './Services/Tipos/tipos-http.service';
@@ -35,7 +33,7 @@ export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   provideHttpClient(withInterceptors([authInterceptor])),
   // provideHttpClient(),
-  provideAnimations(),
+
   provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   { provide: UsuariosServiceService, useExisting: UsuariosApiServiceService },
   { provide: EmpresasServiceServiceService, useExisting: EmpresasApiServiceService },
@@ -51,8 +49,7 @@ export const appConfig: ApplicationConfig = {
   { provide: ItemsDetallesService, useExisting: ItemsDetallesApiService },
   { provide: PresupuestoHttpService, useExisting: PresupuestoApiService },
   { provide: LOCALE_ID, useValue: 'es' },
-  importProvidersFrom(SweetAlert2Module.forRoot())
-
+ 
 
 
   ]

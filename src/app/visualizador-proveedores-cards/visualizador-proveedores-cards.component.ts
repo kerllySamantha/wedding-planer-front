@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, output } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-visualizador-proveedores-cards',
-  imports: [CommonModule, ReactiveFormsModule, MatTabsModule],
+  imports: [ReactiveFormsModule, MatTabsModule],
   templateUrl: './visualizador-proveedores-cards.component.html',
   styleUrl: './visualizador-proveedores-cards.component.scss'
 })

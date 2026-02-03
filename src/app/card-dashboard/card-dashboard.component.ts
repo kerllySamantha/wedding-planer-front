@@ -1,10 +1,10 @@
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { Resenia } from '../Interfaces/Resenia';
 
 @Component({
   selector: 'app-card-dashboard',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './card-dashboard.component.html',
   styleUrl: './card-dashboard.component.scss'
 })
