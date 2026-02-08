@@ -1,17 +1,22 @@
 <router-outlet></router-outlet>
 <app-navbar></app-navbar>
-    <app-menu-mi-boda></app-menu-mi-boda>
+<app-menu-mi-boda></app-menu-mi-boda>
 
 <div class="container">
     <app-actividades-mi-boda></app-actividades-mi-boda>
 
     <div class="row">
         <h1>Crea tu equipo soñado</h1>
-        <div class="row justify-content-center ">
-            <p class="col-5 pe-0 me-0 ">Lee las opiniones, guarda tus favoritos y contáctalos</p>
+        <!-- ✅ Bootstrap 5: estructura responsive y alineación en una sola línea en md+ -->
+        <div class="row justify-content-center align-items-center g-3">
+            <!-- Texto: en móvil ocupa todo; en md ocupa menos para dejar espacio al select -->
+            <p class="col-12 col-md-5 mb-0">
+                Lee las opiniones, guarda tus favoritos y contáctalos
+            </p>
 
-            <div class="col-4 ms-0 ps-0">
-                <select class="form-select" id="categorias" name="categoria" (change)="onCategoriaChange($event)">
+            <!-- Select: en móvil ocupa todo; en md se alinea a la derecha en la misma fila -->
+            <div class="col-12 col-md-6">
+                <select class="form-select w-100" id="categorias" name="categoria" (change)="onCategoriaChange($event)">
                     <option value="" disabled selected>Seleccione una categoría</option>
 
                     @for (categoria of categorias$ | async; track categoria.id) {
@@ -21,8 +26,8 @@
                     }
                 </select>
             </div>
-
         </div>
+
 
     </div>
 </div>

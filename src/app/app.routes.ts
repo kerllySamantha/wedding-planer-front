@@ -15,6 +15,7 @@ import { AdminDashboardProveedoresComponent } from './admin-dashboard-proveedore
 import { rolredirectGuard } from './Guardias/rolredirect.guard';
 import { rolGuard } from './Guardias/rol.guard';
 import { CalendarProveedoresComponent } from './calendar-proveedores/calendar-proveedores.component';
+import { CardEmpresaComponent } from './card-empresa/card-empresa.component';
 
 
 export const routes: Routes = [
@@ -28,6 +29,7 @@ export const routes: Routes = [
     canActivate: [rolGuard],
     data: { rol: ['usuario'] }
      },
+
     {
         path: 'proveedor-dashboard',
         component: AdminDashboardProveedoresComponent,

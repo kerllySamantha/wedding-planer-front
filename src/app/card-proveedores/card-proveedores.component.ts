@@ -1,6 +1,6 @@
 import { Component, computed, effect, input, signal } from '@angular/core';
 import { Empresa } from '../Interfaces/Empresa';
-import { state, style, transition, trigger, animate } from '@angular/animations';
+// import { state, style, transition, trigger, animate } from '@angular/animations';
 import { RouterLink } from "@angular/router";
 import { ProductoEmpresa } from '../Interfaces/Producto';
 
@@ -9,21 +9,30 @@ import { ProductoEmpresa } from '../Interfaces/Producto';
   imports: [RouterLink],
   templateUrl: './card-proveedores.component.html',
   styleUrl: './card-proveedores.component.scss',
-  animations: [
-    trigger('flip', [
-      state('front', style({ transform: 'rotateY(0deg)' })),
-      state('back', style({ transform: 'rotateY(180deg)' })),
-      transition('front <=> back', animate('0.6s ease-in-out'))
-    ])
-  ]
+  // animations: [
+  //   trigger('flip', [
+  //     state('front', style({ transform: 'rotateY(0deg)' })),
+  //     state('back', style({ transform: 'rotateY(180deg)' })),
+  //     transition('front <=> back', animate('0.6s ease-in-out'))
+  //   ])
+  // ]
 })
 export class CardProveedoresComponent {
   empresa = input<Empresa | null>();
-  flip: 'front' | 'back' = 'front';
+
+  // flip: 'front' | 'back' = 'front';
+
+  flip = signal<'front' | 'back'>('front');
 
   toggleFlip() {
-    this.flip = this.flip === 'front' ? 'back' : 'front';
+    // this.flip = this.flip() === 'front' ? 'back' : 'front';
+    this.flip.update((v) => v === 'front' ? 'back' : 'front');
   }
+
+
+  
+
+  setFront() { this.flip.set('front'); }
 
   productos = signal<ProductoEmpresa[]>([]);
 
@@ -33,6 +42,8 @@ export class CardProveedoresComponent {
 
       const productos = this.empresa()?.productos || [];
       this.productos.set(productos);
+
+      console.log(this.flip());
 
     });
   }

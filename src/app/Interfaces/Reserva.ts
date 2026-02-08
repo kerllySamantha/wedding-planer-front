@@ -66,6 +66,7 @@ export interface ReservaEvent {
     title: string;
     start: string;
     end: string;
+    singleDay?:  boolean
     backgroundColor?: string;
     borderColor?: string;
     extendedProps: ExtendedReservaProps;

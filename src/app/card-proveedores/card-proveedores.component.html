@@ -1,5 +1,5 @@
 <div class="col">
-    <div class="card-flip tp-box" (click)="toggleFlip()" [@flip]="flip">
+    <div class="card-flip tp-box" [attr.data-side]="flip()"  (click)="toggleFlip()">
 
         <!-- Carrusel de imágenes -->
         <div id="carousel{{empresa()?.id}}" class="carousel slide card-front" data-bs-ride="carousel">

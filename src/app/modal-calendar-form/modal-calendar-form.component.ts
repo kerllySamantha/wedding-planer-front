@@ -1,10 +1,8 @@
-import { Component, computed, effect, input, OnChanges, output, SimpleChanges } from '@angular/core';
-import { CalendarSelection, CreateReserva, ReservaEvent, ReservaFormValue, SaveReservaPayload } from '../Interfaces/Reserva';
-import * as bootstrap from 'bootstrap';
+import { Component, effect, input, OnChanges, output, SimpleChanges } from '@angular/core';
+import { CalendarSelection, ReservaEvent, ReservaFormValue, SaveReservaPayload } from '../Interfaces/Reserva';
+import Swal from 'sweetalert2'
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ProductoCalendario } from '../Interfaces/Producto';
-import { single } from 'rxjs';
 
 @Component({
   selector: 'app-modal-calendar-form',
@@ -69,20 +67,28 @@ export class ModalCalendarFormComponent implements OnChanges {
       const eventoExistente = this.event();
 
       if (eventoExistente && this.mode() === 'edit') {
+        const startHasTime = eventoExistente.start.includes('T');
+        const endHasTime = eventoExistente.end?.includes('T') ?? false;
+        const isAllDay = !!eventoExistente.allDay || (!startHasTime && !endHasTime);
+
         this.form.reset({
           titulo: eventoExistente.title,
           modalidad: eventoExistente.extendedProps.producto?.modalidad ?? null,
           fecha: {
             start: eventoExistente.start.split('T')[0],
             end: eventoExistente.end?.split('T')[0] ?? eventoExistente.start.split('T')[0],
-            startStr: eventoExistente.start.includes('T')
-              ? eventoExistente.start.split('T')[1].substring(0, 5)
-              : '00:00',
-            endStr: eventoExistente.end?.includes('T')
-              ? eventoExistente.end.split('T')[1].substring(0, 5)
-              : '00:00',
-            allDay: eventoExistente.allDay,
-            singleDay: false
+            startStr: isAllDay
+              ? null
+              : startHasTime
+                ? eventoExistente.start.split('T')[1].substring(0, 5)
+                : '00:00',
+            endStr: isAllDay
+              ? null
+              : eventoExistente.end?.includes('T')
+                ? eventoExistente.end.split('T')[1].substring(0, 5)
+                : '00:00',
+            allDay: isAllDay,
+            singleDay: eventoExistente.singleDay
           },
           estado: eventoExistente.extendedProps.estado,
           notas: eventoExistente.extendedProps.notas
@@ -102,8 +108,8 @@ export class ModalCalendarFormComponent implements OnChanges {
       console.log('value:', value, this.form.value);
     });
 
-    
-    this.form.valueChanges.subscribe(value => {
+
+    this.form.statusChanges.subscribe(value => {
       console.log('value:', value, this.form.errors);
     });
 
@@ -119,13 +125,24 @@ export class ModalCalendarFormComponent implements OnChanges {
 
       const anterior = this.modalidadAnterior;
       if (anterior && modalidad && anterior !== modalidad) {
-        const confirmar = window.confirm('¿Seguro que quieres cambiar la modalidad? Esto puede modificar la reserva.');
-        if (!confirmar) {
-          this.saltarConfirmacionModalidad = true;
-          this.form.get('modalidad')?.setValue(anterior, { emitEvent: false });
+        this.saltarConfirmacionModalidad = true;
+        Swal.fire({
+          theme: 'material-ui',
+          title: '¿Cambiar modalidad?',
+          text: 'Esto puede modificar la reserva.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, cambiar',
+          cancelButtonText: 'No, mantener',
+        }).then((result) => {
+          if (!result.isConfirmed) {
+            this.form.get('modalidad')?.setValue(anterior, { emitEvent: false });
+          } else {
+            this.modalidadAnterior = modalidad;
+          }
           this.saltarConfirmacionModalidad = false;
-          return;
-        }
+        });
+        return;
       }
 
       this.modalidadAnterior = modalidad ?? null;
@@ -151,6 +168,15 @@ export class ModalCalendarFormComponent implements OnChanges {
       if (single) {
         this.fechaGroup.patchValue({
           fin: this.fechaGroup.get('inicio')?.value
+        }, { emitEvent: false });
+      }
+    });
+
+    this.fechaGroup.get('allDay')?.valueChanges.subscribe(allDay => {
+      if (allDay) {
+        this.fechaGroup.patchValue({
+          startStr: null,
+          endStr: null
         }, { emitEvent: false });
       }
     });
@@ -188,18 +214,27 @@ export class ModalCalendarFormComponent implements OnChanges {
       const allDay = fecha.get('allDay')?.value;
 
       if (!inicio) return null;
-
-      // Normalizar fin para singleDay o allDay
-      if (!fin || singleDay || allDay) fin = inicio;
-
-      // Validaciones según modalidad
-      if (modalidad === 'producto' || modalidad === 'dia') {
-        if (!singleDay && new Date(fin) < new Date(inicio)) {
+      
+      if (modalidad === 'producto') {
+        if (!fin) fin = inicio;
+        if (new Date(fin) < new Date(inicio)) {
           return { fechaFinInvalida: true };
         }
       }
 
+      if (modalidad === 'dia') {
+        if (singleDay) {
+          fin = inicio;
+        } else {
+          if (!fin) fin = inicio;
+          if (new Date(fin) < new Date(inicio)) {
+            return { fechaFinInvalida: true };
+          }
+        }
+      }
+
       if (modalidad === 'servicio') {
+        if (allDay) return null;
         if (!hInicio || !hFin) return { horaInvalida: true };
         const start = new Date(`${inicio}T${hInicio}`);
         const end = new Date(`${inicio}T${hFin}`);

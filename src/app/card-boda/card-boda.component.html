@@ -1,6 +1,6 @@
 <div class="card  h-100  rounded-3 mx-auto " style="max-width: 22rem;">
     <!-- Imagen principal -->
-    <a href="https://www.bodas.net/cronicas-boda/alvaro-ana--rw127759" class="text-decoration-none text-dark">
+    <a href="#" class="text-decoration-none text-dark">
 
         @for (foto of boda()?.fotos; track foto.path; let idx = $index) {
         @if (idx === 0) {
@@ -14,7 +14,7 @@
         <!-- Miniaturas horizontales -->
         <div class="d-flex justify-content-center gap-2 mt-3 px-2 flex-wrap">
             @for (foto of boda()?.fotos; track foto.path; let idx = $index; let count = $count) {
-            @if (idx !== 0 && count <= 3) { <img [src]="foto.url" class="rounded " [alt]="'miniatura'+idx" width="75"
+            @if (idx !== 0 && idx <= 3 ) { <img [src]="foto.url" class="rounded " [alt]="'miniatura'+idx" width="75"
                 height="60" style="object-fit: cover;">
                 }
                 }

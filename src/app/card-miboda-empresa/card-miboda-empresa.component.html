@@ -1,22 +1,20 @@
-<mat-card class="example-card" appearance="outlined">
-    <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
-        <h6 class=" ms-4 d-flex align-items-center">{{empresa()?.nombre_empresa}}</h6>
-        <!-- <mat-card-subtitle>{{empresa()?.descripcion}}</mat-card-subtitle> -->
-    </mat-card-header >
-    @for (imagen of empresa()?.fotos; track imagen.url ; let idx = $index) { @if(idx === 0){
-    <img mat-card-image [src]="imagen.url">
+<a [routerLink]="['/proveedores/detalles', empresa()?.id]" class="text-decoration-none">
+  <mat-card class="example-card w-100" appearance="outlined">
+    <mat-card-header class="d-flex align-items-center">
+      <div mat-card-avatar class="example-header-image"></div>
+      <h6 class="ms-3 ms-md-4 mb-0 flex-grow-1">{{ empresa()?.nombre_empresa }}</h6>
+      <!-- <mat-card-subtitle>{{ empresa()?.descripcion }}</mat-card-subtitle> -->
+    </mat-card-header>
+
+    <!-- Mostrar solo la primera imagen (índice 0) para evitar confusión -->
+    @for (imagen of empresa()?.fotos; track imagen.url; let idx = $index) {
+      @if (idx === 0) {
+        <img mat-card-image [src]="imagen.url" alt="Imagen de {{ empresa()?.nombre_empresa }}" class="w-100 img-fluid" />
+      }
     }
 
-    }
-    <mat-card-content class="py-4">
-        <!-- <p>
-            {{verTexto()}}
-        </p> -->
-        <p>{{empresa()?.poblacion?.nombre}}</p>
+    <mat-card-content class="py-3 py-md-4">
+      <p class="mb-0">{{ empresa()?.poblacion?.nombre }}</p>
     </mat-card-content>
-    <!-- <mat-card-actions>
-        <button mat-button>LIKE</button>
-        <button mat-button>SHARE</button>
-    </mat-card-actions> -->
-</mat-card>
+  </mat-card>
+</a>
