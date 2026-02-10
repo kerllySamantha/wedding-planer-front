@@ -1,4 +1,4 @@
-@if(esRutaHome()){
+@if(esRutaHome()!){
 <nav class="navbar navbar-expand-lg bg-white py-2">
     <div class="container-fluid align-items-center justify-content-between ">
 
@@ -32,8 +32,9 @@
         <!-- Menú central para escritorio -->
         <div class="d-none d-lg-flex justify-content-center flex-grow-1">
             <ul class="navbar-nav flex-row gap-3">
-                <li class="nav-item"><a class="nav-link active" [routerLink]="['mi-boda']">Mi Boda</a></li>
-                <li class="nav-item"><a class="nav-link"[routerLink]="['dashboard-proveedores']" >Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: true }">Mi Boda</a></li>
+                <li class="nav-item"><a class="nav-link" [routerLink]="['dashboard-proveedores']">Proveedores</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
             </ul>
@@ -48,8 +49,13 @@
             </div>
             <div class="offcanvas-body">
                 <ul class="navbar-nav flex-column gap-3 text-start">
-                    <li class="nav-item"><a class="nav-link" (click)="irARuta('mi-boda', $event)">Mi Boda</a></li>
-                    <li class="nav-item"><a class="nav-link" (click)="irARuta('dashboard-proveedores', $event)" >Proveedores</a></li>
+                    @if(autServicectx.rol() === 'usuario' && autServicectx.auth() ){
+                    <li class="nav-item"><a class="nav-link" [routerLink]="['mi-boda']" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{ exact: false }">Mi Boda</a></li>
+                    }
+                    <li class="nav-item"><a class="nav-link" [routerLink]="['/dashboard-proveedores']"
+                            routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Proveedores</a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
                 </ul>
@@ -82,7 +88,7 @@
                                 </div>
                             </button>
 
-                        <mat-menu #userMenu="matMenu" overlapTrigger="false" xPosition="before" yPosition="below">
+                            <mat-menu #userMenu="matMenu" overlapTrigger="false" xPosition="before" yPosition="below">
 
                                 <button mat-menu-item [routerLink]="['/']">Inicio</button>
                                 <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
@@ -98,7 +104,8 @@
             @else {
             <div class="d-flex flex-column align-items-end gap-2">
                 <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
-                  (click)="irARuta('/../dashboard-empresas', $event)">
+                    [routerLink]="['/dashboard-empresas']" routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="16" fill="currentColor"
                         class="bi bi-briefcase " viewBox="0 0 16 16">
                         <path
@@ -109,7 +116,8 @@
 
                 <div class="d-flex flex-row gap-3" id="registro">
                     <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
-                    <a  (click)="irARuta('/../registerUser', $event)" class="nav-link p-0">Regístrate</a>
+                    <a [routerLink]="['/registerUser']" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: true }"> class="nav-link p-0">Regístrate</a>
                 </div>
             </div>
             }
@@ -229,12 +237,13 @@
 
 
                 <li class="nav-item">
-                    <a class="nav-link" [class.active]="estaEnRuta('mi-boda')" href="#"
-                        (click)="irARuta('mi-boda', $event)">
+                    <a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: true }">
                         Mi Boda
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link" (click)="irARuta('dashboard-proveedores', $event)" >Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" [routerLink]="['/dashboard-proveedores']"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Proveedores</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
             </ul>
@@ -261,8 +270,11 @@
             </div>
             <div class="offcanvas-body">
                 <ul class="navbar-nav flex-column gap-3 text-start">
-                    <li class="nav-item"><a class="nav-link" (click)="irARuta('dashboard-proveedores', $event)" >Mi Boda</a></li>
-                    <li class="nav-item"><a class="nav-link" (click)="irARuta('dashboard-proveedores', $event)" >Proveedores</a></li>
+                    <li class="nav-item"><a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active"
+                            [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">Mi Boda</a></li>
+                    <li class="nav-item"><a class="nav-link" [routerLink]="['/dashboard-proveedores']"
+                            routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+                            data-bs-dismiss="offcanvas">Proveedores</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
                 </ul>
@@ -315,7 +327,8 @@
             @else {
             <div class="d-flex flex-column align-items-end gap-2">
                 <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
-                     (click)="irARuta('dashboard-empresas', $event)">
+                    [routerLink]="['/dashboard-empresas']" routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }">
                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="16" fill="currentColor"
                         class="bi bi-briefcase " viewBox="0 0 16 16">
                         <path
@@ -325,8 +338,9 @@
                 </a>
 
                 <div class="d-flex flex-row gap-3" id="registro">
-                    <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
-                    <a   (click)="irARuta('registerUser',  $event)" class="nav-link p-0">Regístrate</a>
+                    <a [routerLink]="['/login']" class="nav-link p-0 ">Accede</a>
+                    <a [routerLink]="['/registerUser']" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: true }" class="nav-link p-0 h">Regístrate</a>
                 </div>
             </div>
             }

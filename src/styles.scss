@@ -23,19 +23,18 @@ html {
                 primary: theme.$primary-palette ,
                 tertiary: theme.$primary-palette,
             ),
-            typography: ProximaNovaSemi,
+            typography: SourGummyLight,
             density: 0,
         ));
 }
 
 
-@include mat.form-field-overrides((
-  filled-active-indicator-color: #ff4081,
-  filled-focus-active-indicator-color: #e91e63,
-  filled-hover-active-indicator-color: #f06292,
-  filled-label-text-color: #666,
-  filled-input-text-color: #000,
-));
+@include mat.form-field-overrides((filled-active-indicator-color: #ff4081,
+        filled-focus-active-indicator-color: #e91e63,
+        filled-hover-active-indicator-color: #f06292,
+        filled-label-text-color: #666,
+        filled-input-text-color: #000,
+    ));
 
 
 // Custom Theming for Angular Material
@@ -82,35 +81,31 @@ html {
     src: url('./assets/fonts/ProximaNova-semibold.woff2');
 }
 
-
-html,
-body {
-    height: 100%;
+@font-face {
+    font-family: "SourGummyLight";
+    font-optical-sizing: auto;
+    /* Permite ajuste óptico automático */
+    font-style: normal;
+    /* Estilo normal (no cursiva) */
+    font-weight: 400;
+    /* Añade peso de fuente explícito (ajusta según necesidad) */
+    font-variation-settings: "wdth" 100;
+    src: url('./assets/fonts/SourGummy-VariableFont_wdth,wght.ttf');
 }
 
-body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+@font-face {
+    font-family: "AmaticSCBold";
+    font-optical-sizing: auto;
+    font-style:normal ;
+    font-weight: 400;
+    font-variation-settings: "wdth" 400;
+    src: url("./assets/fonts/Amatic_SC/AmaticSC-Bold.ttf");
 }
 
-html,
-body {
-    height: 100%;
-}
 
-body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-html,
-body {
-    height: 100%;
-}
-
-body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+@font-face {
+    font-family: 'PlayWrite';
+    src: url('./assets/fonts/PlaywriteDEGrund-VariableFont_wght.ttf');
 }
 
 html,
@@ -120,5 +115,35 @@ body {
 
 body {
     margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: PlayWrite;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: PlayWrite;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: PlayWrite;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: PlayWrite;
 }

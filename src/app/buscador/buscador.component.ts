@@ -1,6 +1,6 @@
 import { CommonModule, NgClass, NgStyle } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, HostListener, signal } from '@angular/core';
 
 @Component({
   selector: 'app-buscador',
@@ -12,12 +12,19 @@ export class BuscadorComponent {
 
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+
+  }
 
   anchoVentana = signal(window.innerWidth);
   fondoUrl = signal<string>('');
 
   urlFondo = computed(() => this.fondoUrl())
+
+  @HostListener('window:resize')
+  onResize() {
+    this.anchoVentana.set(window.innerWidth);
+  }
 
 
 

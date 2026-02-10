@@ -27,9 +27,9 @@ import { ItemsDetallesApiService } from './Services/ItemDetalles/items-detalles-
 import { PresupuestoHttpService } from './Services/Presupuesto/presupuesto-http-service.service';
 import { PresupuestoApiService } from './Services/Presupuesto/presupuesto-api.service';
 import { ReservasApiServiceService } from './Services/Reservas/reservas-api-service.service';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { ReservasServiceServiceService } from './Services/Reservas/reservas-service-service.service';
 const url_back = 'http://localhost:8000/api';
+const url_local = "http://wedding_planer.local/api";
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   provideHttpClient(withInterceptors([authInterceptor])),
@@ -44,13 +44,12 @@ export const appConfig: ApplicationConfig = {
   { provide: PerfilServiceServiceService, useExisting: PerfilApiServiceService },
   { provide: CategoriasServiceService, useExisting: CategoriasApiServiceService },
   { provide: AuthenticationService, useExisting: AutenticarHttpClientService },
-  { provide: API_URL, useValue: url_back },
+  { provide: API_URL, useValue: url_local },
   { provide: RegionsServer, useExisting: RegionesApiServer },
   { provide: TiposHttpService, useExisting: TiposApiService },
   { provide: ItemsDetallesService, useExisting: ItemsDetallesApiService },
   { provide: PresupuestoHttpService, useExisting: PresupuestoApiService },
   { provide: LOCALE_ID, useValue: 'es' },
-  // provideAnimations()
  
 
 

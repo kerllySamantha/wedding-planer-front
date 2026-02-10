@@ -14,13 +14,11 @@
 }
 
 
-.info-boda {
-    padding: 5em;
-}
+
 .boda1 {
     flex: 1;
     /* Ocupa todo el espacio restante en el flex */
-    background-image: url("../../assets/images/boda1.jpg");
+    // background-image: url("../../assets/images/boda1.jpg");
     background-repeat: no-repeat;
     /* No repetir */
     background-position: center;
@@ -31,10 +29,20 @@
     /* Redondear solo la derecha */
 }
 
-// .info-boda {
-//     padding-left: 5em;
-//     /* Esto reduce el ancho disponible para .boda1 */
-//}
+#imagen_novia {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+.info-boda {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5em 0 0  3em  ;
+}
+
 
 // .boda1:hover {
 //     transform: scale(1.05);
@@ -54,13 +62,13 @@
 .info-boda h5 {
     font-weight: 600;
     font-size: 1.25rem;
-    margin-bottom: 0.5rem;
+    // margin-bottom: 0.5rem;
 }
 
 .info-boda p {
     font-size: 0.9rem;
     color: #6c757d;
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
 }
 
 .counterItem__label {
@@ -98,3 +106,20 @@
     /* ancho máximo */
   
 }
+
+
+@media (max-width: 575.98px) {
+  .boda-style.secundaria {
+    padding: 0;
+    height: 11em;
+    max-width: 11em;
+  }
+
+  .boda-style.secundaria img {
+    border-radius: 0.5rem;
+  }
+
+
+}
+
+

@@ -1,5 +1,10 @@
+$tipografia_1: 'ProximaNova';
+$tipografia_2: 'AmaticSCBold';
+$tipografia_3 : "Merriweather";
+
+
 h1 {
-    font-family: "Merriweather";
+    font-family: $tipografia_2;
     font-size: 2em;
     line-height: 2.25rem;
 }
@@ -57,10 +62,11 @@ h1 {
     width: 100%;
     height: 20em;
     position: relative;
+    margin-bottom: 2em;
 
     /* Máscara elíptica de esquina a esquina */
-    -webkit-mask-image: radial-gradient(ellipse at bottom center, transparent 30%, black 60%);
-    mask-image: radial-gradient(ellipse at bottom center, transparent 30%, black 60%);
+    // -webkit-mask-image: radial-gradient(ellipse at bottom center, transparent 30%, black 60%);
+    // mask-image: radial-gradient(ellipse at bottom center, transparent 30%, black 60%);
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
     -webkit-mask-size: cover;
@@ -79,5 +85,3 @@ h1 {
     position: relative;
     z-index: 2;
 }
-
-

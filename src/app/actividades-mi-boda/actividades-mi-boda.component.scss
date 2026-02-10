@@ -49,7 +49,7 @@
     font-weight: 600;
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
-    
+
 }
 
 .info-boda p {
@@ -84,6 +84,7 @@
     font-weight: 500;
     color: #333;
 }
+
 .fondo-imagen {
     position: relative;
     height: 250px;
@@ -104,7 +105,7 @@
         align-items: center;
         height: 100%;
         color: #fff;
-        border-radius:  16px;
+        border-radius: 16px;
 
         .info-boda-content {
             backdrop-filter: blur(4px);
@@ -130,5 +131,14 @@
             font-weight: 600;
             line-height: 1;
         }
+    }
+}
+
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .fondo-imagen {
+        height: 300px;
+        flex-direction: column;
+        display: flex;
     }
 }

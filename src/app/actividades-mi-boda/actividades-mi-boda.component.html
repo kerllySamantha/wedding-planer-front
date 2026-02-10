@@ -1,65 +1,69 @@
-<div class="container boda py-5 ">
-    <div class="row g-0 align-items-start boda ">
-        <!-- Columna izquierda: imagen -->
-        <div class="col-md-3 fondo-imagen position-relative rounded-4">
-            <div class="boda-bg w-100 h-100 position-absolute"></div>
+<div class="container boda py-5">
+  <div class="row g-0 align-items-start  justify-content-center boda">
 
-            <div
-                class="info-boda row position-relative z-1 d-flex flex-column justify-content-end align-items-center text-center text-white">
-                <div class="info-boda-content">
-                    <dl class="row g-2 justify-content-center align-items-center mb-2 counterItem">
-                        <div class="col-3">
-                            <dt class="counterItem__label small text-uppercase mb-0">Días</dt>
-                            <dd class="counterItem__value app-count-down-days fs-5 fw-bold mb-0">{{fechaCountdown()?.days}}</dd>
-                        </div>
-                        <div class="col-3">
-                            <dt class="counterItem__label small text-uppercase mb-0">Horas</dt>
-                            <dd class="counterItem__value app-count-down-hours fs-5 fw-bold mb-0">{{fechaCountdown()?.hours}}</dd>
-                        </div>
-                        <!-- <div class="col-3">
-                            <dt class="counterItem__label small text-uppercase mb-0">Min</dt>
-                            <dd class="counterItem__value app-count-down-minutes fs-5 fw-bold mb-0">{{fechaCountdown()?.minutes}}</dd>
-                        </div>
-                        <div class="col-3">
-                            <dt class="counterItem__label small text-uppercase mb-0">S</dt>
-                            <dd class="counterItem__value app-count-down-seconds fs-5 fw-bold mb-0">{{fechaCountdown()?.seconds}}</dd>
-                        </div> -->
-                    </dl>
-                </div>
+    <!-- Columna izquierda -->
+    <div class="col-10  col-md-10 col-lg-3 col-xl-3 fondo-imagen position-relative rounded-4">
+      <div class="boda-bg w-100 h-100 position-absolute"></div>
+
+      <div
+        class="info-boda position-relative z-1 d-flex flex-column justify-content-end align-items-center text-center text-white h-100">
+        <div class="info-boda-content">
+          <dl class="row g-2 justify-content-around align-items-center mb-2 counterItem">
+            <div class="col-3">
+              <dt class="counterItem__label small text-uppercase mb-0">Días</dt>
+              <dd class="counterItem__value app-count-down-days fs-5 fw-bold mb-0">
+                {{fechaCountdown()?.days}}
+              </dd>
             </div>
-        </div>
-
-        <!-- Columna derecha: información y tarjetas -->
-        <div class="col-md-9">
-            <div class="card-body text-center">
-                <!-- Título -->
-                <h5 class="card-title">{{bodaEncontrada()?.nombre_pareja}}</h5>
-                <p class="card-text">{{fechaFormateada()}}</p>
-
-
-
-
-                <!-- Tarjetas secundarias -->
-                <div class="d-flex flex-row flex-wrap justify-content-between py-4 align-items-start gap-3">
-                    <div class="boda-style card p-2 text-center image-size">
-                        <span class="service-text">0 Servicios Contratados</span>
-                    </div>
-
-                    <div class="boda-style card p-2 text-center image-size">
-                        <span class="service-text">Tareas completadas</span>
-                    </div>
-
-                    <div class="boda-style card p-2 text-center image-size">
-                        <span class="service-text">Invitados confirmados</span>
-                    </div>
-
-                    <div class="boda-style card p-2 text-center image-size">
-                        <span class="service-text">Presupuesto Gastado</span>
-                    </div>
-                </div>
-
-
+            <div class="col-3">
+              <dt class="counterItem__label small text-uppercase mb-0">Horas</dt>
+              <dd class="counterItem__value app-count-down-hours fs-5 fw-bold mb-0">
+                {{fechaCountdown()?.hours}}
+              </dd>
             </div>
+          </dl>
         </div>
+      </div>
     </div>
+
+    <!-- Columna derecha -->
+    <div class="col-12 col-lg-9 col-xl-9">
+      <div class="card-body text-center pt-4">
+
+        <h5 class="card-title">{{bodaEncontrada()?.nombre_pareja}}</h5>
+        <p class="card-text">{{fechaFormateada()}}</p>
+
+        <!-- Tarjetas secundarias -->
+        <div class="row g-2 justify-content-center py-4">
+
+          <div class="col-6 col-md-3">
+            <div class="boda-style card p-2 text-center">
+              <span class="service-text">Servicios Contratados</span>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="boda-style card p-2 text-center">
+              <span class="service-text">Tareas completadas</span>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="boda-style card p-2 text-center">
+              <span class="service-text">Invitados confirmados</span>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="boda-style card p-2 text-center">
+              <span class="service-text">Presupuesto Gastado</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
 </div>

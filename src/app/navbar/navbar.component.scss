@@ -1,13 +1,14 @@
 $fondo :#e91e63;
 $fondo2 : #f76c6f;
+$tipografia : AmaticSCBold;
 
 .fondo {
     background-color: #f0f0f0;
 }
 
 a {
-    font-family: "ProximaNova";
-    font-size: 1.2em;
+    font-family: $tipografia;
+    font-size: 2.2em;
 }
 
 .navbar-nav .nav-link {
@@ -22,9 +23,10 @@ a {
 }
 
 .navbar-nav .nav-link::after {
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
+    pointer-events: visible;
     bottom: 0;
     width: 0%;
     height: 2px;
@@ -41,16 +43,16 @@ a {
 }
 
 #registro {
-    color: #f76c6f;
-    font-size: 0.87rem;
-    font-family: "ProximaNova";
+    color: $fondo2;
+    font-size: 0.60rem;
+    font-family: $tipografia;
     text-transform: uppercase;
     font-weight: 600;
 }
 
 .area-empresas {
-    font-family: "ProximaNova";
-    font-weight: 600;
+    font-family: $tipografia;
+    font-weight: 400;
     font-size: 0.9rem;
     text-align: right;
 }
@@ -61,9 +63,17 @@ a {
 
 @media (max-width: 991.98px) {
     .navbar-brand img {
+        width: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand img {
         width: 160px;
     }
 }
+
+
 
 /* OFFCANVAS móvil: quitar subrayado y hover rosa */
 #mainMenuOffcanvas.show .nav-link {
@@ -79,7 +89,7 @@ a {
 #mainMenuOffcanvas.show .nav-link::after {
     width: 0 !important;
     /* Quitar subrayado */
-    transition: none !important;
+    // transition: none !important;
     content: none !important;
 }
 
@@ -117,4 +127,21 @@ a {
 .color-icon {
     color: $fondo2;
 }
+
+
+#mainMenuOffcanvas {
+    /* Opcional: asegurar que el offcanvas ocupe toda la altura */
+    height: 100vh;
+}
+
+#mainMenuOffcanvas .offcanvas-header {
+    height: 56px; /* Ajusta según tu header */
+}
+
+#mainMenuOffcanvas .offcanvas-body {
+    height: calc(100vh - 56px) !important;
+    max-height: calc(100vh - 56px) !important;
+    overflow-y: auto !important;
+}
+
 

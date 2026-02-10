@@ -8,6 +8,10 @@
 //         ));
 // }
 
+$tipografia_1: 'ProximaNova';
+$tipografia_2: 'AmaticSCBold';
+
+
 .example-card {
     border-radius: 15px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
@@ -73,7 +77,7 @@
 }
 
 h6 {
-    font-family: ProximaNova, ProximanovaBold-fallback, sans-serif;
+    font-family: $tipografia_2;
     font-weight: 800;
     font-size: 1em;
 }

@@ -1,4 +1,7 @@
-.carousel {
+$tipografia_1: 'ProximaNova';
+$tipografia_2: 'AmaticSCBold';
+
+ .carousel {
     .carousel-inner {
         height: 13em;
         border-radius: 7px 7px 0 0 !important;
@@ -30,7 +33,7 @@
 
 
 h6 {
-    font-family: ProximaNova, ProximanovaBold-fallback, sans-serif;
+    font-family: $tipografia_2;
     font-weight: 800;
     font-size: 1em;
 }

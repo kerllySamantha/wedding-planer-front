@@ -1,3 +1,7 @@
+$tipografia_1: 'ProximaNova';
+$tipografia_2: 'AmaticSCBold';
+
+
 .container-personal {
     padding: 0 1rem;
     max-width: 1200px;
@@ -41,7 +45,7 @@
 }
 
 h1{
-    font-family: ProximaNova, ProximanovaBold-fallback, sans-serif;
+    font-family: $tipografia_2;
 }
 
 .searcher__submit {

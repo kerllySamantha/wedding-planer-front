@@ -1,17 +1,19 @@
-<div class="row pt-4 mt-4 gx-3 gy-3 justify-content-between">
+<div class="row pt-4 mt-4 gx-3 gy-3 justify-content-evenly">
 
-    <div class="col-lg-4 col-md-4 boda-style pe-0">
-        <div class="d-flex h-100">
-            <div class="info-boda d-flex flex-column justify-content-center ps-4 pe-3">
+    <!-- Tarjeta principal (rectángulo) -->
+    <div class="col-xl-4 col-lg-8 col-md-8 col-sm-12  boda-style pe-0 order-md-1">
+        <div class="d-flex h-100 row">
+            <div class="info-boda d-flex flex-column justify-content-center ps-4 pe-1 col-6">
                 <h5>{{bodaEncontrada()?.nombre_pareja}}</h5>
                 <p>{{fechaFormateada()}}</p>
-                <dl class="row g-2 text-start mb-0">
+
+                <dl class="row  text-start ">
                     <div class="col-3">
                         <dt class="counterItem__label">días</dt>
                         <dd class="counterItem__value app-count-down-days">{{fechaCountdown()?.days}}</dd>
                     </div>
-                    <div class="col-3">
-                        <dt class="counterItem__label">horas</dt>
+                    <div class="col-3 ">
+                        <dt class="counterItem__label ">horas</dt>
                         <dd class="counterItem__value app-count-down-hours">{{fechaCountdown()?.hours}}</dd>
                     </div>
                     <div class="col-3">
@@ -24,29 +26,35 @@
                     </div>
                 </dl>
             </div>
-            <div class="boda1"></div>
+
+            <div class="boda1 col-6">
+                <img src="assets/images/boda1.jpg" alt="imagen_novia" id="imagen_novia">
+            </div>
         </div>
     </div>
 
-    <!-- Tarjetas secundarias -->
-    <div class="col-6 col-md-2 boda-style d-flex secundaria flex-column align-items-center justify-content-center">
+    <!-- Cuadrado 1 (acompaña al rectángulo en md) -->
+    <div class=" col-xl-2  col-lg-4 col-md-4 col-lg-2 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-2">
         <img class="img-see mb-2" src="assets/images/agenda.png" alt="Agenda" />
         <span class="service-text">0 Servicios<br>Contratados</span>
     </div>
 
-    <div class="col-6 col-md-2 boda-style d-flex secundaria flex-column align-items-center justify-content-center">
+    <!-- Cuadrado 2 -->
+    <div class="col-xl-2 col-lg-4 col-md-4 col-lg-2 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-3">
         <img class="img-see mb-2" src="assets/images/tareas2.jpg" alt="Icono" />
-        <span class="service-text">Tareas<br> completadas</span>
+        <span class="service-text">Tareas<br>completadas</span>
     </div>
 
-    <div class="col-6 col-md-2 boda-style d-flex secundaria flex-column align-items-center justify-content-center">
+    <!-- Cuadrado 3 -->
+    <div class=" col-xl-2 col-lg-4 col-md-4 col-sm-6 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-4">
         <img class="img-see mb-2" src="assets/images/persona3.png" alt="Icono" />
-        <span class="service-text">Invitados <br> conformados</span>
+        <span class="service-text">Invitados<br>confirmados</span>
     </div>
 
-    <div class="col-6 col-md-2 boda-style d-flex secundaria flex-column align-items-center justify-content-center">
+    <!-- Cuadrado 4 -->
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-5">
         <img class="img-see mb-2" src="assets/images/calculadora4.png" alt="Icono" />
-        <span class="service-text">Presupuesto <br> Gastado</span>
+        <span class="service-text">Presupuesto<br>Gastado</span>
     </div>
 
 </div>

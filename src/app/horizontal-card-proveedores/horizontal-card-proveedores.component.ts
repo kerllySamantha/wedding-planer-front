@@ -16,8 +16,8 @@ export class HorizontalCardProveedoresComponent {
   verTexto = computed(() => {
     const empresa = this.empresa();
     if (!empresa?.descripcion) return false;
-    return empresa.descripcion.length > 120
-      ? empresa.descripcion.slice(0, 120) + '...'
+    return empresa.descripcion.length > 300
+      ? empresa.descripcion.slice(0, 300) + '...'
       : empresa.descripcion;
 
   });
