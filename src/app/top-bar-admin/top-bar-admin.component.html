@@ -26,8 +26,8 @@
                 </svg>
             </button>
             <div class="dropdown user-dropdown">
-                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                <!-- Botón de usuario -->
+                <button mat-button [matMenuTriggerFor]="menu" class="btn btn-light ">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                         class="bi bi-person" viewBox="0 0 16 16">
                         <path
@@ -35,10 +35,14 @@
                     </svg>
                 </button>
 
-                <ul class="dropdown-menu dropdown-menu-end user-menu">
-                    <li><a class="dropdown-item" (click)="logout($event)">Cerrar sesión</a></li>
-                </ul>
+                <!-- Menú -->
+                <mat-menu #menu="matMenu" class="custom-dropdown-menu">
+                    <button mat-menu-item (click)="logout()">
+                        Cerrar sesión
+                    </button>
+                </mat-menu>
             </div>
+
         </div>
     </div>
 </nav>

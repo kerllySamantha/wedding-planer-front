@@ -1,7 +1,22 @@
 <div class="app-sidebar">
     <ul class="nav flex-column">
-        <li class="nav-item"><a class="nav-link" [routerLink]="['proveedor-dashboard']">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" [routerLink]="['calendar-proveedor']">Calendario</a></li>
-        <li class="nav-item"><a class="nav-link"  [routerLink]="['configuracion']">Configuración</a></li>
+        <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/proveedor-dashboard']">
+                Dashboard
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/proveedor-dashboard/calendar-proveedor']">
+                Calendario
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/configuracion']">
+                Configuración
+            </a>
+        </li>
+
     </ul>
 </div>

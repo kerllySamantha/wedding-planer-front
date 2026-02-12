@@ -19,7 +19,7 @@
                 <select class="form-select w-100" id="categorias" name="categoria" (change)="onCategoriaChange($event)">
                     <option value="" disabled selected>Seleccione una categoría</option>
 
-                    @for (categoria of categorias$ | async; track categoria.id) {
+                    @for (categoria of categorias$ | async  ; track categoria.id) {
                     <option [value]="categoria.id">
                         {{ categoria.nombre }}
                     </option>

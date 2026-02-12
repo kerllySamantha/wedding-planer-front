@@ -1,5 +1,5 @@
 
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -22,9 +22,12 @@ export class NavbarComponent {
   autServicectx = inject(AuthenticationService);
   nombreU = signal<string | null>('');
   rutaActiva: string = '';
+  rolAuth = computed(() => !!this.autServicectx.rol());
 
 
   constructor(private router: Router) {
+
+
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
@@ -37,13 +40,17 @@ export class NavbarComponent {
 
   ngOnInit() {
     this.letraNombre();
+
+    console.log(this.rolAuth());
+
+    this.autServicectx.rol()
   }
 
   esRutaHome(): boolean {
     return this.router.url === '/';
   }
 
-    estaEnRuta(ruta: string): boolean {
+  estaEnRuta(ruta: string): boolean {
     const urlActual = this.router.url;
     if (ruta === 'mi-boda') {
       return urlActual.includes('mi-boda') || urlActual.includes('dashboard-empresas');

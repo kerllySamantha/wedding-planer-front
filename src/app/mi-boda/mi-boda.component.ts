@@ -14,8 +14,9 @@ import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-mi-boda',
-  imports: [MenuMiBodaComponent, NavbarComponent, ActividadesMiBodaComponent,
-    MatCardModule, MatButtonModule, AsyncPipe, ReactiveFormsModule, CardMibodaEmpresaComponent, RouterOutlet],
+  imports: [MenuMiBodaComponent, NavbarComponent, ActividadesMiBodaComponent, AsyncPipe,
+    MatCardModule, MatButtonModule, AsyncPipe, ReactiveFormsModule,
+     CardMibodaEmpresaComponent, RouterOutlet],
   templateUrl: './mi-boda.component.html',
   styleUrl: './mi-boda.component.scss'
 })
@@ -24,7 +25,7 @@ export class MiBodaComponent {
   servicioDeCategorias = inject(CategoriasServiceService);
 
   constructor(private router: Router) {
-    
+
   }
 
   ngOnInit() {
@@ -36,6 +37,7 @@ export class MiBodaComponent {
 
   );
 
+ 
   categorias$ = this.servicioDeCategorias.getCategorias().pipe(
     map(data => data?.data ?? [])
   );
@@ -47,5 +49,5 @@ export class MiBodaComponent {
   }
 
 
- 
+
 }

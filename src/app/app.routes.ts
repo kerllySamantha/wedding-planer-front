@@ -62,6 +62,8 @@ export const routes: Routes = [
         path: 'dashboard-proveedores', component: DashboardProveedoresComponent, canActivate: [rolGuard]
     },
 
+    {path: 'configuracion', component: DashboardEmpresasComponent},
+
 
     { path: "perfil-user", component: PerfilUserComponent, canActivate: [rolGuard] },
     { path: "proveedores/detalles/:id", component: DetallesProveedoresComponent, resolve: { proveedor: empresaResolver } },

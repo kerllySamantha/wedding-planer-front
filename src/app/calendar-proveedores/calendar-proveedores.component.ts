@@ -13,6 +13,7 @@ import { DateSelectArg, EventApi, EventClickArg, EventContentArg, EventDropArg, 
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ModalCalendarFormComponent } from "../modal-calendar-form/modal-calendar-form.component";
 import { ProductoCalendario } from '../Interfaces/Producto';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { tap } from 'rxjs';
 
@@ -20,12 +21,13 @@ import { tap } from 'rxjs';
   selector: 'app-calendar-proveedores',
   standalone: true,
   imports: [
+    MatDialogModule,
     FullCalendarModule,
     TopBarAdminComponent,
     AdminNavProveedorComponent,
     MatProgressSpinner,
     ModalCalendarFormComponent
-],
+  ],
   templateUrl: './calendar-proveedores.component.html',
   styleUrl: './calendar-proveedores.component.scss'
 })
@@ -38,6 +40,10 @@ export class CalendarProveedoresComponent implements OnInit {
   modalData!: CalendarSelection;
   modalMode = signal<'create' | 'view' | 'edit'>('create');
   selectedEvent = signal<ReservaEvent | null>(null);
+
+
+  dialog = inject(MatDialogModule)
+
 
   ngOnInit(): void {
     this.getReservas();
@@ -59,6 +65,11 @@ export class CalendarProveedoresComponent implements OnInit {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
     editable: true,
+    headerToolbar: {
+      left: 'prev,next',
+      center: 'title',
+      right: 'timeGridWeek,timeGridDay,dayGridMonth'
+    },
     selectable: true,
     events: this.events(),
     select: this.crearReservaDesdeSeleccion.bind(this),
@@ -181,25 +192,49 @@ export class CalendarProveedoresComponent implements OnInit {
     });
   }
 
+  // abrirDetalleReserva2(clickInfo: any) {
+  //   const event = clickInfo.event;
+  //   const dialogRef = this.dialog.open(ModalCalendarFormComponent, {
+  //     width: '600px',
+  //     data: {
+  //       mode: 'view',
+  //       event: {
+  //         id: event.id,
+  //         title: event.title,
+  //         start: event.startStr,
+  //         end: event.endStr,
+  //         allDay: event.allDay,
+  //         extendedProps: event.extendedProps
+  //       }
+  //     }
+  //   })
+
+  //   dialogRef.afterClosed().subscribe(result => {
+  //   if (result) {
+  //     // Actualizar evento en events si fue editado
+  //     this.events.update(current => current.map(e => e.id === result.id ? result : e));
+  //   }
+  //   });
+  // }
 
   private mostrarModalBootstrap() {
-    const modalElem = document.getElementById('calendarModal');
-    if (modalElem) bootstrap.Modal.getOrCreateInstance(modalElem).show();
-  }
+  const modalElem = document.getElementById('calendarModal');
+  if (modalElem) bootstrap.Modal.getOrCreateInstance(modalElem).show();
+}
 
-  cerrarModal() {
-    const modalElem = document.getElementById('calendarModal');
-    if (modalElem) bootstrap.Modal.getInstance(modalElem)?.hide();
-    this.selectedEvent.set(null);
-    this.modalMode.set('create');
-  }
+cerrarModal() {
+  const modalElem = document.getElementById('calendarModal');
+  if (modalElem) bootstrap.Modal.getInstance(modalElem)?.hide();
+  this.selectedEvent.set(null);
+  this.modalMode.set('create');
+}
 
-  getReservas() {
-    this.loading.set(false);
-    this.reservasctx.getCalendarioEmpresa(this.idEmpresa()).subscribe(data => {
-      this.events.set(data || []);
-      this.loading.set(true);
-    });
-  }
+getReservas() {
+  this.loading.set(false);
+  this.reservasctx.getCalendarioEmpresa(this.idEmpresa()).subscribe(data => {
+    this.events.set(data || []);
+    this.loading.set(true);
+  });
+}
 
 }

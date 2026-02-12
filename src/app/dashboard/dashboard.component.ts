@@ -51,25 +51,35 @@ export class DashboardComponent {
   empresas$ = computed(() => this.empresas());
   bodas$ = computed(() => this.bodas());
 
-  constructor(private router: Router){
-    
+  constructor(private router: Router) {
+
   }
 
 
   ngOnInit(): void {
     this.cargarEmpresas();
     this.cargarResenias();
-    this.cargarBodas(); 
+    this.cargarBodas();
 
-    const rol = JSON.parse(localStorage.getItem('rol') || 'null');
-
-    if (rol === 'empresa') {
-      this.router.navigate(['/proveedor-dashboard']);
+    const data = localStorage.getItem('user');
+    if (data) {
+      try {
+        const parsedData = JSON.parse(data);
+        if (parsedData['rol'] === 'empresa') {
+          this.router.navigate(['/proveedor-dashboard']);
+        }
+        // Use parsedData
+      } catch (e) {
+        console.error('Invalid JSON:', e);
+        // Handle or fallback
+      }
     }
+
 
     // if (rol === 'usuario') {
     //   this.router.navigate(['/mi-boda']);
     // }
+
   }
 
   cargarResenias(): void {

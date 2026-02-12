@@ -3,10 +3,12 @@ import { Router } from '@angular/router';
 import { AutenticarHttpClientService } from '../Services/Autentication/autenticar-http-client.service';
 import { ReverbServiceTsService } from '../src/app/services/reverb.service.ts.service';
 import { AdminNavProveedorComponent } from "../admin-nav-proveedor/admin-nav-proveedor.component";
+import { MatMenuItem, MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-top-bar-admin',
-  imports: [AdminNavProveedorComponent],
+  imports: [AdminNavProveedorComponent, MatMenuModule, MatMenuItem, MatMenuTrigger],
   templateUrl: './top-bar-admin.component.html',
   styleUrl: './top-bar-admin.component.scss'
 })
@@ -24,6 +26,8 @@ export class TopBarAdminComponent {
   ngOnInit(): void {
    
   }
+
+  
 
   logout(event?: Event): void {
     event?.preventDefault();

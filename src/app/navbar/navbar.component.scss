@@ -138,10 +138,15 @@ a {
     height: 56px; /* Ajusta según tu header */
 }
 
-#mainMenuOffcanvas .offcanvas-body {
-    height: calc(100vh - 56px) !important;
-    max-height: calc(100vh - 56px) !important;
-    overflow-y: auto !important;
+// #mainMenuOffcanvas .offcanvas-body {
+//     height: calc(100vh - 56px) !important;
+//     max-height: calc(100vh - 56px) !important;
+//     overflow-y: auto !important;
+// }
+
+.avatar-button {
+  font-size: 10px;
 }
+
 
 
