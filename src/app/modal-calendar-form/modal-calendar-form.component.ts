@@ -1,12 +1,24 @@
 import { Component, effect, input, OnChanges, output, SimpleChanges } from '@angular/core';
 import { CalendarSelection, ReservaEvent, ReservaFormValue, SaveReservaPayload } from '../Interfaces/Reserva';
 import Swal from 'sweetalert2'
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTimepickerModule } from '@angular/material/timepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+
 
 @Component({
   selector: 'app-modal-calendar-form',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTimepickerModule,
+    MatDatepickerModule,
+    FormsModule,
+
+  ],
   templateUrl: './modal-calendar-form.component.html',
   styleUrl: './modal-calendar-form.component.scss'
 })
@@ -17,6 +29,7 @@ export class ModalCalendarFormComponent implements OnChanges {
 
 
   data = input<CalendarSelection>();
+
   event = input<ReservaEvent | null>(null);
   guardarReserva = output<SaveReservaPayload>();
   cerrar = output<void>();
@@ -24,13 +37,22 @@ export class ModalCalendarFormComponent implements OnChanges {
   editar = output<void>();
 
   ngOnChanges(changes: SimpleChanges): void {
-
-    if (this.data()) {
-      console.log(this.data()
-      )
-    };
+    const selection = this.data();
+    // Si estamos creando y hay una selección nueva en el calendario
+    if (selection && this.mode() === 'create') {
+      this.form.patchValue({
+        fecha: {
+          start: selection.startStr.split('T')[0], // Limpiamos si viene con tiempo
+          end: selection.endStr ? selection.endStr.split('T')[0] : selection.startStr.split('T')[0],
+          allDay: selection.allDay,
+          startStr: selection.startStr.includes('T') ? selection.startStr.split('T')[1].substring(0, 5) : null,
+          endStr: selection.endStr?.includes('T') ? selection.endStr.split('T')[1].substring(0, 5) : null
+        },
+        // Tip: Podrías pre-seleccionar 'servicio' si hay tiempo, o 'producto' si no.
+        modalidad: selection.allDay ? 'producto' : 'servicio'
+      });
+    }
   }
-
 
 
 
@@ -114,55 +136,30 @@ export class ModalCalendarFormComponent implements OnChanges {
     });
 
 
-
-
-
+    // Escuchar cambios en la MODALIDAD (con SweetAlert)
     this.form.get('modalidad')?.valueChanges.subscribe(modalidad => {
-      if (this.saltarConfirmacionModalidad) {
-        this.modalidadAnterior = modalidad ?? null;
-        return;
-      }
-
-      const anterior = this.modalidadAnterior;
-      if (anterior && modalidad && anterior !== modalidad) {
-        this.saltarConfirmacionModalidad = true;
-        Swal.fire({
-          theme: 'material-ui',
-          title: '¿Cambiar modalidad?',
-          text: 'Esto puede modificar la reserva.',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, cambiar',
-          cancelButtonText: 'No, mantener',
-        }).then((result) => {
-          if (!result.isConfirmed) {
-            this.form.get('modalidad')?.setValue(anterior, { emitEvent: false });
-          } else {
-            this.modalidadAnterior = modalidad;
-          }
-          this.saltarConfirmacionModalidad = false;
-        });
-        return;
-      }
-
-      this.modalidadAnterior = modalidad ?? null;
-
-      const fecha = this.fechaGroup;
-      if (modalidad === 'producto' || modalidad === 'dia') {
-        fecha.patchValue({
-          allDay: true,
-          horaInicio: null,
-          horaFin: null,
-          fin: fecha.get('inicio')?.value
-        }, { emitEvent: false });
-      } else if (modalidad === 'servicio') {
-        fecha.patchValue({
-          allDay: false,
-          fin: fecha.get('inicio')?.value
-        }, { emitEvent: false });
-      }
-      this.form.updateValueAndValidity();
+      this.gestionarCambioModalidad(modalidad);
     });
+
+    // Escuchar cambios en la FECHA DE INICIO
+    // Si cambia el inicio, sincronizamos el fin automáticamente para Servicio o Día único
+    this.fechaGroup.get('start')?.valueChanges.subscribe(val => {
+      const modalidad = this.form.get('modalidad')?.value;
+      const single = this.fechaGroup.get('singleDay')?.value;
+
+      if (modalidad === 'servicio' || (modalidad === 'dia' && single)) {
+        this.fechaGroup.get('end')?.setValue(val, { emitEvent: false });
+      }
+    });
+
+    // Escuchar el switch de "Bloquear solo un día"
+    this.fechaGroup.get('singleDay')?.valueChanges.subscribe(single => {
+      if (single) {
+        const fechaInicio = this.fechaGroup.get('start')?.value;
+        this.fechaGroup.get('end')?.setValue(fechaInicio, { emitEvent: false });
+      }
+    });
+
 
     this.fechaGroup.get('singleDay')?.valueChanges.subscribe(single => {
       if (single) {
@@ -183,6 +180,75 @@ export class ModalCalendarFormComponent implements OnChanges {
 
   }
 
+  private gestionarCambioModalidad(modalidad: any) {
+    // 1. Si es un cambio interno automático, no hacer nada
+    if (this.saltarConfirmacionModalidad) {
+      this.modalidadAnterior = modalidad ?? null;
+      return;
+    }
+
+    const anterior = this.modalidadAnterior;
+
+    // 2. Si hay un cambio manual y ya había algo seleccionado, preguntar
+    if (anterior && modalidad && anterior !== modalidad) {
+      this.saltarConfirmacionModalidad = true;
+
+      Swal.fire({
+        title: '¿Cambiar modalidad?',
+        text: 'Se ajustarán los campos de fecha y hora según la nueva modalidad.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, cambiar',
+        cancelButtonText: 'Mantener actual'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.modalidadAnterior = modalidad;
+          this.aplicarReglasModalidad(modalidad);
+        } else {
+          // Revertir el valor en el select/radio sin disparar el evento de nuevo
+          this.form.get('modalidad')?.setValue(anterior, { emitEvent: false });
+        }
+        this.saltarConfirmacionModalidad = false;
+      });
+    } else {
+      // 3. Si es la primera selección, aplicar reglas directamente
+      this.modalidadAnterior = modalidad ?? null;
+      this.aplicarReglasModalidad(modalidad);
+    }
+  }
+
+  // Método auxiliar para limpiar errores y ajustar valores según la modalidad
+  private aplicarReglasModalidad(modalidad: string) {
+    const fecha = this.fechaGroup;
+
+    // Limpiamos errores de validaciones anteriores
+    fecha.get('start')?.setErrors(null);
+    fecha.get('end')?.setErrors(null);
+    fecha.get('startStr')?.setErrors(null);
+    fecha.get('endStr')?.setErrors(null);
+
+    if (modalidad === 'producto' || modalidad === 'dia') {
+      fecha.patchValue({
+        allDay: true,
+        startStr: null,
+        endStr: null,
+        // Si el fin estaba vacío, le ponemos el inicio por defecto
+        end: fecha.get('end')?.value || fecha.get('start')?.value
+      },);
+    }
+    else if (modalidad === 'servicio') {
+      fecha.patchValue({
+        // En servicio el fin SIEMPRE es el mismo día que el inicio
+        end: fecha.get('start')?.value
+      },);
+    }
+
+    // Refrescar el estado del formulario para que los validadores actúen
+    this.form.updateValueAndValidity();
+  }
+
 
   normalizeFechas(fecha: CalendarSelection) {
     const start = fecha.start;
@@ -199,52 +265,54 @@ export class ModalCalendarFormComponent implements OnChanges {
 
 
 
-
   fechasValidator(): ValidatorFn {
     return (control: AbstractControl) => {
-      const modalidad = control.get('modalidad')?.value;
-      const fecha = control.get('fecha') as FormGroup;
+      const form = control as FormGroup;
+      const modalidad = form.get('modalidad')?.value;
+      const fecha = form.get('fecha') as FormGroup;
       if (!fecha) return null;
 
       const inicio = fecha.get('start')?.value;
-      let fin = fecha.get('end')?.value;
+      const fin = fecha.get('end')?.value;
       const hInicio = fecha.get('startStr')?.value;
       const hFin = fecha.get('endStr')?.value;
-      const singleDay = fecha.get('singleDay')?.value;
       const allDay = fecha.get('allDay')?.value;
+      const singleDay = fecha.get('singleDay')?.value;
 
       if (!inicio) return null;
-      
-      if (modalidad === 'producto') {
-        if (!fin) fin = inicio;
-        if (new Date(fin) < new Date(inicio)) {
-          return { fechaFinInvalida: true };
-        }
-      }
 
-      if (modalidad === 'dia') {
-        if (singleDay) {
-          fin = inicio;
-        } else {
-          if (!fin) fin = inicio;
-          if (new Date(fin) < new Date(inicio)) {
+      // VALIDACIÓN PARA PRODUCTO Y DÍA (Rangos de días)
+      if (modalidad === 'producto' || modalidad === 'dia') {
+        if (modalidad === 'dia' && singleDay) return null;
+
+        if (fin && inicio) {
+          const dInicio = new Date(inicio).getTime();
+          const dFin = new Date(fin).getTime();
+          if (dFin < dInicio) {
             return { fechaFinInvalida: true };
           }
         }
       }
 
+      // VALIDACIÓN PARA SERVICIO (Solo horas, ignoramos el 'end' de fecha)
       if (modalidad === 'servicio') {
         if (allDay) return null;
+        // Si no hay horas, es inválido
         if (!hInicio || !hFin) return { horaInvalida: true };
-        const start = new Date(`${inicio}T${hInicio}`);
-        const end = new Date(`${inicio}T${hFin}`);
-        if (end <= start) return { horaInvalida: true };
+
+        const [h1, m1] = hInicio.split(':').map(Number);
+        const [h2, m2] = hFin.split(':').map(Number);
+        const minutosInicio = h1 * 60 + m1;
+        const minutosFin = h2 * 60 + m2;
+
+        if (minutosFin <= minutosInicio) {
+          return { horaInvalida: true };
+        }
       }
 
       return null;
     };
   }
-
 
 
   estadoNotasValidator(): ValidatorFn {
@@ -270,6 +338,10 @@ export class ModalCalendarFormComponent implements OnChanges {
       this.form.markAllAsTouched();
       return;
     }
+
+    const formValue = this.form.getRawValue();
+
+    console.log('Datos a enviar:', formValue)
 
     this.guardarReserva.emit({
       form: this.form.getRawValue() as ReservaFormValue,

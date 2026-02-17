@@ -3,10 +3,14 @@
 
 <app-buscador></app-buscador>
 
+@if(autServicectx.rol() === 'usuario' && autServicectx.auth()) {
+
 <div class="container">
 
     <app-card-actividades-novia></app-card-actividades-novia>
 </div>
+
+}
 <div class="personal-container">
 
     <h1 class="h1-tittle">Empresas</h1>

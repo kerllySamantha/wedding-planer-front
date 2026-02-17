@@ -1,9 +1,8 @@
 <div class="modal fade" id="calendarModal" tabindex="-1" aria-hidden="true" aria-labelledby="modalReservaLabel">
     <form [formGroup]="form" (ngSubmit)="mode() !== 'view' && guardar($event)" novalidate>
-
-
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow-lg border-0">
+
                 <div class="modal-header bg-light">
                     <h5 class="modal-title d-flex align-items-center" id="modalReservaLabel">
                         <i class="bi bi-calendar-event me-2 text-primary"></i>
@@ -14,21 +13,25 @@
 
                 <div class="modal-body p-4">
 
+                    @if(form.hasError('horaInvalida') && form.get('modalidad')?.value === 'servicio') {
+                    <div class="alert alert-danger py-2 small mb-3">
+                        <i class="bi bi-clock-history me-2"></i>La hora de fin debe ser posterior a la de inicio.
+                    </div>
+                    }
+
+                    @if(form.hasError('notasCancelacionInvalidas')) {
+                    <div class="alert alert-warning py-2 small mb-3">
+                        <i class="bi bi-chat-left-dots me-2"></i>Para cancelar, explica el motivo en notas (mín. 10
+                        carac.).
+                    </div>
+                    }
+
                     @if(mode() === 'create' || mode() === 'edit') {
 
                     <div class="mb-4">
                         <label class="form-label fw-bold small text-uppercase text-muted">Título de la Reserva</label>
                         <input type="text" class="form-control form-control-lg" formControlName="titulo"
-                            [class.is-invalid]="form.get('titulo')?.invalid && (form.get('titulo')?.touched || form.get('titulo')?.dirty)"
-                            [class.is-valid]="form.get('titulo')?.valid && (form.get('titulo')?.touched || form.get('titulo')?.dirty)">
-
-                        <div class="invalid-feedback">
-                            @if(form.get('titulo')?.errors && (form.get('titulo')?.touched ||
-                            form.get('titulo')?.dirty)){
-                            @if(form.get('titulo')?.hasError?.('required')){El campo es obligatorio}
-                            }
-                        </div>
-
+                            [class.is-invalid]="form.get('titulo')?.invalid && form.get('titulo')?.touched">
                     </div>
 
                     <div class="mb-4">
@@ -42,6 +45,7 @@
                             <input type="radio" class="btn-check" formControlName="modalidad" value="servicio"
                                 id="tipoServ">
                             <label class="btn btn-outline-primary" for="tipoServ">Servicio</label>
+
                             <input type="radio" class="btn-check" formControlName="modalidad" value="dia" id="tipoDia">
                             <label class="btn btn-outline-primary" for="tipoDia">Día</label>
                         </div>
@@ -50,13 +54,11 @@
                     @if(form.get('modalidad')?.value) {
                     <div formGroupName="fecha" class="p-3 border rounded shadow-sm bg-white mb-4">
 
-                        <!-- PRODUCTO -->
                         @if(form.get('modalidad')?.value === 'producto') {
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Fecha Entrega</label>
-                                <input type="date" class="form-control" formControlName="start"
-                                    [class.is-invalid]="fechaGroup.get('start')?.invalid && fechaGroup.get('start')?.touched">
+                                <input type="date" class="form-control" formControlName="start">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold">Fecha Recogida</label>
@@ -65,7 +67,6 @@
                         </div>
                         }
 
-                        <!-- SERVICIO -->
                         @if(form.get('modalidad')?.value === 'servicio') {
                         <div class="row g-3">
                             <div class="col-12">
@@ -77,31 +78,23 @@
                             </div>
                             <div class="col-12">
                                 <label class="form-label small fw-bold">Fecha del Servicio</label>
-                                <input type="date" class="form-control" formControlName="start"
-                                    [class.is-invalid]="fechaGroup.get('start')?.invalid && fechaGroup.get('start')?.touched || fechaGroup.get('start')?.dirty || form.getError('horaInvalida')"
-                                    [class.is-valid]="fechaGroup.get('start')?.valid && (fechaGroup.get('start')?.touched || fechaGroup.get('start')?.dirty) && !form.getError('horaInvalida')">
+                                <input type="date" class="form-control" formControlName="start">
                             </div>
-                            @if(!form.get('fecha')?.get('allDay')?.value){
+                            @if(!form.get('fecha.allDay')?.value){
                             <div class="col-6">
-                                <label class="small text-muted">start</label>
-                                <input type="time" class="form-control" formControlName="startStr" [class.is-invalid]="(fechaGroup.get('startStr')?.invalid && (fechaGroup.get('startStr')?.touched || fechaGroup.get('startStr')?.dirty)) || form.getError('horaInvalida')
-                                    "
-                                    [class.is-valid]="(fechaGroup.get('startStr')?.valid && (fechaGroup.get('startStr')?.touched || fechaGroup.get('startStr')?.dirty)) && !form.getError('horaInvalida')">
+                                <label class="small text-muted">Hora Inicio</label>
+                                <input type="time" class="form-control" formControlName="startStr">
                             </div>
                             <div class="col-6">
-                                <label class="small text-muted">endç</label>
-                                <input type="time" class="form-control" formControlName="endStr"
-                                    [class.is-invalid]="(fechaGroup.get('endStr')?.invalid && (fechaGroup.get('endStr')?.touched || fechaGroup.get('endStr')?.dirty)) || form.getError('horaInvalida')"
-                                    [class.is-valid]="(fechaGroup.get('endStr')?.valid && (fechaGroup.get('endStr')?.touched || fechaGroup.get('endStr')?.dirty)) && !form.getError('horaInvalida')">
+                                <label class="small text-muted">Hora Fin</label>
+                                <input type="time" class="form-control" formControlName="endStr">
                             </div>
                             }
                         </div>
                         }
 
-                        <!-- DÍA -->
                         @if(form.get('modalidad')?.value === 'dia') {
                         <div class="row g-3">
-                            <!-- Checkbox: bloquear un solo día -->
                             <div class="col-12 mb-2">
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" formControlName="singleDay"
@@ -109,42 +102,32 @@
                                     <label class="form-check-label" for="singleDaySwitch">Bloquear solo un día</label>
                                 </div>
                             </div>
-
-                            <!-- Fecha start -->
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Fecha de start</label>
-                                <input type="date" class="form-control" formControlName="start"
-                                    [class.is-invalid]="fechaGroup.get('start')?.invalid && fechaGroup.get('start')?.touched">
+                                <label class="form-label small fw-bold">Desde</label>
+                                <input type="date" class="form-control" formControlName="start">
                             </div>
-
-                            <!-- Fecha end (solo si no es singleDay) -->
-                            @if(!form.get('fecha')?.get('singleDay')?.value){
+                            @if(!form.get('fecha.singleDay')?.value){
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold">Fecha de end</label>
-                                <input type="date" class="form-control" formControlName="end"
-                                    [class.is-invalid]="fechaGroup.get('end')?.invalid && fechaGroup.get('end')?.touched">
+                                <label class="form-label small fw-bold">Hasta</label>
+                                <input type="date" class="form-control" formControlName="end">
                             </div>
                             }
-
                         </div>
                         }
 
                         @if(form.hasError('fechaFinInvalida')){
                         <div class="text-danger small mt-2">
-                            <i class="bi bi-exclamation-triangle-fill"></i> La fecha/hora de end no puede ser anterior
-                            al start.
+                            <i class="bi bi-exclamation-triangle-fill"></i> La fecha de fin es anterior al inicio.
                         </div>
                         }
-
                     </div>
                     }
 
-
                     <div class="mb-4">
-                        <label class="form-label fw-bold small text-uppercase text-muted">Estado de la Reserva</label>
+                        <label class="form-label fw-bold small text-uppercase text-muted">Estado</label>
                         <div class="d-flex flex-wrap gap-2">
                             @for(est of ['pendiente', 'confirmada', 'cancelada', 'bloqueada']; track est) {
-                            <input type="radio" class="btn-check" [formControlName]="'estado'" [value]="est"
+                            <input type="radio" class="btn-check" formControlName="estado" [value]="est"
                                 [id]="'st-'+est">
                             <label class="btn btn-sm btn-outline-secondary flex-fill" [for]="'st-'+est">
                                 {{ est | titlecase }}
@@ -156,12 +139,10 @@
                     <div class="mb-0">
                         <label class="form-label fw-bold small text-uppercase text-muted">Notas Internas</label>
                         <textarea class="form-control" rows="2" formControlName="notas"
-                            placeholder="Información adicional..."></textarea>
+                            placeholder="Ej: Motivo del bloqueo o detalles específicos..."></textarea>
                     </div>
 
-                    }
-
-                    @if(mode() === 'view') {
+                    } @else if(mode() === 'view') {
                     <div class="view-details">
                         <h3 class="mb-1">{{ event()?.title }}</h3>
                         <div class="mb-3">
@@ -169,19 +150,22 @@
                                 {{ event()?.extendedProps?.['estado'] | titlecase }}
                             </span>
                         </div>
-
                         <div class="card bg-light border-0">
                             <div class="card-body">
                                 <p class="mb-2"><strong>📅 Fecha:</strong> {{ event()?.start | date:'longDate' }}</p>
                                 @if(!event()?.allDay){
-                                <p class="mb-2"><strong>🕒 Horario:</strong> {{ event()?.start | date:'HH:mm' }} - {{
-                                    event()?.end | date:'HH:mm' }}</p>
+                                <p class="mb-2">
+                                    <strong>🕒 Horario:</strong>
+                                    {{ event()?.start | date:'HH:mm' }} - {{ event()?.end | date:'HH:mm' }}
+                                </p>
                                 }
                                 <p class="mb-2"><strong>🏢 Empresa:</strong> {{
                                     event()?.extendedProps?.['empresa']?.nombre_empresa || 'N/A' }}</p>
+                                <p class="mb-2"><strong>🏢 Tipo:</strong> {{
+                                    event()?.extendedProps?.['producto']?.modalidad }}</p>
                                 @if(event()?.extendedProps?.['notas']){
                                 <hr>
-                                <p class="mb-0 text-muted italic">"{{ event()?.extendedProps?.['notas'] }}"</p>
+                                <p class="mb-0 text-muted italic small">"{{ event()?.extendedProps?.['notas'] }}"</p>
                                 }
                             </div>
                         </div>
@@ -191,15 +175,15 @@
 
                 <div class="modal-footer bg-light border-top-0">
                     @if(mode() === 'create' || mode() === 'edit') {
-                    <button class="btn btn-light px-4" (click)="cerrar.emit()">Cancelar</button>
-                    <button class="btn btn-primary px-4 shadow-sm" [disabled]="form.invalid" type="submit"
-                        [disabled]="form.invalid">
+                    <button type="button" class="btn btn-light px-4" (click)="cerrarModal()">Cancelar</button>
+                    <button class="btn btn-primary px-4 shadow-sm" [disabled]="form.invalid" type="submit">
                         {{ mode() === 'edit' ? 'Actualizar Cambios' : 'Crear Reserva' }}
                     </button>
                     }
                     @if(mode() === 'view') {
-                    <button class="btn btn-outline-danger me-auto" (click)="cerrar.emit()">Eliminar</button>
-                    <button class="btn btn-primary px-4" (click)="edit()">Modificar</button>
+                    <button type="button" class="btn btn-outline-danger me-auto"
+                        (click)="cerrar.emit()">Eliminar</button>
+                    <button type="button" class="btn btn-primary px-4" (click)="edit()">Modificar</button>
                     }
                 </div>
 

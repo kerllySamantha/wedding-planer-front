@@ -28,6 +28,7 @@ import { PresupuestoHttpService } from './Services/Presupuesto/presupuesto-http-
 import { PresupuestoApiService } from './Services/Presupuesto/presupuesto-api.service';
 import { ReservasApiServiceService } from './Services/Reservas/reservas-api-service.service';
 import { ReservasServiceServiceService } from './Services/Reservas/reservas-service-service.service';
+import { provideNativeDateAdapter } from '@angular/material/core';
 const url_back = 'http://localhost:8000/api';
 const url_local = "http://wedding_planer.local/api";
 export const appConfig: ApplicationConfig = {
@@ -50,7 +51,8 @@ export const appConfig: ApplicationConfig = {
   { provide: ItemsDetallesService, useExisting: ItemsDetallesApiService },
   { provide: PresupuestoHttpService, useExisting: PresupuestoApiService },
   { provide: LOCALE_ID, useValue: 'es' },
- 
+  provideNativeDateAdapter()
+
 
 
   ]

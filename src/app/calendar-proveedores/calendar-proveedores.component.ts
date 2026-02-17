@@ -144,24 +144,39 @@ export class CalendarProveedoresComponent implements OnInit {
 
 
 
-  private formToReservaEvent(
-    form: ReservaFormValue,
-    id?: string
-  ): ReservaEvent {
+  private formToReservaEvent(form: ReservaFormValue, id?: string): ReservaEvent {
+    const colores = {
+      pendiente: '#E6AF2E',
+      confirmada: '#198754',
+      bloqueada: '#6c757d',
+      cancelada: '#dc3545'
+    };
 
-    const colores = { pendiente: '#E6AF2E', confirmada: '#198754', bloqueada: '#6c757d', cancelada: '#dc3545' };
+    const original = id ? this.events().find(e => e.id === id) : null;
 
-    // Busca el evento original si existe
-    const original = id
-      ? this.events().find(e => e.id === id)
-      : null;
+    let start: string;
+    let end: string | undefined;
 
-    let start = form.fecha.start;
-    let end = form.fecha.end || form.fecha.start;
-
-    if (form.modalidad === 'servicio' && !form.fecha.allDay) {
-      start = `${form.fecha.start}T${form.fecha.startStr}`;
-      end = `${form.fecha.start}T${form.fecha.endStr}`;
+    // CASO A: SERVICIO (Se basa en una sola fecha, con o sin horas)
+    if (form.modalidad === 'servicio') {
+      if (form.fecha.allDay) {
+        start = form.fecha.start; // YYYY-MM-DD
+        end = undefined;          // FullCalendar entiende que es todo el día
+      } else {
+        start = `${form.fecha.start}T${form.fecha.startStr}`; // ISO8601
+        end = `${form.fecha.start}T${form.fecha.endStr}`;
+      }
+    }
+    // CASO B: PRODUCTO (Rango de fechas: Entrega a Recogida)
+    else if (form.modalidad === 'producto') {
+      start = form.fecha.start;
+      // Si no hay fecha de recogida, asumimos el mismo día
+      end = form.fecha.end || form.fecha.start;
+    }
+    // CASO C: DÍA (Bloqueo manual)
+    else {
+      start = form.fecha.start;
+      end = form.fecha.singleDay ? undefined : form.fecha.end;
     }
 
     return {
@@ -169,7 +184,7 @@ export class CalendarProveedoresComponent implements OnInit {
       title: form.titulo,
       start,
       end,
-      allDay: form.fecha.allDay,
+      allDay: form.fecha.allDay || form.modalidad === 'producto',
       backgroundColor: colores[form.estado],
       extendedProps: {
         ...original?.extendedProps,
@@ -180,15 +195,17 @@ export class CalendarProveedoresComponent implements OnInit {
     };
   }
 
+
+
   isDateBlocked(start: Date, end?: Date): boolean {
     return this.events().some(ev => {
+      // Si el evento existente es un PRODUCTO, no bloquea el calendario
+      if (ev.extendedProps?.['modalidad'] === 'producto') return false;
+
       const evStart = new Date(ev.start);
       const evEnd = ev.end ? new Date(ev.end) : evStart;
 
-      return (
-        start < evEnd &&
-        (end ?? start) > evStart
-      );
+      return (start < evEnd && (end ?? start) > evStart);
     });
   }
 
@@ -218,23 +235,23 @@ export class CalendarProveedoresComponent implements OnInit {
   // }
 
   private mostrarModalBootstrap() {
-  const modalElem = document.getElementById('calendarModal');
-  if (modalElem) bootstrap.Modal.getOrCreateInstance(modalElem).show();
-}
+    const modalElem = document.getElementById('calendarModal');
+    if (modalElem) bootstrap.Modal.getOrCreateInstance(modalElem).show();
+  }
 
-cerrarModal() {
-  const modalElem = document.getElementById('calendarModal');
-  if (modalElem) bootstrap.Modal.getInstance(modalElem)?.hide();
-  this.selectedEvent.set(null);
-  this.modalMode.set('create');
-}
+  cerrarModal() {
+    const modalElem = document.getElementById('calendarModal');
+    if (modalElem) bootstrap.Modal.getInstance(modalElem)?.hide();
+    this.selectedEvent.set(null);
+    this.modalMode.set('create');
+  }
 
-getReservas() {
-  this.loading.set(false);
-  this.reservasctx.getCalendarioEmpresa(this.idEmpresa()).subscribe(data => {
-    this.events.set(data || []);
-    this.loading.set(true);
-  });
-}
+  getReservas() {
+    this.loading.set(false);
+    this.reservasctx.getCalendarioEmpresa(this.idEmpresa()).subscribe(data => {
+      this.events.set(data || []);
+      this.loading.set(true);
+    });
+  }
 
 }

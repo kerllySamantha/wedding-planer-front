@@ -15,7 +15,14 @@
 }
 
 .dropdown-menu {
-  z-index: 2000 !important;
+    z-index: 2000 !important;
 }
 
-
+.navbar {
+    // background-color: rgba(250, 246, 252, 0.651) !important;
+    background: #E2EBF3 !important;
+    // box-shadow: 0 4px 15px rgb(144, 196, 238);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    // padding: 20px;
+}

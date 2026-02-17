@@ -65,8 +65,8 @@ export interface ReservaEvent {
     id?: string;
     title: string;
     start: string;
-    end: string;
-    singleDay?:  boolean
+    end: string | undefined;
+    singleDay?: boolean
     backgroundColor?: string;
     borderColor?: string;
     extendedProps: ExtendedReservaProps;
@@ -83,7 +83,7 @@ export interface ExtendedReservaProps {
         nombre_empresa: string;
     };
     boda?: Boda;
-    producto?:  ProductoCalendario
+    producto?: ProductoCalendario
     modalidad?: 'producto' | 'servicio' | 'dia';
     fechaFin?: string;
 
@@ -110,13 +110,14 @@ export interface ReservaFormValue {
     fecha: FechaReserva;
     estado: EstadoReserva;
     notas?: string;
+    singleDay?: true,
     modalidad?: 'producto' | 'servicio';
 }
 
 export interface FechaReserva {
-    start: string;
-    end: string;
-    
+    start: string,
+    end: string,
+    singleDay?: true,
     startStr?: string;
     endStr?: string;
     allDay: boolean;

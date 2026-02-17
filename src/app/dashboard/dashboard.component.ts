@@ -14,6 +14,7 @@ import { BodaServiceServiceService } from '../Services/Bodas/boda-service-servic
 import { CardBodaComponent } from '../card-boda/card-boda.component';
 import { CardActividadesNoviaComponent } from "../card-actividades-novia/card-actividades-novia.component";
 import { BuscadorComponent } from "../buscador/buscador.component";
+import { AuthenticationService } from '../Services/Autentication/authenticationService';
 
 @Component({
   selector: 'app-dashboard',
@@ -44,6 +45,12 @@ export class DashboardComponent {
   resenias = signal<Resenia[]>([]);
   empresas = signal<Empresa[]>([]);
   bodas = signal<Boda[]>([]);
+
+
+  autServicectx = inject(AuthenticationService);
+   
+    rolAuth = computed(() => !!this.autServicectx.rol());
+  
 
   loading = signal(true);
   error = signal<string | null>(null);
