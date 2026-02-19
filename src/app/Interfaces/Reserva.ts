@@ -86,6 +86,7 @@ export interface ExtendedReservaProps {
     producto?: ProductoCalendario
     modalidad?: 'producto' | 'servicio' | 'dia';
     fechaFin?: string;
+    fechaFinVisual? : string
 
 }
 
@@ -111,7 +112,7 @@ export interface ReservaFormValue {
     estado: EstadoReserva;
     notas?: string;
     singleDay?: true,
-    modalidad?: 'producto' | 'servicio';
+    modalidad?: 'producto' | 'servicio' | 'dia';
 }
 
 export interface FechaReserva {

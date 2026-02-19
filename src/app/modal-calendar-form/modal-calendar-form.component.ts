@@ -38,22 +38,27 @@ export class ModalCalendarFormComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     const selection = this.data();
-    // Si estamos creando y hay una selección nueva en el calendario
-    if (selection && this.mode() === 'create') {
+   if (selection && this.mode() === 'create') {
+    const fInicio = selection.startStr.split('T')[0];
+    let fFin = selection.endStr ? selection.endStr.split('T')[0] : fInicio;
+
+     if (selection.allDay && selection.endStr && fFin !== fInicio) {
+       const d = new Date(fFin + 'T00:00:00');
+       d.setDate(d.getDate() - 1);
+       fFin = d.toISOString().split('T')[0];
+    }
       this.form.patchValue({
         fecha: {
-          start: selection.startStr.split('T')[0], // Limpiamos si viene con tiempo
-          end: selection.endStr ? selection.endStr.split('T')[0] : selection.startStr.split('T')[0],
+          start: fInicio,
+          end: fFin,
           allDay: selection.allDay,
           startStr: selection.startStr.includes('T') ? selection.startStr.split('T')[1].substring(0, 5) : null,
           endStr: selection.endStr?.includes('T') ? selection.endStr.split('T')[1].substring(0, 5) : null
         },
-        // Tip: Podrías pre-seleccionar 'servicio' si hay tiempo, o 'producto' si no.
         modalidad: selection.allDay ? 'producto' : 'servicio'
       });
     }
   }
-
 
 
   form = new FormGroup({
@@ -86,41 +91,29 @@ export class ModalCalendarFormComponent implements OnChanges {
 
   constructor() {
     effect(() => {
-      const eventoExistente = this.event();
+      const ev = this.event();
+      if (!ev || this.mode() !== 'edit') return;
 
-      if (eventoExistente && this.mode() === 'edit') {
-        const startHasTime = eventoExistente.start.includes('T');
-        const endHasTime = eventoExistente.end?.includes('T') ?? false;
-        const isAllDay = !!eventoExistente.allDay || (!startHasTime && !endHasTime);
+      const isAllDay = !!ev.allDay;
 
-        this.form.reset({
-          titulo: eventoExistente.title,
-          modalidad: eventoExistente.extendedProps.producto?.modalidad ?? null,
-          fecha: {
-            start: eventoExistente.start.split('T')[0],
-            end: eventoExistente.end?.split('T')[0] ?? eventoExistente.start.split('T')[0],
-            startStr: isAllDay
-              ? null
-              : startHasTime
-                ? eventoExistente.start.split('T')[1].substring(0, 5)
-                : '00:00',
-            endStr: isAllDay
-              ? null
-              : eventoExistente.end?.includes('T')
-                ? eventoExistente.end.split('T')[1].substring(0, 5)
-                : '00:00',
-            allDay: isAllDay,
-            singleDay: eventoExistente.singleDay
-          },
-          estado: eventoExistente.extendedProps.estado,
-          notas: eventoExistente.extendedProps.notas
-        });
-      }
+      // Usamos patchValue en lugar de reset para no destruir el estado del formulario
+      // y solo si los valores son distintos a los actuales
+      this.form.patchValue({
+        titulo: ev.title,
+        modalidad: ev.extendedProps?.modalidad || (isAllDay ? 'producto' : 'servicio'),
+        fecha: {
+          start: ev.start.split('T')[0],
+          end: ev.end ? ev.end.split('T')[0] : ev.start.split('T')[0],
+          startStr: isAllDay ? null : (ev.start.includes('T') ? ev.start.split('T')[1].substring(0, 5) : '00:00'),
+          endStr: isAllDay ? null : (ev.end?.includes('T') ? ev.end.split('T')[1].substring(0, 5) : '00:00'),
+          allDay: isAllDay,
+          singleDay: ev.singleDay || false
+        },
+        estado: ev.extendedProps?.estado || 'pendiente',
+        notas: ev.extendedProps?.notas || ''
+      }, { emitEvent: false }); // <--- IMPORTANTE: No disparamos eventos para evitar bucles
     });
-
-
   }
-
 
 
 
@@ -141,18 +134,17 @@ export class ModalCalendarFormComponent implements OnChanges {
       this.gestionarCambioModalidad(modalidad);
     });
 
-    // Escuchar cambios en la FECHA DE INICIO
-    // Si cambia el inicio, sincronizamos el fin automáticamente para Servicio o Día único
+    // 2. Sincronizar fin con inicio (Servicio o Día Único)
     this.fechaGroup.get('start')?.valueChanges.subscribe(val => {
       const modalidad = this.form.get('modalidad')?.value;
       const single = this.fechaGroup.get('singleDay')?.value;
-
       if (modalidad === 'servicio' || (modalidad === 'dia' && single)) {
         this.fechaGroup.get('end')?.setValue(val, { emitEvent: false });
       }
     });
 
-    // Escuchar el switch de "Bloquear solo un día"
+
+    // 3. Switch de "Solo un día"
     this.fechaGroup.get('singleDay')?.valueChanges.subscribe(single => {
       if (single) {
         const fechaInicio = this.fechaGroup.get('start')?.value;
@@ -160,21 +152,10 @@ export class ModalCalendarFormComponent implements OnChanges {
       }
     });
 
-
-    this.fechaGroup.get('singleDay')?.valueChanges.subscribe(single => {
-      if (single) {
-        this.fechaGroup.patchValue({
-          fin: this.fechaGroup.get('inicio')?.value
-        }, { emitEvent: false });
-      }
-    });
-
+    // 4. Limpieza de horas en Todo el día
     this.fechaGroup.get('allDay')?.valueChanges.subscribe(allDay => {
       if (allDay) {
-        this.fechaGroup.patchValue({
-          startStr: null,
-          endStr: null
-        }, { emitEvent: false });
+        this.fechaGroup.patchValue({ startStr: null, endStr: null }, { emitEvent: false });
       }
     });
 
@@ -286,8 +267,10 @@ export class ModalCalendarFormComponent implements OnChanges {
         if (modalidad === 'dia' && singleDay) return null;
 
         if (fin && inicio) {
-          const dInicio = new Date(inicio).getTime();
-          const dFin = new Date(fin).getTime();
+          // Al añadir 'T00:00:00' forzamos a que no use la hora actual o UTC
+          const dInicio = Number(inicio.replace(/-/g, ''));
+          const dFin = Number(fin.replace(/-/g, ''));
+
           if (dFin < dInicio) {
             return { fechaFinInvalida: true };
           }
@@ -332,23 +315,18 @@ export class ModalCalendarFormComponent implements OnChanges {
 
   guardar(event: Event) {
     event.preventDefault();
-
-
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    const formValue = this.form.getRawValue();
-
-    console.log('Datos a enviar:', formValue)
-
+    // Emitimos el valor RAW (puro). Si el usuario puso "2026-02-18", eso enviamos.
     this.guardarReserva.emit({
       form: this.form.getRawValue() as ReservaFormValue,
       id: this.mode() === 'edit' ? this.event()?.id : undefined,
     });
-
   }
+
 
   // private cerrarModal() {
   //   const modalElement = document.getElementById('calendarModal');

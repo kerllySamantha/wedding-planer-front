@@ -16,6 +16,7 @@ import { ProductoCalendario } from '../Interfaces/Producto';
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { tap } from 'rxjs';
+import { endOfDay } from 'date-fns';
 
 @Component({
   selector: 'app-calendar-proveedores',
@@ -108,16 +109,19 @@ export class CalendarProveedoresComponent implements OnInit {
   abrirDetalleReserva(info: EventClickArg) {
     const ev = info.event;
 
+    const fechaInicio = ev.startStr.split('T')[0];
+    const fechaFin = ev.extendedProps['fechaFinVisual'] || fechaInicio;
+
     this.selectedEvent.set({
       id: ev.id,
       title: ev.title,
-      start: ev.startStr,
-      end: ev.endStr,
+      start: fechaInicio,
+      end: fechaFin,
       allDay: ev.allDay,
       extendedProps: { ...ev.extendedProps } as ExtendedReservaProps
     });
 
-    this.modalMode.set('view'); // 👍 bien
+    this.modalMode.set('view');
     this.mostrarModalBootstrap();
   }
 
@@ -154,30 +158,27 @@ export class CalendarProveedoresComponent implements OnInit {
 
     const original = id ? this.events().find(e => e.id === id) : null;
 
-    let start: string;
-    let end: string | undefined;
+    let start = form.fecha.start;
+    let end = form.fecha.end || form.fecha.start;
 
-    // CASO A: SERVICIO (Se basa en una sola fecha, con o sin horas)
-    if (form.modalidad === 'servicio') {
-      if (form.fecha.allDay) {
-        start = form.fecha.start; // YYYY-MM-DD
-        end = undefined;          // FullCalendar entiende que es todo el día
-      } else {
-        start = `${form.fecha.start}T${form.fecha.startStr}`; // ISO8601
-        end = `${form.fecha.start}T${form.fecha.endStr}`;
-      }
+    let fechaFinVisual = form.fecha.end || form.fecha.start;
+
+    if (form.modalidad === 'servicio' && !form.fecha.allDay) {
+      start = `${form.fecha.start}T${form.fecha.startStr}`;
+      end = `${form.fecha.start}T${form.fecha.endStr}`;
+    } else {
+      fechaFinVisual = end;
+
+      const d = new Date(end + 'T00:00:00');
+      d.setDate(d.getDate() + 1);
+
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+
+      end = `${y}-${m}-${day}`;
     }
-    // CASO B: PRODUCTO (Rango de fechas: Entrega a Recogida)
-    else if (form.modalidad === 'producto') {
-      start = form.fecha.start;
-      // Si no hay fecha de recogida, asumimos el mismo día
-      end = form.fecha.end || form.fecha.start;
-    }
-    // CASO C: DÍA (Bloqueo manual)
-    else {
-      start = form.fecha.start;
-      end = form.fecha.singleDay ? undefined : form.fecha.end;
-    }
+
 
     return {
       id: id ?? crypto.randomUUID(),
@@ -190,7 +191,8 @@ export class CalendarProveedoresComponent implements OnInit {
         ...original?.extendedProps,
         estado: form.estado,
         notas: form.notas,
-        modalidad: form.modalidad
+        modalidad: form.modalidad,
+        fechaFinVisual: fechaFinVisual
       }
     };
   }
