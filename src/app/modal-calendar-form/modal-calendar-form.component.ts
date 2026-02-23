@@ -1,5 +1,5 @@
 import { Component, effect, input, OnChanges, output, SimpleChanges } from '@angular/core';
-import { CalendarSelection, ReservaEvent, ReservaFormValue, SaveReservaPayload } from '../Interfaces/Reserva';
+import { CalendarSelection, ReservaEvent, ReservaFormValue, SaveReservaPayload, tipo_reserva } from '../Interfaces/Reserva';
 import Swal from 'sweetalert2'
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -8,57 +8,36 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 
-
 @Component({
   selector: 'app-modal-calendar-form',
-  imports: [CommonModule, ReactiveFormsModule,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatTimepickerModule,
     MatDatepickerModule,
     FormsModule,
-
   ],
   templateUrl: './modal-calendar-form.component.html',
   styleUrl: './modal-calendar-form.component.scss'
 })
-export class ModalCalendarFormComponent implements OnChanges {
+export class ModalCalendarFormComponent {
 
-  private modalidadAnterior: 'producto' | 'servicio' | 'dia' | null = null;
-  private saltarConfirmacionModalidad = false;
-
+  private reservaAnterior: 'producto' | 'servicio' | 'bloqueo' | null = null;
+  private ignorarCambioModalidad = false;
+  private destruido = false;
+  private inicializadoCreate = false;
+  private inicializadoEdit = false;
+  private reservaInicial: 'producto' | 'servicio' | 'bloqueo' | null = null;
 
   data = input<CalendarSelection>();
-
   event = input<ReservaEvent | null>(null);
   guardarReserva = output<SaveReservaPayload>();
   cerrar = output<void>();
   mode = input<'create' | 'view' | 'edit'>();
   editar = output<void>();
 
-  ngOnChanges(changes: SimpleChanges): void {
-    const selection = this.data();
-   if (selection && this.mode() === 'create') {
-    const fInicio = selection.startStr.split('T')[0];
-    let fFin = selection.endStr ? selection.endStr.split('T')[0] : fInicio;
-
-     if (selection.allDay && selection.endStr && fFin !== fInicio) {
-       const d = new Date(fFin + 'T00:00:00');
-       d.setDate(d.getDate() - 1);
-       fFin = d.toISOString().split('T')[0];
-    }
-      this.form.patchValue({
-        fecha: {
-          start: fInicio,
-          end: fFin,
-          allDay: selection.allDay,
-          startStr: selection.startStr.includes('T') ? selection.startStr.split('T')[1].substring(0, 5) : null,
-          endStr: selection.endStr?.includes('T') ? selection.endStr.split('T')[1].substring(0, 5) : null
-        },
-        modalidad: selection.allDay ? 'producto' : 'servicio'
-      });
-    }
-  }
 
 
   form = new FormGroup({
@@ -68,188 +47,178 @@ export class ModalCalendarFormComponent implements OnChanges {
       end: new FormControl<string | null>(null),
       startStr: new FormControl<string | null>(null),
       endStr: new FormControl<string | null>(null),
-      allDay: new FormControl(false),
-      singleDay: new FormControl(false)
     }),
-    modalidad: new FormControl<'producto' | 'servicio' | 'dia' | null>(null, Validators.required),
-    estado: new FormControl<'pendiente' | 'confirmada' | 'cancelada' | 'bloqueada'>('pendiente', Validators.required),
+    tipo_reserva: new FormControl<'producto' | 'servicio' | 'bloqueo' | null>(null, Validators.required),
+    estado: new FormControl<'pendiente' | 'confirmada' | 'cancelada' | 'bloqueada' | 'rechazada'>('pendiente', Validators.required),
     notas: new FormControl('')
   }, {
     validators: [
       this.fechasValidator(),
       this.estadoNotasValidator(),
-
     ]
   });
-
 
   get fechaGroup() {
     return this.form.get('fecha') as FormGroup;
   }
 
 
-
+  ngOnDestroy() {
+    this.destruido = true;
+    Swal.close();
+  }
   constructor() {
+
+    // EDIT MODE
     effect(() => {
       const ev = this.event();
-      if (!ev || this.mode() !== 'edit') return;
+      const mode = this.mode();
 
-      const isAllDay = !!ev.allDay;
+      if (!ev || mode !== 'edit') return;
 
-      // Usamos patchValue en lugar de reset para no destruir el estado del formulario
-      // y solo si los valores son distintos a los actuales
+      if (this.inicializadoEdit) return; // 🔥 evitar re-ejecución
+
+      const tipo = ev.extendedProps?.tipo_reserva ?? null;
+
+      this.ignorarCambioModalidad = true;
+
       this.form.patchValue({
         titulo: ev.title,
-        modalidad: ev.extendedProps?.modalidad || (isAllDay ? 'producto' : 'servicio'),
+        tipo_reserva: tipo,
         fecha: {
           start: ev.start.split('T')[0],
           end: ev.end ? ev.end.split('T')[0] : ev.start.split('T')[0],
-          startStr: isAllDay ? null : (ev.start.includes('T') ? ev.start.split('T')[1].substring(0, 5) : '00:00'),
-          endStr: isAllDay ? null : (ev.end?.includes('T') ? ev.end.split('T')[1].substring(0, 5) : '00:00'),
-          allDay: isAllDay,
-          singleDay: ev.singleDay || false
+          startStr: tipo === 'servicio'
+            ? ev.start.split('T')[1]?.substring(0, 5) ?? null
+            : null,
+          endStr: tipo === 'servicio'
+            ? ev.end?.split('T')[1]?.substring(0, 5) ?? null
+            : null,
         },
         estado: ev.extendedProps?.estado || 'pendiente',
         notas: ev.extendedProps?.notas || ''
-      }, { emitEvent: false }); // <--- IMPORTANTE: No disparamos eventos para evitar bucles
+      }, { emitEvent: false });
+
+      this.reservaAnterior = tipo;
+
+      this.ignorarCambioModalidad = false;
+
+      this.inicializadoEdit = true; // 🔥 marcar inicializado también en edit
     });
+
+    // CREATE MODE
+    effect(() => {
+      const selection = this.data();
+      const mode = this.mode();
+
+      if (!selection || mode !== 'create') return;
+
+      if (this.inicializadoCreate) return; // 🔥 clave
+
+      const start = new Date(selection.start);
+      const end = selection.end
+        ? new Date(selection.end)
+        : new Date(selection.start);
+
+      const fInicio = start.toISOString().split('T')[0];
+      const fFin = end.toISOString().split('T')[0];
+
+      this.ignorarCambioModalidad = true;
+
+      this.form.patchValue({
+        titulo: '',
+        tipo_reserva: null,
+        fecha: {
+          start: fInicio,
+          end: fFin,
+          startStr: null,
+          endStr: null
+        },
+        estado: 'pendiente',
+        notas: ''
+      }, { emitEvent: false });
+
+      this.reservaAnterior = null;
+      this.ignorarCambioModalidad = false;
+
+      this.inicializadoCreate = true; // 🔥 marcar como ya hecho
+    });
+
   }
 
 
-
   ngOnInit() {
-
-    this.form.valueChanges.subscribe(value => {
-      console.log('value:', value, this.form.value);
-    });
-
-
-    this.form.statusChanges.subscribe(value => {
-      console.log('value:', value, this.form.errors);
-    });
-
-
-    // Escuchar cambios en la MODALIDAD (con SweetAlert)
-    this.form.get('modalidad')?.valueChanges.subscribe(modalidad => {
-      this.gestionarCambioModalidad(modalidad);
-    });
-
-    // 2. Sincronizar fin con inicio (Servicio o Día Único)
     this.fechaGroup.get('start')?.valueChanges.subscribe(val => {
-      const modalidad = this.form.get('modalidad')?.value;
-      const single = this.fechaGroup.get('singleDay')?.value;
-      if (modalidad === 'servicio' || (modalidad === 'dia' && single)) {
+      if (this.form.get('tipo_reserva')?.value === 'bloqueo') {
         this.fechaGroup.get('end')?.setValue(val, { emitEvent: false });
       }
     });
 
-
-    // 3. Switch de "Solo un día"
-    this.fechaGroup.get('singleDay')?.valueChanges.subscribe(single => {
-      if (single) {
-        const fechaInicio = this.fechaGroup.get('start')?.value;
-        this.fechaGroup.get('end')?.setValue(fechaInicio, { emitEvent: false });
-      }
+    this.form.get('tipo_reserva')?.valueChanges.subscribe(tipo_reserva => {
+      this.gestionarCambioModalidad(tipo_reserva);
     });
 
-    // 4. Limpieza de horas en Todo el día
-    this.fechaGroup.get('allDay')?.valueChanges.subscribe(allDay => {
-      if (allDay) {
-        this.fechaGroup.patchValue({ startStr: null, endStr: null }, { emitEvent: false });
-      }
-    });
-
+    this.form.valueChanges.subscribe(value => console.log('value:', value));
+    this.form.statusChanges.subscribe(status => console.log('status:', status, this.form.errors));
   }
 
-  private gestionarCambioModalidad(modalidad: any) {
-    // 1. Si es un cambio interno automático, no hacer nada
-    if (this.saltarConfirmacionModalidad) {
-      this.modalidadAnterior = modalidad ?? null;
-      return;
-    }
 
-    const anterior = this.modalidadAnterior;
+  private gestionarCambioModalidad(tipo_reserva: 'producto' | 'servicio' | 'bloqueo' | null) {
+    if (this.ignorarCambioModalidad) return;
 
-    // 2. Si hay un cambio manual y ya había algo seleccionado, preguntar
-    if (anterior && modalidad && anterior !== modalidad) {
-      this.saltarConfirmacionModalidad = true;
+    const anterior = this.reservaAnterior;
+    if (tipo_reserva === anterior) return;
 
+    if (anterior !== null) {
       Swal.fire({
-        title: '¿Cambiar modalidad?',
-        text: 'Se ajustarán los campos de fecha y hora según la nueva modalidad.',
+        title: '¿Cambiar tipo_reserva?',
+        text: 'Se ajustarán los campos de fecha y hora según la nueva tipo_reserva.',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
         confirmButtonText: 'Sí, cambiar',
         cancelButtonText: 'Mantener actual'
-      }).then((result) => {
+      }).then(result => {
+        if (this.destruido) return;
+        this.ignorarCambioModalidad = true;
         if (result.isConfirmed) {
-          this.modalidadAnterior = modalidad;
-          this.aplicarReglasModalidad(modalidad);
+          this.reservaAnterior = tipo_reserva;
+          this.aplicarReglasModalidad(tipo_reserva);
         } else {
-          // Revertir el valor en el select/radio sin disparar el evento de nuevo
-          this.form.get('modalidad')?.setValue(anterior, { emitEvent: false });
+          this.form.get('tipo_reserva')?.setValue(anterior, { emitEvent: false });
         }
-        this.saltarConfirmacionModalidad = false;
+        this.ignorarCambioModalidad = false;
       });
     } else {
-      // 3. Si es la primera selección, aplicar reglas directamente
-      this.modalidadAnterior = modalidad ?? null;
-      this.aplicarReglasModalidad(modalidad);
+      this.reservaAnterior = tipo_reserva ?? null;
+      this.aplicarReglasModalidad(tipo_reserva);
     }
   }
 
-  // Método auxiliar para limpiar errores y ajustar valores según la modalidad
-  private aplicarReglasModalidad(modalidad: string) {
-    const fecha = this.fechaGroup;
 
-    // Limpiamos errores de validaciones anteriores
+
+  private aplicarReglasModalidad(tipo_reserva: string | null) {
+    const fecha = this.fechaGroup;
     fecha.get('start')?.setErrors(null);
     fecha.get('end')?.setErrors(null);
     fecha.get('startStr')?.setErrors(null);
     fecha.get('endStr')?.setErrors(null);
 
-    if (modalidad === 'producto' || modalidad === 'dia') {
-      fecha.patchValue({
-        allDay: true,
-        startStr: null,
-        endStr: null,
-        // Si el fin estaba vacío, le ponemos el inicio por defecto
-        end: fecha.get('end')?.value || fecha.get('start')?.value
-      },);
-    }
-    else if (modalidad === 'servicio') {
-      fecha.patchValue({
-        // En servicio el fin SIEMPRE es el mismo día que el inicio
-        end: fecha.get('start')?.value
-      },);
+    if (tipo_reserva === 'producto' || tipo_reserva === 'bloqueo') {
+      fecha.patchValue({ startStr: null, endStr: null }, { emitEvent: false });
     }
 
-    // Refrescar el estado del formulario para que los validadores actúen
+    if (tipo_reserva === 'servicio') {
+      const start = fecha.get('start')?.value;
+      fecha.patchValue({ end: start }, { emitEvent: false });
+    }
+
     this.form.updateValueAndValidity();
   }
-
-
-  normalizeFechas(fecha: CalendarSelection) {
-    const start = fecha.start;
-    const fin = fecha.end || start;
-    const allDay = fecha.allDay;
-
-    if (allDay || fecha.singleDay) {
-      return { ...fecha, fin: start };
-    }
-
-    return { ...fecha, fin };
-  }
-
-
-
 
   fechasValidator(): ValidatorFn {
     return (control: AbstractControl) => {
       const form = control as FormGroup;
-      const modalidad = form.get('modalidad')?.value;
+      const tipo_reserva = form.get('tipo_reserva')?.value;
       const fecha = form.get('fecha') as FormGroup;
       if (!fecha) return null;
 
@@ -257,61 +226,36 @@ export class ModalCalendarFormComponent implements OnChanges {
       const fin = fecha.get('end')?.value;
       const hInicio = fecha.get('startStr')?.value;
       const hFin = fecha.get('endStr')?.value;
-      const allDay = fecha.get('allDay')?.value;
-      const singleDay = fecha.get('singleDay')?.value;
-
       if (!inicio) return null;
 
-      // VALIDACIÓN PARA PRODUCTO Y DÍA (Rangos de días)
-      if (modalidad === 'producto' || modalidad === 'dia') {
-        if (modalidad === 'dia' && singleDay) return null;
-
-        if (fin && inicio) {
-          // Al añadir 'T00:00:00' forzamos a que no use la hora actual o UTC
-          const dInicio = Number(inicio.replace(/-/g, ''));
-          const dFin = Number(fin.replace(/-/g, ''));
-
-          if (dFin < dInicio) {
-            return { fechaFinInvalida: true };
-          }
-        }
+      // PRODUCTO / BLOQUEO
+      if (tipo_reserva === 'producto' || tipo_reserva === 'bloqueo') {
+        const dInicio = Number(inicio.replace(/-/g, ''));
+        const dFin = fin ? Number(fin.replace(/-/g, '')) : dInicio;
+        if (dFin < dInicio) return { fechaFinInvalida: true };
       }
 
-      // VALIDACIÓN PARA SERVICIO (Solo horas, ignoramos el 'end' de fecha)
-      if (modalidad === 'servicio') {
-        if (allDay) return null;
-        // Si no hay horas, es inválido
+      // SERVICIO
+      if (tipo_reserva === 'servicio') {
         if (!hInicio || !hFin) return { horaInvalida: true };
-
         const [h1, m1] = hInicio.split(':').map(Number);
         const [h2, m2] = hFin.split(':').map(Number);
-        const minutosInicio = h1 * 60 + m1;
-        const minutosFin = h2 * 60 + m2;
-
-        if (minutosFin <= minutosInicio) {
-          return { horaInvalida: true };
-        }
+        if ((h2 * 60 + m2) <= (h1 * 60 + m1)) return { horaInvalida: true };
+        if (fin !== inicio) fecha.get('end')?.setValue(inicio, { emitEvent: false });
       }
 
       return null;
     };
   }
-
 
   estadoNotasValidator(): ValidatorFn {
     return (control: AbstractControl) => {
       const estado = control.get('estado')?.value;
       const notas = control.get('notas')?.value;
-
-      if (estado === 'cancelada' && (!notas || notas.length < 10)) {
-        return { notasCancelacionInvalidas: true };
-      }
-
+      if (estado === 'cancelada' && (!notas || notas.length < 10)) return { notasCancelacionInvalidas: true };
       return null;
     };
   }
-
-
 
   guardar(event: Event) {
     event.preventDefault();
@@ -319,48 +263,39 @@ export class ModalCalendarFormComponent implements OnChanges {
       this.form.markAllAsTouched();
       return;
     }
-
-    // Emitimos el valor RAW (puro). Si el usuario puso "2026-02-18", eso enviamos.
     this.guardarReserva.emit({
       form: this.form.getRawValue() as ReservaFormValue,
       id: this.mode() === 'edit' ? this.event()?.id : undefined,
     });
   }
 
-
-  // private cerrarModal() {
-  //   const modalElement = document.getElementById('calendarModal');
-  //   if (modalElement) {
-  //     const modalInstance = bootstrap.Modal.getInstance(modalElement);
-  //     if (modalInstance) {
-  //       modalInstance.hide();
-  //     }
-  //   }
-  // }
-
-  // cerrarModal() {
-  //   this.cerrar.emit();
-  // }
-
   cerrarModal() {
-    this.form.reset();
 
-    // Emitir al padre
-    this.cerrar.emit();
+    this.ignorarCambioModalidad = true;
+
+    Swal.close();
 
     this.form.reset({
       estado: 'pendiente',
-      fecha: { start: '', end: '', allDay: false, singleDay: false }
-    });
+      fecha: { start: '', end: null },
+      tipo_reserva: null
+    }, { emitEvent: false });
 
+    this.reservaAnterior = null;
+    this.reservaInicial = null;
+    this.inicializadoCreate = false;
+    this.inicializadoEdit = false;
+    this.ignorarCambioModalidad = false;
+
+    this.cerrar.emit();
   }
+
+
 
 
   edit() {
-    console.log(this.event())
     if (!this.event()) return;
     this.editar.emit();
   }
-
 
 }

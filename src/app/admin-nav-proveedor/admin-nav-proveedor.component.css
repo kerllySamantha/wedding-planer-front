@@ -1,8 +1,10 @@
 .nav {
   /* debajo del topbar */
   height: 100vh;
-  background-color: #9b6bff;
-  padding: 20px;
+  background-color: #e5faff !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   position: fixed;
+  padding: 1.5em 0 0 1em;
   width: 16.6vw;
 }/*# sourceMappingURL=admin-nav-proveedor.component.css.map */

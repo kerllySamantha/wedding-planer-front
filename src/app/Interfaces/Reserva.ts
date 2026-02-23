@@ -13,7 +13,7 @@ export interface Reserva {
     producto: ProductoCalendario
 }
 
-export type EstadoReserva = 'pendiente' | 'confirmada' | 'cancelada' | 'bloqueada';
+export type EstadoReserva = 'pendiente' | 'confirmada' | 'cancelada' | 'bloqueada' | 'rechazada';
 
 
 
@@ -70,11 +70,11 @@ export interface ReservaEvent {
     backgroundColor?: string;
     borderColor?: string;
     extendedProps: ExtendedReservaProps;
-    allDay?: boolean
+    allDay: boolean
 }
 
 export interface ExtendedReservaProps {
-    estado: 'bloqueada' | 'confirmada' | 'cancelada' | 'pendiente';
+    estado: 'bloqueada' | 'confirmada' | 'cancelada' | 'pendiente' | 'rechazada';
     origen?: string;
     notas?: string;
     cliente?: UsuarioLigero;
@@ -84,8 +84,9 @@ export interface ExtendedReservaProps {
     };
     boda?: Boda;
     producto?: ProductoCalendario
-    modalidad?: 'producto' | 'servicio' | 'dia';
+    tipo_reserva?: 'producto' | 'servicio' | 'bloqueo';
     fechaFin?: string;
+    // all_day: boolean;
     fechaFinVisual? : string
 
 }
@@ -105,6 +106,10 @@ export interface SaveReservaPayload {
 }
 
 
+export type tipo_reserva = 'servicio' | 'producto' | 'bloqueo' | null;
+
+
+
 export interface ReservaFormValue {
     id?: string;
     titulo: string;
@@ -112,7 +117,7 @@ export interface ReservaFormValue {
     estado: EstadoReserva;
     notas?: string;
     singleDay?: true,
-    modalidad?: 'producto' | 'servicio' | 'dia';
+    tipo_reserva?: 'producto' | 'servicio' | 'bloqueo';
 }
 
 export interface FechaReserva {

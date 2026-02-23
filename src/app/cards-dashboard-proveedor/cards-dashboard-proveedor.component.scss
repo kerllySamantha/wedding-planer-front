@@ -1,40 +1,13 @@
+
+
 /* Separación entre cards */
-card-gap {
+
+
+.card-gap {
     padding-left: 0.3em !important;
-    padding-right: 0.3em !important;
 }
 
-.boda-card {
 
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-
-    
-    /* Bajamos la opacidad al 3% o 5% máximo */
-    // background: rgba(230, 219, 219, 0.692); 
-
-    // /* Subimos el blur para que se note el efecto sin necesidad de color */
-    // backdrop-filter: blur(20px) saturate(160%);
-    // -webkit-backdrop-filter: blur(20px) saturate(160%);
-
-    /* Borde muy sutil, casi invisible */
-    border: 1px solid rgb(255, 255, 255);
-
-    /* Sombra muy difuminada para dar profundidad */
-    // box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
-
-    border-radius: 16px;
-    padding: 0.6em;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: all .3s ease;
-}
 
 
 .boda-card:hover {

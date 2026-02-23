@@ -4,8 +4,8 @@
 }
 
 a {
-  font-family: "ProximaNova";
-  font-size: 1.2em;
+  font-family: AmaticSCBold;
+  font-size: 2.2em;
 }
 
 .navbar-nav .nav-link {
@@ -22,6 +22,7 @@ a {
   content: "";
   position: absolute;
   left: 0;
+  pointer-events: visible;
   bottom: 0;
   width: 0%;
   height: 2px;
@@ -39,15 +40,15 @@ a {
 
 #registro {
   color: #f76c6f;
-  font-size: 0.87rem;
-  font-family: "ProximaNova";
+  font-size: 0.6rem;
+  font-family: AmaticSCBold;
   text-transform: uppercase;
   font-weight: 600;
 }
 
 .area-empresas {
-  font-family: "ProximaNova";
-  font-weight: 600;
+  font-family: AmaticSCBold;
+  font-weight: 400;
   font-size: 0.9rem;
   text-align: right;
 }
@@ -57,6 +58,11 @@ a {
 }
 
 @media (max-width: 991.98px) {
+  .navbar-brand img {
+    width: 300px;
+  }
+}
+@media (max-width: 576px) {
   .navbar-brand img {
     width: 160px;
   }
@@ -75,7 +81,6 @@ a {
 #mainMenuOffcanvas.show .nav-link::after {
   width: 0 !important;
   /* Quitar subrayado */
-  transition: none !important;
   content: none !important;
 }
 
@@ -109,4 +114,17 @@ a {
 
 .color-icon {
   color: #f76c6f;
+}
+
+#mainMenuOffcanvas {
+  /* Opcional: asegurar que el offcanvas ocupe toda la altura */
+  height: 100vh;
+}
+
+#mainMenuOffcanvas .offcanvas-header {
+  height: 56px; /* Ajusta según tu header */
+}
+
+.avatar-button {
+  font-size: 10px;
 }/*# sourceMappingURL=navbar.component.css.map */

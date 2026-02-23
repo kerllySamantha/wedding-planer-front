@@ -9,6 +9,14 @@
   transition: transform 0.6s ease-in-out;
 }
 
+.card-flip:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+}
+
+.card-flip[data-side=back] {
+  transform: rotateY(180deg);
+}
+
 .card-front,
 .card-back {
   width: 100%;
@@ -31,7 +39,6 @@
   transform: rotateY(0deg);
   z-index: 2;
   background-color: #5b5858;
-  /* Categoría arriba */
 }
 .card-front img {
   width: 100%;
@@ -49,13 +56,16 @@
   padding: 1rem;
   color: #fff;
 }
+.card-front {
+  /* Categoría arriba */
+}
 .card-front .card-category {
   align-self: flex-start;
   background: rgba(133, 131, 131, 0.6);
   color: #fff;
   padding: 0.5rem 0.4rem;
   border-radius: 0.3rem;
-  font-size: 0.75rem;
+  font-size: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }

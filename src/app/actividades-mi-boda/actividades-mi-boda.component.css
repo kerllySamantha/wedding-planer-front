@@ -28,13 +28,15 @@
 
 .boda1:hover {
   transform: scale(1.05);
+}
+.boda1:hover .boda-style {
+  border: 1px solid #ccc;
+}
+.boda1:hover {
   border-radius: 0 0.5rem 0.5rem 0;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   background-color: #fff;
-}
-.boda1:hover .boda-style {
-  border: 1px solid #ccc;
 }
 
 .info-boda h5 {
@@ -98,8 +100,7 @@
   border-radius: 16px;
 }
 .fondo-imagen .info-boda .info-boda-content {
-  -webkit-backdrop-filter: blur(4px);
-          backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   background-color: rgba(0, 0, 0, 0.35);
   border-radius: 16px;
   width: 100%;
@@ -118,4 +119,12 @@
   font-size: 1.2rem;
   font-weight: 600;
   line-height: 1;
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .fondo-imagen {
+    height: 300px;
+    flex-direction: column;
+    display: flex;
+  }
 }/*# sourceMappingURL=actividades-mi-boda.component.css.map */

@@ -9,8 +9,7 @@
 
         <div class="col-12 col-lg-10 content-area">
 
-            @if(loading()){
-            <div class="calendar-inner">
+            <div class="calendar-inner" [class.fc-loading-skeleton]="loading()">
                 <div class="calendar-wrapper">
                     <full-calendar [options]="calendarOptions()"></full-calendar>
                 </div>
@@ -19,14 +18,11 @@
             <app-modal-calendar-form [data]="modalData" [event]="selectedEvent()" (editar)="modalMode.set('edit')"
                 [mode]="modalMode()" (guardarReserva)="guardarReserva($event)" (cerrar)="cerrarModal()">
             </app-modal-calendar-form>
-            }
+
 
 
             <!-- } -->
-            @else {
-            <mat-spinner></mat-spinner>
-            }
-
+         
         </div>
 
 

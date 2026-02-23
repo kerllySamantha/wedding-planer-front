@@ -7,10 +7,6 @@
   color: white;
   font-weight: 600;
 }
-.submit-button:hover {
-  background-color: rgb(244.3677419355, 59.6322580645, 63.6193548387);
-}
-
 .image-fondo {
   background-image: url("../../assets/images/loginuser.jpg");
   background-repeat: no-repeat;

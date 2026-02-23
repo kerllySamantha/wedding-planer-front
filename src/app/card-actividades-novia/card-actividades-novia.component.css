@@ -10,14 +10,9 @@
   margin: 4 1em;
 }
 
-.info-boda {
-  padding: 5em;
-}
-
 .boda1 {
   flex: 1;
   /* Ocupa todo el espacio restante en el flex */
-  background-image: url("../../assets/images/boda1.jpg");
   background-repeat: no-repeat;
   /* No repetir */
   background-position: center;
@@ -28,16 +23,28 @@
   /* Redondear solo la derecha */
 }
 
+#imagen_novia {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.info-boda {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.5em 0 0 3em;
+}
+
 .info-boda h5 {
   font-weight: 600;
   font-size: 1.25rem;
-  margin-bottom: 0.5rem;
 }
 
 .info-boda p {
   font-size: 0.9rem;
   color: #6c757d;
-  margin-bottom: 1rem;
 }
 
 .counterItem__label {
@@ -72,4 +79,15 @@
   flex: 1 1 200px;
   max-width: 180px;
   /* ancho máximo */
+}
+
+@media (max-width: 575.98px) {
+  .boda-style.secundaria {
+    padding: 0;
+    height: 11em;
+    max-width: 11em;
+  }
+  .boda-style.secundaria img {
+    border-radius: 0.5rem;
+  }
 }/*# sourceMappingURL=card-actividades-novia.component.css.map */

@@ -1,5 +1,4 @@
 .custom-offcanvas {
-  background-color: #9b6bff !important;
   color: white;
   width: 260px;
 }
@@ -12,4 +11,14 @@
 
 .btn-close-white {
   filter: invert(1);
+}
+
+.dropdown-menu {
+  z-index: 2000 !important;
+}
+
+.navbar {
+  background: #E2EBF3 !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }/*# sourceMappingURL=top-bar-admin.component.css.map */

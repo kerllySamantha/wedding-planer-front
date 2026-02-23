@@ -5,6 +5,7 @@ import { ReverbServiceTsService } from '../src/app/services/reverb.service.ts.se
 import { AdminNavProveedorComponent } from "../admin-nav-proveedor/admin-nav-proveedor.component";
 import { MatMenuItem, MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-top-bar-admin',
@@ -17,17 +18,31 @@ export class TopBarAdminComponent {
 
   anchoVentana = signal(window.innerWidth);
   pantallaMedium = computed(() => this.anchoVentana() <= 986);
-  sidebarClosed = false
+  sidebarClosed = false;
 
   autServicectx = inject(AutenticarHttpClientService);
+
+  nombreEmpresa = signal<string | null>('');
 
   constructor(private echo: ReverbServiceTsService, private router: Router) { }
 
   ngOnInit(): void {
-   
+
+    console.log(this.letraNombre());
   }
 
-  
+
+  letraNombre() {
+    const empresa = localStorage.getItem('empresa')!;
+    const empresaObj = JSON.parse(empresa);
+    // return empresaObj.nombre_empresa;
+    this.nombreEmpresa.set(empresaObj.nombre_empresa);
+
+
+  }
+
+
+
 
   logout(event?: Event): void {
     event?.preventDefault();

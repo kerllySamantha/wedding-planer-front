@@ -1,84 +1,130 @@
-import { Component, computed, inject, LOCALE_ID, signal } from '@angular/core';
+import { Component, computed, ElementRef, AfterContentInit, inject, signal, ViewChild, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReservasServiceServiceService } from '../Services/Reservas/reservas-service-service.service';
-import { Reserva, Reservas } from '../Interfaces/Reserva';
-import { AsyncPipe, DatePipe } from '@angular/common';
-import { catchError, map, of, pipe } from 'rxjs';
-import { registerLocaleData } from '@angular/common';
+import { Reserva } from '../Interfaces/Reserva';
+import { DatePipe, registerLocaleData, TitleCasePipe } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
-import { isSameMonth, parseISO } from 'date-fns';
+import { register } from 'swiper/element/bundle';
 
-import { VisualizadorProveedoresCardsComponent } from "../visualizador-proveedores-cards/visualizador-proveedores-cards.component";
+register();
+
+import {
+  isSameMonth,
+  parseISO,
+  eachMonthOfInterval,
+  startOfYear,
+  endOfYear
+} from 'date-fns';
+
+import { Navigation, Thumbs, FreeMode, Scrollbar } from 'swiper/modules';
+import SwiperCore from 'swiper';
+
 import { CardInfoAdminComponent } from "../card-info-admin/card-info-admin.component";
+
+
 registerLocaleData(localeEs);
-
-
+SwiperCore.use([Navigation, Thumbs, FreeMode]);
 
 @Component({
   selector: 'app-cards-dashboard-proveedor',
-  imports: [CardInfoAdminComponent],
+  standalone: true,
+  imports: [CardInfoAdminComponent, DatePipe, TitleCasePipe],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cards-dashboard-proveedor.component.html',
-  styleUrl: './cards-dashboard-proveedor.component.scss'
+  styleUrl: './cards-dashboard-proveedor.component.scss',
 })
 export class CardsDashboardProveedorComponent {
 
-  reservasctx = inject(ReservasServiceServiceService)
+  reservasctx = inject(ReservasServiceServiceService);
 
+  @ViewChild('swiperRef') swiperRef!: ElementRef;
 
+  activeIndex = computed(() => this.selectedDate().getMonth());
 
+  // 🔹 Signals base
   reservas = signal<Reserva[]>([]);
-  reservasPendientes = signal<Reserva[]>([]);
-  reservasCanceladas = signal<Reserva[]>([]);
-  reservasCompletadas = signal<Reserva[]>([]);
-  reservasBloqueadas = signal<Reserva[]>([]);
-
-
+  selectedDate = signal<Date>(new Date());
   error = signal<string | null>(null);
-
-  today = signal<Date>(new Date());
-
   loading = signal(true);
 
+  // 🔹 Año actual
+  year = new Date().getFullYear();
 
+  // 🔹 Meses dinámicos del año
+  meses = eachMonthOfInterval({
+    start: startOfYear(new Date(this.year, 0, 1)),
+    end: endOfYear(new Date(this.year, 11, 31))
+  });
 
   idEmpresa = computed(() => localStorage.getItem('idEmpresa')!);
+
+  // 🔹 Reservas filtradas por mes seleccionado
+  reservasMes = computed(() =>
+    this.reservas().filter(r =>
+      isSameMonth(
+        parseISO(r.fecha_inicio),
+        this.selectedDate()
+      )
+    )
+  );
+
+
+
+
+  prevMonth() {
+    const current = this.selectedDate();
+    const newMonth = new Date(current.getFullYear(), current.getMonth() - 1, 1);
+    this.selectedDate.set(newMonth);
+  }
+
+  nextMonth() {
+    const current = this.selectedDate();
+    const newMonth = new Date(current.getFullYear(), current.getMonth() + 1, 1);
+    this.selectedDate.set(newMonth);
+  }
+
+  reservasMesPorFecha(date: Date) {
+    return this.reservas().filter(r =>
+      isSameMonth(parseISO(r.fecha_inicio), date)
+    );
+  }
+
+
+  reservasPendientes = computed(() =>
+    this.reservasMes().filter(r => r.estado === 'pendiente')
+  );
+
+  reservasCanceladas = computed(() =>
+    this.reservasMes().filter(r => r.estado === 'cancelada')
+  );
+
+  reservasCompletadas = computed(() =>
+    this.reservasMes().filter(r => r.estado === 'confirmada')
+  );
+
+  reservasBloqueadas = computed(() =>
+    this.reservasMes().filter(r => r.estado === 'bloqueada')
+  );
+
+    reservasRechazadas = computed(() =>
+    this.reservasMes().filter(r => r.estado === 'rechazada')
+  );
+
   ngOnInit() {
     this.cargarReservas();
+  }
+
+  cambiarMes(date: Date) {
+    this.selectedDate.set(date);
   }
 
   cargarReservas(): void {
     this.loading.set(true);
     this.error.set(null);
 
-    this.reservasctx.getReservaEmpresa(this.idEmpresa()!)
+    this.reservasctx.getReservaEmpresa(this.idEmpresa())
       .subscribe({
         next: (resp) => {
-
-          const data = resp?.data ?? [];
-
-          const reservasMesActual = data.filter(r =>
-            isSameMonth(
-              parseISO(r.fecha_inicio),
-              new Date()
-            )
-          );
-
-          this.reservas.set(reservasMesActual);
-
-          this.reservasPendientes.set(
-            reservasMesActual.filter(r => r.estado === 'pendiente')
-          );
-
-          this.reservasCanceladas.set(
-            reservasMesActual.filter(r => r.estado === 'cancelada')
-          );
-
-          this.reservasCompletadas.set(
-            reservasMesActual.filter(r => r.estado === 'confirmada')
-          );
-          this.reservasBloqueadas.set(
-            reservasMesActual.filter(r => r.estado === 'bloqueada')
-          );
-
+          this.reservas.set(resp?.data ?? []);
           this.loading.set(false);
         },
         error: () => {
@@ -87,7 +133,4 @@ export class CardsDashboardProveedorComponent {
         }
       });
   }
-
-
-
 }
