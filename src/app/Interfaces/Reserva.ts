@@ -103,6 +103,7 @@ export interface CalendarSelection {
 export interface SaveReservaPayload {
     form: ReservaFormValue;
     id?: string;
+    empresa_id : string;
 }
 
 
@@ -117,6 +118,7 @@ export interface ReservaFormValue {
     estado: EstadoReserva;
     notas?: string;
     singleDay?: true,
+    
     tipo_reserva?: 'producto' | 'servicio' | 'bloqueo';
 }
 

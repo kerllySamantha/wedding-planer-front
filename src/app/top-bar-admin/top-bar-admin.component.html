@@ -1,14 +1,16 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm fixed-top">
+<nav class="navbar navbar-expand-lg bg-body-tertiary shadow-sm fixed-top"   [ngClass]="{'bg-body-tertiary': !sidebarOpen()}">
     <div class="container-fluid">
 
         <!-- Toggle solo móvil -->
-        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#adminSidebar">
+        <button class="navbar-toggler" (click)="onHamburgerClick()">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <!-- <div class="offcanvas offcanvas-start" [class.show]="!sidebarClosed()">
+            <app-admin-nav-proveedor></app-admin-nav-proveedor>
+        </div> -->
 
         <!-- <span class="navbar-brand">Panel Proveedores</span> -->
-         <span class="navbar-brand">{{nombreEmpresa()}}</span>
+        <span class="navbar-brand">{{nombreEmpresa()}}</span>
 
 
         <div class="d-flex align-items-center gap-3">
@@ -48,13 +50,13 @@
     </div>
 </nav>
 
-<div id="adminSidebar" class="offcanvas offcanvas-start custom-offcanvas" tabindex="-1">
+
+<div id="adminSidebar" class="offcanvas offcanvas-start custom-offcanvas" [class.show]="sidebarOpen()">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title">Menú</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        <button type="button" class="btn-close" (click)="toggleSidebar()"></button>
     </div>
-
-    <div class="offcanvas-body p-0">
+    <div class="offcanvas-body">
         <app-admin-nav-proveedor></app-admin-nav-proveedor>
     </div>
 </div>

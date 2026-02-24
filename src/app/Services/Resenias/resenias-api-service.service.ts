@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { ReseniasServiceServiceService } from './resenias-service-service.service';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { Resenias, Resenia, CreateResenia } from '../../Interfaces/Resenia';
+import { Resenias, Resenia, CreateResenia, ReseniasEmpresa } from '../../Interfaces/Resenia';
 import { HttpClient } from '@angular/common/http';
 import { API_URL } from '../../Tokens/serviceTokens';
 
@@ -68,5 +68,22 @@ export class ReseniasApiServiceService extends ReseniasServiceServiceService {
   override deleteResenia(idResenia: bigint): Observable<Object | null> {
     return this.http.delete(`${this.apiUrl}/resenias/${idResenia.toString()}`);
 
+  }
+
+  override getReseniaByEmpresa(idEmpresa: number): Observable<ReseniasEmpresa | null> {
+    console.log("idEmpresa: " + idEmpresa);
+
+    return this.http.get<ReseniasEmpresa>(`${this.apiUrl}/empresas/${idEmpresa.toString()}/resenias`).pipe(
+      map(response => {
+        if (response) {
+          return response;
+        }
+        return null;
+      }),
+      catchError((error: Error) => {
+        console.error("Error en getResenia:", error);
+        return throwError(() => error);
+      })
+    );
   }
 }

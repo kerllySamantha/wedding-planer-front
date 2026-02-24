@@ -15,7 +15,7 @@ export interface Resenias {
 }
 
 export interface Foto {
-    path: string, 
+    path: string,
     url: string
 }
 
@@ -26,4 +26,22 @@ export interface CreateResenia {
     comentario: string,
     fotos: string
 
+}
+
+export interface ReseniasEmpresa {
+    estadisticas: Estadistica,
+    estrellas: Estrella[],
+    data: Resenia[]
+}
+
+export interface Estadistica {
+    promedio: number,
+    total: number,
+
+}
+
+export interface Estrella {
+    rating: number,
+    total: number,
+    porcentaje: number
 }

@@ -1,31 +1,38 @@
 <div class="month-selector d-flex align-items-center justify-content-center mb-4">
-  <button class="btn btn-outline-primary" (click)="prevMonth()">&lt;</button>
+  <!-- Botón mes anterior -->
+  <button class="icon-button" (click)="prevMonth()">
+    <svg cIcon name="cil-chevron-left" size="custom" title="Flecha izquierda"></svg>
+  </button>
 
-  <div class="mx-3 month-display">
+  <!-- Mes y año -->
+  <div class="mx-2 month-display">
     {{ selectedDate() | date:'MMMM':'':'es' | titlecase }} {{ selectedDate() | date:'yyyy' }}
   </div>
 
-  <button class="btn btn-outline-primary" (click)="nextMonth()">&gt;</button>
+  <!-- Botón mes siguiente -->
+  <button class="icon-button" (click)="nextMonth()">
+    <svg cIcon name="cil-chevron-right" size="custom" title="Flecha derecha"></svg>
+  </button>
 </div>
 
 <div class="row pt-4 mt-4 gx-4 gy-4 justify-content-center">
 
   <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCompletadas()"
-      tittle="Reservas Confirmadas">
+    tittle="Reservas Confirmadas">
   </app-card-info-admin>
 
   <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasPendientes()"
-      tittle="Reservas Pendientes">
+    tittle="Reservas Pendientes">
   </app-card-info-admin>
 
   <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCanceladas()"
-      tittle="Reservas Canceladas">
+    tittle="Reservas Canceladas">
   </app-card-info-admin>
 
   <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasBloqueadas()"
-      tittle="Reservas Bloqueadas">
+    tittle="Reservas Bloqueadas">
   </app-card-info-admin>
-    <!-- <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasRechazadas()"
+  <!-- <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasRechazadas()"
       tittle="Reservas Rechazadas">
   </app-card-info-admin> -->
 

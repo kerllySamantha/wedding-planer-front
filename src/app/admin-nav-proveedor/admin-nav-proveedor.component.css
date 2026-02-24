@@ -1,4 +1,4 @@
-.nav {
+.navi {
   /* debajo del topbar */
   height: 100vh;
   background-color: #e5faff !important;
@@ -7,4 +7,7 @@
   position: fixed;
   padding: 1.5em 0 0 1em;
   width: 16.6vw;
+}
+.navi .oculto {
+  visibility: hidden;
 }/*# sourceMappingURL=admin-nav-proveedor.component.css.map */

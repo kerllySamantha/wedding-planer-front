@@ -15,8 +15,13 @@ import {
   endOfYear
 } from 'date-fns';
 
-import { Navigation, Thumbs, FreeMode, Scrollbar } from 'swiper/modules';
+import { Navigation, Thumbs, FreeMode, Scrollbar, } from 'swiper/modules';
+import { cilChevronLeft, cilChevronRight, cilListNumbered, cilPaperPlane } from '@coreui/icons';
+
+
+import { IconDirective, IconModule, IconSetService } from '@coreui/icons-angular';
 import SwiperCore from 'swiper';
+
 
 import { CardInfoAdminComponent } from "../card-info-admin/card-info-admin.component";
 
@@ -27,7 +32,8 @@ SwiperCore.use([Navigation, Thumbs, FreeMode]);
 @Component({
   selector: 'app-cards-dashboard-proveedor',
   standalone: true,
-  imports: [CardInfoAdminComponent, DatePipe, TitleCasePipe],
+  imports: [CardInfoAdminComponent, DatePipe, TitleCasePipe, IconModule, IconDirective],
+  providers: [IconSetService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cards-dashboard-proveedor.component.html',
   styleUrl: './cards-dashboard-proveedor.component.scss',
@@ -39,6 +45,16 @@ export class CardsDashboardProveedorComponent {
   @ViewChild('swiperRef') swiperRef!: ElementRef;
 
   activeIndex = computed(() => this.selectedDate().getMonth());
+
+  private iconSet = inject(IconSetService);
+  constructor() {
+    this.iconSet.icons = {
+      cilListNumbered,
+      cilPaperPlane,
+      cilChevronRight,
+      cilChevronLeft
+    };
+  }
 
   // 🔹 Signals base
   reservas = signal<Reserva[]>([]);
@@ -105,7 +121,7 @@ export class CardsDashboardProveedorComponent {
     this.reservasMes().filter(r => r.estado === 'bloqueada')
   );
 
-    reservasRechazadas = computed(() =>
+  reservasRechazadas = computed(() =>
     this.reservasMes().filter(r => r.estado === 'rechazada')
   );
 

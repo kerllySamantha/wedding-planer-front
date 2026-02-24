@@ -18,7 +18,34 @@
 }
 
 .navbar {
-  background: #E2EBF3 !important;
+  background-color: rgba(231, 243, 248, 0.651) !important;
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
+}
+
+.offcanvas {
+  background-color: #e5faff;
+}
+
+.offcanvas-header {
+  font-size: 1.5em;
+}
+
+.offcanvas-title {
+  color: rgb(136, 136, 233);
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.offcanvas-body {
+  padding: 0;
+  margin: 0;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+button.btn-close {
+  color: red;
 }/*# sourceMappingURL=top-bar-admin.component.css.map */

@@ -16,6 +16,8 @@ import { rolredirectGuard } from './Guardias/rolredirect.guard';
 import { rolGuard } from './Guardias/rol.guard';
 import { CalendarProveedoresComponent } from './calendar-proveedores/calendar-proveedores.component';
 import { CardEmpresaComponent } from './card-empresa/card-empresa.component';
+import { ReseniasAdminComponent } from './resenias-admin/resenias-admin.component';
+import { ConfiguracionAdminComponent } from './configuracion-admin/configuracion-admin.component';
 
 
 export const routes: Routes = [
@@ -62,7 +64,8 @@ export const routes: Routes = [
         path: 'dashboard-proveedores', component: DashboardProveedoresComponent, canActivate: [rolGuard]
     },
 
-    {path: 'configuracion', component: DashboardEmpresasComponent},
+    {path: 'configuracion', component: ConfiguracionAdminComponent},
+    {path: 'resenias', component: ReseniasAdminComponent},
 
 
     { path: "perfil-user", component: PerfilUserComponent, canActivate: [rolGuard] },

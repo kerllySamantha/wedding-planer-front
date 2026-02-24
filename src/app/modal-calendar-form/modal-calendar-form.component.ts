@@ -76,7 +76,7 @@ export class ModalCalendarFormComponent {
 
       if (!ev || mode !== 'edit') return;
 
-      if (this.inicializadoEdit) return; // 🔥 evitar re-ejecución
+      if (this.inicializadoEdit) return; 
 
       const tipo = ev.extendedProps?.tipo_reserva ?? null;
 
@@ -103,17 +103,17 @@ export class ModalCalendarFormComponent {
 
       this.ignorarCambioModalidad = false;
 
-      this.inicializadoEdit = true; // 🔥 marcar inicializado también en edit
+      this.inicializadoEdit = true; 
     });
 
-    // CREATE MODE
+    
     effect(() => {
       const selection = this.data();
       const mode = this.mode();
 
       if (!selection || mode !== 'create') return;
 
-      if (this.inicializadoCreate) return; // 🔥 clave
+      if (this.inicializadoCreate) return; 
 
       const start = new Date(selection.start);
       const end = selection.end
@@ -141,7 +141,7 @@ export class ModalCalendarFormComponent {
       this.reservaAnterior = null;
       this.ignorarCambioModalidad = false;
 
-      this.inicializadoCreate = true; // 🔥 marcar como ya hecho
+      this.inicializadoCreate = true; 
     });
 
   }
@@ -266,6 +266,7 @@ export class ModalCalendarFormComponent {
     this.guardarReserva.emit({
       form: this.form.getRawValue() as ReservaFormValue,
       id: this.mode() === 'edit' ? this.event()?.id : undefined,
+      empresa_id : localStorage.getItem('idEmpresa')!
     });
   }
 

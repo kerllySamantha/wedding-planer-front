@@ -9,4 +9,8 @@
   background-position: center;
   min-height: 100vh;
   padding: 20px;
+}
+
+.oculto {
+  visibility: hidden;
 }/*# sourceMappingURL=admin-dashboard-proveedores.component.css.map */

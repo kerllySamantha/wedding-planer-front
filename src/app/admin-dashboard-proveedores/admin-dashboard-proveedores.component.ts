@@ -5,33 +5,33 @@ import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { AutenticarHttpClientService } from '../Services/Autentication/autenticar-http-client.service';
 import { CardsDashboardProveedorComponent } from "../cards-dashboard-proveedor/cards-dashboard-proveedor.component";
 import { TopBarAdminComponent } from "../top-bar-admin/top-bar-admin.component";
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-admin-dashboard-proveedores',
-  imports: [AdminNavProveedorComponent, CardsDashboardProveedorComponent, TopBarAdminComponent],
+  standalone: true,
+  imports: [AdminNavProveedorComponent, CardsDashboardProveedorComponent, TopBarAdminComponent, NgClass],
   templateUrl: './admin-dashboard-proveedores.component.html',
   styleUrl: './admin-dashboard-proveedores.component.scss'
 })
 export class AdminDashboardProveedoresComponent implements OnInit {
 
   anchoVentana = signal(window.innerWidth);
- 
-  sidebarClosed = true
-
+  sidebarClosed = signal(true);
   autServicectx = inject(AutenticarHttpClientService);
 
   constructor(private echo: ReverbServiceTsService, private router: Router) { }
 
   ngOnInit(): void {
-   
-  
+
+
   }
 
   logout(event?: Event): void {
     event?.preventDefault();
     this.autServicectx.logout().subscribe({
       next: () => {
-        console.log('Sesión cerrada correctamente'); 
+        console.log('Sesión cerrada correctamente');
         localStorage.clear();
         this.router.navigate(['dashboard-empresas'], { replaceUrl: true });
         console.log(this.router?.navigated);
@@ -41,6 +41,12 @@ export class AdminDashboardProveedoresComponent implements OnInit {
   }
 
 
-   
+
+  toggleSidebar() {
+    this.sidebarClosed.update(v => !v);
+   console.log('es actualizado')
+  }
+
+
 
 }

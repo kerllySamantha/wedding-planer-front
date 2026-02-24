@@ -40,6 +40,24 @@
   animation: fadeInCard 0.45s ease forwards;
 }
 
+.icon-button {
+  background: transparent; /* sin fondo */
+  border: none; /* sin borde */
+  padding: 0.2rem; /* ajusta el espacio alrededor del icono */
+  cursor: pointer; /* se ve que es clickeable */
+}
+
+.icon-button svg {
+  width: 1.5rem; /* tamaño del icono */
+  height: 1.5rem;
+  fill: #000; /* color del icono */
+  transition: transform 0.2s;
+}
+
+.icon-button:hover svg {
+  transform: scale(1.2); /* efecto al pasar el mouse */
+}
+
 @keyframes fadeInCard {
   to {
     opacity: 1;

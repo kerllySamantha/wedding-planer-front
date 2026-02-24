@@ -1,4 +1,4 @@
-.nav {
+.navi {
   // position: fixed;
   /* debajo del topbar */
   height: 100vh;
@@ -10,5 +10,10 @@
   // box-shadow: 0 4px 30px rgba(230, 203, 240, 0.651);
   padding: 1.5em 0 0 1em;
   width: 16.6vw;
+
+
+.oculto{
+  visibility: hidden;
+}
 
 }

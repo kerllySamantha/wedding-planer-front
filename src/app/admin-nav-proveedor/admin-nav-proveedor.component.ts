@@ -1,4 +1,4 @@
-import { Component, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, OnDestroy, Output, EventEmitter, output } from '@angular/core';
 import { MediaMatcher } from "@angular/cdk/layout";
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -16,8 +16,6 @@ import { RouterLink, RouterLinkActive } from "@angular/router";
 })
 export class AdminNavProveedorComponent  {
 
-  opened = true;
-  mode = "side"
 
 
 

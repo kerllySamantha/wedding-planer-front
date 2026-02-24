@@ -93,12 +93,12 @@ export class CalendarProveedoresComponent implements OnInit {
     //   this.loading.set(isLoading);
     // },
 
-    viewSkeletonRender: (info: any) => {
-      // Si el signal loading es true, reforzamos la clase en el DOM
-      if (this.loading()) {
-        info.el.classList.add('fc-skeleton-active');
-      }
-    },
+    // viewSkeletonRender: (info: any) => {
+    //   // Si el signal loading es true, reforzamos la clase en el DOM
+    //   if (this.loading()) {
+    //     info.el.classList.add('fc-skeleton-active');
+    //   }
+    // },
 
     datesSet: (info: any) => {
       // Al terminar el renderizado de fechas, limpiamos
