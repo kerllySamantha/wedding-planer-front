@@ -1,0 +1,10 @@
+.h1-tittle {
+  padding: 1em 0 0.5em 0;
+  font-size: 2em;
+}
+
+.stars {
+  display: flex;
+  width: 120px;
+  color: #ffc107;
+}/*# sourceMappingURL=resenias-admin-valoradas.component.css.map */

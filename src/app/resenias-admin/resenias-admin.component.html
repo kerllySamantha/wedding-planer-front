@@ -6,14 +6,66 @@
         <div class="col-12 col-lg-2 d-none d-lg-block p-0">
             <app-admin-nav-proveedor></app-admin-nav-proveedor>
         </div>
+        <div class="col-12 col-lg-10 pt-4 pb-5 main-content px-3 px-lg-5 ">
+            <!-- <div class="ms-5 me-5"> -->
+            <div class="row main-resenias">
 
-        <div class="col-12 col-lg-10 content-area">
+                <div class="col-xl-5 col-lg-5 col-12 col-md-5 col-sm-12">
+                    <div class="row text-center g2">
+                        <div class="col-6 card-resenia">
+                            <app-dashboard-cards-resenias-admin title="Total de Reseñas">
+                                <h2>{{ resenias()?.estadisticas?.total }}</h2>
+                            </app-dashboard-cards-resenias-admin>
+                        </div>
+                        <div class="col-6 ">
+                            <app-dashboard-cards-resenias-admin title="Puntuacion Media">
+                                <h2>{{ resenias()?.estadisticas?.promedio }}</h2>
+                            </app-dashboard-cards-resenias-admin>
+                        </div>
 
-            
-         
+                    </div>
+
+                </div>
+                <div class="col-12 col-md-7  py-4 py-md-0">
+                    <app-dashboard-cards-resenias-admin title="Promedio Valoraciones">
+
+                        @for (item of estrellas(); track item.rating) {
+                        <!-- <p> {{item.rating}}</p> -->
+                        <div class="rating-row">
+
+                            <div class="stars">
+                                @for (star of [].constructor(item.rating); track $index) {
+                                <mat-icon>star</mat-icon>
+                                }
+                            </div>
+
+                            <div class="progress-container">
+                                <div class="progress-bar" [style.width.%]="item.porcentaje">
+                                </div>
+                            </div>
+
+                            <span class="percentage">
+                                {{ item.porcentaje }}%
+                            </span>
+
+                        </div>
+                        }
+
+                    </app-dashboard-cards-resenias-admin>
+                </div>
+
+
+            </div>
+            <div>
+
+                <app-resenias-admin-valoradas></app-resenias-admin-valoradas>
+            </div>
         </div>
-
-
-
     </div>
+
+
+
+
+
+    <!-- </div> -->
 </div>

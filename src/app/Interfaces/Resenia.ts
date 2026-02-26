@@ -2,7 +2,7 @@ import { UsuarioLigero } from './User';
 import { EmpresaLigera, } from './Empresa';
 export interface Resenia {
     id: number,
-    cometario: string,
+    comentario: string,
     puntuacion: string,
     usuario: UsuarioLigero,
     empresa: EmpresaLigera
@@ -30,13 +30,13 @@ export interface CreateResenia {
 
 export interface ReseniasEmpresa {
     estadisticas: Estadistica,
-    estrellas: Estrella[],
     data: Resenia[]
 }
 
 export interface Estadistica {
     promedio: number,
     total: number,
+    estrellas: Estrella[]
 
 }
 

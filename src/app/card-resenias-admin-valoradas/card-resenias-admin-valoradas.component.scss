@@ -1,0 +1,41 @@
+.review-card {
+    max-width: 22rem;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.review-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.review-img {
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.review-card:hover .review-img {
+    transform: scale(1.05);
+}
+
+.stars {
+    color: #ffc107;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.review-text {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+    max-height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.personal-container {
+    margin: 0 4em;
+}

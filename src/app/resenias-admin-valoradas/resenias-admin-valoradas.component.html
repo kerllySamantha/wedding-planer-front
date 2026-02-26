@@ -1,0 +1,17 @@
+<h1 class="h1-tittle">Mejor Valoradas</h1>
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl- g-4">
+    @for (resenia of reseniasPositivas(); track resenia.id) {
+    <app-card-resenias-admin-valoradas [resenia]="resenia"></app-card-resenias-admin-valoradas>
+    }
+</div>
+
+@if(reseniasNegativas()?.length == 0){
+<app-sin-valoraciones-card></app-sin-valoraciones-card>
+}
+@else {
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl- g-4">
+    @for (resenia of reseniasNegativas(); track resenia.id) {
+    <app-card-resenias-admin-valoradas [resenia]="resenia"></app-card-resenias-admin-valoradas>
+    }
+</div>
+}

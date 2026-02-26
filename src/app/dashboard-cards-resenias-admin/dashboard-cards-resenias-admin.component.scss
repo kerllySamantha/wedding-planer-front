@@ -1,0 +1,19 @@
+.mat-mdc-card {
+    justify-content: space-evenly;
+    min-height: 13.3em;   /* altura mínima para desktop */
+    height: 100%;       /* deja que se adapte si el contenido es menor */
+}
+
+@media (max-width: 768px) {
+    .mat-mdc-card {
+        min-height: 8em; /* más pequeña en tablet/móvil */
+        height: auto;    /* se adapta al contenido */
+    }
+}
+
+@media (max-width: 576px) {
+    .mat-mdc-card {
+        min-height: 6em; /* aún más pequeña en móvil */
+        height: auto;
+    }
+}

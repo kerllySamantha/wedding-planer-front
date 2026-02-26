@@ -10,7 +10,7 @@ import { NgClass } from '@angular/common';
 @Component({
   selector: 'app-admin-dashboard-proveedores',
   standalone: true,
-  imports: [AdminNavProveedorComponent, CardsDashboardProveedorComponent, TopBarAdminComponent, NgClass],
+  imports: [AdminNavProveedorComponent, CardsDashboardProveedorComponent, TopBarAdminComponent],
   templateUrl: './admin-dashboard-proveedores.component.html',
   styleUrl: './admin-dashboard-proveedores.component.scss'
 })

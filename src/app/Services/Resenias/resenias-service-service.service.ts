@@ -16,4 +16,5 @@ export abstract class ReseniasServiceServiceService {
   abstract editarResenia(idResenia: string | null, usuario: CreateResenia): Observable<Object | null>;
   abstract deleteResenia(idResenia: bigint): Observable<Object | null>;
   abstract getReseniaByEmpresa(idEmpresa: number): Observable<ReseniasEmpresa | null>;
+  abstract getReseniaByFiltro(idEmpresa: number, tipo:string):Observable<Resenias|null>
 }

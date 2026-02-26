@@ -1,1 +1,32 @@
-/*# sourceMappingURL=resenias-admin.component.css.map */
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.stars {
+  display: flex;
+  width: 120px;
+  color: #ffc107;
+}
+
+.progress-container {
+  flex: 1;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #ffc107;
+  transition: width 0.4s ease;
+}
+
+.percentage {
+  width: 45px;
+  text-align: right;
+  font-weight: 500;
+}/*# sourceMappingURL=resenias-admin.component.css.map */

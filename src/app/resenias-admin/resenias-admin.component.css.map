@@ -1,1 +1,1 @@
-{"version":3,"sources":[],"names":[],"mappings":"","file":"resenias-admin.component.css"}
+{"version":3,"sources":["resenias-admin.component.scss","resenias-admin.component.css"],"names":[],"mappings":"AAAA;EACI,aAAA;EACA,mBAAA;EACA,SAAA;EACA,kBAAA;ACCJ;;ADEA;EACI,aAAA;EACA,YAAA;EACA,cAAA;ACCJ;;ADEA;EACI,OAAA;EACA,YAAA;EACA,yBAAA;EACA,kBAAA;EACA,gBAAA;ACCJ;;ADEA;EACI,YAAA;EACA,yBAAA;EACA,2BAAA;ACCJ;;ADEA;EACI,WAAA;EACA,iBAAA;EACA,gBAAA;ACCJ","file":"resenias-admin.component.css"}

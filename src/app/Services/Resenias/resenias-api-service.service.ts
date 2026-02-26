@@ -29,8 +29,6 @@ export class ReseniasApiServiceService extends ReseniasServiceServiceService {
     );
   }
   override getResenia(idResenia: bigint): Observable<Resenia | null> {
-    console.log("idResenia: " + idResenia);
-
     return this.http.get<Resenia>(`${this.apiUrl}/resenias/${idResenia.toString()}`).pipe(
       map(response => {
         if (response) {
@@ -71,8 +69,6 @@ export class ReseniasApiServiceService extends ReseniasServiceServiceService {
   }
 
   override getReseniaByEmpresa(idEmpresa: number): Observable<ReseniasEmpresa | null> {
-    console.log("idEmpresa: " + idEmpresa);
-
     return this.http.get<ReseniasEmpresa>(`${this.apiUrl}/empresas/${idEmpresa.toString()}/resenias`).pipe(
       map(response => {
         if (response) {
@@ -86,4 +82,20 @@ export class ReseniasApiServiceService extends ReseniasServiceServiceService {
       })
     );
   }
+
+  override getReseniaByFiltro(idEmpresa: number, tipo: string): Observable<Resenias | null> {
+    return this.http.get<Resenias>(`${this.apiUrl}/empresas/${idEmpresa.toString()}/resenias-filtradas?tipo=${tipo}`).pipe(
+      map(response => {
+        if (response) {
+          return response;
+        }
+        return null;
+      }),
+      catchError((error: Error) => {
+        console.error("Error en getResenias:", error);
+        return throwError(() => error);
+      })
+    );
+  }
+
 }
