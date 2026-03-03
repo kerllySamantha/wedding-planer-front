@@ -209,14 +209,14 @@ export class ContenedorTiposComponent {
   //             // 4️⃣ Actualizar presupuesto
   //             this.presupuestoctx.editarPresupuesto(presupuesto.id, presupuestoData).subscribe({
   //               next: () => console.log(`✅ Presupuesto ${presupuesto.id} actualizado con monto_total = ${montoActualizado}`),
-  //               error: (err) => console.error('❌ Error al actualizar presupuesto', err)
+  //               error: (err) => console.error('Error al actualizar presupuesto', err)
   //             });
   //           },
-  //           error: (err) => console.error('❌ Error al obtener detalle del presupuesto', err)
+  //           error: (err) => console.error('Error al obtener detalle del presupuesto', err)
   //         });
   //       });
   //     },
-  //     error: (err) => console.error('❌ Error al traer presupuestos de la boda', err)
+  //     error: (err) => console.error('Error al traer presupuestos de la boda', err)
   //   });
   // }
 

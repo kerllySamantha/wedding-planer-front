@@ -83,7 +83,7 @@ export class EmpresasApiServiceService  extends EmpresasServiceServiceService{
     override getEmpresaByUser(idUser: number): Observable<EmpresaResponse | null> {
     console.log("idUsuario: " + idUser);
 
-    return this.http.get<EmpresaResponse>(`${this.apiUrl}/empresas/usuario/${idUser.toString()}`).pipe(
+    return this.http.get<EmpresaResponse>(`${this.apiUrl}/empresa/usuario/${idUser.toString()}`).pipe(
       map(response => {
         if (response) {
           return response;

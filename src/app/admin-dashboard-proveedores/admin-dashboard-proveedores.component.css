@@ -3,7 +3,7 @@
 }
 
 .content-area {
-  background-image: url("../../assets/images/fondo-poli-8.jpg");
+  background-image: url("../../assets/images/fondo-poli-10.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -13,4 +13,16 @@
 
 .oculto {
   visibility: hidden;
+}
+
+.sidebar-fixed {
+  position: fixed;
+  height: 100vh;
+  background: linear-gradient(180deg, #dbecf4, #508bb3);
+}
+
+@media (min-width: 992px) {
+  .content-area {
+    margin-left: 16.6667%; /* mismo ancho del sidebar */
+  }
 }/*# sourceMappingURL=admin-dashboard-proveedores.component.css.map */

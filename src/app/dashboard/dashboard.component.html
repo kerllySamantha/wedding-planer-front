@@ -16,7 +16,7 @@
     <h1 class="h1-tittle">Empresas</h1>
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-        @for (empresa of empresas$(); track empresa.id) {
+        @for (empresa of empresas(); track empresa.id) {
         <div class="col">
             <app-card-empresa [empresa]="empresa"></app-card-empresa>
         </div>
@@ -26,7 +26,7 @@
 
     <h1 class="h1-tittle">Bodas Reales</h1>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-        @for (boda of bodas$(); track boda.id) {
+        @for (boda of bodas(); track boda.id) {
         <app-card-boda [boda]="boda"></app-card-boda>
         }
     </div>

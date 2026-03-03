@@ -5,7 +5,7 @@
     margin-bottom: 8px;
 }
 
-.stars{
+.stars {
     display: flex;
     width: 120px;
     color: #ffc107;
@@ -29,4 +29,83 @@
     width: 45px;
     text-align: right;
     font-weight: 500;
+}
+
+
+/* Contenedor grid */
+.reviews-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    /* espacio entre cards */
+}
+
+/* Cada card ocupa el mismo ancho */
+.reviews-grid app-card-resenias-admin {
+    flex: 1 1 calc(33.333% - 16px);
+    /* 3 cards por fila, ajustable */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Card hija para ocupar toda la altura del flex parent */
+.review-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    /* Esto hace que la card tome la misma altura que las demás en la fila */
+}
+
+/* Contenido expandible ocupa el espacio disponible */
+mat-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.content-area {
+    position: relative;
+    min-height: 100vh;
+    padding: 4em;
+    z-index: 1;
+}
+
+.content-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../../assets/images/fondo-poli.jpg');
+    -webkit-filter: blur(1px);
+    -moz-filter: blur(1px);
+    -o-filter: blur(1px);
+    -ms-filter: blur(1px);
+    filter: blur(1px);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+
+
+
+
+
+.sidebar-fixed {
+    position: fixed;
+    height: 100vh;
+     background: linear-gradient(180deg,
+            #dbecf4,
+            #508bb3);
+}
+
+@media (min-width: 992px) {
+    .content-area {
+        margin-left: 16.6667%;
+        /* mismo ancho del sidebar */
+    }
 }

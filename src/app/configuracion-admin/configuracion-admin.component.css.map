@@ -1,1 +1,1 @@
-{"version":3,"sources":[],"names":[],"mappings":"","file":"configuracion-admin.component.css"}
+{"version":3,"sources":["configuracion-admin.component.scss","configuracion-admin.component.css"],"names":[],"mappings":"AAAA;EACI,eAAA;EACA,aAAA;EACA,qDAAA;ACCJ;;ADIA;EACI;IACI,qBAAA;IACA,4BAAA;ECDN;AACF","file":"configuracion-admin.component.css"}

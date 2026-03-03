@@ -3,15 +3,17 @@ export interface User {
     email: string,
     name: string,
     rol: string
+    fotoPerfil: string,
 }
 
 export interface UsuarioLigero {
     id: number;
     name: string;
     rol?: string;
+    fotoPerfil?: string,
 }
 
-export interface Usuarios{
+export interface Usuarios {
     data: User[]
 }
 
@@ -24,8 +26,8 @@ export interface CreateUser {
 
 }
 
-export interface UserResponse{
-    message: string, 
-    status: string, 
+export interface UserResponse {
+    message: string,
+    status: string,
     data: User
 }

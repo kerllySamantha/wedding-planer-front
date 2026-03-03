@@ -27,40 +27,21 @@ export class DashboardComponent {
   reseniasTotalService = inject(ReseniasServiceServiceService);
   empresasTotalService = inject(EmpresasServiceServiceService);
   bodasTotalService = inject(BodaServiceServiceService);
-
-  // protected reseniasResource = resource({
-  //   loader: () => firstValueFrom(this.reseniasTotalService.getResenias())
-  // });
-
-  // protected reseniasRecibidas = computed(() => this.reseniasResource.value() ?? []);
-
-  // ngOnInit() {
-  // firstValueFrom(this.reseniasTotalService.getResenias())
-  //   .then(res => {
-  //     console.log(res);
-  //   })
-  //   .catch(err => console.error(err));
-  // }
+  autServicectx = inject(AuthenticationService);
 
   resenias = signal<Resenia[]>([]);
   empresas = signal<Empresa[]>([]);
   bodas = signal<Boda[]>([]);
-
-
-  autServicectx = inject(AuthenticationService);
-   
-    rolAuth = computed(() => !!this.autServicectx.rol());
-  
-
   loading = signal(true);
   error = signal<string | null>(null);
-  resenias$ = computed(() => this.resenias());
-  empresas$ = computed(() => this.empresas());
-  bodas$ = computed(() => this.bodas());
+  rol = signal<string | null>(localStorage.getItem('rol')!)
+
+  rolAuth = computed(() => !!this.autServicectx.rol());
 
   constructor(private router: Router) {
 
   }
+
 
 
   ngOnInit(): void {
@@ -68,25 +49,9 @@ export class DashboardComponent {
     this.cargarResenias();
     this.cargarBodas();
 
-    const data = localStorage.getItem('user');
-    if (data) {
-      try {
-        const parsedData = JSON.parse(data);
-        if (parsedData['rol'] === 'empresa') {
-          this.router.navigate(['/proveedor-dashboard']);
-        }
-        // Use parsedData
-      } catch (e) {
-        console.error('Invalid JSON:', e);
-        // Handle or fallback
-      }
+    if (this.rol() == 'empresa') {
+      this.router.navigate(['/proveedor-dashboard']);
     }
-
-
-    // if (rol === 'usuario') {
-    //   this.router.navigate(['/mi-boda']);
-    // }
-
   }
 
   cargarResenias(): void {
@@ -97,8 +62,9 @@ export class DashboardComponent {
         this.resenias.set(data?.data ?? []);
         this.loading.set(false);
       },
-      error: (err) => {
+      error: (err: Error) => {
         this.error.set('No se pudieron cargar las reseñas');
+        console.log(err.message);
         this.loading.set(false);
       }
     });

@@ -2,23 +2,18 @@
 
     <mat-card-header>
 
-        <!-- Avatar -->
         <div mat-card-avatar class="avatar-container">
 
-            <!-- Si tiene foto -->
             @if (resenia()?.usuario?.fotoPerfil) {
             <img [src]="resenia()?.usuario?.fotoPerfil" class="avatar-img" alt="Foto usuario" />
             }
             @else {
-
-            <!-- Si no tiene -->
             <div class="avatar-placeholder">
-                {{ resenia()?.usuario?.name?.charAt(0) }}
+                {{ resenia()?.usuario?.name?.charAt(0) ?? '?' }}
             </div>
             }
 
         </div>
-
 
         <!-- Título -->
         <mat-card-title>
@@ -31,16 +26,15 @@
 
     </mat-card-header>
 
-    <!-- @for (foto of resenia()?.fotos; track foto.path; let idx = $index) {
-      @if (idx === 0) {
-        <div class="position-relative overflow-hidden rounded-top-4">
-          <img
-            [src]="foto?.url"
-            class="card-img-top review-img"
-            [alt]="resenia()?.comentario">
-        </div>
-      }
-    } -->
+    @for (foto of resenia()?.fotos; track foto.path; let idx = $index) {
+    @if (idx === 0) {
+    <div class="review-image-wrapper">
+        <img [src]="foto?.url" class="review-image" [alt]="resenia()?.comentario">
+    </div>
+    }
+    }
+
+
 
     <mat-card-content>
 
@@ -50,7 +44,15 @@
             }
         </div>
 
-        <p class="review-text">{{ resenia()?.comentario }}</p>
+        <p class="review-text" [class.collapsed]="!expandido()" [class.expandido]="expandido()">
+            {{ resenia()?.comentario }}
+        </p>
+
+        @if ((resenia()?.comentario?.length ?? 0 ) > 100 ) {
+        <button mat-button (click)="toggleExpandido()">
+            {{ expandido() ? 'Ver menos' : 'Ver mas' }} 
+        </button>
+        }
 
     </mat-card-content>
 

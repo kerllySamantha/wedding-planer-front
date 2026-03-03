@@ -10,7 +10,7 @@
         </div> -->
 
         <!-- <span class="navbar-brand">Panel Proveedores</span> -->
-        <span class="navbar-brand">{{nombreEmpresa()}}</span>
+        <span class="navbar-brand d-none d-lg-block">{{nombreEmpresa()}}</span>
 
 
         <div class="d-flex align-items-center gap-3">
@@ -53,10 +53,10 @@
 
 <div id="adminSidebar" class="offcanvas offcanvas-start custom-offcanvas" [class.show]="sidebarOpen()">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title">Menú</h5>
+        <h5 class="offcanvas-title">{{nombreEmpresa()}}</h5>
         <button type="button" class="btn-close" (click)="toggleSidebar()"></button>
     </div>
-    <div class="offcanvas-body">
+    <div class="offcanvas-body" >
         <app-admin-nav-proveedor></app-admin-nav-proveedor>
     </div>
 </div>

@@ -15,10 +15,8 @@ import {
   endOfYear
 } from 'date-fns';
 
-import { Navigation, Thumbs, FreeMode, Scrollbar, } from 'swiper/modules';
+import { Navigation, Thumbs, FreeMode, } from 'swiper/modules';
 import { cilChevronLeft, cilChevronRight, cilListNumbered, cilPaperPlane } from '@coreui/icons';
-
-
 import { IconDirective, IconModule, IconSetService } from '@coreui/icons-angular';
 import SwiperCore from 'swiper';
 

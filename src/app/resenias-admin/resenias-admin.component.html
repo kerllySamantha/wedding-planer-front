@@ -1,14 +1,15 @@
-<app-top-bar-admin></app-top-bar-admin>
+<app-top-bar-admin (toggle)="toggleSidebar()"></app-top-bar-admin>
 
 <div class="container-fluid mt-5">
     <div class="row">
-
-        <div class="col-12 col-lg-2 d-none d-lg-block p-0">
+        <!-- Sidebar -->
+        <div class="col-lg-2 d-none d-lg-block p-0 sidebar-fixed" [hidden]="!sidebarClosed()">
             <app-admin-nav-proveedor></app-admin-nav-proveedor>
         </div>
-        <div class="col-12 col-lg-10 pt-4 pb-5 main-content px-3 px-lg-5 ">
-            <!-- <div class="ms-5 me-5"> -->
-            <div class="row main-resenias">
+
+        <!-- Contenido principal -->
+        <div class="col-12 col-lg-10 content-area">
+            <div class="row">
 
                 <div class="col-xl-5 col-lg-5 col-12 col-md-5 col-sm-12">
                     <div class="row text-center g2">
@@ -56,9 +57,19 @@
 
 
             </div>
-            <div>
+            <div class="row ">
 
                 <app-resenias-admin-valoradas></app-resenias-admin-valoradas>
+            </div>
+
+            <div class="row mt-5 pt-3">
+                <h1 class="h1-tittle">Todas las Resenias</h1>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-4 ">
+                    @for (resenia of arrayResenias(); track resenia.id) {
+                    <!-- <app-card-boda [boda]="boda"></app-card-boda> -->
+                    <app-card-resenias-admin [resenia]="resenia"></app-card-resenias-admin>
+                    }
+                </div>
             </div>
         </div>
     </div>

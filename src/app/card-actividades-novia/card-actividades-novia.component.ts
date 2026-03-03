@@ -20,9 +20,6 @@ export class CardActividadesNoviaComponent {
   }
 
 
-
-
-
   bodaEncontrada = computed(() => this.countdownService.bodaEncontrada());
   fechaCountdown = computed(() => this.countdownService.countdownValue());
   fechaFormateada = computed(() => this.countdownService.fechaFormateada())

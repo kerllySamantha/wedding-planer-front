@@ -5,7 +5,6 @@ import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { AutenticarHttpClientService } from '../Services/Autentication/autenticar-http-client.service';
 import { CardsDashboardProveedorComponent } from "../cards-dashboard-proveedor/cards-dashboard-proveedor.component";
 import { TopBarAdminComponent } from "../top-bar-admin/top-bar-admin.component";
-import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-admin-dashboard-proveedores',

@@ -1,10 +1,3 @@
-.custom-offcanvas {
-    // background-color: #9b6bff !important;
-    // background-color: rgba(246, 240, 248, 0.651) !important;
-    // background-color: rgba(236, 195, 250, 0.651) !important;
-    color: white;
-    width: 260px;
-}
 
 .custom-offcanvas .nav-link {
     color: #fff;
@@ -22,7 +15,7 @@
 
 
 .navbar {
-    background-color: rgba(231, 243, 248, 0.651) !important;
+    background-color: rgba(182, 222, 240, 0.651) !important;
     // background: rgb(183, 212, 236)  !important;
     // box-shadow: 0 4px 15px rgb(144, 196, 238);
     backdrop-filter: blur(5px);
@@ -30,18 +23,12 @@
     // padding: 20px;
 }
 
+#adminSidebar{
+    width: 15em;
+      background: linear-gradient(180deg,
+            #dbecf4,
+            #508bb3);
 
-
-
-
-
-
-
-
-
-
-.offcanvas{
-    background-color: #e5faff;
 }
 
 .offcanvas-header{
@@ -49,9 +36,9 @@
 }
 
 .offcanvas-title{
-    color: rgb(136, 136, 233);
+    color: #143f66;
     font-weight: bold;
-    font-size: 1em;
+    font-size: 0.8em;
 }
 
 .offcanvas-body{

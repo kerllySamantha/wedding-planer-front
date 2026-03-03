@@ -1,7 +1,9 @@
+@charset "UTF-8";
 .review-card {
   max-width: 22rem;
   border: none;
   transition: all 0.3s ease;
+  height: 12.5em;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
@@ -39,4 +41,36 @@
 
 .personal-container {
   margin: 0 4em;
+}
+
+.avatar-container {
+  overflow: hidden;
+  background: transparent;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a4d4f3, #97b1eb);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+}
+
+.review-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3; /* número de líneas */
+  overflow: hidden; /* 🔴 obligatorio */
 }/*# sourceMappingURL=card-resenias-admin-valoradas.component.css.map */
