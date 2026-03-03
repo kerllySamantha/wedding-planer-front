@@ -1,57 +1,47 @@
-
 .custom-offcanvas .nav-link {
-    color: #fff;
-    padding: 12px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .btn-close-white {
-    filter: invert(1);
+  filter: invert(1);
 }
 
 .dropdown-menu {
-    z-index: 2000 !important;
+  z-index: 2000 !important;
 }
-
 
 .navbar {
-    background-color: rgba(182, 222, 240, 0.651) !important;
-    // background: rgb(183, 212, 236)  !important;
-    // box-shadow: 0 4px 15px rgb(144, 196, 238);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    // padding: 20px;
+  background-color: rgba(182, 222, 240, 0.651) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
-#adminSidebar{
-    width: 15em;
-      background: linear-gradient(180deg,
-            #dbecf4,
-            #508bb3);
-
+#adminSidebar {
+  width: 15em;
+  background: linear-gradient(180deg, #dbecf4, #508bb3);
 }
 
-.offcanvas-header{
-    font-size: 1.5em;
+.offcanvas-header {
+  font-size: 1.5em;
 }
 
-.offcanvas-title{
-    color: #143f66;
-    font-weight: bold;
-    font-size: 0.8em;
+.offcanvas-title {
+  color: #143f66;
+  font-weight: bold;
+  font-size: 0.8em;
 }
 
-.offcanvas-body{
-    padding: 0;
-    margin: 0;
-
+.offcanvas-body {
+  padding: 0;
+  margin: 0;
 }
 
 .navbar-toggler:focus {
-    box-shadow: none;
+  box-shadow: none;
 }
 
-button.btn-close{
-    color: red;
+button.btn-close {
+  color: red;
 }
-
