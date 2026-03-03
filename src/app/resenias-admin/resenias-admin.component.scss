@@ -1,3 +1,7 @@
+:host {
+    --sidebar-desktop-width: 19rem;
+}
+
 .rating-row {
     display: flex;
     align-items: center;
@@ -98,14 +102,16 @@ mat-card-content {
 .sidebar-fixed {
     position: fixed;
     height: 100vh;
+    width: var(--sidebar-desktop-width);
      background: linear-gradient(180deg,
             #dbecf4,
             #508bb3);
 }
 
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
     .content-area {
-        margin-left: 16.6667%;
-        /* mismo ancho del sidebar */
+        margin-left: var(--sidebar-desktop-width);
+        width: calc(100% - var(--sidebar-desktop-width));
+        max-width: calc(100% - var(--sidebar-desktop-width));
     }
 }

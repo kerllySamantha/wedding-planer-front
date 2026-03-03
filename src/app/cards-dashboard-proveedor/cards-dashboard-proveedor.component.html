@@ -15,7 +15,7 @@
   </button>
 </div>
 
-<div class="row pt-4 mt-4 gx-4 gy-4 justify-content-center">
+<div class="cards-grid pt-4 mt-4">
 
   <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCompletadas()"
     tittle="Reservas Confirmadas">
@@ -32,9 +32,9 @@
   <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasBloqueadas()"
     tittle="Reservas Bloqueadas">
   </app-card-info-admin>
-  <!-- <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasRechazadas()"
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasRechazadas()"
       tittle="Reservas Rechazadas">
-  </app-card-info-admin> -->
+  </app-card-info-admin>
 
 
 </div>

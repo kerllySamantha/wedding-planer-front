@@ -10,7 +10,7 @@ registerLocaleData(localeEs);
   templateUrl: './card-info-admin.component.html',
   styleUrl: './card-info-admin.component.scss',
   host: {
-    'class': 'col-6 col-md-3 card-gap d-flex'
+    'class': 'dashboard-card-item card-gap d-flex'
   }
 })
 export class CardInfoAdminComponent {

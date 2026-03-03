@@ -1,97 +1,47 @@
-
-
-/* Separación entre cards */
-
-
-.card-gap {
-    padding-left: 0.3em !important;
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-
-
-
-.boda-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+@media (min-width: 576px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.card-icon svg {
-    width: 32px;
-    height: 32px;
-    opacity: .95;
-    transition: transform .3s ease;
+@media (min-width: 768px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
-.boda-card:hover .card-icon svg {
-    transform: scale(1.1);
+@media (min-width: 992px) {
+  .cards-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
-
-
-/* Texto secundario */
-.service-text {
-    font-size: 0.9rem;
-    opacity: 0.85;
-    text-align: center;
-}
-
-/* Número principal */
-.boda-card .h1 {
-    font-size: 2.2rem;
-    margin: 2px 0 6px 0;
-}
-
-/* Animación de entrada */
-.boda-card {
-    opacity: 0;
-    transform: translateY(8px);
-    animation: fadeInCard .45s ease forwards;
+@media (min-width: 1200px) {
+  .cards-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
 
 .icon-button {
-  background: transparent;   /* sin fondo */
-  border: none;              /* sin borde */
-  padding: 0.2rem;           /* ajusta el espacio alrededor del icono */
-  cursor: pointer;           /* se ve que es clickeable */
+  background: transparent;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
 }
 
 .icon-button svg {
-  width: 1.5rem;             /* tamaño del icono */
+  width: 1.5rem;
   height: 1.5rem;
-  fill: #000;                /* color del icono */
+  fill: #000;
   transition: transform 0.2s;
 }
 
 .icon-button:hover svg {
-  transform: scale(1.2);     /* efecto al pasar el mouse */
-}
-
-
-@keyframes fadeInCard {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Skeleton */
-.placeholder-glow .placeholder {
-    height: 22px;
-    border-radius: 5px;
-    background: linear-gradient(90deg,
-            rgba(220, 220, 220, 0.45),
-            rgba(255, 255, 255, 0.75),
-            rgba(220, 220, 220, 0.45));
-    background-size: 200% 100%;
-    animation: skeletonShine 1.4s infinite;
-}
-
-@keyframes skeletonShine {
-    0% {
-        background-position: 200% 0
-    }
-
-    100% {
-        background-position: -200% 0
-    }
+  transform: scale(1.2);
 }

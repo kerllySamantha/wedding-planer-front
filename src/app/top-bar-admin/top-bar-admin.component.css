@@ -19,12 +19,17 @@
 }
 
 #adminSidebar {
-  width: 15em;
+  width: 19em;
   background: linear-gradient(180deg, #dbecf4, #508bb3);
+  height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
 .offcanvas-header {
   font-size: 1.5em;
+  flex-shrink: 0;
 }
 
 .offcanvas-title {
@@ -36,6 +41,9 @@
 .offcanvas-body {
   padding: 0;
   margin: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .navbar-toggler:focus {

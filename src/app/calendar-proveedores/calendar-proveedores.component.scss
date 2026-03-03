@@ -7,11 +7,16 @@
 
 }
 
+:host {
+    --sidebar-desktop-width: 19rem;
+}
+
 
 
 .sidebar-fixed {
     position: fixed;
     height: 100vh;
+    width: var(--sidebar-desktop-width);
     background: linear-gradient(180deg,
             #e8fbff,
             #143f66
@@ -20,10 +25,11 @@
 
 
 
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
     .content-area {
-        margin-left: 16.6667%;
-        /* mismo ancho del sidebar */
+        margin-left: var(--sidebar-desktop-width);
+        width: calc(100% - var(--sidebar-desktop-width));
+        max-width: calc(100% - var(--sidebar-desktop-width));
     }
 }
 

@@ -1,5 +1,5 @@
 /* Separación entre cards */
-card-gap {
+.card-gap {
     padding-left: 0.3em !important;
     padding-right: 0.3em !important;
     
@@ -86,4 +86,8 @@ card-gap {
     100% {
         background-position: -200% 0
     }
+}
+
+.dashboard-card-item {
+    width: 100%;
 }
