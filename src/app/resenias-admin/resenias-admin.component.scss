@@ -1,117 +1,240 @@
 :host {
-    --sidebar-desktop-width: 19rem;
+  --sidebar-desktop-width: 19rem;
+  --panel-bg: rgba(255, 255, 255, 0.86);
+  --panel-border: rgba(20, 63, 102, 0.15);
+  --panel-shadow: 0 18px 38px rgba(16, 39, 63, 0.14);
+  --brand-700: #143f66;
+  --brand-500: #2f5d86;
+  --brand-300: #6f95b5;
 }
-
-.rating-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-}
-
-.stars {
-    display: flex;
-    width: 120px;
-    color: #ffc107;
-}
-
-.progress-container {
-    flex: 1;
-    height: 10px;
-    background-color: #e0e0e0;
-    border-radius: 6px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    background-color: #ffc107;
-    transition: width 0.4s ease;
-}
-
-.percentage {
-    width: 45px;
-    text-align: right;
-    font-weight: 500;
-}
-
-
-/* Contenedor grid */
-.reviews-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    /* espacio entre cards */
-}
-
-/* Cada card ocupa el mismo ancho */
-.reviews-grid app-card-resenias-admin {
-    flex: 1 1 calc(33.333% - 16px);
-    /* 3 cards por fila, ajustable */
-    display: flex;
-    flex-direction: column;
-}
-
-/* Card hija para ocupar toda la altura del flex parent */
-.review-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    /* Esto hace que la card tome la misma altura que las demás en la fila */
-}
-
-/* Contenido expandible ocupa el espacio disponible */
-mat-card-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-
 
 .content-area {
-    position: relative;
-    min-height: 100vh;
-    padding: 4em;
-    z-index: 1;
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(1rem, 0.7vw + 0.9rem, 2rem);
+  z-index: 1;
 }
 
 .content-area::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url('../../assets/images/fondo-poli.jpg');
-    -webkit-filter: blur(1px);
-    -moz-filter: blur(1px);
-    -o-filter: blur(1px);
-    -ms-filter: blur(1px);
-    filter: blur(1px);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    z-index: -1;
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      180deg,
+      rgba(247, 251, 255, 0.92) 0%,
+      rgba(236, 244, 251, 0.9) 100%
+    ),
+    url("../../assets/images/fondo-poli.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  filter: blur(1px);
+  z-index: -1;
 }
 
+.reviews-shell {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
 
+.page-header {
+  padding: clamp(1rem, 1.2vw + 0.8rem, 1.55rem);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(241, 247, 252, 0.8));
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--panel-shadow);
+}
 
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.15rem, 0.8vw + 1rem, 1.7rem);
+  font-weight: 700;
+  color: var(--brand-700);
+}
 
+.page-header p {
+  margin: 0.45rem 0 0;
+  font-size: 0.93rem;
+  color: rgba(20, 63, 102, 0.78);
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.4fr);
+  gap: 0.95rem;
+  align-items: stretch;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.95rem;
+}
+
+.kpi-grid app-dashboard-cards-resenias-admin,
+.overview-grid > app-dashboard-cards-resenias-admin {
+  display: block;
+  height: 100%;
+}
+
+.kpi-value {
+  margin: 0;
+  font-size: clamp(1.7rem, 1.5vw + 1rem, 2.2rem);
+  line-height: 1.05;
+  color: var(--brand-700);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.kpi-caption {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(20, 63, 102, 0.7);
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.rating-row + .rating-row {
+  margin-top: 0.5rem;
+}
+
+.stars {
+  display: flex;
+  min-width: 112px;
+  color: #f3be3d;
+}
+
+.stars mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+.progress-container {
+  flex: 1;
+  height: 0.5rem;
+  background: rgba(27, 68, 104, 0.13);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #f3be3d 0%, #f5a623 100%);
+  transition: width 0.35s ease;
+}
+
+.percentage {
+  min-width: 2.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: right;
+  color: rgba(20, 63, 102, 0.85);
+}
+
+.reviews-section {
+  border-radius: 1rem;
+  padding: clamp(0.9rem, 0.65vw + 0.7rem, 1.25rem);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--panel-shadow);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: var(--brand-700);
+  font-size: clamp(1rem, 0.4vw + 0.93rem, 1.25rem);
+  font-weight: 700;
+}
+
+.badge-total {
+  min-width: 2rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(20, 63, 102, 0.12);
+  color: var(--brand-500);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.reviews-list {
+  --bs-gutter-y: 0.95rem;
+}
+
+.reviews-list > app-card-resenias-admin {
+  display: block;
+}
 
 .sidebar-fixed {
-    position: fixed;
-    height: 100vh;
-    width: var(--sidebar-desktop-width);
-     background: linear-gradient(180deg,
-            #dbecf4,
-            #508bb3);
+  position: fixed;
+  width: var(--sidebar-desktop-width);
+  height: 100vh;
+  background: linear-gradient(180deg, #dbecf4, #508bb3);
 }
 
 @media (min-width: 1200px) {
-    .content-area {
-        margin-left: var(--sidebar-desktop-width);
-        width: calc(100% - var(--sidebar-desktop-width));
-        max-width: calc(100% - var(--sidebar-desktop-width));
-    }
+  .content-area {
+    margin-left: var(--sidebar-desktop-width);
+    width: calc(100% - var(--sidebar-desktop-width));
+    max-width: calc(100% - var(--sidebar-desktop-width));
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .content-area {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767.98px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stars {
+    min-width: 92px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .content-area {
+    padding: 0.7rem;
+  }
+
+  .section-header {
+    margin-bottom: 0.65rem;
+  }
+
+  .percentage {
+    min-width: 2.2rem;
+  }
 }

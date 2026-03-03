@@ -15,24 +15,24 @@
   </button>
 </div>
 
-<div class="cards-grid pt-4 mt-4">
+<div class="cards-grid pt-2 mt-2">
 
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCompletadas()"
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCompletadas()" [today]="selectedDate()"
     tittle="Reservas Confirmadas">
   </app-card-info-admin>
 
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasPendientes()"
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasPendientes()" [today]="selectedDate()"
     tittle="Reservas Pendientes">
   </app-card-info-admin>
 
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCanceladas()"
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCanceladas()" [today]="selectedDate()"
     tittle="Reservas Canceladas">
   </app-card-info-admin>
 
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasBloqueadas()"
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasBloqueadas()" [today]="selectedDate()"
     tittle="Reservas Bloqueadas">
   </app-card-info-admin>
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasRechazadas()"
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasRechazadas()" [today]="selectedDate()"
       tittle="Reservas Rechazadas">
   </app-card-info-admin>
 

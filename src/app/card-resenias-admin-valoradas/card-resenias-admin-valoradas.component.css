@@ -1,4 +1,3 @@
-@charset "UTF-8";
 .review-card {
   max-width: 22rem;
   border: none;
@@ -71,6 +70,6 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
-  line-clamp: 3; /* número de líneas */
-  overflow: hidden; /* 🔴 obligatorio */
+  line-clamp: 3;
+  overflow: hidden;
 }/*# sourceMappingURL=card-resenias-admin-valoradas.component.css.map */

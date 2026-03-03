@@ -175,7 +175,6 @@ export class ContenedorTiposComponent {
       next: value => {
 
         console.log('💾 Detalle guardado y presupuesto actualizado en backend:', value);
-        // Ya no necesitas recalcular ni editar desde el front
 
       },
       error: (err) => console.error('❌ Error al guardar detalle:', err)

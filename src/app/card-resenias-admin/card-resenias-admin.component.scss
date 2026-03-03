@@ -1,128 +1,155 @@
-/* ---------------------------- */
-/* CARD GENERAL */
-/* ---------------------------- */
-.review-card {
-    width: 100%;
-    height: 380px;
-    /* 👈 altura fija real */
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 8px;
-    transition: 0.3s ease;
+:host {
+  display: block;
+}
 
+.review-card {
+  width: 100%;
+  height: 100%;
+  min-height: 18.2rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid rgba(20, 63, 102, 0.14);
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.96), rgba(244, 249, 253, 0.9));
+  box-shadow: 0 12px 24px rgba(16, 39, 63, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .review-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(16, 39, 63, 0.14);
 }
 
-/* ---------------------------- */
-/* HEADER / AVATAR */
-/* ---------------------------- */
+mat-card-header {
+  padding: 0.85rem 0.95rem 0.45rem;
+}
+
 .avatar-container {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    overflow: hidden;
+  width: 2.3rem;
+  height: 2.3rem;
+  min-width: 2.3rem;
+  overflow: hidden;
 }
 
 .avatar-img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #f1f1f1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(20, 63, 102, 0.1);
 }
 
 .avatar-placeholder {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ffc107, #ff9800);
-    color: white;
-    font-weight: 600;
-    font-size: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2f5d86, #5982a7);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.84rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* ---------------------------- */
-/* FOTO DE LA RESEÑA */
-/* ---------------------------- */
+mat-card-title {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: #143f66;
+}
+
+mat-card-subtitle {
+  font-size: 0.75rem;
+  color: rgba(20, 63, 102, 0.62);
+}
+
 .review-image-wrapper {
-    height: 150px;
-    /* 👈 fija */
-    overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 8.5;
+  overflow: hidden;
 }
 
 .review-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-/* ---------------------------- */
-/* CONTENIDO DE LA CARD */
-/* ---------------------------- */
 mat-card-content {
-    flex: 1;
-    /* Ocupa espacio restante */
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.48rem;
+  padding: 0.75rem 0.95rem 0.85rem;
 }
-
-/* ---------------------------- */
-/* TEXTO DEL COMENTARIO */
-/* ---------------------------- */
 
 .review-text {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.42;
+  color: rgba(20, 63, 102, 0.8);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 
 .review-text.collapsed {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 6;
-    overflow: hidden;
-    line-clamp: 3;
-
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
 }
 
 .review-text.expandido {
-    display: block;
-    max-height: 170px;
-    overflow-y: auto;
+  display: block;
+  max-height: 9rem;
+  overflow-y: auto;
 }
 
-/* ---------------------------- */
-/* ESTRELLAS */
-/* ---------------------------- */
+.stars {
+  display: flex;
+  gap: 0.05rem;
+}
+
 .stars mat-icon {
-    font-size: 15px;
-    color: #ffc107;
-    margin-right: 2px;
+  width: 0.95rem;
+  height: 0.95rem;
+  font-size: 0.95rem;
+  color: #f3be3d;
 }
 
-/* ---------------------------- */
-/* BOTÓN VER MÁS / VER MENOS */
-/* ---------------------------- */
 button[mat-button] {
-    margin-top: 4px;
-    font-size: 13px;
-    text-transform: none;
+  align-self: flex-start;
+  min-width: 0;
+  padding: 0;
+  margin-top: 0.1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #2f5d86;
+  text-transform: none;
 }
 
-/* ---------------------------- */
-/* COLUMNA FLEX PARA BOOSTRAP GRID */
-/* ---------------------------- */
-.reviews-grid>.col {
-    display: flex;
-    flex-direction: column;
+@media (max-width: 991.98px) {
+  .review-card {
+    min-height: 16.6rem;
+  }
+}
 
+@media (max-width: 575.98px) {
+  .review-card {
+    min-height: 15.2rem;
+    border-radius: 0.85rem;
+  }
+
+  mat-card-header {
+    padding: 0.75rem 0.8rem 0.38rem;
+  }
+
+  mat-card-content {
+    padding: 0.65rem 0.8rem 0.75rem;
+  }
+
+  .review-text {
+    font-size: 0.82rem;
+  }
 }

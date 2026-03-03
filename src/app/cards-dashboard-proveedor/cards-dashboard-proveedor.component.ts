@@ -54,16 +54,16 @@ export class CardsDashboardProveedorComponent {
     };
   }
 
-  // 🔹 Signals base
+
   reservas = signal<Reserva[]>([]);
   selectedDate = signal<Date>(new Date());
   error = signal<string | null>(null);
   loading = signal(true);
 
-  // 🔹 Año actual
+
   year = new Date().getFullYear();
 
-  // 🔹 Meses dinámicos del año
+
   meses = eachMonthOfInterval({
     start: startOfYear(new Date(this.year, 0, 1)),
     end: endOfYear(new Date(this.year, 11, 31))
@@ -71,7 +71,7 @@ export class CardsDashboardProveedorComponent {
 
   idEmpresa = computed(() => localStorage.getItem('idEmpresa')!);
 
-  // 🔹 Reservas filtradas por mes seleccionado
+
   reservasMes = computed(() =>
     this.reservas().filter(r =>
       isSameMonth(

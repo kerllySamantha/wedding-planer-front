@@ -1,21 +1,59 @@
-.h1-tittle {
-    padding: 1em 0 0.5em 0;
-    font-size: 2em;
+:host {
+  display: block;
 }
 
-.stars {
-    display: flex;
-    width: 120px;
-    color: #ffc107;
+.valoradas-section + .valoradas-section {
+  margin-top: 1rem;
 }
 
-.sin-valoraciones {
-    max-width: 600px;
-    margin: 40px auto;
-    transition: transform 0.3s;
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
-#img-valoraciones{
-    width: 14em;
-    height: 8em;
+.section-header h2 {
+  margin: 0;
+  font-size: clamp(1rem, 0.35vw + 0.94rem, 1.2rem);
+  color: #143f66;
+  font-weight: 700;
+}
+
+.badge-total {
+  min-width: 2rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(20, 63, 102, 0.12);
+  color: #2f5d86;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.reviews-grid > app-card-resenias-admin-valoradas {
+  display: block;
+}
+
+.empty-state {
+  border: 1px solid rgba(20, 63, 102, 0.15);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 247, 252, 0.85));
+  box-shadow: 0 12px 28px rgba(16, 39, 63, 0.1);
+}
+
+.empty-state h5 {
+  color: #143f66;
+  font-weight: 700;
+}
+
+.empty-state p,
+.empty-state small {
+  color: rgba(20, 63, 102, 0.74);
+}
+
+#img-valoraciones {
+  width: clamp(9rem, 18vw, 12rem);
+  height: auto;
 }

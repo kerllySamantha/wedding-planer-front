@@ -1,82 +1,67 @@
 <app-top-bar-admin (toggle)="toggleSidebar()"></app-top-bar-admin>
 
 <div class="container-fluid mt-5">
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="d-none d-xl-block p-0 sidebar-fixed" [hidden]="!sidebarClosed()">
-            <app-admin-nav-proveedor></app-admin-nav-proveedor>
-        </div>
-
-        <!-- Contenido principal -->
-        <div class="col-12 content-area">
-            <div class="row">
-
-                <div class="col-xl-5 col-lg-5 col-12 col-md-5 col-sm-12">
-                    <div class="row text-center g2">
-                        <div class="col-6 card-resenia">
-                            <app-dashboard-cards-resenias-admin title="Total de Reseñas">
-                                <h2>{{ resenias()?.estadisticas?.total }}</h2>
-                            </app-dashboard-cards-resenias-admin>
-                        </div>
-                        <div class="col-6 ">
-                            <app-dashboard-cards-resenias-admin title="Puntuacion Media">
-                                <h2>{{ resenias()?.estadisticas?.promedio }}</h2>
-                            </app-dashboard-cards-resenias-admin>
-                        </div>
-
-                    </div>
-
-                </div>
-                <div class="col-12 col-md-7  py-4 py-md-0">
-                    <app-dashboard-cards-resenias-admin title="Promedio Valoraciones">
-
-                        @for (item of estrellas(); track item.rating) {
-                        <!-- <p> {{item.rating}}</p> -->
-                        <div class="rating-row">
-
-                            <div class="stars">
-                                @for (star of [].constructor(item.rating); track $index) {
-                                <mat-icon>star</mat-icon>
-                                }
-                            </div>
-
-                            <div class="progress-container">
-                                <div class="progress-bar" [style.width.%]="item.porcentaje">
-                                </div>
-                            </div>
-
-                            <span class="percentage">
-                                {{ item.porcentaje }}%
-                            </span>
-
-                        </div>
-                        }
-
-                    </app-dashboard-cards-resenias-admin>
-                </div>
-
-
-            </div>
-            <div class="row ">
-
-                <app-resenias-admin-valoradas></app-resenias-admin-valoradas>
-            </div>
-
-            <div class="row mt-5 pt-3">
-                <h1 class="h1-tittle">Todas las Resenias</h1>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-4 ">
-                    @for (resenia of arrayResenias(); track resenia.id) {
-                    <!-- <app-card-boda [boda]="boda"></app-card-boda> -->
-                    <app-card-resenias-admin [resenia]="resenia"></app-card-resenias-admin>
-                    }
-                </div>
-            </div>
-        </div>
+  <div class="row">
+    <div class="d-none d-xl-block p-0 sidebar-fixed" [hidden]="!sidebarClosed()">
+      <app-admin-nav-proveedor></app-admin-nav-proveedor>
     </div>
 
+    <div class="col-12 content-area">
+      <section class="reviews-shell">
+        <header class="page-header">
+          <h1>Panel de resenas</h1>
+          <p>Resumen de reputacion, valoraciones y comentarios recientes.</p>
+        </header>
 
+        <section class="overview-grid">
+          <div class="kpi-grid">
+            <app-dashboard-cards-resenias-admin title="Total de resenas">
+              <h2 class="kpi-value">{{ resenias()?.estadisticas?.total }}</h2>
+              <p class="kpi-caption">Registros recibidos</p>
+            </app-dashboard-cards-resenias-admin>
 
+            <app-dashboard-cards-resenias-admin title="Puntuacion media">
+              <h2 class="kpi-value">{{ resenias()?.estadisticas?.promedio }}</h2>
+              <p class="kpi-caption">Promedio global</p>
+            </app-dashboard-cards-resenias-admin>
+          </div>
 
+          <app-dashboard-cards-resenias-admin title="Distribucion de valoraciones" class="ratings-panel">
+            @for (item of estrellas(); track item.rating) {
+            <div class="rating-row">
+              <div class="stars">
+                @for (star of [].constructor(item.rating); track $index) {
+                <mat-icon>star</mat-icon>
+                }
+              </div>
 
-    <!-- </div> -->
+              <div class="progress-container">
+                <div class="progress-bar" [style.width.%]="item.porcentaje"></div>
+              </div>
+
+              <span class="percentage">{{ item.porcentaje }}%</span>
+            </div>
+            }
+          </app-dashboard-cards-resenias-admin>
+        </section>
+
+        <section class="reviews-section">
+          <app-resenias-admin-valoradas></app-resenias-admin-valoradas>
+        </section>
+
+        <section class="reviews-section">
+          <div class="section-header">
+            <h2>Todas las resenas</h2>
+            <span class="badge-total">{{ arrayResenias()?.length ?? 0 }}</span>
+          </div>
+
+          <div class="reviews-list row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-xxl-4">
+            @for (resenia of arrayResenias(); track resenia.id) {
+            <app-card-resenias-admin [resenia]="resenia"></app-card-resenias-admin>
+            }
+          </div>
+        </section>
+      </section>
+    </div>
+  </div>
 </div>

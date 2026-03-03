@@ -1,37 +1,36 @@
-<div class="card boda-card text-center w-100">
-    <!-- <h6 class="h5">{{tittle()}}</h6> -->
+<div class="card boda-card w-100" [ngClass]="cardVariant()">
+  <div class="card-content">
+    <header class="card-header">
+      <h6 class="card-title">{{ tittle() }}</h6>
+      <span class="month-chip">
+        {{ displayDate() | date:'MMM':'':'es' | titlecase }}
+      </span>
+    </header>
 
     @if (loading()) {
-    <div class="placeholder-glow w-100">
-        <div class="d-flex flex-column align-items-center">
-            <h6 class="placeholder col-7 mb-3"></h6>
-            <h3 class="placeholder col-2 mb-2"></h3>
-            <span class="placeholder col-7"></span>
-        </div>
+    <div class="loading-layout placeholder-glow w-100">
+      <span class="placeholder title"></span>
+      <span class="placeholder value"></span>
+      <span class="placeholder subtitle"></span>
     </div>
-    }
-    @else if (error()) {
-    <p class="text-danger">{{ error() }}</p>
-    }
-    @else if (reservas()!.length > 0) {
-    <h6 class="h5">{{tittle()}}</h6>
-
-    <span class="service-text">
-        {{ today() | date:'MMMM':'': 'es' | titlecase }}
-    </span>
-
-    <div class="h1">
-        {{ reservas()!.length }}
-
-
+    } @else if (error()) {
+    <div class="state-message error">
+      <span class="state-label">Error de carga</span>
+      <p>{{ error() }}</p>
+    </div>
+    } @else {
+    <div class="metric-layout">
+      <div class="metric-value">{{ reservasCount() }}</div>
+      <p class="metric-subtitle">
+        Mes de {{ displayDate() | date:'MMMM':'':'es' | titlecase }}
+      </p>
     </div>
 
-    <span class="service-text">Total este mes</span>
-
+    @if (reservasCount() === 0) {
+    <p class="state-note">Sin reservas en este estado.</p>
+    } @else {
+    <p class="state-note">Total del estado seleccionado.</p>
     }
-    @else {
-    <h6 class="h5">{{tittle()}}</h6>
-    <p>No hay reservas.</p>
     }
-
+  </div>
 </div>

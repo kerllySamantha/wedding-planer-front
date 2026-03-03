@@ -1,93 +1,275 @@
-/* Separación entre cards */
-.card-gap {
-    padding-left: 0.3em !important;
-    padding-right: 0.3em !important;
-    
+:host {
+  --accent: #2f5d86;
+  display: flex;
+}
+
+:host.card-gap {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .boda-card {
-    border-radius: 16px;
-    padding: 0.6em;
-    background: rgba(255, 255, 255, 0.166);
-    backdrop-filter: blur(15px);
-    border: 2px solid rgba(255, 255, 255, 0.35);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: transform .25s ease, box-shadow .25s ease;
+  width: 100%;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.36);
+  border-radius: 1rem;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.27), rgba(255, 255, 255, 0.13));
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 20px rgba(15, 34, 52, 0.14);
+  aspect-ratio: 1 / 1;
+  min-height: 10.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .boda-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 24px rgba(15, 34, 52, 0.18);
+  border-color: rgba(255, 255, 255, 0.52);
 }
 
-.card-icon svg {
-    width: 32px;
-    height: 32px;
-    opacity: .95;
-    transition: transform .3s ease;
+.card-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.35rem;
+  padding: 0.7rem 0.72rem;
+  overflow: hidden;
 }
 
-.boda-card:hover .card-icon svg {
-    transform: scale(1.1);
+.card-content::before {
+  content: "";
+  position: absolute;
+  top: 0.65rem;
+  left: 0.5rem;
+  width: 0.18rem;
+  height: calc(100% - 1.3rem);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--accent), rgba(255, 255, 255, 0.6));
+  opacity: 0.8;
 }
 
-
-
-/* Texto secundario */
-.service-text {
-    font-size: 0.9rem;
-    opacity: 0.85;
-    text-align: center;
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding-left: 0.42rem;
 }
 
-/* Número principal */
-.boda-card .h1 {
-    font-size: 2.2rem;
-    margin: 2px 0 6px 0;
+.card-title {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #143f66;
+  text-wrap: balance;
 }
 
-/* Animación de entrada */
-.boda-card {
-    opacity: 0;
-    transform: translateY(8px);
-    animation: fadeInCard .45s ease forwards;
+.month-chip {
+  flex-shrink: 0;
+  padding: 0.16rem 0.36rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(20, 63, 102, 0.2);
+  color: var(--accent);
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
-@keyframes fadeInCard {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.metric-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.2rem;
+  margin-top: 0.1rem;
 }
 
-/* Skeleton */
-.placeholder-glow .placeholder {
-    height: 22px;
-    border-radius: 5px;
-    background: linear-gradient(90deg,
-            rgba(220, 220, 220, 0.45),
-            rgba(255, 255, 255, 0.75),
-            rgba(220, 220, 220, 0.45));
-    background-size: 200% 100%;
-    animation: skeletonShine 1.4s infinite;
+.metric-value {
+  font-size: clamp(1.35rem, 1.5vw + 0.62rem, 1.8rem);
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #123a5d;
+}
+
+.metric-subtitle {
+  margin: 0;
+  font-size: 0.67rem;
+  line-height: 1.2;
+  color: rgba(20, 63, 102, 0.77);
+}
+
+.state-note {
+  margin: 0;
+  text-align: center;
+  font-size: 0.65rem;
+  line-height: 1.2;
+  color: rgba(20, 63, 102, 0.7);
+  padding-left: 0.42rem;
+}
+
+.state-message {
+  margin: auto 0;
+  text-align: center;
+  padding-left: 0.42rem;
+}
+
+.state-message .state-label {
+  display: inline-block;
+  margin-bottom: 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.state-message p {
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.25;
+}
+
+.state-message.error .state-label,
+.state-message.error p {
+  color: #b42318;
+}
+
+.loading-layout {
+  margin: auto 0;
+  display: grid;
+  gap: 0.3rem;
+  padding-left: 0.42rem;
+}
+
+.placeholder {
+  display: inline-block;
+  border-radius: 0.35rem;
+  background: linear-gradient(
+    90deg,
+    rgba(216, 227, 237, 0.55),
+    rgba(255, 255, 255, 0.86),
+    rgba(216, 227, 237, 0.55)
+  );
+  background-size: 200% 100%;
+  animation: skeletonShine 1.4s infinite;
+}
+
+.placeholder.title {
+  width: 75%;
+  height: 0.76rem;
+}
+
+.placeholder.value {
+  width: 38%;
+  height: 1.4rem;
+  margin-top: 0.12rem;
+}
+
+.placeholder.subtitle {
+  width: 68%;
+  height: 0.7rem;
 }
 
 @keyframes skeletonShine {
-    0% {
-        background-position: 200% 0
-    }
-
-    100% {
-        background-position: -200% 0
-    }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
-.dashboard-card-item {
-    width: 100%;
+.card-variant-confirmadas {
+  --accent: #239455;
+}
+
+.card-variant-pendientes {
+  --accent: #b7791f;
+}
+
+.card-variant-canceladas {
+  --accent: #c2412f;
+}
+
+.card-variant-bloqueadas {
+  --accent: #475467;
+}
+
+.card-variant-rechazadas {
+  --accent: #9f1239;
+}
+
+.card-variant-default {
+  --accent: #2f5d86;
+}
+
+@media (max-width: 767px) {
+  .boda-card {
+    aspect-ratio: 1.2 / 1;
+    min-height: 8.8rem;
+  }
+
+  .card-content {
+    padding: 0.62rem 0.65rem;
+  }
+
+  .card-title {
+    font-size: 0.73rem;
+  }
+}
+
+@media (min-width: 431px) and (max-width: 767px) {
+  .metric-value {
+    font-size: clamp(1.95rem, 4.2vw, 2.35rem);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .boda-card {
+    min-height: 7.6rem;
+  }
+
+  .card-content {
+    padding: 0.5rem 0.52rem;
+    gap: 0.24rem;
+  }
+
+  .card-header {
+    gap: 0.25rem;
+  }
+
+  .card-title {
+    font-size: 0.65rem;
+    line-height: 1.1;
+  }
+
+  .month-chip {
+    font-size: 0.53rem;
+    padding: 0.12rem 0.28rem;
+  }
+
+  .metric-value {
+    font-size: clamp(1.55rem, 2.4vw, 2rem);
+  }
+
+  .metric-subtitle,
+  .state-note {
+    font-size: 0.55rem;
+    line-height: 1.1;
+  }
+}
+
+@media (max-width: 430px) {
+  .boda-card {
+    aspect-ratio: auto;
+    min-height: 8rem;
+  }
+
+  .metric-value {
+    font-size: 1.85rem;
+  }
 }

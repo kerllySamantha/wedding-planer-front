@@ -2,7 +2,6 @@
 .mat-mdc-card {
   justify-content: space-evenly;
   min-height: 13.3em;
-  /* altura mínima para desktop */
   height: 100%;
   background: rgba(255, 255, 255, 0.166);
   backdrop-filter: blur(15px);
