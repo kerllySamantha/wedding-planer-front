@@ -9,24 +9,50 @@
     <div class="col-12 content-area">
       <section class="reviews-shell">
         <header class="page-header">
-          <h1>Panel de resenas</h1>
-          <p>Resumen de reputacion, valoraciones y comentarios recientes.</p>
+          <p class="page-kicker">Panel admin</p>
+          <h1>Centro de resenas</h1>
+          <p class="page-subtitle">Vista general de reputacion, puntuaciones y comentarios de clientes.</p>
         </header>
 
         <section class="overview-grid">
           <div class="kpi-grid">
-            <app-dashboard-cards-resenias-admin title="Total de resenas">
-              <h2 class="kpi-value">{{ resenias()?.estadisticas?.total }}</h2>
-              <p class="kpi-caption">Registros recibidos</p>
+            <app-dashboard-cards-resenias-admin title="Total de resenas" [centered]="true" [skeleton]="loading() || !resenias()">
+              @if (!loading() && resenias()) {
+              <div class="kpi-content">
+                <h2 class="kpi-value">{{ resenias()?.estadisticas?.total }}</h2>
+                <p class="kpi-caption">Registros recibidos</p>
+              </div>
+              }
             </app-dashboard-cards-resenias-admin>
 
-            <app-dashboard-cards-resenias-admin title="Puntuacion media">
-              <h2 class="kpi-value">{{ resenias()?.estadisticas?.promedio }}</h2>
-              <p class="kpi-caption">Promedio global</p>
+            <app-dashboard-cards-resenias-admin title="Puntuacion media" [centered]="true" [skeleton]="loading() || !resenias()">
+              @if (!loading() && resenias()) {
+              <div class="kpi-content">
+                <h2 class="kpi-value">{{ resenias()?.estadisticas?.promedio }}</h2>
+                <p class="kpi-caption">Promedio global</p>
+              </div>
+              }
             </app-dashboard-cards-resenias-admin>
           </div>
 
           <app-dashboard-cards-resenias-admin title="Distribucion de valoraciones" class="ratings-panel">
+            @if (loading() || estrellas().length === 0) {
+            @for (item of ratingSkeleton; track item) {
+            <div class="rating-row rating-row-skeleton">
+              <div class="stars stars-skeleton">
+                @for (star of [].constructor(5); track $index) {
+                <span class="skeleton-star"></span>
+                }
+              </div>
+
+              <div class="progress-container skeleton-progress">
+                <span class="skeleton-progress-line"></span>
+              </div>
+
+              <span class="percentage skeleton-pill"></span>
+            </div>
+            }
+            } @else {
             @for (item of estrellas(); track item.rating) {
             <div class="rating-row">
               <div class="stars">
@@ -42,6 +68,7 @@
               <span class="percentage">{{ item.porcentaje }}%</span>
             </div>
             }
+            }
           </app-dashboard-cards-resenias-admin>
         </section>
 
@@ -51,15 +78,38 @@
 
         <section class="reviews-section">
           <div class="section-header">
-            <h2>Todas las resenas</h2>
-            <span class="badge-total">{{ arrayResenias()?.length ?? 0 }}</span>
+            <div>
+              <p class="section-kicker">Gestion de opiniones</p>
+              <h2 class="block-title">Historial de resenas</h2>
+            </div>
+            <span class="badge-total">{{ loading() ? '--' : (arrayResenias()?.length ?? 0) }}</span>
           </div>
 
+          @if (loading() || (arrayResenias()?.length ?? 0) === 0) {
+          <div class="reviews-list row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-xxl-4">
+            @for (item of reviewSkeleton; track item) {
+            <article class="review-skeleton-card">
+              <div class="review-skeleton-head">
+                <span class="skeleton-dot"></span>
+                <div class="review-skeleton-copy">
+                  <span class="skeleton-line w-60"></span>
+                  <span class="skeleton-line w-35"></span>
+                </div>
+              </div>
+              <span class="skeleton-box"></span>
+              <span class="skeleton-line w-80"></span>
+              <span class="skeleton-line w-90"></span>
+              <span class="skeleton-line w-55"></span>
+            </article>
+            }
+          </div>
+          } @else {
           <div class="reviews-list row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-xxl-4">
             @for (resenia of arrayResenias(); track resenia.id) {
             <app-card-resenias-admin [resenia]="resenia"></app-card-resenias-admin>
             }
           </div>
+          }
         </section>
       </section>
     </div>

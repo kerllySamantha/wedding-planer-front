@@ -5,6 +5,8 @@
 
 .dashboard-card {
   height: 100%;
+  display: flex;
+  flex-direction: column;
   border-radius: 1rem;
   border: 1px solid rgba(20, 63, 102, 0.14);
   background: linear-gradient(155deg, rgba(255, 255, 255, 0.93), rgba(241, 247, 252, 0.85));
@@ -19,30 +21,95 @@
 }
 
 mat-card-header {
-  padding: 0.9rem 1rem 0.45rem;
+  padding: 1rem 1.1rem 0.55rem;
 }
 
 mat-card-title {
   margin: 0;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   font-weight: 700;
-  letter-spacing: 0.035em;
+  letter-spacing: 0.025em;
   text-transform: uppercase;
   color: rgba(20, 63, 102, 0.74);
 }
 
 mat-card-content {
-  padding: 0.2rem 1rem 0.95rem;
+  flex: 1;
+  padding: 0.3rem 1.1rem 1.1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.25rem;
-  min-height: 112px;
+  gap: 0.35rem;
+  min-height: 124px;
+}
+
+.dashboard-card.centered mat-card-content {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  min-height: 170px;
+  padding: 0.95rem 1.1rem 1.1rem;
+}
+
+.centered-title {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  color: rgba(20, 63, 102, 0.74);
+  text-wrap: balance;
+}
+
+.skeleton-body {
+  width: 100%;
+  display: grid;
+  gap: 0.48rem;
+  justify-items: center;
+}
+
+.skeleton-line {
+  display: block;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(213, 224, 235, 0.58),
+    rgba(255, 255, 255, 0.88),
+    rgba(213, 224, 235, 0.58)
+  );
+  background-size: 220% 100%;
+  animation: skeleton-shine 1.35s linear infinite;
+}
+
+.skeleton-lg {
+  width: min(68%, 10.5rem);
+  height: 2.1rem;
+}
+
+.skeleton-sm {
+  width: min(52%, 8rem);
+  height: 0.8rem;
+}
+
+@keyframes skeleton-shine {
+  0% {
+    background-position: 220% 0;
+  }
+  100% {
+    background-position: -220% 0;
+  }
 }
 
 @media (max-width: 991.98px) {
   mat-card-content {
-    min-height: 96px;
+    min-height: 108px;
+  }
+
+  .dashboard-card.centered mat-card-content {
+    min-height: 148px;
   }
 }
 
@@ -52,15 +119,23 @@ mat-card-content {
   }
 
   mat-card-header {
-    padding: 0.75rem 0.85rem 0.4rem;
+    padding: 0.85rem 0.95rem 0.45rem;
   }
 
   mat-card-content {
-    padding: 0.1rem 0.85rem 0.8rem;
-    min-height: 88px;
+    padding: 0.2rem 0.95rem 0.9rem;
+    min-height: 98px;
+  }
+
+  .dashboard-card.centered mat-card-content {
+    min-height: 126px;
   }
 
   mat-card-title {
+    font-size: 0.8rem;
+  }
+
+  .centered-title {
     font-size: 0.76rem;
   }
 }

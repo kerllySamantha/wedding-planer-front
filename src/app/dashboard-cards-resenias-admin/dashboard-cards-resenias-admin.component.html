@@ -1,9 +1,26 @@
-<mat-card appearance="outlined" class="dashboard-card">
+<mat-card
+  appearance="outlined"
+  class="dashboard-card"
+  [class.centered]="centered()"
+  [class.skeleton-card]="skeleton()">
+  @if (!centered()) {
   <mat-card-header>
     <mat-card-title>{{ title() }}</mat-card-title>
   </mat-card-header>
+  }
 
   <mat-card-content>
+    @if (centered()) {
+    <p class="centered-title">{{ title() }}</p>
+    }
+
+    @if (skeleton()) {
+    <div class="skeleton-body">
+      <span class="skeleton-line skeleton-lg"></span>
+      <span class="skeleton-line skeleton-sm"></span>
+    </div>
+    } @else {
     <ng-content></ng-content>
+    }
   </mat-card-content>
 </mat-card>

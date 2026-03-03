@@ -12,5 +12,7 @@ import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/m
 export class DashboardCardsReseniasAdminComponent {
 
   title = input<string>('');
+  centered = input<boolean>(false);
+  skeleton = input<boolean>(false);
 
 }

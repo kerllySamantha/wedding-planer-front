@@ -1,7 +1,7 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ReverbServiceTsService } from '../src/app/services/reverb.service.ts.service';
 import { AdminNavProveedorComponent } from "../admin-nav-proveedor/admin-nav-proveedor.component";
-import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import {  Router } from '@angular/router';
 import { AutenticarHttpClientService } from '../Services/Autentication/autenticar-http-client.service';
 import { CardsDashboardProveedorComponent } from "../cards-dashboard-proveedor/cards-dashboard-proveedor.component";
 import { TopBarAdminComponent } from "../top-bar-admin/top-bar-admin.component";

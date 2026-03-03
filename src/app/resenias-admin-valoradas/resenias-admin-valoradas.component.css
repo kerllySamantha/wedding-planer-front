@@ -1,21 +1,175 @@
-.h1-tittle {
-  padding: 1em 0 0.5em 0;
-  font-size: 2em;
+:host {
+  display: block;
 }
 
-.stars {
+.valoradas-section + .valoradas-section {
+  margin-top: clamp(1.7rem, 1.15vw + 1.25rem, 2.2rem);
+  padding-top: 0.8rem;
+}
+
+.section-header {
   display: flex;
-  width: 120px;
-  color: #ffc107;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.sin-valoraciones {
-  max-width: 600px;
-  margin: 40px auto;
-  transition: transform 0.3s;
+.section-header > div {
+  display: grid;
+  gap: 0.2rem;
+  max-width: min(100%, 40rem);
+  padding-left: 0.7rem;
+  border-left: 3px solid rgba(20, 63, 102, 0.28);
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.section-kicker {
+  margin: 0;
+  font-size: 0.79rem;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  color: rgba(20, 63, 102, 0.7);
+  font-weight: 600;
+}
+
+.block-title {
+  margin: 0;
+  color: #143f66;
+  font-size: clamp(1.24rem, 0.5vw + 1rem, 1.46rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.badge-total {
+  flex-shrink: 0;
+  min-width: 2.2rem;
+  padding: 0.2rem 0.62rem;
+  border-radius: 999px;
+  background: rgba(20, 63, 102, 0.12);
+  color: #2f5d86;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.reviews-grid > app-card-resenias-admin-valoradas {
+  display: block;
+}
+
+.empty-state {
+  border: 1px solid rgba(20, 63, 102, 0.15);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 247, 252, 0.85));
+  box-shadow: 0 12px 28px rgba(16, 39, 63, 0.1);
+  padding: clamp(1rem, 0.85vw + 0.75rem, 1.4rem);
+}
+
+.empty-state h5 {
+  color: #143f66;
+  font-weight: 700;
+}
+
+.empty-state p,
+.empty-state small {
+  color: rgba(20, 63, 102, 0.74);
 }
 
 #img-valoraciones {
-  width: 14em;
-  height: 8em;
+  width: clamp(9rem, 18vw, 12rem);
+  height: auto;
+}
+
+.review-skeleton-card {
+  border-radius: 0.95rem;
+  border: 1px solid rgba(20, 63, 102, 0.14);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 247, 252, 0.86));
+  box-shadow: 0 10px 20px rgba(16, 39, 63, 0.08);
+  min-height: 12.4rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.62rem;
+}
+
+.review-skeleton-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.skeleton-dot {
+  width: 2.05rem;
+  height: 2.05rem;
+  border-radius: 50%;
+  background: rgba(199, 214, 227, 0.68);
+}
+
+.review-skeleton-copy {
+  display: grid;
+  gap: 0.26rem;
+  flex: 1;
+}
+
+.skeleton-line {
+  height: 0.7rem;
+  border-radius: 999px;
+  display: block;
+  background: linear-gradient(90deg, rgba(211, 225, 237, 0.7), rgba(255, 255, 255, 0.9), rgba(211, 225, 237, 0.7));
+  background-size: 220% 100%;
+  animation: skeleton-pulse 1.25s linear infinite;
+}
+
+.w-35 {
+  width: 35%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-60 {
+  width: 60%;
+}
+
+.w-70 {
+  width: 70%;
+}
+
+.w-90 {
+  width: 90%;
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    background-position: 220% 0;
+  }
+  100% {
+    background-position: -220% 0;
+  }
+}
+@media (max-width: 767.98px) {
+  .section-header {
+    gap: 0.75rem;
+    margin-bottom: 0.82rem;
+  }
+  .block-title {
+    font-size: clamp(1.03rem, 0.9vw + 0.94rem, 1.24rem);
+  }
+  .section-header > div {
+    padding-left: 0.58rem;
+  }
+}
+@media (max-width: 575.98px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .badge-total {
+    align-self: flex-start;
+  }
 }/*# sourceMappingURL=resenias-admin-valoradas.component.css.map */

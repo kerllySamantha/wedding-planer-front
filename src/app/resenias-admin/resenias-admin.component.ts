@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { AdminNavProveedorComponent } from '../admin-nav-proveedor/admin-nav-proveedor.component';
 import { TopBarAdminComponent } from '../top-bar-admin/top-bar-admin.component';
 import { ReseniasApiServiceService } from '../Services/Resenias/resenias-api-service.service';
-import { Estrella, Resenia, Resenias, ReseniasEmpresa } from '../Interfaces/Resenia';
+import { Estrella, Resenia, ReseniasEmpresa } from '../Interfaces/Resenia';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
@@ -29,9 +29,12 @@ export class ReseniasAdminComponent {
   reseniasCtx = inject(ReseniasApiServiceService);
   resenias = signal<ReseniasEmpresa | null>(null);
   arrayResenias = signal<Resenia[] | null>([]);
-  estrellas = signal<Estrella[]>([])
+  estrellas = signal<Estrella[]>([]);
+  loading = signal<boolean>(true);
   idEmpresa = signal<number>(Number(localStorage.getItem('idEmpresa')));
    sidebarClosed = signal(true);
+  reviewSkeleton = [1, 2, 3, 4, 5, 6];
+  ratingSkeleton = [1, 2, 3, 4, 5];
 
   ngOnInit() {
     this.getReseniasEmpresa();
@@ -39,17 +42,20 @@ export class ReseniasAdminComponent {
   }
 
   getReseniasEmpresa() {
+    this.loading.set(true);
     this.reseniasCtx.getReseniaByEmpresa(Number(this.idEmpresa())).subscribe({
       next: (data) => {
         this.resenias.set(data);
         this.arrayResenias.set(data?.data!)
-        this.estrellas.set(data?.estadisticas.estrellas!)
+        this.estrellas.set(data?.estadisticas.estrellas!);
+        this.loading.set(false);
 
       },
       error: (err: Error) => {
-        console.log(err.message)
+        console.log(err.message);
+        this.loading.set(false);
       }
-    })
+    });
 
   }
 
