@@ -7,12 +7,11 @@ export const rolGuard: CanActivateFn = (route, state) => {
   const role = localStorage.getItem('rol');
   const allowed: string[] = route.data?.['rol'] ?? [];
 
-  console.log('rol:', role, 'allowed:', allowed);
-
-  if (state.url === '/' || state.url === '') {
+  if (!role) return router.parseUrl('/dashboard-empresas');
+  if (allowed.length > 0 && !allowed.includes(role)) {
     if (role === 'empresa') return router.parseUrl('/proveedor-dashboard');
-    return router.parseUrl('/dashboard');  
+    if (role === 'usuario') return router.parseUrl('/dashboard');
+    return router.parseUrl('/dashboard-empresas');
   }
-
   return true;
 };

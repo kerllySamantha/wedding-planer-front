@@ -64,8 +64,18 @@ export const routes: Routes = [
         path: 'dashboard-proveedores', component: DashboardProveedoresComponent, canActivate: [rolGuard]
     },
 
-    {path: 'configuracion', component: ConfiguracionAdminComponent},
-    {path: 'resenias', component: ReseniasAdminComponent},
+    {
+        path: 'configuracion',
+        component: ConfiguracionAdminComponent,
+        canActivate: [rolGuard],
+        data: { rol: ['empresa'] }
+    },
+    {
+        path: 'resenias',
+        component: ReseniasAdminComponent,
+        canActivate: [rolGuard],
+        data: { rol: ['empresa'] }
+    },
 
 
     { path: "perfil-user", component: PerfilUserComponent, canActivate: [rolGuard] },

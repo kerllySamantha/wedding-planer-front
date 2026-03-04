@@ -7,7 +7,7 @@ import { AdminNavProveedorComponent } from '../admin-nav-proveedor/admin-nav-pro
 @Component({
   selector: 'app-top-bar-admin',
   standalone: true,
-  imports: [AdminNavProveedorComponent, MatMenuModule],
+  imports: [AdminNavProveedorComponent, MatMenuModule, ],
   templateUrl: './top-bar-admin.component.html',
   styleUrls: ['./top-bar-admin.component.scss']
 })
@@ -44,7 +44,7 @@ export class TopBarAdminComponent {
     this.authService.logout().subscribe({
       next: () => {
         localStorage.clear();
-        this.router.navigate(['dashboard-empresas'], { replaceUrl: true });
+        this.router.navigate(['/dashboard-empresas'], { replaceUrl: true });
       },
       error: err => console.error('Error al cerrar sesion', err)
     });
