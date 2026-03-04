@@ -28,15 +28,11 @@ export const routes: Routes = [
     },
 
     { path: 'dashboard', component: DashboardComponent, 
-    canActivate: [rolGuard],
-    data: { rol: ['usuario'] }
      },
 
     {
         path: 'proveedor-dashboard',
         component: AdminDashboardProveedoresComponent,
-        canActivate: [rolGuard],
-        data: { rol: ['empresa'] }
     },
     {
         path: 'proveedor-dashboard/calendar-proveedor', component: CalendarProveedoresComponent,

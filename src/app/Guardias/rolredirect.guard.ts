@@ -18,7 +18,7 @@ export const rolredirectGuard: CanActivateFn = (route, state) => {
       return router.parseUrl('/dashboard');
     }
 
-    return router.parseUrl('/dashboard-empresas');
+    return router.parseUrl('/dashboard');
   }
 
   return true;
