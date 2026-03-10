@@ -1,6 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { AdminNavProveedorComponent } from '../admin-nav-proveedor/admin-nav-proveedor.component';
-import { TopBarAdminComponent } from '../top-bar-admin/top-bar-admin.component';
 import { ReseniasApiServiceService } from '../Services/Resenias/resenias-api-service.service';
 import { Estrella, Resenia, ReseniasEmpresa } from '../Interfaces/Resenia';
 import { MatCardModule } from '@angular/material/card';
@@ -17,8 +15,7 @@ import { CardReseniasAdminComponent } from "../card-resenias-admin/card-resenias
 @Component({
   selector: 'app-resenias-admin',
   standalone: true,
-  imports: [AdminNavProveedorComponent, TopBarAdminComponent,
-    MatIcon, MatCardModule, MatChipsModule, MatProgressBarModule, DashboardCardsReseniasAdminComponent,
+  imports: [MatIcon, MatCardModule, MatChipsModule, MatProgressBarModule, DashboardCardsReseniasAdminComponent,
     ReseniasAdminValoradasComponent, CardReseniasAdminComponent],
   templateUrl: './resenias-admin.component.html',
   styleUrl: './resenias-admin.component.scss',
@@ -32,7 +29,6 @@ export class ReseniasAdminComponent {
   estrellas = signal<Estrella[]>([]);
   loading = signal<boolean>(true);
   idEmpresa = signal<number>(Number(localStorage.getItem('idEmpresa')));
-   sidebarClosed = signal(true);
   reviewSkeleton = [1, 2, 3, 4, 5, 6];
   ratingSkeleton = [1, 2, 3, 4, 5];
 
@@ -74,13 +70,7 @@ export class ReseniasAdminComponent {
     })
   }
 
-    toggleSidebar() {
-    this.sidebarClosed.update(v => !v);
-   console.log('es actualizado')
-  }
-
-
-    reseniasctx = inject(ReseniasApiServiceService);
+  reseniasctx = inject(ReseniasApiServiceService);
   reseniasPositivas = signal<Resenia[] | null>(null);
   reseniasNegativas = signal<Resenia[] | null>(null);
   empresaId = signal<string>(localStorage.getItem('idEmpresa')!)

@@ -1,28 +1,6 @@
 @charset "UTF-8";
-/* ================================
-   CONTENEDOR GENERAL
-================================ */
-.container-fluid {
-  margin-top: 70px;
-}
-
-.sidebar-fixed {
-  position: fixed;
-  height: 100vh;
-  background: linear-gradient(180deg, #e8fbff, #143f66);
-}
-
-@media (min-width: 992px) {
-  .content-area {
-    margin-left: 16.6667%;
-    /* mismo ancho del sidebar */
-  }
-}
-/* Columna principal (10/12) */
-.content-area {
-  background: #f6f7fb;
-  min-height: calc(100vh - 70px);
-  padding: 32px;
+.calendar-page {
+  min-height: 100%;
 }
 
 /* Centrado del contenido */

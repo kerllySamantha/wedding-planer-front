@@ -38,7 +38,7 @@
             <span class="text-muted"> {{empresa()?.poblacion?.nombre}}, {{empresa()?.provincia?.nombre}}</span>
             <p class="card-text"><small class="text-secondary">{{empresa()?.telefono}}</small></p>
 
-            <a [routerLink]="['../proveedores/detalles', empresa()?.id]" class="btn btn-outline-pink">Ver detalles</a>
+<a [routerLink]="['/proveedores/detalles', empresa()?.id]" class="btn btn-outline-pink">Ver detalles</a>
         </div>
     </div>
 </div>

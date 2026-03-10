@@ -30,14 +30,14 @@ import { ReservasApiServiceService } from './Services/Reservas/reservas-api-serv
 import { ReservasServiceServiceService } from './Services/Reservas/reservas-service-service.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { IconSetService } from '@coreui/icons-angular';
+import { PedirPresupuestoService } from './Services/PedirPresupuestos/pedir-presupuesto.service';
+import { PedirPresupuestoApiService } from './Services/PedirPresupuestos/pedir-presupuesto-api.service';
 const url_back = 'http://localhost:8000/api';
 const url_local = "http://wedding_planer.local/api";
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   provideHttpClient(withInterceptors([authInterceptor])),
   // provideHttpClient(),
-
-  provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   { provide: UsuariosServiceService, useExisting: UsuariosApiServiceService },
   { provide: EmpresasServiceServiceService, useExisting: EmpresasApiServiceService },
   { provide: ReseniasServiceServiceService, useExisting: ReseniasApiServiceService },
@@ -51,6 +51,7 @@ export const appConfig: ApplicationConfig = {
   { provide: TiposHttpService, useExisting: TiposApiService },
   { provide: ItemsDetallesService, useExisting: ItemsDetallesApiService },
   { provide: PresupuestoHttpService, useExisting: PresupuestoApiService },
+  {provide: PedirPresupuestoService, useExisting:  PedirPresupuestoApiService},
   { provide: LOCALE_ID, useValue: 'es' },
   provideNativeDateAdapter(),
     IconSetService

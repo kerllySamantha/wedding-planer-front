@@ -8,6 +8,8 @@ import { Foto } from '../Interfaces/Resenia';
 import { AsyncPipe } from '@angular/common';
 import { ProductoEmpresa } from '../Interfaces/Producto';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalDetallesPresupuestoComponent } from '../modal-detalles-presupuesto/modal-detalles-presupuesto.component';
 
 @Component({
   selector: 'app-detalles-proveedores',
@@ -27,27 +29,47 @@ export class DetallesProveedoresComponent {
   fotoPrincipal = computed(() => this.fotosOrdenadas()[0] || null);
 
 
-  protected empresa = toSignal(this.route.data.pipe(
-    tap(data => console.log(data['proveedor'].data)),
-    map(data => data['proveedor'].data as Empresa)
-  ));
+  private empresaRoute = toSignal(
+    this.route.data.pipe(
+      map(data => {
+        const proveedor = data['proveedor'] as Empresa | { data?: Empresa } | null | undefined;
+        return (proveedor as { data?: Empresa } | null)?.data ?? (proveedor as Empresa | null) ?? null;
+      })
+    ),
+    { initialValue: null }
+  );
+
+  protected empresa = signal<Empresa | null>(null);
 
 
 
-  constructor() {
+
+
+
+  constructor(private dialog: MatDialog) {
+
     effect(() => {
-      const fotos = this.empresa()?.fotos || [];
+      const data = this.empresaRoute();
+      if (data) {
+        this.empresa.set(data);
+      }
+    });
+
+    effect(() => {
+      const empresa = this.empresa();
+      if (!empresa) return;
+
+      const fotos = empresa.fotos || [];
       if (fotos.length > 0) {
         this.cargarRatios(fotos);
       }
 
-      const productos = this.empresa()?.productos || [];
-      this.productos.set(productos);
-
+      this.productos.set(empresa.productos || []);
     });
 
-
   }
+
+
 
 
 
@@ -74,6 +96,22 @@ export class DetallesProveedoresComponent {
 
     });
 
+  }
+
+  abrirModal() {
+    const dialogRef = this.dialog.open(ModalDetallesPresupuestoComponent, {
+      // width: '400px',
+      data: {
+        'empresa': this.empresa(),
+      }
+    },
+
+    );
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+      console.log('Datos recibidos al cerrar el modal:', result);
+    });
   }
 
 

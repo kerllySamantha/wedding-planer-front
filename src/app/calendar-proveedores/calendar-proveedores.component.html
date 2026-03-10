@@ -1,31 +1,11 @@
-<app-top-bar-admin></app-top-bar-admin>
-
-<div class="container-fluid mt-5">
-    <div class="row">
-
-        <div class="d-none d-xl-block p-0 sidebar-fixed">
-            <app-admin-nav-proveedor></app-admin-nav-proveedor>
+<section class="calendar-page">
+    <div class="calendar-inner" [class.fc-loading-skeleton]="loading()">
+        <div class="calendar-wrapper">
+            <full-calendar [options]="calendarOptions()"></full-calendar>
         </div>
-
-        <div class="col-12 content-area">
-
-            <div class="calendar-inner" [class.fc-loading-skeleton]="loading()">
-                <div class="calendar-wrapper">
-                    <full-calendar [options]="calendarOptions()"></full-calendar>
-                </div>
-            </div>
-            <!-- @if(isModalOpen()){ -->
-            <app-modal-calendar-form [data]="modalData" [event]="selectedEvent()" (editar)="modalMode.set('edit')"
-                [mode]="modalMode()" (guardarReserva)="guardarReserva($event)" (cerrar)="cerrarModal()">
-            </app-modal-calendar-form>
-
-
-
-            <!-- } -->
-         
-        </div>
-
-
-
     </div>
-</div>
+
+    <app-modal-calendar-form [data]="modalData" [event]="selectedEvent()" (editar)="modalMode.set('edit')"
+        [mode]="modalMode()" (guardarReserva)="guardarReserva($event)" (cerrar)="cerrarModal()">
+    </app-modal-calendar-form>
+</section>

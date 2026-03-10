@@ -1,16 +1,11 @@
-<!-- Top bar solo emite el evento -->
-<app-top-bar-admin (toggle)="toggleSidebar()"></app-top-bar-admin>
+<app-top-bar-admin></app-top-bar-admin>
 
-<div class="container-fluid mt-5">
-  <div class="row">
-    <!-- Sidebar -->
-    <div class="d-none d-xl-block p-0 sidebar-fixed" [hidden]="!sidebarClosed()">
-      <app-admin-nav-proveedor></app-admin-nav-proveedor>
-    </div>
+<div class="admin-layout">
+  <aside class="d-none d-xl-block sidebar-fixed">
+    <app-admin-nav-proveedor></app-admin-nav-proveedor>
+  </aside>
 
-    <!-- Contenido principal -->
-    <div class="col-12 content-area">
-      <app-cards-dashboard-proveedor></app-cards-dashboard-proveedor>
-    </div>
-  </div>
+  <main class="content-area">
+    <router-outlet></router-outlet>
+  </main>
 </div>

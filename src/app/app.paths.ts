@@ -1,0 +1,17 @@
+export const APP_PATHS = {
+  home: 'dashboard',
+  publicSuppliers: 'dashboard-proveedores',
+  companyArea: 'dashboard-empresas',
+  login: 'login',
+  registerUser: 'registerUser',
+  registerCompany: 'registerEmpresa',
+  userWedding: 'mi-boda',
+  userProfile: 'perfil-user',
+  budgetTool: 'tools/presupuesto',
+  supplierDetails: 'proveedores/detalles',
+  providerDashboard: 'proveedor-dashboard',
+  providerCalendar: 'proveedor-dashboard/calendar',
+  providerSettings: 'proveedor-dashboard/configuracion',
+  providerReviews: 'proveedor-dashboard/resenias',
+  providerRequests: 'proveedor-dashboard/solicitudes',
+} as const;

@@ -2,7 +2,7 @@ import { CreateUser, User } from './User';
 
 export interface Perfil {
     id: number,
-    telefono : number,
+    telefono : string,
     direccion: string,
     usuario: User,
 }

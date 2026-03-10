@@ -1,102 +1,359 @@
-@charset "UTF-8";
+:host {
+  --panel-bg: rgba(255, 255, 255, 0.86);
+  --panel-border: rgba(20, 63, 102, 0.15);
+  --panel-shadow: 0 18px 38px rgba(16, 39, 63, 0.14);
+  --brand-700: #143f66;
+  --brand-500: #2f5d86;
+  --brand-300: #6f95b5;
+}
+
+.reviews-shell {
+  width: 100%;
+  max-width: 1540px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.page-header {
+  padding: clamp(1.15rem, 1.3vw + 0.85rem, 1.8rem);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(241, 247, 252, 0.8));
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--panel-shadow);
+}
+
+.page-header h1 {
+  margin: 0.15rem 0 0;
+  font-size: clamp(1.3rem, 1vw + 1rem, 1.95rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--brand-700);
+}
+
+.page-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(20, 63, 102, 0.64);
+  font-weight: 700;
+}
+
+.page-subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.93rem;
+  color: rgba(20, 63, 102, 0.78);
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.4fr);
+  gap: 1.15rem;
+  align-items: stretch;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem;
+}
+
+.kpi-grid app-dashboard-cards-resenias-admin,
+.overview-grid > app-dashboard-cards-resenias-admin {
+  display: block;
+  height: 100%;
+}
+
+.kpi-value {
+  margin: 0;
+  font-size: clamp(2rem, 1.9vw + 1rem, 2.55rem);
+  line-height: 1.05;
+  color: var(--brand-700);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.kpi-caption {
+  margin: 0;
+  font-size: 0.84rem;
+  color: rgba(20, 63, 102, 0.7);
+}
+
+.kpi-content {
+  width: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 0.32rem;
+}
+
 .rating-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
+  gap: 0.7rem;
+}
+
+.rating-row + .rating-row {
+  margin-top: 0.5rem;
 }
 
 .stars {
   display: flex;
-  width: 120px;
-  color: #ffc107;
+  min-width: 112px;
+  color: #f3be3d;
+}
+
+.stars mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .progress-container {
   flex: 1;
-  height: 10px;
-  background-color: #e0e0e0;
-  border-radius: 6px;
+  height: 0.5rem;
+  background: rgba(27, 68, 104, 0.13);
+  border-radius: 999px;
   overflow: hidden;
 }
 
 .progress-bar {
   height: 100%;
-  background-color: #ffc107;
-  transition: width 0.4s ease;
+  background: linear-gradient(90deg, #f3be3d 0%, #f5a623 100%);
+  transition: width 0.35s ease;
+}
+
+.rating-row-skeleton .stars {
+  min-width: 112px;
+}
+
+.stars-skeleton {
+  gap: 0.22rem;
+}
+
+.skeleton-star {
+  width: 0.78rem;
+  height: 0.78rem;
+  border-radius: 999px;
+  background: rgba(185, 201, 216, 0.55);
+}
+
+.skeleton-progress {
+  background: rgba(27, 68, 104, 0.08);
+}
+
+.skeleton-progress-line {
+  display: block;
+  width: 46%;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(210, 224, 236, 0.66), rgba(255, 255, 255, 0.9), rgba(210, 224, 236, 0.66));
+  background-size: 220% 100%;
+  animation: skeleton-pulse 1.25s linear infinite;
 }
 
 .percentage {
-  width: 45px;
+  min-width: 2.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
   text-align: right;
-  font-weight: 500;
+  color: rgba(20, 63, 102, 0.85);
 }
 
-/* Contenedor grid */
-.reviews-grid {
+.skeleton-pill {
+  display: block;
+  width: 2.3rem;
+  height: 0.76rem;
+  border-radius: 999px;
+  background: rgba(185, 201, 216, 0.55);
+}
+
+.reviews-section {
+  border-radius: 1rem;
+  padding: clamp(1.05rem, 0.85vw + 0.75rem, 1.55rem);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--panel-shadow);
+}
+
+.section-header {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  /* espacio entre cards */
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-/* Cada card ocupa el mismo ancho */
-.reviews-grid app-card-resenias-admin {
-  flex: 1 1 calc(33.333% - 16px);
-  /* 3 cards por fila, ajustable */
+.section-header > div {
+  display: grid;
+  gap: 0.2rem;
+  max-width: min(100%, 42rem);
+  padding-left: 0.7rem;
+  border-left: 3px solid rgba(20, 63, 102, 0.28);
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.section-kicker {
+  margin: 0;
+  font-size: 0.79rem;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  color: rgba(20, 63, 102, 0.7);
+  font-weight: 600;
+}
+
+.block-title {
+  margin: 0;
+  color: var(--brand-700);
+  font-size: clamp(1.24rem, 0.52vw + 1rem, 1.5rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.badge-total {
+  flex-shrink: 0;
+  min-width: 2.2rem;
+  padding: 0.2rem 0.62rem;
+  border-radius: 999px;
+  background: rgba(20, 63, 102, 0.12);
+  color: var(--brand-500);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.reviews-list {
+  --bs-gutter-y: 1.1rem;
+}
+
+.reviews-list > app-card-resenias-admin {
+  display: block;
+}
+
+.review-skeleton-card {
+  border-radius: 0.95rem;
+  border: 1px solid rgba(20, 63, 102, 0.14);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 247, 252, 0.86));
+  box-shadow: 0 10px 20px rgba(16, 39, 63, 0.08);
+  min-height: 17.5rem;
+  padding: 0.9rem;
   display: flex;
   flex-direction: column;
+  gap: 0.58rem;
 }
 
-/* Card hija para ocupar toda la altura del flex parent */
-.review-card {
+.review-skeleton-head {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  /* Esto hace que la card tome la misma altura que las demás en la fila */
+  align-items: center;
+  gap: 0.55rem;
 }
 
-/* Contenido expandible ocupa el espacio disponible */
-mat-card-content {
+.skeleton-dot {
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 50%;
+  background: rgba(199, 214, 227, 0.68);
+}
+
+.review-skeleton-copy {
+  display: grid;
+  gap: 0.26rem;
   flex: 1;
-  display: flex;
-  flex-direction: column;
 }
 
-.content-area {
-  position: relative;
-  min-height: 100vh;
-  padding: 4em;
-  z-index: 1;
+.skeleton-line {
+  height: 0.72rem;
+  border-radius: 999px;
+  display: block;
+  background: linear-gradient(90deg, rgba(211, 225, 237, 0.7), rgba(255, 255, 255, 0.9), rgba(211, 225, 237, 0.7));
+  background-size: 220% 100%;
+  animation: skeleton-pulse 1.25s linear infinite;
 }
 
-.content-area::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: url("../../assets/images/fondo-poli.jpg");
-  -moz-filter: blur(1px);
-  -o-filter: blur(1px);
-  -ms-filter: blur(1px);
-  filter: blur(1px);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  z-index: -1;
+.skeleton-box {
+  width: 100%;
+  height: 7.8rem;
+  border-radius: 0.75rem;
+  background: rgba(208, 222, 234, 0.56);
 }
 
-.sidebar-fixed {
-  position: fixed;
-  height: 100vh;
-  background: linear-gradient(180deg, #dbecf4, #508bb3);
+.w-35 {
+  width: 35%;
 }
 
-@media (min-width: 992px) {
-  .content-area {
-    margin-left: 16.6667%;
-    /* mismo ancho del sidebar */
+.w-55 {
+  width: 55%;
+}
+
+.w-60 {
+  width: 60%;
+}
+
+.w-80 {
+  width: 80%;
+}
+
+.w-90 {
+  width: 90%;
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    background-position: 220% 0;
+  }
+  100% {
+    background-position: -220% 0;
+  }
+}
+@media (max-width: 991.98px) {
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+  .kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 767.98px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  .section-header {
+    gap: 0.75rem;
+    margin-bottom: 0.8rem;
+  }
+  .section-header > div {
+    max-width: 100%;
+    padding-left: 0.58rem;
+  }
+  .block-title {
+    font-size: clamp(1.03rem, 0.9vw + 0.94rem, 1.25rem);
+  }
+  .kpi-value {
+    font-size: clamp(1.8rem, 2.6vw + 1rem, 2.25rem);
+  }
+  .stars {
+    min-width: 92px;
+  }
+  .review-skeleton-card {
+    min-height: 15.8rem;
+  }
+}
+@media (max-width: 575.98px) {
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0.65rem;
+  }
+  .badge-total {
+    align-self: flex-start;
+  }
+  .percentage {
+    min-width: 2.2rem;
   }
 }/*# sourceMappingURL=resenias-admin.component.css.map */

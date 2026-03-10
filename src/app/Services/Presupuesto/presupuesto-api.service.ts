@@ -29,7 +29,6 @@ export class PresupuestoApiService extends  PresupuestoHttpService {
   }
 
   override getPresupuesto(idpresupuesto: number): Observable<Presupuesto | null> {
-    console.log("idpresupuesto: " + idpresupuesto);
 
     return this.http.get<Presupuesto>(`${this.apiUrl}/presupuestos/${idpresupuesto.toString()}`).pipe(
       map(response => {

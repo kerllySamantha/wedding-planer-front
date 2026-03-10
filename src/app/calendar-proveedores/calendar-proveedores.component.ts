@@ -3,23 +3,16 @@ import { FullCalendarModule } from '@fullcalendar/angular';
 import * as bootstrap from 'bootstrap';
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin, { DateClickArg, EventResizeDoneArg } from '@fullcalendar/interaction';
-import { CalendarSelection, CreateReserva, ExtendedReservaProps, ReservaEvent, ReservaFormValue, SaveReservaPayload } from '../Interfaces/Reserva';
-import { TopBarAdminComponent } from "../top-bar-admin/top-bar-admin.component";
-import { AdminNavProveedorComponent } from "../admin-nav-proveedor/admin-nav-proveedor.component";
+import interactionPlugin from '@fullcalendar/interaction';
+import { CalendarSelection, ExtendedReservaProps, ReservaEvent, ReservaFormValue } from '../Interfaces/Reserva';
 import { ReservasServiceServiceService } from '../Services/Reservas/reservas-service-service.service';
-import { DateSelectArg, EventApi, EventClickArg, EventContentArg, EventMountArg } from '@fullcalendar/core/index.js';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { DateSelectArg, EventClickArg, EventContentArg, EventMountArg } from '@fullcalendar/core/index.js';
 import { ModalCalendarFormComponent } from "../modal-calendar-form/modal-calendar-form.component";
-import { MatDialogModule } from '@angular/material/dialog';
 @Component({
   selector: 'app-calendar-proveedores',
   standalone: true,
   imports: [
-    MatDialogModule,
     FullCalendarModule,
-    TopBarAdminComponent,
-    AdminNavProveedorComponent,
     ModalCalendarFormComponent
   ],
   templateUrl: './calendar-proveedores.component.html',
@@ -29,7 +22,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 export class CalendarProveedoresComponent implements OnInit {
 
   reservasctx = inject(ReservasServiceServiceService);
-  dialog = inject(MatDialogModule)
 
   events = signal<ReservaEvent[]>([]);
   loading = signal<boolean>(true);

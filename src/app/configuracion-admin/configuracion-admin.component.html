@@ -1,19 +1,56 @@
-<app-top-bar-admin></app-top-bar-admin>
+<section class="settings-shell">
+    <header class="settings-header">
+        <p class="settings-kicker">Perfil del proveedor</p>
+        <h1>Configuracion de la empresa</h1>
+        <p class="settings-subtitle">Consulta los datos principales de tu perfil profesional y revisa la informacion visible para los usuarios.</p>
+    </header>
 
-<div class="container-fluid mt-5">
-    <div class="row">
+    @if (empresa(); as data) {
+    <div class="settings-grid">
+        <article class="settings-card">
+            <h2>Informacion general</h2>
+            <dl class="settings-list">
+                <div>
+                    <dt>Empresa</dt>
+                    <dd>{{ data.nombre_empresa }}</dd>
+                </div>
+                <div>
+                    <dt>Servicio</dt>
+                    <dd>{{ data.tipo_servicio }}</dd>
+                </div>
+                <div>
+                    <dt>Telefono</dt>
+                    <dd>{{ data.telefono }}</dd>
+                </div>
+                <div>
+                    <dt>Direccion</dt>
+                    <dd>{{ data.direccion }}</dd>
+                </div>
+            </dl>
+        </article>
 
-        <div class="d-none d-xl-block p-0 sidebar-fixed">
-            <app-admin-nav-proveedor></app-admin-nav-proveedor>
-        </div>
-
-        <div class="col-12 content-area">
-
-            
-         
-        </div>
-
-
-
+        <article class="settings-card">
+            <h2>Ubicacion y descripcion</h2>
+            <dl class="settings-list">
+                <div>
+                    <dt>Poblacion</dt>
+                    <dd>{{ data.poblacion.nombre || 'Sin definir' }}</dd>
+                </div>
+                <div>
+                    <dt>Provincia</dt>
+                    <dd>{{ data.provincia.nombre || 'Sin definir' }}</dd>
+                </div>
+                <div>
+                    <dt>Descripcion</dt>
+                    <dd>{{ data.descripcion || 'Sin descripcion disponible.' }}</dd>
+                </div>
+            </dl>
+        </article>
     </div>
-</div>
+    } @else {
+    <article class="settings-card settings-card--empty">
+        <h2>Cargando informacion</h2>
+        <p>Estamos recuperando los datos de tu empresa.</p>
+    </article>
+    }
+</section>

@@ -10,10 +10,10 @@
 
 
         <a class="navbar-brand" [routerLink]="['/']">
-            <img src="assets/images/logo2.png" alt="Logo" width="300">
+            <img src="assets/images/logo2.png" alt="Logo" width="260">
         </a>
 
-        <a class="btn btn-light border-0 d-lg-none order-3" [routerLink]="['login']" data-bs-toggle="collapse"
+        <a class="btn btn-light border-0 d-lg-none order-3" [routerLink]="['/login']" data-bs-toggle="collapse"
             data-bs-target="#userMenu" aria-expanded="false" aria-controls="userMenu">
             <!-- ✅ SVG ORIGINAL -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person"
@@ -31,7 +31,7 @@
             <ul class="navbar-nav flex-row gap-3">
                 <li class="nav-item"><a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active"
                         [routerLinkActiveOptions]="{ exact: true }">Mi Boda</a></li>
-                <li class="nav-item"><a class="nav-link" [routerLink]="['dashboard-proveedores']">Proveedores</a></li>
+                <li class="nav-item"><a class="nav-link" [routerLink]="['/dashboard-proveedores']">Proveedores</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
             </ul>
@@ -47,7 +47,7 @@
             <div class="offcanvas-body">
                 <ul class="navbar-nav flex-column gap-3 text-start">
                     @if(autServicectx.rol() === 'usuario' && autServicectx.auth() ){
-                    <li class="nav-item"><a class="nav-link" [routerLink]="['mi-boda']" routerLinkActive="active"
+                    <li class="nav-item"><a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active"
                             [routerLinkActiveOptions]="{ exact: false }">Mi Boda</a></li>
                     }
                     <li class="nav-item"><a class="nav-link" [routerLink]="['/dashboard-proveedores']"
@@ -123,7 +123,7 @@
     <div class="row  w-100 ">
         <div class="col d-flex align-items-center justify-content-center">
             <a class="navbar-brand" [routerLink]="['/']">
-                <img src="assets/images/logo2.png" alt="Logo" width="300">
+                <img src="assets/images/logo2.png" alt="Logo" width="260">
             </a>
         </div>
     </div>
@@ -161,7 +161,7 @@
 
         <!-- 🔹 Logo (centrado en móvil, izquierda en desktop) -->
         <a class="navbar-brand" [routerLink]="['/']">
-            <img src="assets/images/logo2.png" alt="Logo" width="300">
+            <img src="assets/images/logo2.png" alt="Logo" width="260">
         </a>
 
         <!-- 🔹 Icono persona (derecha solo móvil) -->

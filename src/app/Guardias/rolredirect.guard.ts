@@ -1,24 +1,25 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { APP_PATHS } from '../app.paths';
 
 export const rolredirectGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   const role = localStorage.getItem('rol');
-
-  console.log('REDIRECT-GUARD role:', role);
+  const dashboardUrl = `/${APP_PATHS.home}`;
+  const providerDashboardUrl = `/${APP_PATHS.providerDashboard}`;
 
   if (state.url === '/' || state.url === '') {
 
     if (role === 'empresa') {
-      return router.parseUrl('/proveedor-dashboard');
+      return router.parseUrl(providerDashboardUrl);
     }
 
     if (role === 'usuario') {
-      return router.parseUrl('/dashboard');
+      return router.parseUrl(dashboardUrl);
     }
 
-    return router.parseUrl('/dashboard');
+    return router.parseUrl(dashboardUrl);
   }
 
   return true;

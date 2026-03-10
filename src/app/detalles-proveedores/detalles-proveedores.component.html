@@ -98,7 +98,7 @@
                 </div>
                 <div class="row d-flex justify-content-center mt-4">
                     <button class="btn searcher__submit col-9 text-center justify-content-center"
-                        type="button">Presupuesto
+                        type="button" (click)="abrirModal()">Presupuesto
                     </button>
                 </div>
             </div>
@@ -114,15 +114,15 @@
             <div class="row mt-4">
 
                 <div class="col-6">
-                    @for (producto of empresa()?.productos; track producto.id; let idx = $index) {
+                    @for (producto of productos(); track producto.id; let idx = $index) {
                     <ul class="list-group list-group-flush ">
 
 
-                        @if(idx == 0 || producto.categoria.nombre !== productos()[idx-1].categoria.nombre) {
+                        @if(idx === 0 || producto.categoria.nombre !== productos()[idx - 1]?.categoria?.nombre) {
                         <h4 class="h4">{{ producto.categoria.nombre }}</h4>
                         }
 
-                        @if(idx == 0 || producto.tipo_producto.nombre !== productos()[idx-1].tipo_producto.nombre) {
+                        @if(idx === 0 || producto.tipo_producto.nombre !== productos()[idx - 1]?.tipo_producto?.nombre) {
 
                         <div>
                             {{ producto.tipo_producto.nombre }}

@@ -112,3 +112,13 @@ export interface ItemPresupuesto {
 //     message: string;
 //     data: Presupuesto[];
 // }
+
+
+export interface SolicitudFormModel {
+  fecha: Date | null;
+  invitados: number | null;
+  telefono: string;
+  nombre: string;
+  email: string;
+  mensaje: string;
+};

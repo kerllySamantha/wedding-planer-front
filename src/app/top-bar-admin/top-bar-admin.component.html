@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-xl bg-body-tertiary shadow-sm fixed-top">
   <div class="container-fluid">
-    <button class="navbar-toggler" (click)="onHamburgerClick()">
+    <button class="navbar-toggler d-xl-none" (click)="onHamburgerClick()">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -75,7 +75,7 @@
   </div>
 </nav>
 
-<div id="adminSidebar" class="offcanvas offcanvas-start custom-offcanvas" [class.show]="sidebarOpen()">
+<div id="adminSidebar" class="offcanvas offcanvas-start custom-offcanvas d-xl-none" [class.show]="sidebarOpen()">
   <div class="offcanvas-header">
     <h5 class="offcanvas-title">{{ nombreEmpresa() }}</h5>
     <button type="button" class="btn-close" (click)="toggleSidebar()"></button>

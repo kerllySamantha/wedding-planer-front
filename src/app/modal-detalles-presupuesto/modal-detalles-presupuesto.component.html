@@ -1,0 +1,130 @@
+﻿<div class="modal-presupuesto">
+    <header class="modal-header">
+        <!-- <p class="eyebrow">Solicitud de presupuesto</p> -->
+        <h1 mat-dialog-title class="modal-title-main">{{ empresa()?.nombre_empresa }}</h1>
+        <span class="modal-title-sub ms-4">Pide mas informacion</span>
+    </header>
+
+    <mat-dialog-content class="modal-body my-1">
+        <p class="intro">
+            Rellena este formulario y {{ empresa()?.nombre_empresa }} se pondra en contacto contigo en breve.
+            Todos los datos se enviaran de forma confidencial.
+        </p>
+
+        <form id="presupuestoForm" novalidate [formGroup]="form" class="contact-form" (ngSubmit)="enviarSolicitud()">
+            <mat-form-field appearance="outline" class="field field-full">
+                <mat-label>Mensaje</mat-label>
+                <textarea matInput formControlName="mensaje" rows="4"
+                    placeholder="Cuentanos que necesitas para tu boda..."></textarea>
+                <mat-hint align="end">{{ form.controls.mensaje.value.length }}/600</mat-hint>
+            </mat-form-field>
+
+            <section class="info-block py-3 row mx-1  justify-content-center align-items-center ">
+                <div class="info-head ps-0">
+                    <h3>Boda</h3>
+                </div>
+
+                <div class="row d-flex justify-content-center">
+
+                    <div class="col-6">
+                        <mat-form-field appearance="outline" class="field field-full" subscriptSizing="dynamic">
+                            <mat-label>Invitados</mat-label>
+                            <input matInput type="number" formControlName="invitados" />
+                        </mat-form-field>
+                    </div>
+
+                    <div class="col-6">
+                        <mat-form-field appearance="outline" class="field field-full" subscriptSizing="dynamic">
+                            <mat-label>Presupuesto</mat-label>
+                            <input matInput type="number" formControlName="presupuesto" />
+                        </mat-form-field>
+                    </div>
+                </div>
+
+            </section>
+
+            @if (!editar()) {
+            <section class="info-block ">
+                <div class="info-head">
+                    <h3>Mi informacion</h3>
+                    <button type="button" class="edit-toggle" (click)="editarInfo()"
+                        [disabled]="enviando()">Editar</button>
+                </div>
+
+                <div class="info-card">
+                    <h4>{{ nombreVista() }}</h4>
+
+                    <p class="info-line">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-envelope-heart" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l3.235 1.94a2.8 2.8 0 0 0-.233 1.027L1 5.384v5.721l3.453-2.124q.219.416.55.835l-3.97 2.443A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741l-3.968-2.442q.33-.421.55-.836L15 11.105V5.383l-3.002 1.801a2.8 2.8 0 0 0-.233-1.026L15 4.217V4a1 1 0 0 0-1-1zm6 2.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132" />
+                        </svg>
+                        <span>{{ emailVista() }}</span>
+                    </p>
+
+                    <div class="inline-data">
+                        <p class="info-line">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-telephone" viewBox="0 0 16 16">
+                                <path
+                                    d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58z" />
+                            </svg>
+                            <span>{{ telefonoVista() }}</span>
+                        </p>
+
+                        <p class="info-line">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-calendar" viewBox="0 0 16 16">
+                                <path
+                                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                            </svg>
+                            <span>{{ fechaVista() }}</span>
+                        </p>
+                    </div>
+                </div>
+            </section>
+            } @else {
+            <section class="edit-block">
+                <div class="fields-grid">
+                    <mat-form-field appearance="outline" class="field field-full">
+                        <mat-label>Nombre y apellidos</mat-label>
+                        <input matInput type="text" formControlName="nombre" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="field">
+                        <mat-label>Email</mat-label>
+                        <input matInput type="email" formControlName="email" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="field">
+                        <mat-label>Telefono</mat-label>
+                        <input matInput type="tel" formControlName="telefono" />
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="field field-full">
+                        <mat-label>Fecha del evento</mat-label>
+                        <input matInput [matDatepicker]="pickerFecha" formControlName="fecha" />
+                        <mat-datepicker-toggle matIconSuffix [for]="pickerFecha"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerFecha></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div class="edit-foot">
+                    <button type="button" class="edit-toggle subtle" (click)="editarInfo()"
+                        [disabled]="enviando()">Listo</button>
+                </div>
+            </section>
+            }
+        </form>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" class="modal-actions">
+        <button mat-stroked-button type="button" class="btn-close" (click)="cerrar()"
+            [disabled]="enviando()">Cerrar</button>
+        <button mat-flat-button color="primary" type="submit" form="presupuestoForm" class="btn-send"
+            [disabled]="form.invalid || enviando()">
+            {{ enviando() ? 'Enviando...' : 'Enviar' }}
+        </button>
+    </mat-dialog-actions>
+</div>

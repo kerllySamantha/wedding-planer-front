@@ -1,12 +1,84 @@
-.sidebar-fixed {
-  position: fixed;
-  height: 100vh;
-  background: linear-gradient(180deg, #dbecf4, #508bb3);
+.settings-shell {
+  display: grid;
+  gap: 1.25rem;
+  max-width: 1100px;
 }
 
-@media (min-width: 992px) {
-  .content-area {
-    margin-left: 16.6667%;
-    /* mismo ancho del sidebar */
+.settings-header {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.settings-kicker {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #2f5d86;
+  font-weight: 700;
+}
+
+.settings-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 1vw + 1.4rem, 2.4rem);
+  color: #143f66;
+}
+
+.settings-subtitle {
+  margin: 0;
+  max-width: 52rem;
+  color: rgba(20, 63, 102, 0.78);
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.settings-card {
+  padding: 1.3rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(20, 63, 102, 0.14);
+  box-shadow: 0 16px 35px rgba(16, 39, 63, 0.1);
+}
+
+.settings-card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: #143f66;
+}
+
+.settings-card--empty {
+  max-width: 28rem;
+}
+
+.settings-list {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.settings-list div {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.settings-list dt {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(47, 93, 134, 0.88);
+}
+
+.settings-list dd {
+  margin: 0;
+  color: #18334e;
+  line-height: 1.45;
+}
+
+@media (max-width: 767.98px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
   }
 }/*# sourceMappingURL=configuracion-admin.component.css.map */

@@ -27,7 +27,6 @@ export class PerfilApiServiceService  extends PerfilServiceServiceService{
   }
 
   override getPerfil(idPerfil: bigint): Observable<PerfilResponse | null> {
-    console.log("idPerfil: " + idPerfil);
 
     return this.http.get<PerfilResponse>(`${this.apiUrl}/perfiles/${idPerfil.toString()}`).pipe(
       map(response => {
