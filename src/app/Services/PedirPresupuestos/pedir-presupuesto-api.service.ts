@@ -10,17 +10,33 @@ import { API_URL } from '../../Tokens/serviceTokens';
 })
 export class PedirPresupuestoApiService extends PedirPresupuestoService {
 
- 
+  
   constructor(protected http: HttpClient, @Inject(API_URL) public apiUrl: string) {
     super();
   }
+
+  private isWrapped<T>(value: T | { data?: T }): value is { data?: T } {
+    return typeof value === 'object'
+      && value !== null
+      && Object.prototype.hasOwnProperty.call(value, 'data');
+  }
+
+  private unwrapData<T>(response: T | { data?: T } | null | undefined): T | null {
+    if (!response) return null;
+    if (this.isWrapped(response)) {
+      return response.data ?? null;
+    }
+    return response;
+  }
+
+  private unwrapArray<T>(response: T[] | { data?: T[] } | null | undefined): T[] | null {
+    if (!response) return null;
+    if (Array.isArray(response)) return response;
+    return response.data ?? null;
+  }
   override getPedirPresupuestos(): Observable<PedirPresupuestoInfo[] | null> {
-    return this.http.get<PedirPresupuestoInfo[]>(`${this.apiUrl}/pedirPresupuestos`).pipe(
-      map(reponse => {
-        if (reponse)
-          return reponse;
-        return null
-      }),
+    return this.http.get<PedirPresupuestoInfo[] | { data?: PedirPresupuestoInfo[] }>(`${this.apiUrl}/pedirPresupuestos`).pipe(
+      map((response): PedirPresupuestoInfo[] | null => this.unwrapArray(response)),
       catchError((error: Error) => {
         console.error("Error en getPedirPresupuesto:", error);
         return throwError(() => error);
@@ -28,13 +44,9 @@ export class PedirPresupuestoApiService extends PedirPresupuestoService {
     )
   }
 
-    override getPedirPresupuesto(idPresupuesto: string): Observable<PedirPresupuestoInfo| null> {
-    return this.http.get<PedirPresupuestoInfo>(`${this.apiUrl}/pedirPresupuestos/${idPresupuesto}`).pipe(
-      map(reponse => {
-        if (reponse)
-          return reponse;
-        return null
-      }),
+  override getPedirPresupuesto(idPresupuesto: string): Observable<PedirPresupuestoInfo | null> {
+    return this.http.get<PedirPresupuestoInfo | { data?: PedirPresupuestoInfo }>(`${this.apiUrl}/pedirPresupuestos/${idPresupuesto}`).pipe(
+      map((response): PedirPresupuestoInfo | null => this.unwrapData(response)),
       catchError((error: Error) => {
         console.error("Error en getPedirPresupuesto:", error);
         return throwError(() => error);
@@ -69,13 +81,9 @@ export class PedirPresupuestoApiService extends PedirPresupuestoService {
     )
   }
 
-   override getEmpresaPedirPresupuesto(idEmpresa: string): Observable<PedirPresupuestoInfo[]| null> {
-    return this.http.get<PedirPresupuestoInfo[]>(`${this.apiUrl}/pedirPresupuestos/empresas/${idEmpresa}`).pipe(
-     map(reponse => {
-        if (reponse)
-          return reponse;
-        return null
-      }),
+  override getEmpresaPedirPresupuesto(idEmpresa: string): Observable<PedirPresupuestoInfo[] | null> {
+    return this.http.get<PedirPresupuestoInfo[] | { data?: PedirPresupuestoInfo[] }>(`${this.apiUrl}/pedirPresupuestos/empresas/${idEmpresa}`).pipe(
+     map((response): PedirPresupuestoInfo[] | null => this.unwrapArray(response)),
       catchError((error: Error) => {
         console.error("Error en getPedirPresupuesto:", error);
         return throwError(() => error);

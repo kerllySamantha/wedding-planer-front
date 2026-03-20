@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
 import { PedirPresupuestoInfo } from '../Interfaces/PedirPresupuesto';
 import { RouterLink } from "@angular/router";
 import { MatIcon } from "@angular/material/icon";
+import { interval } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-admin-solicitudes-panel',
@@ -15,25 +17,35 @@ import { MatIcon } from "@angular/material/icon";
 export class AdminSolicitudesPanelComponent {
 
   pedirPresupuestosctx = inject(PedirPresupuestoService);
+  private destroyRef = inject(DestroyRef);
   arrayInfoPresupuestos = signal<PedirPresupuestoInfo[] | null>(null)
   idEmpresa = signal<string>(localStorage.getItem('idEmpresa')!)
   displayedColumns: string[] = ['fecha', 'importe', 'estado', 'email', 'acciones'];
 
   ngOnInit() {
     this.getPedirPresupuestoEmpresa();
+    interval(12000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.getPedirPresupuestoEmpresa());
   }
 
   getPedirPresupuestoEmpresa() {
-    this.pedirPresupuestosctx.getEmpresaPedirPresupuesto(this.idEmpresa()).subscribe({
+    const idEmpresa = this.idEmpresa();
+    if (!idEmpresa) {
+      this.arrayInfoPresupuestos.set([]);
+      return;
+    }
+
+    this.pedirPresupuestosctx.getEmpresaPedirPresupuesto(idEmpresa).subscribe({
       next: (value) => {
-        this.arrayInfoPresupuestos.set(value)
+        this.arrayInfoPresupuestos.set(value ?? []);
       },
     })
   }
 
-  formaterFecha(fecha: string) {
-    let nuevaFecha = fecha.split('T')[0];
-    return nuevaFecha;
+  formaterFecha(fecha?: string | null) {
+    if (!fecha) return '-';
+    return fecha.split('T')[0];
   }
 
 }

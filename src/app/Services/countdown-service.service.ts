@@ -21,12 +21,41 @@ export class CountdownServiceService {
   public loading = signal(true);
   public error = signal<string | null>(null);
   public fechaFormateada = signal<string>('');
+  private totalesEdicion = signal<{ total: number; pagado: number; restante: number } | null>(null);
   public bodaEncontrada = computed(() => this.boda());
   public costeEstimado = computed(() => {
+    const override = this.totalesEdicion();
+    if (override) return override.total;
     const boda = this.bodaEncontrada();
     const presupuestos = boda?.presupuestos ?? [];
     return presupuestos.reduce((total, p) => total + (p.monto_total ?? 0), 0);
   });
+  public totalPagado = computed(() => {
+    const override = this.totalesEdicion();
+    if (override) return override.pagado;
+    const boda = this.bodaEncontrada();
+    const presupuestos = boda?.presupuestos ?? [];
+    return presupuestos.reduce((total, p) => total + (p.monto_pagado ?? 0), 0);
+  });
+  public totalRestante = computed(() => {
+    const override = this.totalesEdicion();
+    if (override) return override.restante;
+    const boda = this.bodaEncontrada();
+    const presupuestos = boda?.presupuestos ?? [];
+    return presupuestos.reduce((total, p) => total + (p.monto_restante ?? 0), 0);
+  });
+
+  setTotalesEnEdicion(total: number, pagado: number) {
+    this.totalesEdicion.set({
+      total,
+      pagado,
+      restante: total - pagado
+    });
+  }
+
+  limpiarTotalesEnEdicion() {
+    this.totalesEdicion.set(null);
+  }
 
 
   start(targetDate: Date) {
@@ -110,14 +139,4 @@ export class CountdownServiceService {
 
 
 
-  constructor() {
-
-    effect(() => {
-      // this.costeEstimado();
-
-      // const boda = this.countdownService.bodaEncontrada();
-      // const total = boda?.presupuestos?.reduce((acc, p) => acc + p.monto_total, 0) ?? 0;
-      // this.totalEstimado.set(total);
-    });
-  }
 }

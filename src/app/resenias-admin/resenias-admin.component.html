@@ -7,7 +7,8 @@
 
   <section class="overview-grid">
     <div class="kpi-grid">
-      <app-dashboard-cards-resenias-admin title="Total de resenas" [centered]="true" [skeleton]="loading() || !resenias()">
+      <app-dashboard-cards-resenias-admin title="Total de resenas" [centered]="true"
+        [skeleton]="loading() || !resenias()">
         @if (!loading() && resenias()) {
         <div class="kpi-content">
           <h2 class="kpi-value">{{ resenias()?.estadisticas?.total }}</h2>
@@ -16,7 +17,8 @@
         }
       </app-dashboard-cards-resenias-admin>
 
-      <app-dashboard-cards-resenias-admin title="Puntuacion media" [centered]="true" [skeleton]="loading() || !resenias()">
+      <app-dashboard-cards-resenias-admin title="Puntuacion media" [centered]="true"
+        [skeleton]="loading() || !resenias()">
         @if (!loading() && resenias()) {
         <div class="kpi-content">
           <h2 class="kpi-value">{{ resenias()?.estadisticas?.promedio }}</h2>
@@ -76,7 +78,7 @@
       <span class="badge-total">{{ loading() ? '--' : (arrayResenias()?.length ?? 0) }}</span>
     </div>
 
-    @if (loading() || (arrayResenias()?.length ?? 0) === 0) {
+    @if (loading()) {
     <div class="reviews-list row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-xxl-4">
       @for (item of reviewSkeleton; track item) {
       <article class="review-skeleton-card">
@@ -94,10 +96,21 @@
       </article>
       }
     </div>
-    } @else {
+    } @else if(this.arrayResenias()?.length === 0) {
+
+    <div class="empty-state text-center p-3 p-md-4">
+      <h5 class="mb-1">Aún no hay reseñas registradas</h5>
+      <p class="mb-1">Aun no hay valoraciones registradas.</p>
+      <small>Cuando lleguen nuevas, apareceran aqui.</small>
+    </div>
+    }
+    @else {
     <div class="reviews-list row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3 g-xxl-4">
-      @for (resenia of arrayResenias(); track resenia.id) {
+      @for (resenia of arrayResenias(); track resenia.id; let idx = $index) {
       <app-card-resenias-admin [resenia]="resenia"></app-card-resenias-admin>
+
+
+
       }
     </div>
     }

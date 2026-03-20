@@ -4,17 +4,22 @@ import { inject } from '@angular/core';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authToken = localStorage.getItem('token');
 
-  // const newReq = req.clone({
-  //   setHeaders: {
-  //     Authorization: `Bearer ${authToken}`
-  //   }
-  // });
+  const headers: Record<string, string> = {
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+  };
+
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`;
+  }
+
+  if (req.body != null && !req.headers.has('Content-Type')) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   const newReq = req.clone({
-    setHeaders: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
-    }
+    setHeaders: headers,
+    withCredentials: true,
   });
 
   return next(newReq);

@@ -1,4 +1,4 @@
-<form (submit)="guardar($event)">
+<form (submit)="$event.preventDefault()">
 
     @if (cargando()) {
     <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
@@ -12,8 +12,8 @@
             <tr>
                 <th scope="col">CONCEPTO</th>
                 <th scope="col">COSTE ESTIMADO</th>
-                <th scope="col">COSTE FINAL</th>
                 <th scope="col">PAGADO</th>
+                <th scope="col">DIFERENCIA</th>
             </tr>
         </thead>
 
@@ -28,18 +28,20 @@
                 <!-- <td class="col-5"> <input type="text" [(ngModel)]="detalle.nombre_tipo_personalizado"
                         name="{{detalle.nombre_tipo_personalizado}}" (input)="detalle.es_personalizado = true; detalle.tipo_producto_id = 0"
                         class="form-control"> -->
-                <td>{{detalle.nombre_tipo_personalizado}}</td>
+                <td>
+                    <input type="text" [(ngModel)]="detalle.nombre_tipo_personalizado"
+                        (ngModelChange)="detalle.es_personalizado = true; onDetalleChange(detalle)"
+                        name="nombre_tipo_{{detalle.tipo_producto_id}}" class="form-control" />
+                </td>
                 
                 <!-- <td><input type="number" [(ngModel)]="detalle.monto_asignado" name="monto_asignado"
                         class="form-control" /></td> -->
-                <td><input type="number" [(ngModel)]="detalle.precio_unitario" name="precio_unitario_{{detalle.tipo_producto_id}}"
+                <td><input type="number" [(ngModel)]="detalle.monto_estimado" (ngModelChange)="onDetalleChange(detalle)" name="monto_estimado_{{detalle.tipo_producto_id}}"
                         class="form-control"> </td>
-                <td><input type="number" [(ngModel)]="detalle.cantidad" name="cantidad_{{detalle.tipo_producto_id}}"
-                        class="form-control" class="form-control" />
+                <td><input type="number" [(ngModel)]="detalle.monto_pagado" (ngModelChange)="onDetalleChange(detalle)" name="monto_pagado_{{detalle.tipo_producto_id}}"
+                        class="form-control" />
                 </td>
-                <td><input type="number" [(ngModel)]="detalle.total_item" name="total_item_{{detalle.tipo_producto_id}}"
-                        class="form-control" class="form-control" />
-                </td>
+                <td>{{ calcularDiferencia(detalle) | number:'1.2-2' }}</td>
             </tr>
 
 
@@ -51,5 +53,4 @@
     </table>
     }
 
-    <button class="btn btn-lg-warning" type="submit"> enviacar</button>
 </form>

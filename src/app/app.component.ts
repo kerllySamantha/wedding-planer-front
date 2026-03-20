@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { AutenticarHttpClientService } from './Services/Autentication/autenticar-http-client.service';
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
+import { EchoService } from './Services/Echo/echo.service';
+
 
 @Component({
   selector: 'app-root',
@@ -13,16 +13,21 @@ import Pusher from 'pusher-js';
 export class AppComponent {
   title = 'wedding-planer-front';
 
-
-  constructor(private auth: AutenticarHttpClientService, private router: Router) {
+    private echoSvc = inject(EchoService);
+   constructor(private auth: AutenticarHttpClientService, private router: Router) {
     this.auth.restoreSession();
+
+    const userId = localStorage.getItem('id');
+    if (userId) {
+      this.echoSvc.init();
+    }
+
     window.addEventListener('pageshow', event => {
       if (event.persisted) {
         window.location.reload();
       }
     });
   }
-
 
 
 

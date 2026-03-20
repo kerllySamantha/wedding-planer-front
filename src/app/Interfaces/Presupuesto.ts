@@ -8,6 +8,8 @@ export interface Presupuesto {
     nombre?: string;
     descripcion?: string;
     monto_total: number;
+    monto_pagado?: number;
+    monto_restante?: number;
     estado: boolean;
     fecha_creacion: string;
     items?: PresupuestoItem[];
@@ -35,9 +37,9 @@ export interface PresupuestoItem {
     tipo_producto_id: number;
     nombre_categoria_personalizada?: string;
     nombre_tipo_personalizado?: string;
-    precio_unitario: number;
-    cantidad?: number;
-    total_item?: number;
+    monto_estimado: number;
+    monto_pagado?: number;
+    diferencia?: number;
     es_personalizado?: boolean;
     notas?: string;
     categoria?: CategoriaSimple;
@@ -54,19 +56,17 @@ export interface ItemsDetalleCreate {
     tipo_producto_id: number;
     nombre_categoria_personalizada?: string;
     nombre_tipo_personalizado?: string;
-    precio_unitario: number;
-    cantidad: number;
-    total_item: number;
+    monto_estimado: number;
+    monto_pagado?: number;
     es_personalizado?: boolean;
     notas?: string;
-    categoria?: CategoriaSimple;
-    tipo_producto?: TipoSimple;
-
 }
 
 export interface PresupuestoBoda {
     id: number;
     monto_total: number;
+    monto_pagado?: number;
+    monto_restante?: number;
     estado: number;
     fecha_creacion: string;
     tipo_producto: TipoProducto;
@@ -89,13 +89,14 @@ export interface ItemPresupuesto {
     id?: number;
     presupuesto_id?: number;
     categoria_id?: number;
-    tipo_producto_id: number;
-    nombre_tipo_personalizado: string;
-    precio_unitario: number;
-    cantidad: number;
-    total_item: number;
-    es_personalizado: boolean;
-    notas: string;
+    tipo_producto_id?: number;
+    nombre_categoria_personalizada?: string;
+    nombre_tipo_personalizado?: string;
+    monto_estimado?: number;
+    monto_pagado?: number;
+    diferencia?: number;
+    es_personalizado?: boolean;
+    notas?: string;
 }
 
 // export interface Presupuesto {

@@ -14,6 +14,8 @@ export class ContenedorPresupuestoComponent {
 
   bodaEncontrada = computed(() => this.countdownService.bodaEncontrada());
   totalEstimado = computed(() => this.countdownService.costeEstimado());
+  totalPagado = computed(() => this.countdownService.totalPagado());
+  totalRestante = computed(() => this.countdownService.totalRestante());
 
   ngOnInit() {
     this.countdownService.cargarBodaDelUsuario();

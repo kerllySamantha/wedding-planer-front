@@ -28,6 +28,14 @@
           <dt>Fecha del evento</dt>
           <dd>{{ item.fecha ? (item.fecha | date:'dd/MM/yyyy') : 'Sin fecha indicada' }}</dd>
         </div>
+        <div>
+          <dt>Invitados</dt>
+          <dd>{{ item.invitados}}</dd>
+        </div>
+        <div>
+          <dt>Presupuesto</dt>
+          <dd>{{ item.presupuesto}}</dd>
+        </div>
       </dl>
     </article>
 
@@ -65,3 +73,7 @@
   </article>
   }
 </section>
+
+<div class="d-flex justify-content-end mt-4">
+  <button class="btn btn-lg btn-primary">Responder</button>
+</div>

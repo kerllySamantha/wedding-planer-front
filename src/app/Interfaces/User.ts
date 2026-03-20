@@ -28,6 +28,7 @@ export interface CreateUser {
 
 export interface UserResponse {
     message: string,
+    token: string
     status: string,
     data: User
 }

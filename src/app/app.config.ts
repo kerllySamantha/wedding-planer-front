@@ -1,6 +1,6 @@
 import { ApplicationConfig, importProvidersFrom, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXsrfConfiguration } from '@angular/common/http';
 import { routes } from './app.routes';
 import { authInterceptor } from './Interceptors/auth.interceptor';
 import { UsuariosServiceService } from './Services/Users/usuarios-service.service';
@@ -32,11 +32,19 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { IconSetService } from '@coreui/icons-angular';
 import { PedirPresupuestoService } from './Services/PedirPresupuestos/pedir-presupuesto.service';
 import { PedirPresupuestoApiService } from './Services/PedirPresupuestos/pedir-presupuesto-api.service';
+import { NotificacionesApiService } from './Services/Notificacion/notificaciones-api.service';
+import { NotificacionesService } from './Services/Notificacion/notificaciones.service';
 const url_back = 'http://localhost:8000/api';
-const url_local = "http://wedding_planer.local/api";
+const url_local = "http://weddingplaner.local/api";
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
-  provideHttpClient(withInterceptors([authInterceptor])),
+  provideHttpClient(
+    withInterceptors([authInterceptor]),
+    withXsrfConfiguration({
+      cookieName: 'XSRF-TOKEN',
+      headerName: 'X-XSRF-TOKEN',
+    })
+  ),
   // provideHttpClient(),
   { provide: UsuariosServiceService, useExisting: UsuariosApiServiceService },
   { provide: EmpresasServiceServiceService, useExisting: EmpresasApiServiceService },
@@ -51,6 +59,7 @@ export const appConfig: ApplicationConfig = {
   { provide: TiposHttpService, useExisting: TiposApiService },
   { provide: ItemsDetallesService, useExisting: ItemsDetallesApiService },
   { provide: PresupuestoHttpService, useExisting: PresupuestoApiService },
+  {provide: NotificacionesService, useExisting: NotificacionesApiService},
   {provide: PedirPresupuestoService, useExisting:  PedirPresupuestoApiService},
   { provide: LOCALE_ID, useValue: 'es' },
   provideNativeDateAdapter(),

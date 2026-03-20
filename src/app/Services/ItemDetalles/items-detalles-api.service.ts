@@ -49,11 +49,10 @@ export class ItemsDetallesApiService extends ItemsDetallesService {
       tipo_producto_id: detalles.tipo_producto_id,
       nombre_categoria_personalizada: detalles.nombre_categoria_personalizada,
       nombre_tipo_personalizado: detalles.nombre_tipo_personalizado,
-      precio_unitario: detalles.precio_unitario,
-      cantidad: detalles.cantidad,
-      total_item: detalles.total_item,
+      monto_estimado: detalles.monto_estimado,
+      monto_pagado: detalles.monto_pagado,
       es_personalizado: detalles.es_personalizado,
-      notas: detalles.notas
+      notas: detalles.notas,
     };
 
     return this.http.post<ItemsDetalleCreate>(`${this.apiUrl}/detalles`, postObject);
@@ -65,15 +64,16 @@ export class ItemsDetallesApiService extends ItemsDetallesService {
     }
 
     const updateObject = {
+      presupuesto_id: detalle.presupuesto_id,
       categoria_id: detalle.categoria_id,
       tipo_producto_id: detalle.tipo_producto_id,
       nombre_categoria_personalizada: detalle.nombre_categoria_personalizada,
       nombre_tipo_personalizado: detalle.nombre_tipo_personalizado,
-      precio_unitario: detalle.precio_unitario,
-      cantidad: detalle.cantidad,
-      total_item: detalle.total_item,
+      monto_estimado: detalle.monto_estimado,
+      monto_pagado: detalle.monto_pagado,
       es_personalizado: detalle.es_personalizado,
-      notas: detalle.notas
+      notas: detalle.notas,
+      
     };
 
     return this.http.put<ItemsDetalleCreate>(`${this.apiUrl}/detalles/${idDetalle}`, updateObject);

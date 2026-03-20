@@ -9,11 +9,12 @@ import { ItemsDetalleCreate, PresupuestoCreate, PresupuestoItem } from '../Inter
 import { ItemsDetallesService } from '../Services/ItemDetalles/items-detalles.service';
 import { CountdownServiceService } from '../Services/countdown-service.service';
 import { PresupuestoHttpService } from '../Services/Presupuesto/presupuesto-http-service.service';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-contenedor-tipos',
   standalone: true,
-  imports: [FormsModule, MatProgressSpinnerModule],
+  imports: [FormsModule, MatProgressSpinnerModule, DecimalPipe],
   templateUrl: './contenedor-tipos.component.html',
   styleUrls: ['./contenedor-tipos.component.scss']
 })
@@ -32,6 +33,11 @@ export class ContenedorTiposComponent {
   detallesPorCategoria = signal<Record<number, PresupuestoItem[]>>({});
 
   lastId: number | null = null;
+  private baseTotalesPorCategoria: Record<number, Record<number, { estimado: number; pagado: number }>> = {};
+  private presupuestoIdPorTipo = new Map<number, number>();
+  private creandoPresupuestoPorTipo = new Set<number>();
+  private autoSaveTimers = new Map<number, number>();
+  private autoSaveDelayMs = 700;
 
   constructor() {
     effect(() => {
@@ -56,27 +62,41 @@ export class ContenedorTiposComponent {
         this.presupuestoctx.getPresupuestosByBoda(boda.id).subscribe({
           next: (presRes) => {
             const presupuestos = presRes?.data ?? [];
+            this.presupuestoIdPorTipo.clear();
+            presupuestos.forEach((p) => {
+              const tipoId = p.tipo_producto?.id;
+              if (tipoId) this.presupuestoIdPorTipo.set(tipoId, p.id);
+            });
 
             const detalles: PresupuestoItem[] = tipos.map((t) => {
+
               // Buscar presupuesto existente para este tipo
               const p = presupuestos.find(x => x.tipo_producto?.id === t.id);
               const primerItem = p?.items_presupuesto?.[0];
+              const montoEstimado =
+                primerItem?.monto_estimado ?? p?.monto_total ?? 0;
+              const montoPagado =
+                primerItem?.monto_pagado ?? p?.monto_pagado ?? 0;
+              const diferencia =
+                primerItem?.diferencia ?? (montoEstimado - montoPagado);
 
               return {
-                id: undefined,
+                id: primerItem?.id,
                 presupuesto_id: p?.id,
                 categoria_id: categoriaId,
                 tipo_producto_id: t.id,
-                nombre_tipo_personalizado: t.nombre,
-                precio_unitario: primerItem?.precio_unitario ?? p?.monto_total ?? 0,
-                cantidad: primerItem?.cantidad ?? 1,
-                total_item: primerItem?.total_item ?? p?.monto_total ?? 0,
-                es_personalizado: false,
-                notas: ''
+                nombre_tipo_personalizado: primerItem?.nombre_tipo_personalizado ?? t.nombre,
+                monto_estimado: montoEstimado,
+                monto_pagado: montoPagado,
+                diferencia: diferencia,
+                es_personalizado: primerItem?.es_personalizado ?? false,
+                notas: primerItem?.notas ?? ''
               } as PresupuestoItem;
             });
 
             this.detallesPorCategoria.update(prev => ({ ...prev, [categoriaId]: detalles }));
+            this.setBaseTotalesCategoria(categoriaId, detalles);
+            this.recalcularResumen();
             this.cargando.set(false);
           },
           error: (err) => this.cargando.set(false)
@@ -115,7 +135,7 @@ export class ContenedorTiposComponent {
           if (existente) {
             // Ya existe presupuesto → guardar detalle directamente
             
-            this.guardarDetalle(existente.id, item, existente.tipo_producto.id);
+            this.guardarDetalle(existente.id, item);
           } else {
             // Crear nuevo presupuesto
             // Crear nuevo presupuesto
@@ -123,7 +143,7 @@ export class ContenedorTiposComponent {
               next: (nuevo) => {
                 console.log(nuevo)
                 if (!nuevo || !nuevo.id) {
-                  console.error('❌ Error: no se recibió ID del presupuesto creado');
+                  console.error('Error: no se recibio ID del presupuesto creado');
                   return;
                 }
 
@@ -138,17 +158,10 @@ export class ContenedorTiposComponent {
                 });
 
                 // 🔁 Ahora sí, crear el detalle enlazado al presupuesto
-                const tipoProductoId = basePresupuesto.tipo_producto_id;
-
-
-                if (!tipoProductoId) {
-                  console.warn('⚠️ No se encontró tipo_producto_id en el presupuesto creado');
-                }
-
-                this.guardarDetalle(nuevo.id, item, tipoProductoId);
+                this.guardarDetalle(nuevo.id, item);
 
               },
-              error: (err) => console.error('❌ Error al crear presupuesto:', err)
+              error: (err) => console.error('Error al crear presupuesto:', err)
             });
 
           }
@@ -158,65 +171,163 @@ export class ContenedorTiposComponent {
     });
   }
 
-  private guardarDetalle(presupuestoId: number, item: PresupuestoItem, tipoProductoId: number) {
+  private guardarDetalle(presupuestoId: number, item: PresupuestoItem) {
     const detalleData: ItemsDetalleCreate = {
       presupuesto_id: presupuestoId,
-      tipo_producto_id: tipoProductoId,
-      categoria_id: item.categoria_id!,
+      categoria_id: item.categoria_id,
+      tipo_producto_id: item.tipo_producto_id,
+      nombre_categoria_personalizada: item.nombre_categoria_personalizada,
       nombre_tipo_personalizado: item.nombre_tipo_personalizado ?? '',
-      precio_unitario: item.precio_unitario ?? 0,
-      cantidad: item.cantidad ?? 1,
-      total_item: (item.precio_unitario ?? 0) * (item.cantidad ?? 1),
+      monto_estimado: item.monto_estimado ?? 0,
+      monto_pagado: item.monto_pagado ?? 0,
       es_personalizado: item.es_personalizado ?? false,
       notas: item.notas ?? ''
     };
+    if (item.id) {
+      this.detallesPedidoctx.editarDetalles(item.id, detalleData).subscribe({
+        next: () => {
+          this.recalcularResumen();
+        },
+        error: (err) => console.error('Error al actualizar detalle:', err)
+      });
+      return;
+    }
 
     this.detallesPedidoctx.postDetalles(detalleData).subscribe({
-      next: value => {
-
-        console.log('💾 Detalle guardado y presupuesto actualizado en backend:', value);
-
+      next: (value) => {
+        const savedId = (value as any)?.id;
+        if (savedId) item.id = savedId;
+        this.recalcularResumen();
       },
-      error: (err) => console.error('❌ Error al guardar detalle:', err)
+      error: (err) => console.error('Error al guardar detalle:', err)
     });
   }
 
+  onDetalleChange(item: PresupuestoItem) {
+    this.programarAutoGuardado(item);
+    this.recalcularResumen();
+  }
 
-  // private actualizarMontosTodosPresupuestos(bodaId: number) {
-  //   // 1️⃣ Traer todos los presupuestos de la boda
-  //   this.presupuestoctx.getPresupuestosByBoda(bodaId).subscribe({
-  //     next: (res) => {
-  //       const presupuestos = res?.data ?? [];
-  //       presupuestos.forEach((presupuesto) => {
-  //         // 2️⃣ Traer detalle_item de este presupuesto
-  //         this.detallesPedidoctx.getDetallesPorPresupuesto(presupuesto.id).subscribe({
-  //           next: (detRes) => {
-  //             const detalle = detRes?.data?.[0]; // asumimos 1:1
-  //             if (!detalle) return;
+  calcularDiferencia(item: PresupuestoItem): number {
+    const montoEstimado = item.monto_estimado ?? 0;
+    const montoPagado = item.monto_pagado ?? 0;
+    return montoEstimado - montoPagado;
+  }
 
-  //             const montoActualizado = detalle.precio_unitario ?? detalle.total_item ?? 0;
+  private setBaseTotalesCategoria(categoriaId: number, detalles: PresupuestoItem[]) {
+    const base: Record<number, { estimado: number; pagado: number }> = {};
+    detalles.forEach((item) => {
+      base[item.tipo_producto_id] = {
+        estimado: item.monto_estimado ?? 0,
+        pagado: item.monto_pagado ?? 0
+      };
+    });
+    this.baseTotalesPorCategoria[categoriaId] = base;
+  }
 
-  //             // 3️⃣ Preparar datos de presupuesto actualizado
-  //             const presupuestoData: PresupuestoCreate = {
-  //               boda_id: bodaId,
-  //               tipo_producto_id: presupuesto.tipo_producto?.id ?? 0,
-  //               monto_total: montoActualizado,
-  //               estado: presupuesto.estado ?? true,
-  //               fecha_creacion: presupuesto.fecha_creacion ?? new Date().toISOString().slice(0, 19).replace('T', ' ')
-  //             };
+  private recalcularResumen() {
+    const boda = this.bodactx.bodaEncontrada();
+    if (!boda) return;
 
-  //             // 4️⃣ Actualizar presupuesto
-  //             this.presupuestoctx.editarPresupuesto(presupuesto.id, presupuestoData).subscribe({
-  //               next: () => console.log(`✅ Presupuesto ${presupuesto.id} actualizado con monto_total = ${montoActualizado}`),
-  //               error: (err) => console.error('Error al actualizar presupuesto', err)
-  //             });
-  //           },
-  //           error: (err) => console.error('Error al obtener detalle del presupuesto', err)
-  //         });
-  //       });
-  //     },
-  //     error: (err) => console.error('Error al traer presupuestos de la boda', err)
-  //   });
-  // }
+    const presupuestos = boda.presupuestos ?? [];
+    const baseTotal = presupuestos.reduce((total, p) => total + (p.monto_total ?? 0), 0);
+    const basePagado = presupuestos.reduce((total, p) => total + (p.monto_pagado ?? 0), 0);
+
+    let deltaEstimado = 0;
+    let deltaPagado = 0;
+
+    const detalles = this.detallesPorCategoria();
+    Object.entries(detalles).forEach(([categoriaIdStr, items]) => {
+      const categoriaId = Number(categoriaIdStr);
+      const base = this.baseTotalesPorCategoria[categoriaId] ?? {};
+      items.forEach((item) => {
+        const baseItem = base[item.tipo_producto_id] ?? { estimado: 0, pagado: 0 };
+        deltaEstimado += (item.monto_estimado ?? 0) - baseItem.estimado;
+        deltaPagado += (item.monto_pagado ?? 0) - baseItem.pagado;
+      });
+    });
+
+    const total = baseTotal + deltaEstimado;
+    const pagado = basePagado + deltaPagado;
+    this.bodactx.setTotalesEnEdicion(total, pagado);
+  }
+
+  private programarAutoGuardado(item: PresupuestoItem) {
+    const key = item.id ?? item.tipo_producto_id;
+    const prev = this.autoSaveTimers.get(key);
+    if (prev) clearTimeout(prev);
+
+    const timerId = window.setTimeout(() => {
+      this.autoSaveTimers.delete(key);
+      this.guardarItemAuto(item);
+    }, this.autoSaveDelayMs);
+
+    this.autoSaveTimers.set(key, timerId);
+  }
+
+  private guardarItemAuto(item: PresupuestoItem) {
+    const bodaId = this.bodaId();
+    if (!bodaId) return;
+
+    const presupuestoId =
+      item.presupuesto_id ?? this.presupuestoIdPorTipo.get(item.tipo_producto_id);
+
+    if (presupuestoId) {
+      item.presupuesto_id = presupuestoId;
+      this.guardarDetalle(presupuestoId, item);
+      return;
+    }
+
+    if (this.creandoPresupuestoPorTipo.has(item.tipo_producto_id)) return;
+
+    this.creandoPresupuestoPorTipo.add(item.tipo_producto_id);
+
+    const basePresupuesto: PresupuestoCreate = {
+      boda_id: bodaId,
+      tipo_producto_id: item.tipo_producto_id,
+      monto_total: 0,
+      estado: true,
+      fecha_creacion: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    };
+
+    this.presupuestoctx.postPresupuesto(basePresupuesto).subscribe({
+      next: (nuevo) => {
+        this.creandoPresupuestoPorTipo.delete(item.tipo_producto_id);
+        if (!nuevo || !nuevo.id) {
+          console.error('Error: no se recibio ID del presupuesto creado');
+          return;
+        }
+
+        this.presupuestoIdPorTipo.set(item.tipo_producto_id, nuevo.id);
+        item.presupuesto_id = nuevo.id;
+
+        this.bodactx.boda.update(boda => {
+          if (!boda) return boda;
+          return {
+            ...boda,
+            presupuestos: [...(boda.presupuestos ?? []), nuevo]
+          };
+        });
+
+        this.guardarDetalle(nuevo.id, item);
+      },
+      error: (err) => {
+        this.creandoPresupuestoPorTipo.delete(item.tipo_producto_id);
+        console.error('Error al crear presupuesto:', err);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.autoSaveTimers.forEach((timerId) => clearTimeout(timerId));
+    this.autoSaveTimers.clear();
+    this.bodactx.limpiarTotalesEnEdicion();
+  }
+
 
 }
+
+
+
+
+

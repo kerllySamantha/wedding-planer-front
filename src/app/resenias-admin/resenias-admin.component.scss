@@ -54,6 +54,24 @@
   align-items: stretch;
 }
 
+.empty-state {
+  border: 1px solid rgba(20, 63, 102, 0.15);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(241, 247, 252, 0.85));
+  box-shadow: 0 12px 28px rgba(16, 39, 63, 0.1);
+  padding: clamp(1rem, 0.85vw + 0.75rem, 1.4rem);
+}
+
+.empty-state h5 {
+  color: #143f66;
+  font-weight: 700;
+}
+
+.empty-state p,
+.empty-state small {
+  color: rgba(20, 63, 102, 0.74);
+}
+
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
