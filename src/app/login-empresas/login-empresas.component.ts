@@ -45,11 +45,12 @@ export class LoginEmpresasComponent {
 
     this.authServicectx.login(email, password).pipe(
       tap(response => {
-        localStorage.setItem('user', JSON.stringify(response.data));
-        this.authServicectx['auth'].set(response.data);
-         localStorage.setItem('id', response.data.id.toString());
-        localStorage.setItem('rol', response.data.rol);
-      }),
+  localStorage.setItem('user', JSON.stringify(response.data));
+  localStorage.setItem('id', response.data.id.toString());
+  localStorage.setItem('rol', response.data.rol);
+  localStorage.setItem('token', response.token); 
+  this.authServicectx['auth'].set(response.data);
+}),
       switchMap(response => {
         if (response?.data.rol !== "empresa") {
           this.messageError.set("Las credenciales ingresadas no son correctas.");

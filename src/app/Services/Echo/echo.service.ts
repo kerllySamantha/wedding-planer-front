@@ -20,17 +20,10 @@ export class EchoService {
   }
 
 
-
-
-  init(): Echo<'reverb'> {
+init(): Echo<'reverb'> {
     if (this.echo) return this.echo;
 
     (window as any).Pusher = Pusher;
-
-    void this.prepare();
-
-    const apiBaseUrl = environment.apiUrl.replace(/\/api\/?$/, '');
-    const token = localStorage.getItem('token');
 
     this.echo = new Echo<'reverb'>({
       broadcaster: 'reverb',
@@ -40,28 +33,29 @@ export class EchoService {
       wssPort: environment.reverbPort,
       forceTLS: false,
       enabledTransports: ['ws', 'wss'],
-      // Sin CSRF, solo Bearer token
-       authEndpoint: `${environment.apiUrl}/broadcasting/auth`,
-      withCredentials: true,
+      authEndpoint: `${environment.apiUrl}/broadcasting/auth`,
       auth: {
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      'Accept': 'application/json',
-    }
-}
+        headers: {
+          // getter dinámico: lee el token en cada petición
+          get Authorization() {
+            return `Bearer ${localStorage.getItem('token')}`;
+          },
+          'Accept': 'application/json',
+        }
+      }
     });
 
     this.echo.connector.pusher.connection.bind('connected', () => {
-  console.log('✅ Reverb conectado');
-});
+      console.log('✅ Reverb conectado');
+    });
 
-this.echo.connector.pusher.connection.bind('error', (err: any) => {
-  console.error('❌ Reverb error:', err);
-});
+    this.echo.connector.pusher.connection.bind('error', (err: any) => {
+      console.error('❌ Reverb error:', err);
+    });
 
-this.echo.connector.pusher.connection.bind('state_change', (states: any) => {
-  console.log('🔄 Estado WS:', states.previous, '→', states.current);
-});
+    this.echo.connector.pusher.connection.bind('state_change', (states: any) => {
+      console.log('🔄 Estado WS:', states.previous, '→', states.current);
+    });
 
     return this.echo;
   }

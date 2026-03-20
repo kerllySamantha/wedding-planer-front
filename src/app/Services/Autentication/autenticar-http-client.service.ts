@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { AuthenticationService } from './authenticationService';
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { API_URL } from '../../Tokens/serviceTokens';
 import { UserResponse } from '../../Interfaces/User';
 
@@ -17,58 +17,31 @@ export class AutenticarHttpClientService extends AuthenticationService {
     super();
   }
 
-  /**
-   * Obtener cookie CSRF de Sanctum
-   */
-  private csrf() {
-    const apiBaseUrl = this.apiUrl.replace(/\/api\/?$/, '');
-    return this.http.get(`${apiBaseUrl}/sanctum/csrf-cookie`, {
-      withCredentials: true
-    });
-  }
-
-  /**
-   * LOGIN (SANCTUM con cookies)
-   */
   login(email: string | null, password: string | null): Observable<UserResponse> {
-    return this.csrf().pipe(
-      switchMap(() =>
-        this.http.post<UserResponse>(
-          `${this.apiUrl}/login`,
-          { email, password },
-          { withCredentials: true }
-        )
-      ),
+    return this.http.post<UserResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap(response => {
-        // ✅ Guardamos usuario en memoria (NO token)
         this.auth.set(response.data);
-
-        // ❌ ELIMINADO: token (NO usar Bearer con Sanctum SPA)
-        // localStorage.setItem('token', response.token);
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+        }
       })
     );
   }
 
-  /**
-   * LOGOUT
-   */
   logout(): Observable<void> {
-    return this.http.post<void>(
-      `${this.apiUrl}/logout`,
-      {},
-      { withCredentials: true }
-    ).pipe(
+    return this.http.post<void>(`${this.apiUrl}/logout`, {}).pipe(
       tap(() => {
-        // limpiar estado en memoria
         this.auth.set(undefined);
-
-        // limpiar storage si usas algo
-        localStorage.removeItem('user');
-        localStorage.removeItem('id');
-        localStorage.removeItem('nombre');
-        localStorage.removeItem('rol');
+        localStorage.clear();
       }),
       map(() => undefined)
     );
+  }
+
+  override restoreSession() {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      this.auth.set(JSON.parse(userData));
+    }
   }
 }
