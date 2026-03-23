@@ -13,6 +13,7 @@ export interface TipoData extends TipoBase{
 export interface TipoSimple {
     id: number,
     nombre: string,
+    modalidad: 'producto'| 'servicio';
 }
 
 export interface Tipos{

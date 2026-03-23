@@ -38,19 +38,56 @@
                         <label class="form-label fw-bold small text-uppercase text-muted d-block">Tipo de
                             Reserva</label>
                         <div class="btn-group w-100" role="group">
+
                             <input type="radio" class="btn-check" formControlName="tipo_reserva" value="producto"
-                                id="tipoProd">
-                            <label class="btn btn-outline-primary" for="tipoProd">Producto</label>
+                                id="tipoProd"
+                                [attr.disabled]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'producto') ? true : null">
+                            <label class="btn btn-outline-primary" for="tipoProd"
+                                [class.opacity-50]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'producto')"
+                                [title]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'producto') ? 'No hay productos disponibles' : 'Producto'">
+                                Producto
+                            </label>
 
                             <input type="radio" class="btn-check" formControlName="tipo_reserva" value="servicio"
-                                id="tipoServ">
-                            <label class="btn btn-outline-primary" for="tipoServ">Servicio</label>
+                                id="tipoServ"
+                                [attr.disabled]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'servicio') ? true : null">
+                            <label class="btn btn-outline-primary" for="tipoServ"
+                                [class.opacity-50]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'servicio')"
+                                [title]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'servicio') ? 'No hay servicios disponibles' : 'Servicio'">
+                                Servicio
+                            </label>
 
                             <input type="radio" class="btn-check" formControlName="tipo_reserva" value="bloqueo"
                                 id="tipoBloq">
                             <label class="btn btn-outline-primary" for="tipoBloq">Bloqueo</label>
+
                         </div>
                     </div>
+
+                    @if(tipoReservaActual() === 'producto' || tipoReservaActual() === 'servicio') {
+                    @if(productosFiltrados().length > 0) {
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-uppercase text-muted">
+                            {{ tipoReservaActual() === 'servicio' ? 'Servicio' : 'Producto' }} a reservar
+                        </label>
+                        <select class="form-select" formControlName="productoSeleccionado">
+                            <option [ngValue]="null" disabled>Selecciona una opción...</option>
+                            @for(p of productosFiltrados(); track p.id) {
+                            <option [ngValue]="p.id">
+                                {{ p.nombre }} — {{ p.precio_min | currency:'EUR':'symbol':'1.0-0' }} / {{ p.precio_max
+                                | currency:'EUR':'symbol':'1.0-0' }}
+                            </option>
+                            }
+                        </select>
+                    </div>
+                    } @else {
+                    <div class="alert alert-warning py-2 small mb-4">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        No hay {{ tipoReservaActual() === 'servicio' ? 'servicios' : 'productos' }} disponibles para
+                        reservar.
+                    </div>
+                    }
+                    }
 
                     @if(form.get('tipo_reserva')?.value) {
                     <div formGroupName="fecha" class="p-3 border rounded shadow-sm bg-white mb-4">
@@ -146,7 +183,7 @@
                         <div class="card bg-light border-0">
                             <div class="card-body">
                                 <p class="mb-2"><strong>📅 Fecha:</strong> {{ event()?.start | date:'longDate' }}</p>
-                            @if(event()?.extendedProps?.tipo_reserva === 'servicio'){
+                                @if(event()?.extendedProps?.tipo_reserva === 'servicio'){
                                 <p class="mb-2">
                                     <strong>🕒 Horario:</strong>
                                     {{ event()?.start | date:'HH:mm' }} - {{ event()?.end | date:'HH:mm' }}

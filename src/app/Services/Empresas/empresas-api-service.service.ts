@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { API_URL } from '../../Tokens/serviceTokens';
 import { CreateEmpresa, Empresa, EmpresaResponse, Empresas } from '../../Interfaces/Empresa';
 import { catchError, map, Observable, throwError } from 'rxjs';
+import { Productos } from '../../Interfaces/Producto';
 
 @Injectable({
   providedIn: 'root'
@@ -92,6 +93,22 @@ export class EmpresasApiServiceService  extends EmpresasServiceServiceService{
       }),
       catchError((error: Error) => {
         console.error("Error en geEmpresa:", error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  override getEmpresaProductos(idEmpresa: number): Observable<Productos | null> {
+    
+    return this.http.get<Productos>(`${this.apiUrl}/empresas/${idEmpresa.toString()}/productos`).pipe(
+      map(response => {
+        if (response) {
+          return response;
+        }
+        return null;
+      }),
+      catchError((error: Error) => {
+        console.error("Error en getProductos:", error);
         return throwError(() => error);
       })
     );

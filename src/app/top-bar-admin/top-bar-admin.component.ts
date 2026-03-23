@@ -8,9 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { NotificacionesService } from '../Services/Notificacion/notificaciones.service';
 import { Notificacion } from '../Interfaces/Notificacion';
 import { Paginated } from '../Services/Paginated';
-import {MatBadgeModule} from '@angular/material/badge';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrencyPipe } from '@angular/common';
 import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -29,7 +29,7 @@ export class TopBarAdminComponent {
   private authService = inject(AutenticarHttpClientService);
   private svc = inject(NotificacionesService);
   private destroyRef = inject(DestroyRef);
-   private echoSvc = inject(EchoService);
+  private echoSvc = inject(EchoService);
 
 
   cargando = signal(false);
@@ -53,7 +53,7 @@ export class TopBarAdminComponent {
   noLeidas = computed(() => this.notificaciones().length);
   hayNotificaciones = computed(() => this.noLeidas() > 0);
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     this.cargarNombreEmpresa();
@@ -64,10 +64,10 @@ export class TopBarAdminComponent {
         this.escucharNotificaciones();
       })
       .catch(err => console.error('Error preparando Echo:', err));
-  //   interval(10000)
-  //     .pipe(takeUntilDestroyed(this.destroyRef))
-  //     .subscribe(() => this.cargarNotificaciones());
-   }
+    //   interval(10000)
+    //     .pipe(takeUntilDestroyed(this.destroyRef))
+    //     .subscribe(() => this.cargarNotificaciones());
+  }
 
   toggleSidebar() {
     this.sidebarOpen.update(v => !v);
@@ -117,24 +117,22 @@ export class TopBarAdminComponent {
     this.cargarNotificaciones();
   }
 
-onClickNotificacion(notif: Notificacion) {
+ onClickNotificacion(notif: Notificacion) {
   const eraNoLeida = !this.esLeida(notif);
   const notifId = this.obtenerNotificacionId(notif);
-  if (notifId == null) {
-    console.warn('Notificación sin id:', notif);
-    return;
-  }
+  if (notifId == null) return;
 
+  // Oculta la notificación de la lista
   this.ocultas.update(prev => {
     const next = new Set(prev);
     next.add(notifId);
     return next;
   });
 
+  // Marca como leída en servidor
   if (eraNoLeida) {
     this.svc.marcarLeida(Number(notifId)).subscribe({
-      error: (err) => {
-        console.error('Error al marcar notificación como leída:', err);
+      error: () => {
         this.ocultas.update(prev => {
           const next = new Set(prev);
           next.delete(notifId);
@@ -144,11 +142,23 @@ onClickNotificacion(notif: Notificacion) {
     });
   }
 
-  const solicitudId = this.obtenerSolicitudId(notif);
-  if (solicitudId) {
-    this.router.navigate(['/proveedor-dashboard', 'solicitudes', solicitudId]);
-  }
+  // Navega según el tipo
+  const ref = notif.referencia as any;
+  const referenciaId = ref?.id ?? notif.referencia_id ?? null;
+
+  if (!referenciaId) return;
+
+  setTimeout(() => {
+    if (notif.tipo === 'boda_proxima' || notif.tipo === 'tarea_pendiente') {
+      this.router.navigateByUrl(`/proveedor-dashboard/bodas/${referenciaId}`);
+    } else {
+      // presupuesto, presupuesto_pendiente y cualquier otro
+      this.router.navigateByUrl(`/proveedor-dashboard/solicitudes/${referenciaId}`);
+    }
+  }, 150);
 }
+
+
 
   private esLeida(notif?: Notificacion | null): boolean {
     if (!notif) return false;
@@ -222,7 +232,7 @@ onClickNotificacion(notif: Notificacion) {
       },
     };
   }
-  
+
 
   marcarTodasLeidas() {
     const actuales = this.notificaciones();
@@ -249,10 +259,14 @@ onClickNotificacion(notif: Notificacion) {
       presupuesto: 'request_quote',
       mensaje: 'chat',
       alerta: 'warning',
+      presupuesto_pendiente: 'pending_actions',
+      boda_proxima: 'event',
+      tarea_pendiente: 'task_alt',
+
     };
     return iconos[tipo] ?? 'notifications';
   }
-  
+
   private escucharNotificaciones() {
     const userId = this.userIde();
     if (!userId) return;

@@ -1,46 +1,36 @@
-import { CategoriaSimple } from "./Categoria";
 import { EmpresaLigera } from "./Empresa";
 import { TipoSimple } from "./Tipos";
+import { CategoriaSimple } from "./Categoria";
 
-export interface ProductoBase{
-    id: number,
-    nombre: string,
-    descripcion: Text,
-    precio_max: number,
-    precio_min: number,
+export interface ProductoBase {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precio_max: number;
+  precio_min: number;
 }
 
-export interface ProductoSimple{
-    id: number,
-    nombre: string,
+export interface ProductoSimple {
+  id: number;
+  nombre: string;
+}
+
+export interface Producto extends ProductoBase {
+  empresa: EmpresaLigera;
+  tipo_producto: TipoSimple;
 }
 
 export interface ProductoEmpresa extends ProductoBase {
-    tipo_producto: TipoSimple;
-    categoria: CategoriaSimple
+  tipo_producto: TipoSimple;
+  categoria: CategoriaSimple;
 }
 
-export interface Producto extends ProductoBase{
-    empresa: EmpresaLigera
+export interface Productos {
+  data: Producto[];
 }
-
-
-
-export interface Productos extends Producto{
-    data: Producto[]
-}
-
 
 export interface ProductosPorCategoria {
-    data: ProductoEmpresa[];
+  data: ProductoEmpresa[];
 }
 
-export interface ProductoCalendario {
-    id: number;
-    categoria: string;
-    nombre: string;
-    tipo_producto: string;
-    modalidad: 'producto' | 'servicio';
-
-}
-
+export type ProductoCalendario = Producto;

@@ -1,4 +1,4 @@
-import { Component, effect, input, OnChanges, output, SimpleChanges } from '@angular/core';
+import { Component, computed, effect, inject, input, OnChanges, output, signal, SimpleChanges } from '@angular/core';
 import { CalendarSelection, ReservaEvent, ReservaFormValue, SaveReservaPayload, tipo_reserva } from '../Interfaces/Reserva';
 import Swal from 'sweetalert2'
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
+import { Producto } from '../Interfaces/Producto';
 
 @Component({
   selector: 'app-modal-calendar-form',
@@ -37,10 +39,17 @@ export class ModalCalendarFormComponent {
   cerrar = output<void>();
   mode = input<'create' | 'view' | 'edit'>();
   editar = output<void>();
+  empresaCtx = inject(EmpresasApiServiceService);
+  empresaId = localStorage.getItem('idEmpresa')!
+
+  productosEmpresa = signal<Producto[] | []>([]);
+  tipoReservaActual = signal<string | null>(null);
+
 
 
 
   form = new FormGroup({
+     productoSeleccionado: new FormControl<number | null>(null),
     titulo: new FormControl<string>('', Validators.required),
     fecha: new FormGroup({
       start: new FormControl<string>('', Validators.required),
@@ -76,7 +85,7 @@ export class ModalCalendarFormComponent {
 
       if (!ev || mode !== 'edit') return;
 
-      if (this.inicializadoEdit) return; 
+      if (this.inicializadoEdit) return;
 
       const tipo = ev.extendedProps?.tipo_reserva ?? null;
 
@@ -103,17 +112,17 @@ export class ModalCalendarFormComponent {
 
       this.ignorarCambioModalidad = false;
 
-      this.inicializadoEdit = true; 
+      this.inicializadoEdit = true;
     });
 
-    
+
     effect(() => {
       const selection = this.data();
       const mode = this.mode();
 
       if (!selection || mode !== 'create') return;
 
-      if (this.inicializadoCreate) return; 
+      if (this.inicializadoCreate) return;
 
       const start = new Date(selection.start);
       const end = selection.end
@@ -141,27 +150,29 @@ export class ModalCalendarFormComponent {
       this.reservaAnterior = null;
       this.ignorarCambioModalidad = false;
 
-      this.inicializadoCreate = true; 
+      this.inicializadoCreate = true;
     });
 
   }
 
+ngOnInit() {
+  this.getProductos(Number(this.empresaId));
 
-  ngOnInit() {
-    this.fechaGroup.get('start')?.valueChanges.subscribe(val => {
-      if (this.form.get('tipo_reserva')?.value === 'bloqueo') {
-        this.fechaGroup.get('end')?.setValue(val, { emitEvent: false });
-      }
-    });
+  this.fechaGroup.get('start')?.valueChanges.subscribe(val => {
+    if (this.form.get('tipo_reserva')?.value === 'bloqueo') {
+      this.fechaGroup.get('end')?.setValue(val, { emitEvent: false });
+    }
+  });
 
-    this.form.get('tipo_reserva')?.valueChanges.subscribe(tipo_reserva => {
-      this.gestionarCambioModalidad(tipo_reserva);
-    });
+  this.form.get('tipo_reserva')?.valueChanges.subscribe(tipo => {
+    this.tipoReservaActual.set(tipo);
+    this.form.get('productoSeleccionado')?.setValue(null, { emitEvent: false });
+    this.gestionarCambioModalidad(tipo);
+  });
 
-    this.form.valueChanges.subscribe(value => console.log('value:', value));
-    this.form.statusChanges.subscribe(status => console.log('status:', status, this.form.errors));
-  }
-
+  this.form.valueChanges.subscribe(value => console.log('value:', value));
+  this.form.statusChanges.subscribe(status => console.log('status:', status, this.form.errors));
+}
 
   private gestionarCambioModalidad(tipo_reserva: 'producto' | 'servicio' | 'bloqueo' | null) {
     if (this.ignorarCambioModalidad) return;
@@ -193,6 +204,19 @@ export class ModalCalendarFormComponent {
       this.aplicarReglasModalidad(tipo_reserva);
     }
   }
+
+
+  productosFiltrados = computed(() => {
+    const tipo = this.tipoReservaActual();
+    if (tipo !== 'producto' && tipo !== 'servicio') return [];
+    return this.productosEmpresa().filter(p => p.tipo_producto.modalidad === tipo);
+  });
+
+  hayProductosDelTipo = computed(() => {
+    const tipo = this.tipoReservaActual();
+    if (tipo !== 'producto' && tipo !== 'servicio') return true;
+    return this.productosEmpresa().some(p => p.tipo_producto.modalidad === tipo);
+  });
 
 
 
@@ -248,6 +272,20 @@ export class ModalCalendarFormComponent {
     };
   }
 
+  private getProductos(idEmpresa: number): void {
+    console.log(idEmpresa);
+    this.empresaCtx.getEmpresaProductos(idEmpresa).subscribe({
+      next: (info) => {
+        this.productosEmpresa.set(info?.data ?? []);
+        console.log('Productos:', this.productosEmpresa());
+      },
+      error: (error: Error) => {
+        this.productosEmpresa.set([]);
+        console.error(error);
+      },
+    });
+  }
+
   estadoNotasValidator(): ValidatorFn {
     return (control: AbstractControl) => {
       const estado = control.get('estado')?.value;
@@ -266,7 +304,7 @@ export class ModalCalendarFormComponent {
     this.guardarReserva.emit({
       form: this.form.getRawValue() as ReservaFormValue,
       id: this.mode() === 'edit' ? this.event()?.id : undefined,
-      empresa_id : localStorage.getItem('idEmpresa')!
+      empresa_id: localStorage.getItem('idEmpresa')!
     });
   }
 
@@ -279,7 +317,8 @@ export class ModalCalendarFormComponent {
     this.form.reset({
       estado: 'pendiente',
       fecha: { start: '', end: null },
-      tipo_reserva: null
+      tipo_reserva: null,
+      productoSeleccionado: null
     }, { emitEvent: false });
 
     this.reservaAnterior = null;
@@ -287,6 +326,7 @@ export class ModalCalendarFormComponent {
     this.inicializadoCreate = false;
     this.inicializadoEdit = false;
     this.ignorarCambioModalidad = false;
+    this.tipoReservaActual.set(null);
 
     this.cerrar.emit();
   }

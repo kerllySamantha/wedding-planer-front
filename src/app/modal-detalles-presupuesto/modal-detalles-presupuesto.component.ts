@@ -12,6 +12,8 @@ import { PerfilApiServiceService } from '../Services/Perfiles/perfil-api-service
 import { Perfil } from '../Interfaces/Perfil';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
 import { PedirPresupuestoStore } from '../Interfaces/PedirPresupuesto';
+import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
+import { Producto, Productos } from '../Interfaces/Producto';
 
 
 
@@ -23,15 +25,24 @@ import { PedirPresupuestoStore } from '../Interfaces/PedirPresupuesto';
   styleUrl: './modal-detalles-presupuesto.component.scss',
 })
 export class ModalDetallesPresupuestoComponent implements OnInit {
-  empresa = signal<Empresa | null>(null);
+
   bodaCtx = inject(CountdownServiceService);
-  perfilCtx = inject(PerfilApiServiceService);
-  boda = computed(() => this.bodaCtx.bodaEncontrada());
-  perfil = signal<Perfil | null>(null);
   authCtx = inject(AuthenticationService);
+  perfilCtx = inject(PerfilApiServiceService);
   pedirPresupuestoCtx = inject(PedirPresupuestoService);
+  empresaCtx = inject(EmpresasApiServiceService);
+
   editar = signal<boolean>(false);
   enviando = signal<boolean>(false);
+  empresa = signal<Empresa | null>(null);
+  productosEmpresa = signal<Producto[] | []>([])
+  perfil = signal<Perfil | null>(null);
+
+  boda = computed(() => this.bodaCtx.bodaEncontrada());
+
+
+
+
 
   private readonly dateFormatter = new Intl.DateTimeFormat('es-ES', {
     day: '2-digit',
@@ -78,16 +89,24 @@ export class ModalDetallesPresupuestoComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    const usuarioId = this.authCtx.usuario_id();
-    if (usuarioId) {
-      this.getPerfilUser(usuarioId);
-    }
+ngOnInit(): void {
+  const usuarioId = this.authCtx.usuario_id();
+  const empresaId = this.empresa()?.id;
 
-    if (!this.boda()) {
-      this.bodaCtx.cargarBodaDelUsuario();
-    }
+  if (usuarioId) {
+    this.getPerfilUser(usuarioId);
   }
+
+  if (empresaId) {
+    this.getProductos(empresaId); 
+  } else {
+    console.warn('getProductos no ejecutado: empresaId es', empresaId);
+  }
+
+  if (!this.boda()) {
+    this.bodaCtx.cargarBodaDelUsuario();
+  }
+}
 
   private getPerfilUser(usuarioId: number): void {
     this.perfilCtx.getPerfilByUserId(usuarioId).subscribe({
@@ -99,6 +118,20 @@ export class ModalDetallesPresupuestoComponent implements OnInit {
       },
     });
   }
+
+private getProductos(idEmpresa: number): void {
+  console.log(idEmpresa);
+  this.empresaCtx.getEmpresaProductos(idEmpresa).subscribe({
+    next: (info) => {
+      this.productosEmpresa.set(info?.data ?? []);  
+      console.log('Productos:', this.productosEmpresa());
+    },
+    error: (error: Error) => {
+      this.productosEmpresa.set([]);
+      console.error(error);
+    },
+  });
+}
 
   private rellenarFormularioDesdeContexto(): void {
     const auth = this.authCtx.auth();
@@ -227,7 +260,7 @@ export class ModalDetallesPresupuestoComponent implements OnInit {
       email: raw.email.trim(),
       mensaje: raw.mensaje.trim(),
       invitados: raw.invitados!,
-      presupuesto: raw.presupuesto ,
+      presupuesto: raw.presupuesto,
 
       ...(bodaId ? { boda_id: bodaId } : {}),
       ...(raw.fecha ? { fecha: this.toIsoDate(raw.fecha) } : {}),

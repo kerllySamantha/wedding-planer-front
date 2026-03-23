@@ -118,6 +118,7 @@ export interface ReservaFormValue {
     estado: EstadoReserva;
     notas?: string;
     singleDay?: true,
+    productoSeleccionado?: number,
     
     tipo_reserva?: 'producto' | 'servicio' | 'bloqueo';
 }

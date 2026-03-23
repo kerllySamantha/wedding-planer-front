@@ -29,6 +29,10 @@ export class CalendarProveedoresComponent implements OnInit {
   selectedEvent = signal<ReservaEvent | null>(null);
 
   idEmpresa = computed(() => localStorage.getItem('idEmpresa')!);
+    todayStr = computed(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  });
 
   modalData!: CalendarSelection;
 
@@ -65,11 +69,15 @@ export class CalendarProveedoresComponent implements OnInit {
     eventClick: this.abrirDetalleReserva.bind(this),
     eventDisplay: 'block',
     showNonCurrentDates: false,
+    validRange: { start: this.todayStr() },
     fixedWeekCount: false,
     displayEventTime: false,
     selectAllow: (selectInfo: CalendarSelection) => {
-      return !this.isDateBlocked(selectInfo.start, selectInfo.end);
-    },
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectInfo.start < today) return false;
+    return !this.isDateBlocked(selectInfo.start, selectInfo.end);
+  },
 
     eventClassNames: (arg: EventContentArg) => {
       return [`estado-${arg.event.extendedProps['estado']}`];
@@ -81,16 +89,7 @@ export class CalendarProveedoresComponent implements OnInit {
     },
 
 
-    // loading: (isLoading: boolean) => {
-    //   this.loading.set(isLoading);
-    // },
-
-    // viewSkeletonRender: (info: any) => {
-    //   // Si el signal loading es true, reforzamos la clase en el DOM
-    //   if (this.loading()) {
-    //     info.el.classList.add('fc-skeleton-active');
-    //   }
-    // },
+  
 
     datesSet: (info: any) => {
       // Al terminar el renderizado de fechas, limpiamos
