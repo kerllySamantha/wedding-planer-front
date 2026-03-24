@@ -74,6 +74,10 @@
   }
 </section>
 
+@if (solicitud(); as item) {
 <div class="d-flex justify-content-end mt-4">
-  <button class="btn btn-lg btn-primary">Responder</button>
+  <a class="btn btn-lg btn-primary" [routerLink]="['/proveedor-dashboard', 'solicitudes', item.id, 'responder']">
+    Responder
+  </a>
 </div>
+}

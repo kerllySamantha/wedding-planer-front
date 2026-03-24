@@ -34,8 +34,8 @@ override getNotificacion(idNotificacion: number): Observable<NotificacionRespons
   override marcarLeida(id: number): Observable<NotificacionResponse> {
     const url = `${this.apiUrl}/notificaciones/${id}`;
     const payload = {
-      leido: 1,
-      leida: 1,
+      leido: true,
+      leida: true,
       read_at: new Date().toISOString(),
     };
 
@@ -45,8 +45,8 @@ override getNotificacion(idNotificacion: number): Observable<NotificacionRespons
           return this.http.put<NotificacionResponse>(url, payload);
         }
         if (error?.status === 422) {
-          return this.http.patch<NotificacionResponse>(url, { leido: 1 }).pipe(
-            catchError(() => this.http.put<NotificacionResponse>(url, { leido: 1 }))
+          return this.http.patch<NotificacionResponse>(url, { leido: true }).pipe(
+            catchError(() => this.http.put<NotificacionResponse>(url, { leido: true }))
           );
         }
         return throwError(() => error);

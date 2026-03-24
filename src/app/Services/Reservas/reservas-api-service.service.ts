@@ -16,6 +16,14 @@ export class ReservasApiServiceService extends ReservasServiceServiceService {
     super();
   }
 
+  private unwrapData<T>(response: T | { data?: T } | null | undefined): T | null {
+    if (!response) return null;
+    if (typeof response === 'object' && response !== null && Object.prototype.hasOwnProperty.call(response, 'data')) {
+      return (response as { data?: T }).data ?? null;
+    }
+    return response as T;
+  }
+
   override getReservas(): Observable<Reservas | null> {
     return this.http.get<Reservas>(`${this.apiUrl}/reservas`).pipe(
       map(response => {
@@ -69,6 +77,16 @@ export class ReservasApiServiceService extends ReservasServiceServiceService {
     }
     console.log(putObject)
     return this.http.put(`${this.apiUrl}/reservas/${idReserva}`, putObject)
+  }
+
+  override confirmarReserva(idReserva: string | number): Observable<Reserva | null> {
+    return this.http.post<Reserva | { data?: Reserva }>(`${this.apiUrl}/reservas/${idReserva}/confirmar`, {}).pipe(
+      map(response => this.unwrapData(response)),
+      catchError((error: Error) => {
+        console.error("Error en confirmarReserva:", error);
+        return throwError(() => error);
+      })
+    );
   }
 
   override deleteReseerva(idReserva: bigint): Observable<Object | null> {

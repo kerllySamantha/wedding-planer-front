@@ -19,6 +19,7 @@ import { ReseniasAdminComponent } from './resenias-admin/resenias-admin.componen
 import { ConfiguracionAdminComponent } from './configuracion-admin/configuracion-admin.component';
 import { AdminSolicitudesDashboardComponent } from './admin-solicitudes-dashboard/admin-solicitudes-dashboard.component';
 import { CardInfoSolicitudComponent } from './card-info-solicitud/card-info-solicitud.component';
+import { ResponderAdminPresupuestoComponent } from './responder-admin-presupuesto/responder-admin-presupuesto.component';
 import { solicitudResolver } from './Resolver/solicitud.resolver';
 import { APP_PATHS } from './app.paths';
 
@@ -102,6 +103,11 @@ const providerRoutes: Routes = [
             {
                 path: 'solicitudes',
                 component: AdminSolicitudesDashboardComponent
+            },
+            {
+                path: 'solicitudes/:id/responder',
+                component: ResponderAdminPresupuestoComponent,
+                resolve: { solicitud: solicitudResolver }
             },
             {
                 path: 'solicitudes/:id',

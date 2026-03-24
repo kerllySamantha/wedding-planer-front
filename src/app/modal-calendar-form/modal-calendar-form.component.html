@@ -41,19 +41,19 @@
 
                             <input type="radio" class="btn-check" formControlName="tipo_reserva" value="producto"
                                 id="tipoProd"
-                                [attr.disabled]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'producto') ? true : null">
+                                [disabled]="sinProductosModalidad('producto')">
                             <label class="btn btn-outline-primary" for="tipoProd"
-                                [class.opacity-50]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'producto')"
-                                [title]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'producto') ? 'No hay productos disponibles' : 'Producto'">
+                                [class.opacity-50]="sinProductosModalidad('producto')"
+                                [title]="sinProductosModalidad('producto') ? 'No hay productos disponibles' : 'Producto'">
                                 Producto
                             </label>
 
                             <input type="radio" class="btn-check" formControlName="tipo_reserva" value="servicio"
                                 id="tipoServ"
-                                [attr.disabled]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'servicio') ? true : null">
+                                [disabled]="sinProductosModalidad('servicio')">
                             <label class="btn btn-outline-primary" for="tipoServ"
-                                [class.opacity-50]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'servicio')"
-                                [title]="productosEmpresa().every(p => p.tipo_producto.modalidad !== 'servicio') ? 'No hay servicios disponibles' : 'Servicio'">
+                                [class.opacity-50]="sinProductosModalidad('servicio')"
+                                [title]="sinProductosModalidad('servicio') ? 'No hay servicios disponibles' : 'Servicio'">
                                 Servicio
                             </label>
 

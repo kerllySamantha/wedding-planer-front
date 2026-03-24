@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@angular/core';
 import { PedirPresupuestoService } from './pedir-presupuesto.service';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { PedirPresupuestoInfo, PedirPresupuestoStore } from '../../Interfaces/PedirPresupuesto';
+import { AceptarPresupuestoResponse, PedirPresupuestoInfo, PedirPresupuestoStore, ResponderPresupuestoPayload } from '../../Interfaces/PedirPresupuesto';
 import { HttpClient } from '@angular/common/http';
 import { API_URL } from '../../Tokens/serviceTokens';
 
@@ -89,6 +89,32 @@ export class PedirPresupuestoApiService extends PedirPresupuestoService {
         return throwError(() => error);
       })
     )
+  }
+
+  override aceptarPresupuesto(idPresupuesto: string | number): Observable<AceptarPresupuestoResponse | null> {
+    return this.http.patch<AceptarPresupuestoResponse | { data?: AceptarPresupuestoResponse }>(
+      `${this.apiUrl}/pedirPresupuestos/${idPresupuesto}/aceptar`,
+      {}
+    ).pipe(
+      map((response): AceptarPresupuestoResponse | null => this.unwrapData(response)),
+      catchError((error: Error) => {
+        console.error("Error en aceptarPresupuesto:", error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  override responderPresupuesto(idPresupuesto: string | number, payload: ResponderPresupuestoPayload): Observable<PedirPresupuestoInfo | null> {
+    return this.http.patch<PedirPresupuestoInfo | { data?: PedirPresupuestoInfo }>(
+      `${this.apiUrl}/pedirPresupuestos/${idPresupuesto}/respuesta`,
+      payload
+    ).pipe(
+      map((response): PedirPresupuestoInfo | null => this.unwrapData(response)),
+      catchError((error: Error) => {
+        console.error("Error en responderPresupuesto:", error);
+        return throwError(() => error);
+      })
+    );
   }
 
 

@@ -98,13 +98,34 @@
     line-height: 1.45;
 }
 
-.detail-message {
-    margin: 0;
-    white-space: pre-wrap;
+.proposal-summary {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px dashed rgba(20, 63, 102, 0.25);
+    background: rgba(20, 63, 102, 0.04);
+    display: grid;
+    gap: 0.35rem;
     color: #18334e;
-    line-height: 1.55;
+    font-size: 0.9rem;
 }
 
+.proposal-summary__title {
+    font-weight: 700;
+    color: #143f66;
+    margin-bottom: 0.2rem;
+}
+
+.proposal-summary__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.proposal-summary__label {
+    font-weight: 700;
+    color: rgba(47, 93, 134, 0.88);
+}
 
 @media (max-width: 767.98px) {
     .detail-grid {

@@ -1,0 +1,157 @@
+<section class="request-detail">
+  <a class="back-link" [routerLink]="['/proveedor-dashboard/solicitudes', solicitud()?.id]">Volver a solicitud</a>
+
+  @if (solicitud(); as item) {
+  <header class="detail-header">
+    <p class="detail-kicker">Responder</p>
+    <h1>Propuesta para {{ item.nombre }}</h1>
+    <p class="detail-subtitle">Define producto/servicio, fechas e importe para enviar al usuario.</p>
+  </header>
+
+  <div class="detail-grid">
+    <article class="detail-card">
+      <h2>Datos del cliente</h2>
+      <dl class="detail-list">
+        <div>
+          <dt>Nombre</dt>
+          <dd>{{ item.nombre }}</dd>
+        </div>
+        <div>
+          <dt>Email</dt>
+          <dd>{{ item.email }}</dd>
+        </div>
+        <div>
+          <dt>Telefono</dt>
+          <dd>{{ item.telefono }}</dd>
+        </div>
+        <div>
+          <dt>Fecha del evento</dt>
+          <dd>{{ item.fecha ? (item.fecha | date:'dd/MM/yyyy') : 'Sin fecha indicada' }}</dd>
+        </div>
+        <div>
+          <dt>Invitados</dt>
+          <dd>{{ item.invitados}}</dd>
+        </div>
+        <div>
+          <dt>Presupuesto</dt>
+          <dd>{{ item.presupuesto}}</dd>
+        </div>
+      </dl>
+    </article>
+
+    <article class="detail-card">
+      <h2>Estado actual</h2>
+      <dl class="detail-list">
+        <div>
+          <dt>Estado</dt>
+          <dd>{{ item.estado }}</dd>
+        </div>
+        <div>
+          <dt>Importe ofertado</dt>
+          <dd>{{ (item.importe_ofertado || 0) | currency:'EUR':'symbol':'1.0-0':'es' }}</dd>
+        </div>
+        <div>
+          <dt>Fecha de respuesta</dt>
+          <dd>{{ item.fecha_respuesta ? (item.fecha_respuesta | date:'dd/MM/yyyy HH:mm') : 'Pendiente' }}</dd>
+        </div>
+      </dl>
+    </article>
+  </div>
+
+  <article class="detail-card detail-card--wide">
+    <h2>Propuesta del proveedor</h2>
+
+    <form [formGroup]="respuestaForm" (ngSubmit)="enviarRespuesta()">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label small fw-bold text-uppercase text-muted">Producto o servicio</label>
+          <select class="form-select" formControlName="producto_id">
+            <option [ngValue]="null" disabled>Selecciona un producto</option>
+            @for (p of productosEmpresa(); track p.id) {
+            <option [ngValue]="p.id">{{ p.nombre }} ({{ p.tipo_producto.modalidad }})</option>
+            }
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label small fw-bold text-uppercase text-muted">Importe ofertado</label>
+          <input type="number" class="form-control" formControlName="importe_ofertado" min="0">
+        </div>
+      </div>
+
+      @if (modalidadSeleccionada() === 'servicio') {
+      <div class="row g-3 mt-2">
+        <div class="col-md-4">
+          <label class="form-label small fw-bold text-uppercase text-muted">Inicio (fecha y hora)</label>
+          <input type="datetime-local" class="form-control" formControlName="fecha_inicio">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-bold text-uppercase text-muted">Fin (fecha y hora)</label>
+          <input type="datetime-local" class="form-control" formControlName="fecha_fin">
+        </div>
+      </div>
+      }
+
+      @if (modalidadSeleccionada() === 'producto') {
+      <div class="row g-3 mt-2">
+        <div class="col-md-4">
+          <label class="form-label small fw-bold text-uppercase text-muted">Fecha inicio</label>
+          <input type="date" class="form-control" formControlName="fecha_inicio">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label small fw-bold text-uppercase text-muted">Fecha fin</label>
+          <input type="date" class="form-control" formControlName="fecha_fin">
+        </div>
+      </div>
+      }
+
+      <div class="mt-3">
+        <label class="form-label small fw-bold text-uppercase text-muted">Comentario</label>
+        <textarea class="form-control" rows="3" formControlName="comentario_empresa"></textarea>
+      </div>
+
+      @if (resumenPropuesta(); as resumen) {
+      <div class="proposal-summary mt-3">
+        <div class="proposal-summary__title">Resumen de propuesta</div>
+        <div class="proposal-summary__row">
+          <span class="proposal-summary__label">Producto/servicio:</span>
+          <span>{{ resumen.productoNombre }} ({{ resumen.modalidad }})</span>
+        </div>
+        <div class="proposal-summary__row">
+          <span class="proposal-summary__label">Fecha inicio:</span>
+          <span>{{ resumen.fechaInicio || 'Pendiente' }}</span>
+        </div>
+        <div class="proposal-summary__row">
+          <span class="proposal-summary__label">Fecha fin:</span>
+          <span>{{ resumen.fechaFin || (resumen.modalidad === 'producto' ? resumen.fechaInicio : 'Pendiente') }}</span>
+        </div>
+        <div class="proposal-summary__row">
+          <span class="proposal-summary__label">Importe:</span>
+          <span>
+            @if (resumen.importe != null) { {{ resumen.importe | currency:'EUR':'symbol':'1.0-0':'es' }} }
+            @else { Pendiente }
+          </span>
+        </div>
+      </div>
+      }
+
+      @if (respuestaError()) {
+      <div class="alert alert-danger mt-3">{{ respuestaError() }}</div>
+      }
+
+      @if (respuestaOk()) {
+      <div class="alert alert-success mt-3">{{ respuestaOk() }}</div>
+      }
+
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-primary" type="submit" [disabled]="enviandoRespuesta()">Enviar propuesta</button>
+      </div>
+    </form>
+  </article>
+  } @else {
+  <article class="detail-card detail-card--empty">
+    <h2>Solicitud no disponible</h2>
+    <p>No hemos podido cargar la informacion de esta solicitud.</p>
+  </article>
+  }
+</section>

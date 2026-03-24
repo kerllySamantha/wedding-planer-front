@@ -80,3 +80,78 @@
 
     </div>
 </div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-margin shadow-sm rounded-3 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="h5 mb-0">Notificaciones y presupuestos</h2>
+                    <button class="btn btn-sm btn-outline-secondary" (click)="cargarNotificaciones()"
+                        [disabled]="notificacionesLoading()">Recargar</button>
+                </div>
+
+                @if (mensajeAccion()) {
+                <div class="alert alert-info mb-3">{{ mensajeAccion() }}</div>
+                }
+
+                @if (notificacionesLoading()) {
+                <div class="text-muted">Cargando notificaciones...</div>
+                } @else if (notificacionesError()) {
+                <div class="alert alert-danger mb-0">{{ notificacionesError() }}</div>
+                } @else if (notificaciones().length === 0) {
+                <div class="text-muted">No hay notificaciones por ahora.</div>
+                } @else {
+                @for (notif of notificaciones(); track notif.id) {
+                <div class="border rounded-3 p-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-start gap-3">
+                        <div>
+                            <div class="fw-semibold">{{ notif.titulo || 'Notificacion' }}</div>
+                            <div class="text-muted small">{{ notif.mensaje }}</div>
+
+                            @if (esNotificacionPresupuesto(notif)) {
+                            <div class="mt-2 small">
+                                <span class="me-2">Estado: {{ obtenerEstadoPresupuesto(notif) }}</span>
+                                @if (obtenerImporteOfertado(notif) != null) {
+                                <span>Oferta: {{ obtenerImporteOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}</span>
+                                }
+                            </div>
+                            @if (obtenerProductoReferencia(notif) || obtenerFechaInicioReferencia(notif)) {
+                            <div class="mt-2 small text-muted">
+                                @if (obtenerProductoReferencia(notif)) {
+                                <span class="me-2">
+                                    {{ obtenerModalidadReferencia(notif) || 'producto' }} #{{ obtenerProductoReferencia(notif) }}
+                                </span>
+                                }
+                                @if (obtenerFechaInicioReferencia(notif)) {
+                                <span>
+                                    {{ obtenerFechaInicioReferencia(notif) }}
+                                    @if (obtenerFechaFinReferencia(notif)) {
+                                    → {{ obtenerFechaFinReferencia(notif) }}
+                                    }
+                                </span>
+                                }
+                            </div>
+                            }
+                            }
+                        </div>
+
+                        @if (esNotificacionPresupuesto(notif)) {
+                        <div class="text-end">
+                            <button class="btn btn-sm btn-primary"
+                                (click)="aceptarPresupuestoDesdeNotificacion(notif)"
+                                [disabled]="estaAceptandoPresupuesto(obtenerPresupuestoId(notif)) || estaAceptadoPresupuesto(obtenerPresupuestoId(notif))">
+                                @if (estaAceptandoPresupuesto(obtenerPresupuestoId(notif))) { Bloqueando... }
+                                @else if (estaAceptadoPresupuesto(obtenerPresupuestoId(notif))) { Aceptado }
+                                @else { Aceptar y bloquear fecha }
+                            </button>
+                        </div>
+                        }
+                    </div>
+                </div>
+                }
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -18,6 +18,11 @@ export interface PedirPresupuestoInfo {
     id?: string
     empresa_id: number,
     boda_id?: number,
+    reserva_id?: number,
+    producto_id?: number,
+    modalidad?: 'servicio' | 'producto',
+    fecha_inicio?: string,
+    fecha_fin?: string,
     email: string,
     invitados: number,
     presupuesto: number
@@ -33,4 +38,20 @@ export interface EstadoPedirPresupuesto {
     rechazado_empresa: string,
     aceptado_empresa: string,
     pendiente: string
+}
+
+export interface AceptarPresupuestoResponse {
+    reserva_id?: number;
+    reserva?: { id?: number } | null;
+    message?: string;
+    mensaje?: string;
+}
+
+export interface ResponderPresupuestoPayload {
+    producto_id: number;
+    modalidad: 'servicio' | 'producto';
+    fecha_inicio: string;
+    fecha_fin: string;
+    importe_ofertado: number;
+    comentario_empresa?: string;
 }

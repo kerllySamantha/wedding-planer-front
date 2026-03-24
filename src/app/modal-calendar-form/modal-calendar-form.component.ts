@@ -218,6 +218,14 @@ ngOnInit() {
     return this.productosEmpresa().some(p => p.tipo_producto.modalidad === tipo);
   });
 
+  tieneProductosModalidad(modalidad: 'producto' | 'servicio'): boolean {
+    return this.productosEmpresa().some(p => p.tipo_producto?.modalidad === modalidad);
+  }
+
+  sinProductosModalidad(modalidad: 'producto' | 'servicio'): boolean {
+    return !this.tieneProductosModalidad(modalidad);
+  }
+
 
 
   private aplicarReglasModalidad(tipo_reserva: string | null) {

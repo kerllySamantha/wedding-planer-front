@@ -75,6 +75,18 @@
                         d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
                 </svg>
 
+                <button class="btn btn-link p-0 position-relative notif-button"
+                    [matMenuTriggerFor]="notifMenuHome" (click)="cargarNotificaciones()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                        class="bi bi-bell" viewBox="0 0 16 16">
+                        <path
+                            d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7a5.002 5.002 0 0 0-4.005-4.901" />
+                    </svg>
+                    @if (notificacionesNoLeidas() > 0) {
+                    <span class="notif-badge">{{ notificacionesNoLeidas() }}</span>
+                    }
+                </button>
+
                 <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
                     <ul class="navbar-nav">
                         <li class="nav-item">
@@ -89,6 +101,70 @@
                         </li>
                     </ul>
                 </div>
+
+                <mat-menu #notifMenuHome="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after"
+                    class="notif-menu">
+                    <div class="notif-panel">
+                        <div class="notif-header">
+                            <span class="notif-title">Notificaciones</span>
+                            <button mat-button class="notif-refresh" (click)="cargarNotificaciones()"
+                                [disabled]="notificacionesLoading()">Recargar</button>
+                        </div>
+                        @if (mensajeAccion()) {
+                        <div class="notif-info">{{ mensajeAccion() }}</div>
+                        }
+                        <mat-divider></mat-divider>
+                        @if (notificacionesLoading()) {
+                        <div class="notif-empty">Cargando...</div>
+                        } @else if (notificacionesError()) {
+                        <div class="notif-error">{{ notificacionesError() }}</div>
+                        } @else if (notificaciones().length === 0) {
+                        <div class="notif-empty">No hay notificaciones.</div>
+                        } @else {
+                        @for (notif of notificaciones(); track notif.id) {
+                        <div class="notif-item" [class.is-read]="esLeida(notif)">
+                            <div class="notif-item-title">{{ notif.titulo || 'Notificacion' }}</div>
+                            <div class="notif-item-message">{{ notif.mensaje }}</div>
+                            @if (esNotificacionPresupuesto(notif)) {
+                            <div class="notif-item-meta">
+                                <span>Estado: {{ obtenerEstadoPresupuesto(notif) }}</span>
+                                @if (obtenerImporteOfertado(notif) != null) {
+                                <span class="ms-2">Oferta:
+                                    {{ obtenerImporteOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}</span>
+                                }
+                            </div>
+                            @if (obtenerProductoReferencia(notif) || obtenerFechaInicioReferencia(notif)) {
+                            <div class="notif-item-meta">
+                                @if (obtenerProductoReferencia(notif)) {
+                                <span>
+                                    {{ obtenerModalidadReferencia(notif) || 'producto' }} #{{ obtenerProductoReferencia(notif) }}
+                                </span>
+                                }
+                                @if (obtenerFechaInicioReferencia(notif)) {
+                                <span class="ms-2">
+                                    {{ obtenerFechaInicioReferencia(notif) }}
+                                    @if (obtenerFechaFinReferencia(notif)) { → {{ obtenerFechaFinReferencia(notif) }} }
+                                </span>
+                                }
+                            </div>
+                            }
+                            <div class="notif-links">
+                                <a class="notif-link" [routerLink]="['/perfil-user']">Ver propuesta</a>
+                            </div>
+                            <button class="btn btn-sm btn-primary notif-action"
+                                (click)="aceptarPresupuestoDesdeNotificacion(notif)"
+                                [disabled]="estaAceptandoPresupuesto(obtenerPresupuestoId(notif)) || estaAceptadoPresupuesto(obtenerPresupuestoId(notif))">
+                                @if (estaAceptandoPresupuesto(obtenerPresupuestoId(notif))) { Bloqueando... }
+                                @else if (estaAceptadoPresupuesto(obtenerPresupuestoId(notif))) { Aceptado }
+                                @else { Aceptar y bloquear fecha }
+                            </button>
+                            }
+                        </div>
+                        <mat-divider></mat-divider>
+                        }
+                        }
+                    </div>
+                </mat-menu>
             </div>
             }
             @else {
@@ -133,6 +209,9 @@
 
 }
 
+@if (toastMessage()) {
+<div class="notif-toast">{{ toastMessage() }}</div>
+}
 @else if (estaEnRuta('login') || estaEnRuta('registerUser')) {
 <nav class="navbar navbar-expand-lg  fondo py-2 d-flex  align-items-center justify-content-center">
     <div class="row">
@@ -258,6 +337,18 @@
                         d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z" />
                 </svg>
 
+                <button class="btn btn-link p-0 position-relative notif-button"
+                    [matMenuTriggerFor]="notifMenuMain" (click)="cargarNotificaciones()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                        class="bi bi-bell" viewBox="0 0 16 16">
+                        <path
+                            d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7a5.002 5.002 0 0 0-4.005-4.901" />
+                    </svg>
+                    @if (notificacionesNoLeidas() > 0) {
+                    <span class="notif-badge">{{ notificacionesNoLeidas() }}</span>
+                    }
+                </button>
+
 
                 <div class="collapse navbar-collapse dropdown user-dropdown">
                     <ul class="navbar-nav">
@@ -281,6 +372,70 @@
                         </li>
                     </ul>
                 </div>
+
+                <mat-menu #notifMenuMain="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after"
+                    class="notif-menu">
+                    <div class="notif-panel">
+                        <div class="notif-header">
+                            <span class="notif-title">Notificaciones</span>
+                            <button mat-button class="notif-refresh" (click)="cargarNotificaciones()"
+                                [disabled]="notificacionesLoading()">Recargar</button>
+                        </div>
+                        @if (mensajeAccion()) {
+                        <div class="notif-info">{{ mensajeAccion() }}</div>
+                        }
+                        <mat-divider></mat-divider>
+                        @if (notificacionesLoading()) {
+                        <div class="notif-empty">Cargando...</div>
+                        } @else if (notificacionesError()) {
+                        <div class="notif-error">{{ notificacionesError() }}</div>
+                        } @else if (notificaciones().length === 0) {
+                        <div class="notif-empty">No hay notificaciones.</div>
+                        } @else {
+                        @for (notif of notificaciones(); track notif.id) {
+                        <div class="notif-item" [class.is-read]="esLeida(notif)">
+                            <div class="notif-item-title">{{ notif.titulo || 'Notificacion' }}</div>
+                            <div class="notif-item-message">{{ notif.mensaje }}</div>
+                            @if (esNotificacionPresupuesto(notif)) {
+                            <div class="notif-item-meta">
+                                <span>Estado: {{ obtenerEstadoPresupuesto(notif) }}</span>
+                                @if (obtenerImporteOfertado(notif) != null) {
+                                <span class="ms-2">Oferta:
+                                    {{ obtenerImporteOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}</span>
+                                }
+                            </div>
+                            @if (obtenerProductoReferencia(notif) || obtenerFechaInicioReferencia(notif)) {
+                            <div class="notif-item-meta">
+                                @if (obtenerProductoReferencia(notif)) {
+                                <span>
+                                    {{ obtenerModalidadReferencia(notif) || 'producto' }} #{{ obtenerProductoReferencia(notif) }}
+                                </span>
+                                }
+                                @if (obtenerFechaInicioReferencia(notif)) {
+                                <span class="ms-2">
+                                    {{ obtenerFechaInicioReferencia(notif) }}
+                                    @if (obtenerFechaFinReferencia(notif)) { → {{ obtenerFechaFinReferencia(notif) }} }
+                                </span>
+                                }
+                            </div>
+                            }
+                            <div class="notif-links">
+                                <a class="notif-link" [routerLink]="['/perfil-user']">Ver propuesta</a>
+                            </div>
+                            <button class="btn btn-sm btn-primary notif-action"
+                                (click)="aceptarPresupuestoDesdeNotificacion(notif)"
+                                [disabled]="estaAceptandoPresupuesto(obtenerPresupuestoId(notif)) || estaAceptadoPresupuesto(obtenerPresupuestoId(notif))">
+                                @if (estaAceptandoPresupuesto(obtenerPresupuestoId(notif))) { Bloqueando... }
+                                @else if (estaAceptadoPresupuesto(obtenerPresupuestoId(notif))) { Aceptado }
+                                @else { Aceptar y bloquear fecha }
+                            </button>
+                            }
+                        </div>
+                        <mat-divider></mat-divider>
+                        }
+                        }
+                    </div>
+                </mat-menu>
 
             </div>
             }

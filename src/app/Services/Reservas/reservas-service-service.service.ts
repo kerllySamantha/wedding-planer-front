@@ -15,6 +15,7 @@ export abstract class ReservasServiceServiceService {
   abstract getReserva(idRerserva: bigint): Observable<Reserva | null>;
   abstract postReserva(reserva: CreateReserva): Observable<CreateReserva | null>;
   abstract editarReserva(idRerserva: string | null, usuario: CreateReserva): Observable<Object | null>;
+  abstract confirmarReserva(idReserva: string | number): Observable<Reserva | null>;
   abstract deleteReseerva(idRerserva: bigint): Observable<Object | null>;
   abstract getRersevaPorConfirmar(idEmresa: string, estado: string): Observable<Reservas | null>;
   abstract getReservaEmpresa(idEmresa: string): Observable<Reservas| null>
