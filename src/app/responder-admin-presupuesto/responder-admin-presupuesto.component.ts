@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
@@ -22,6 +22,26 @@ export class ResponderAdminPresupuestoComponent {
 
   protected solicitud = signal<PedirPresupuestoInfo | null>(null);
   protected productosEmpresa = signal<Producto[]>([]);
+  protected productosFiltrados = computed(() => {
+    const tipoId = this.solicitud()?.tipo_producto_id;
+    if (!tipoId) return this.productosEmpresa();
+    const filtrados = this.productosEmpresa().filter(p => p.tipo_producto?.id === tipoId);
+    return filtrados.length ? filtrados : this.productosEmpresa();
+  });
+  protected tipoSolicitado = computed(() => {
+    const tipoId = this.solicitud()?.tipo_producto_id;
+    if (!tipoId) return null;
+    const tipo = this.productosEmpresa()
+      .map(p => p.tipo_producto)
+      .find(t => t?.id === tipoId);
+    if (!tipo) return { nombre: `Tipo #${tipoId}`, modalidad: null };
+    return { nombre: tipo.nombre, modalidad: tipo.modalidad };
+  });
+  protected tipoNoDisponible = computed(() => {
+    const tipoId = this.solicitud()?.tipo_producto_id;
+    if (!tipoId) return false;
+    return this.productosEmpresa().every(p => p.tipo_producto?.id !== tipoId);
+  });
   protected enviandoRespuesta = signal(false);
   protected respuestaError = signal<string | null>(null);
   protected respuestaOk = signal<string | null>(null);

@@ -43,8 +43,8 @@ export class NavbarComponent {
     this.notificaciones().filter(n => !this.esLeida(n)).length
   );
 
-  private aceptandoPresupuestoIds = signal<Set<string>>(new Set());
-  private aceptadosPresupuestoIds = signal<Set<string>>(new Set());
+  // private aceptandoPresupuestoIds = signal<Set<string>>(new Set());
+  // private aceptadosPresupuestoIds = signal<Set<string>>(new Set());
   private unsubscribeNotificaciones: (() => void) | null = null;
 
 
@@ -129,6 +129,24 @@ export class NavbarComponent {
     });
   }
 
+  irADetalleDesdeNotificacion(notif: Notificacion) {
+    const presupuestoId = this.obtenerPresupuestoId(notif);
+
+    if (!presupuestoId) return;
+
+    if (notif?.id) {
+      this.notificacionesCtx.marcarLeida(notif.id).subscribe({
+        next: () => {
+          this.notificaciones.update(prev =>
+            prev.map(n => n.id === notif.id ? { ...n, leido: true } : n)
+          );
+        }
+      });
+    }
+
+    this.router.navigate(['/presupuesto', presupuestoId]);
+  }
+
   esNotificacionPresupuesto(notif: Notificacion): boolean {
     const tipo = (notif?.tipo ?? '').toLowerCase();
     if (tipo.includes('presupuesto')) return true;
@@ -194,86 +212,86 @@ export class NavbarComponent {
     return false;
   }
 
-  estaAceptandoPresupuesto(presupuestoId: string | number | null): boolean {
-    if (presupuestoId == null) return false;
-    return this.aceptandoPresupuestoIds().has(String(presupuestoId));
-  }
+  // estaAceptandoPresupuesto(presupuestoId: string | number | null): boolean {
+  //   if (presupuestoId == null) return false;
+  //   return this.aceptandoPresupuestoIds().has(String(presupuestoId));
+  // }
 
-  estaAceptadoPresupuesto(presupuestoId: string | number | null): boolean {
-    if (presupuestoId == null) return false;
-    return this.aceptadosPresupuestoIds().has(String(presupuestoId));
-  }
+  // estaAceptadoPresupuesto(presupuestoId: string | number | null): boolean {
+  //   if (presupuestoId == null) return false;
+  //   return this.aceptadosPresupuestoIds().has(String(presupuestoId));
+  // }
 
-  private setAceptandoPresupuesto(presupuestoId: string | number, value: boolean) {
-    const key = String(presupuestoId);
-    this.aceptandoPresupuestoIds.update(prev => {
-      const next = new Set(prev);
-      if (value) {
-        next.add(key);
-      } else {
-        next.delete(key);
-      }
-      return next;
-    });
-  }
+  // private setAceptandoPresupuesto(presupuestoId: string | number, value: boolean) {
+  //   const key = String(presupuestoId);
+  //   this.aceptandoPresupuestoIds.update(prev => {
+  //     const next = new Set(prev);
+  //     if (value) {
+  //       next.add(key);
+  //     } else {
+  //       next.delete(key);
+  //     }
+  //     return next;
+  //   });
+  // }
 
-  private setAceptadoPresupuesto(presupuestoId: string | number) {
-    const key = String(presupuestoId);
-    this.aceptadosPresupuestoIds.update(prev => {
-      const next = new Set(prev);
-      next.add(key);
-      return next;
-    });
-  }
+  // private setAceptadoPresupuesto(presupuestoId: string | number) {
+  //   const key = String(presupuestoId);
+  //   this.aceptadosPresupuestoIds.update(prev => {
+  //     const next = new Set(prev);
+  //     next.add(key);
+  //     return next;
+  //   });
+  // }
 
-  aceptarPresupuestoDesdeNotificacion(notif: Notificacion) {
-    this.mensajeAccion.set(null);
-    const presupuestoId = this.obtenerPresupuestoId(notif);
-    if (presupuestoId == null) {
-      this.mensajeAccion.set('No se pudo identificar el presupuesto.');
-      return;
-    }
-    if (this.estaAceptandoPresupuesto(presupuestoId) || this.estaAceptadoPresupuesto(presupuestoId)) {
-      return;
-    }
+  // aceptarPresupuestoDesdeNotificacion(notif: Notificacion) {
+  //   this.mensajeAccion.set(null);
+  //   const presupuestoId = this.obtenerPresupuestoId(notif);
+  //   if (presupuestoId == null) {
+  //     this.mensajeAccion.set('No se pudo identificar el presupuesto.');
+  //     return;
+  //   }
+  //   if (this.estaAceptandoPresupuesto(presupuestoId) || this.estaAceptadoPresupuesto(presupuestoId)) {
+  //     return;
+  //   }
 
-    this.setAceptandoPresupuesto(presupuestoId, true);
-    this.pedirPresupuestoCtx.aceptarPresupuesto(presupuestoId).subscribe({
-      next: (res) => {
-        const reservaId =
-          res?.reserva_id ??
-          res?.reserva?.id ??
-          null;
+  //   this.setAceptandoPresupuesto(presupuestoId, true);
+  //   this.pedirPresupuestoCtx.aceptarPresupuesto(presupuestoId).subscribe({
+  //     next: (res) => {
+  //       const reservaId =
+  //         res?.reserva_id ??
+  //         res?.reserva?.id ??
+  //         null;
 
-        if (reservaId != null) {
-          localStorage.setItem('reserva_id', String(reservaId));
-        }
+  //       if (reservaId != null) {
+  //         localStorage.setItem('reserva_id', String(reservaId));
+  //       }
 
-        this.setAceptandoPresupuesto(presupuestoId, false);
-        this.setAceptadoPresupuesto(presupuestoId);
-        this.mensajeAccion.set(res?.message ?? res?.mensaje ?? 'Presupuesto aceptado. Fecha bloqueada.');
+  //       this.setAceptandoPresupuesto(presupuestoId, false);
+  //       this.setAceptadoPresupuesto(presupuestoId);
+  //       this.mensajeAccion.set(res?.message ?? res?.mensaje ?? 'Presupuesto aceptado. Fecha bloqueada.');
 
-        if (notif?.id) {
-          this.notificacionesCtx.marcarLeida(notif.id).subscribe({
-            next: () => {
-              this.notificaciones.update(prev =>
-                prev.map(n => n.id === notif.id ? { ...n, leido: true } : n)
-              );
-            },
-            error: () => { }
-          });
-        }
-      },
-      error: (error) => {
-        this.setAceptandoPresupuesto(presupuestoId, false);
-        const msg =
-          error?.error?.message ??
-          error?.error?.mensaje ??
-          'No se pudo aceptar el presupuesto.';
-        this.mensajeAccion.set(msg);
-      }
-    });
-  }
+  //       if (notif?.id) {
+  //         this.notificacionesCtx.marcarLeida(notif.id).subscribe({
+  //           next: () => {
+  //             this.notificaciones.update(prev =>
+  //               prev.map(n => n.id === notif.id ? { ...n, leido: true } : n)
+  //             );
+  //           },
+  //           error: () => { }
+  //         });
+  //       }
+  //     },
+  //     error: (error) => {
+  //       this.setAceptandoPresupuesto(presupuestoId, false);
+  //       const msg =
+  //         error?.error?.message ??
+  //         error?.error?.mensaje ??
+  //         'No se pudo aceptar el presupuesto.';
+  //       this.mensajeAccion.set(msg);
+  //     }
+  //   });
+  // }
 
   private iniciarEscuchaNotificaciones() {
     const userId = this.autServicectx.usuario_id();

@@ -3,6 +3,7 @@ export interface PedirPresupuestoStore {
     telefono: string,
     user_id: number,
     empresa_id: number,
+    tipo_producto_id: number,
     boda_id?: number,
     invitados: number,
     presupuesto: number
@@ -17,6 +18,7 @@ export interface PedirPresupuestoInfo {
     user_id: number,
     id?: string
     empresa_id: number,
+    tipo_producto_id?: number,
     boda_id?: number,
     reserva_id?: number,
     producto_id?: number,

@@ -61,6 +61,7 @@ export class PedirPresupuestoApiService extends PedirPresupuestoService {
       'telefono': pedirPresupuesto.telefono,
       'user_id': pedirPresupuesto.user_id,
       'empresa_id': pedirPresupuesto.empresa_id,
+      'tipo_producto_id': pedirPresupuesto.tipo_producto_id,
       'boda_id': pedirPresupuesto.boda_id ,
       'email': pedirPresupuesto.email,
       'mensaje': pedirPresupuesto.mensaje,
@@ -116,6 +117,15 @@ export class PedirPresupuestoApiService extends PedirPresupuestoService {
       })
     );
   }
+
+  override rechazarPresupuesto(id: string | number): Observable<any> {
+  return this.http.patch(`${this.apiUrl}/pedirPresupuestos/${id}/rechazar`, {}).pipe(
+    catchError((error: Error) => {
+      console.error("Error en rechazarPresupuesto:", error);
+      return throwError(() => error);
+    })
+  );
+}
 
 
 }

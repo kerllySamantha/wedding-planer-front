@@ -1,0 +1,77 @@
+<div class="container">
+
+    <!-- 🔄 LOADING -->
+    @if(loading()){
+    <div class="loading">
+        Cargando presupuesto...
+    </div>
+    }
+
+    <!-- ❌ ERROR -->
+    @if(error()){
+    <div class="error">
+        {{ error() }}
+
+    </div>
+    }
+
+    <!-- 📄 CONTENIDO -->
+
+    @if(presupuestoFormateado(); as p){
+    <div class="card">
+
+        <h2>Presupuesto recibido</h2>
+
+        <!-- 💰 IMPORTE -->
+        <p>
+            <strong>Importe:</strong>
+            {{ p.importe_ofertado }} €
+        </p>
+
+        <!-- 📅 FECHAS -->
+        <p>
+            <strong>Fecha inicio:</strong>
+            {{ p.fecha_inicio | date:'dd/MM/yyyy' }}
+        </p>
+
+        <p>
+            <strong>Fecha fin:</strong>
+            {{ p.fecha_fin | date:'dd/MM/yyyy' }}
+        </p>
+
+        <!-- 📝 COMENTARIO -->
+        <p *ngIf="p.comentario_empresa">
+            <strong>Comentario:</strong>
+            {{ p.comentario_empresa }}
+        </p>
+
+        <!-- 🔄 ESTADO -->
+        <p>
+            <strong>Estado:</strong>
+            <span [ngClass]="{
+        'estado-pendiente': p.estado === 'pendiente_usuario',
+        'estado-ok': p.estado === 'aceptado_usuario',
+        'estado-error': p.estado === 'rechazado_usuario' || p.estado === 'rechazado_empresa'
+      }">
+                {{ p.estadoTexto }}
+            </span>
+        </p>
+
+        <!-- 🎯 ACCIONES -->
+        <div class="acciones">
+
+            <button (click)="aceptar()" [disabled]="p.estado !== 'pendiente_usuario' || loading()" class="btn-aceptar">
+                Aceptar
+            </button>
+
+            <button (click)="rechazar()" [disabled]="p.estado !== 'pendiente_usuario' || loading()"
+                class="btn-rechazar">
+                Rechazar
+            </button>
+
+        </div>
+
+    </div>
+    }
+
+</div>

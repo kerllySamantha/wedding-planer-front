@@ -36,6 +36,16 @@
           <dt>Presupuesto</dt>
           <dd>{{ item.presupuesto}}</dd>
         </div>
+        <div>
+          <dt>Tipo solicitado</dt>
+          <dd>
+            @if (tipoSolicitado(); as tipo) {
+              {{ tipo.nombre }}@if (tipo.modalidad) { ({{ tipo.modalidad }}) }
+            } @else {
+              Sin tipo indicado
+            }
+          </dd>
+        </div>
       </dl>
     </article>
 
@@ -67,7 +77,7 @@
           <label class="form-label small fw-bold text-uppercase text-muted">Producto o servicio</label>
           <select class="form-select" formControlName="producto_id">
             <option [ngValue]="null" disabled>Selecciona un producto</option>
-            @for (p of productosEmpresa(); track p.id) {
+            @for (p of productosFiltrados(); track p.id) {
             <option [ngValue]="p.id">{{ p.nombre }} ({{ p.tipo_producto.modalidad }})</option>
             }
           </select>
@@ -102,6 +112,12 @@
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha fin</label>
           <input type="date" class="form-control" formControlName="fecha_fin">
         </div>
+      </div>
+      }
+
+      @if (tipoNoDisponible()) {
+      <div class="alert alert-warning mt-3">
+        El tipo solicitado no existe en tu catalogo. Puedes proponer un producto alternativo.
       </div>
       }
 

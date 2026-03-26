@@ -12,5 +12,7 @@ export abstract class PedirPresupuestoService {
   abstract getEmpresaPedirPresupuesto(idEmpresa: string): Observable<PedirPresupuestoInfo[] | null>;
   abstract aceptarPresupuesto(idPresupuesto: string | number): Observable<AceptarPresupuestoResponse | null>;
   abstract responderPresupuesto(idPresupuesto: string | number, payload: ResponderPresupuestoPayload): Observable<PedirPresupuestoInfo | null>;
+  abstract rechazarPresupuesto(id: string | number): Observable<PedirPresupuestoInfo | null>;
+
 
 }

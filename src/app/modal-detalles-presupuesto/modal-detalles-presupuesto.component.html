@@ -19,6 +19,21 @@
                 <mat-hint align="end">{{ form.controls.mensaje.value.length }}/600</mat-hint>
             </mat-form-field>
 
+            <mat-form-field appearance="outline" class="field field-full">
+                <mat-label>Tipo de servicio</mat-label>
+                <mat-select formControlName="tipo_producto_id">
+                    <mat-option [value]="null" disabled>Selecciona un tipo</mat-option>
+                    @for (tipo of tiposEmpresa(); track tipo.id) {
+                    <mat-option [value]="tipo.id">
+                        {{ tipo.nombre }} ({{ tipo.modalidad }})
+                    </mat-option>
+                    }
+                </mat-select>
+                @if (tiposEmpresa().length === 0) {
+                <mat-hint>No hay tipos disponibles para este proveedor.</mat-hint>
+                }
+            </mat-form-field>
+
             <section class="info-block py-3 row mx-1  justify-content-center align-items-center ">
                 <div class="info-head ps-0">
                     <h3>Boda</h3>

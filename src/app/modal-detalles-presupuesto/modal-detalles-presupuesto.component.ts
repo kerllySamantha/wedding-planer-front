@@ -2,9 +2,11 @@
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 import { Empresa } from '../Interfaces/Empresa';
 import { CountdownServiceService } from '../Services/countdown-service.service';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
@@ -14,13 +16,23 @@ import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-pre
 import { PedirPresupuestoStore } from '../Interfaces/PedirPresupuesto';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { Producto, Productos } from '../Interfaces/Producto';
+import { TipoSimple } from '../Interfaces/Tipos';
 
 
 
 @Component({
   selector: 'app-modal-detalles-presupuesto',
   standalone: true,
-  imports: [MatDialogModule, ReactiveFormsModule, MatButtonModule, MatInputModule, MatDatepickerModule, MatNativeDateModule],
+  imports: [
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule
+  ],
   templateUrl: './modal-detalles-presupuesto.component.html',
   styleUrl: './modal-detalles-presupuesto.component.scss',
 })
@@ -39,6 +51,15 @@ export class ModalDetallesPresupuestoComponent implements OnInit {
   perfil = signal<Perfil | null>(null);
 
   boda = computed(() => this.bodaCtx.bodaEncontrada());
+  tiposEmpresa = computed<TipoSimple[]>(() => {
+    const map = new Map<number, TipoSimple>();
+    this.productosEmpresa().forEach((producto) => {
+      if (producto?.tipo_producto) {
+        map.set(producto.tipo_producto.id, producto.tipo_producto);
+      }
+    });
+    return Array.from(map.values()).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  });
 
 
 
@@ -51,6 +72,7 @@ export class ModalDetallesPresupuestoComponent implements OnInit {
   });
 
   form = new FormGroup({
+    tipo_producto_id: new FormControl<number | null>(null, [Validators.required]),
     fecha: new FormControl<Date | null>(null, [Validators.required]),
     invitados: new FormControl<number>(0, [Validators.pattern(/^\d{1,4}$/)]),
     telefono: new FormControl<string>('', {
@@ -123,7 +145,11 @@ private getProductos(idEmpresa: number): void {
   console.log(idEmpresa);
   this.empresaCtx.getEmpresaProductos(idEmpresa).subscribe({
     next: (info) => {
-      this.productosEmpresa.set(info?.data ?? []);  
+      this.productosEmpresa.set(info?.data ?? []);
+      const tipos = this.tiposEmpresa();
+      if (tipos.length === 1 && !this.form.controls.tipo_producto_id.value) {
+        this.form.controls.tipo_producto_id.patchValue(tipos[0].id, { emitEvent: false });
+      }
       console.log('Productos:', this.productosEmpresa());
     },
     error: (error: Error) => {
@@ -257,6 +283,7 @@ private getProductos(idEmpresa: number): void {
       telefono: raw.telefono.trim(),
       user_id: userId,
       empresa_id: empresaId,
+      tipo_producto_id: Number(raw.tipo_producto_id),
       email: raw.email.trim(),
       mensaje: raw.mensaje.trim(),
       invitados: raw.invitados!,

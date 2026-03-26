@@ -91,6 +91,7 @@ export class EchoService {
       this.instance
         .private(channel)
         .listen('.nueva-notificacion', (data: any) => {
+          console.log('📩 Notificación recibida:', data);
           const current = this.userNotificationHandlers.get(channel);
           if (!current || current.size === 0) return;
           current.forEach(cb => cb(data));
@@ -113,7 +114,9 @@ export class EchoService {
     this.reconnectTimer = window.setTimeout(() => {
       this.reconnectTimer = null;
       try {
-        this.echo?.connector?.pusher?.connect();
+        if (this.echo?.connector?.pusher?.connection?.state !== 'connected') {
+          this.echo?.connector?.pusher?.connect();
+        }
       } catch (err) {
         console.error('Error al reconectar Reverb:', err);
       }

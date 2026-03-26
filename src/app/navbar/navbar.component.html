@@ -151,13 +151,13 @@
                             <div class="notif-links">
                                 <a class="notif-link" [routerLink]="['/perfil-user']">Ver propuesta</a>
                             </div>
-                            <button class="btn btn-sm btn-primary notif-action"
+                            <!-- <button class="btn btn-sm btn-primary notif-action"
                                 (click)="aceptarPresupuestoDesdeNotificacion(notif)"
                                 [disabled]="estaAceptandoPresupuesto(obtenerPresupuestoId(notif)) || estaAceptadoPresupuesto(obtenerPresupuestoId(notif))">
                                 @if (estaAceptandoPresupuesto(obtenerPresupuestoId(notif))) { Bloqueando... }
                                 @else if (estaAceptadoPresupuesto(obtenerPresupuestoId(notif))) { Aceptado }
                                 @else { Aceptar y bloquear fecha }
-                            </button>
+                            </button> -->
                             }
                         </div>
                         <mat-divider></mat-divider>
@@ -422,13 +422,14 @@
                             <div class="notif-links">
                                 <a class="notif-link" [routerLink]="['/perfil-user']">Ver propuesta</a>
                             </div>
-                            <button class="btn btn-sm btn-primary notif-action"
+                            <button (click)="irADetalleDesdeNotificacion(notif)">Ir Noticiacion</button>
+                            <!-- <button class="btn btn-sm btn-primary notif-action"
                                 (click)="aceptarPresupuestoDesdeNotificacion(notif)"
                                 [disabled]="estaAceptandoPresupuesto(obtenerPresupuestoId(notif)) || estaAceptadoPresupuesto(obtenerPresupuestoId(notif))">
                                 @if (estaAceptandoPresupuesto(obtenerPresupuestoId(notif))) { Bloqueando... }
                                 @else if (estaAceptadoPresupuesto(obtenerPresupuestoId(notif))) { Aceptado }
                                 @else { Aceptar y bloquear fecha }
-                            </button>
+                            </button> -->
                             }
                         </div>
                         <mat-divider></mat-divider>

@@ -22,6 +22,7 @@ import { CardInfoSolicitudComponent } from './card-info-solicitud/card-info-soli
 import { ResponderAdminPresupuestoComponent } from './responder-admin-presupuesto/responder-admin-presupuesto.component';
 import { solicitudResolver } from './Resolver/solicitud.resolver';
 import { APP_PATHS } from './app.paths';
+import { AceptarPresupuestoComponent } from './aceptar-presupuesto/aceptar-presupuesto.component';
 
 const userOnly = {
     canActivate: [rolGuard],
@@ -73,6 +74,11 @@ const userRoutes: Routes = [
     {
         path: APP_PATHS.userProfile,
         component: PerfilUserComponent,
+        ...userOnly
+    },
+    {
+        path: 'presupuesto/:id',
+        component: AceptarPresupuestoComponent,
         ...userOnly
     }
 ];
