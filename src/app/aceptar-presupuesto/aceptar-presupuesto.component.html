@@ -1,77 +1,130 @@
-<div class="container">
+<app-navbar></app-navbar>
 
-    <!-- 🔄 LOADING -->
-    @if(loading()){
-    <div class="loading">
-        Cargando presupuesto...
-    </div>
+<section class="budget-detail-page">
+  <div class="budget-detail-shell">
+    <a class="back-link" [routerLink]="['/perfil-user']">Volver al perfil</a>
+
+    @if (loading()) {
+    <div class="state-card">Cargando presupuesto...</div>
     }
 
-    <!-- ❌ ERROR -->
-    @if(error()){
-    <div class="error">
-        {{ error() }}
-
-    </div>
+    @if (error()) {
+    <div class="state-card state-card-error">{{ error() }}</div>
     }
 
-    <!-- 📄 CONTENIDO -->
+    @if (accionMensaje()) {
+    <div class="state-card state-card-info">{{ accionMensaje() }}</div>
+    }
 
-    @if(presupuestoFormateado(); as p){
-    <div class="card">
-
-        <h2>Presupuesto recibido</h2>
-
-        <!-- 💰 IMPORTE -->
-        <p>
-            <strong>Importe:</strong>
-            {{ p.importe_ofertado }} €
-        </p>
-
-        <!-- 📅 FECHAS -->
-        <p>
-            <strong>Fecha inicio:</strong>
-            {{ p.fecha_inicio | date:'dd/MM/yyyy' }}
-        </p>
-
-        <p>
-            <strong>Fecha fin:</strong>
-            {{ p.fecha_fin | date:'dd/MM/yyyy' }}
-        </p>
-
-        <!-- 📝 COMENTARIO -->
-        <p *ngIf="p.comentario_empresa">
-            <strong>Comentario:</strong>
-            {{ p.comentario_empresa }}
-        </p>
-
-        <!-- 🔄 ESTADO -->
-        <p>
-            <strong>Estado:</strong>
-            <span [ngClass]="{
-        'estado-pendiente': p.estado === 'pendiente_usuario',
-        'estado-ok': p.estado === 'aceptado_usuario',
-        'estado-error': p.estado === 'rechazado_usuario' || p.estado === 'rechazado_empresa'
-      }">
-                {{ p.estadoTexto }}
-            </span>
-        </p>
-
-        <!-- 🎯 ACCIONES -->
-        <div class="acciones">
-
-            <button (click)="aceptar()" [disabled]="p.estado !== 'pendiente_usuario' || loading()" class="btn-aceptar">
-                Aceptar
-            </button>
-
-            <button (click)="rechazar()" [disabled]="p.estado !== 'pendiente_usuario' || loading()"
-                class="btn-rechazar">
-                Rechazar
-            </button>
-
+    @if (presupuestoFormateado(); as p) {
+    <article class="budget-card">
+      <header class="budget-header">
+        <div>
+          <p class="eyebrow">Oferta recibida</p>
+          <h1>Presupuesto de proveedor</h1>
+          <p class="budget-summary">
+            {{ p.modalidadTexto }} · Estado: <strong>{{ p.estadoTexto }}</strong>
+          </p>
         </div>
 
-    </div>
-    }
+        <div class="price-box">
+          <span>Importe ofertado</span>
+          <strong>{{ p.importe_ofertado | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
+        </div>
+      </header>
 
-</div>
+      <div class="budget-grid">
+        <section class="budget-panel">
+          <h2>Resumen</h2>
+          <dl>
+            <div>
+              <dt>Fecha propuesta</dt>
+              <dd>{{ p.fecha_inicio | date:'dd/MM/yyyy' }}</dd>
+            </div>
+            <div>
+              <dt>Fecha fin</dt>
+              <dd>{{ p.fecha_fin | date:'dd/MM/yyyy' }}</dd>
+            </div>
+            @if (mostrarHorario()) {
+            <div>
+              <dt>Horario</dt>
+              <dd>{{ p.fecha_inicio | date:'HH:mm' }} - {{ p.fecha_fin | date:'HH:mm' }}</dd>
+            </div>
+            }
+            <div>
+              <dt>Reserva asociada</dt>
+              <dd>
+                @if (p.reservaId) {
+                #{{ p.reservaId }}
+                } @else {
+                Se creara al aceptar
+                }
+              </dd>
+            </div>
+            <div>
+              <dt>Estado de reserva</dt>
+              <dd>{{ p.estadoReserva || (puedeConfirmarReserva() ? 'bloqueada' : 'sin crear') }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="budget-panel">
+          <h2>Comentario del proveedor</h2>
+          <p class="comment-box">
+            {{ p.comentario_empresa || 'El proveedor no ha dejado condiciones adicionales.' }}
+          </p>
+        </section>
+      </div>
+
+      <section class="timeline-panel">
+        <h2>Flujo de contratacion</h2>
+        <div class="timeline-steps">
+          <article class="timeline-step is-done">
+            <span>1</span>
+            <div>
+              <h3>Solicitud</h3>
+              <p>Enviaste una peticion inicial con fecha, invitados, mensaje y presupuesto estimado.</p>
+            </div>
+          </article>
+          <article class="timeline-step is-done">
+            <span>2</span>
+            <div>
+              <h3>Oferta</h3>
+              <p>El proveedor ya ha respondido con una propuesta formal.</p>
+            </div>
+          </article>
+          <article class="timeline-step" [class.is-done]="!!p.reservaId" [class.is-current]="puedeConfirmarReserva()">
+            <span>3</span>
+            <div>
+              <h3>Reserva</h3>
+              <p>
+                @if (puedeConfirmarReserva()) {
+                La fecha esta bloqueada. Falta confirmar la reserva con el pago simulado.
+                } @else if (reservaConfirmada()) {
+                La reserva ya esta confirmada.
+                } @else {
+                Se activara cuando aceptes el presupuesto.
+                }
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="actions-row">
+        <button class="btn-secondary" [routerLink]="['/perfil-user']">Seguir revisando</button>
+        <button class="btn-danger" (click)="rechazar()" [disabled]="!puedeRechazar() || procesandoRechazar()">
+          {{ procesandoRechazar() ? 'Rechazando...' : 'Rechazar presupuesto' }}
+        </button>
+        <button class="btn-primary" (click)="aceptar()" [disabled]="!puedeAceptar() || procesandoAceptar()">
+          {{ procesandoAceptar() ? 'Aceptando...' : 'Aceptar y bloquear fecha' }}
+        </button>
+        <button class="btn-success" (click)="simularPagoYConfirmarReserva()"
+          [disabled]="!puedeConfirmarReserva() || procesandoPago()">
+          {{ procesandoPago() ? 'Confirmando...' : 'Simular pago y confirmar reserva' }}
+        </button>
+      </footer>
+    </article>
+    }
+  </div>
+</section>

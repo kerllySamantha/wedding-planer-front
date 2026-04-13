@@ -1,273 +1,459 @@
-$fondo :#e91e63;
-$fondo2 : #f76c6f;
-$tipografia : AmaticSCBold;
+// =============================================
+// Variables
+// =============================================
+$color-primary:      #f76c6f;
+$color-primary-dark: #e91e63;
+$color-bg:           #F4F7FD;
+$color-text-muted:   #727686;
+$color-border:       #e6e4e9;
+$color-shadow:       rgba(82, 63, 105, 0.1);
+$color-white:        #ffffff;
+$color-unread-bg:    #fff8f8;
+$color-unread-dot:   $color-primary;
 
-.fondo {
-    background-color: #f0f0f0;
+$border-radius-card: 8px;
+$border-radius-pill: 50px;
+$font-heading:       "Merriweather", serif;
+$notif-width:        360px;
+
+// =============================================
+// Base
+// =============================================
+body {
+  background: $color-bg;
+  margin-top: 20px;
 }
 
-a{
-    font-family: $tipografia;
-    font-size: 1.5em;
+h1 {
+  font-family: $font-heading;
+  font-size: 2em;
+  line-height: 2.25rem;
 }
 
-.navbar-nav .nav-link {
-    position: relative;
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    text-decoration: none;
-    color: black;
-    font-weight: 400;
-    transition: color 0.3s ease;
-    
-}
+// =============================================
+// Card
+// =============================================
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-card;
+  box-shadow: 0 0 10px 0 $color-shadow;
 
-.navbar-nav .nav-link::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    pointer-events: visible;
-    bottom: 0;
-    width: 0%;
-    height: 2px;
-    background-color:  $fondo;
-    transition: width 0.3s ease;
-}
+  &-margin { margin-bottom: 1.875rem; }
 
-.navbar-nav .nav-link:hover {
-    color:  $fondo;
-}
-
-.navbar-nav .nav-link:hover::after {
-    width: 100%;
-}
-
-#registro {
-    color: $fondo2;
-    font-size: 0.60rem;
-    font-family: $tipografia;
-    text-transform: uppercase;
-    font-weight: 600;
-}
-
-.area-empresas {
-    font-family: $tipografia;
-    font-weight: 400;
-    font-size: 0.9rem;
-    text-align: right;
-}
-
-.registro-empresa:hover {
-    color: #000;
-}
-
-@media (max-width: 991.98px) {
-    .navbar-brand img {
-        width: 300px;
+  &-header {
+    &:first-child {
+      border-radius: calc(#{$border-radius-card} - 1px) calc(#{$border-radius-card} - 1px) 0 0;
     }
-}
-
-@media (max-width: 576px) {
-    .navbar-brand img {
-        width: 160px;
+    &.no-border {
+      border: 0;
+      background: none;
+      padding: 0 0.9375rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      min-height: 50px;
     }
+  }
 }
 
-
-
-/* OFFCANVAS móvil: quitar subrayado y hover rosa */
-#mainMenuOffcanvas.show .nav-link {
-    transition: none !important;
-    color: black !important;
-    /* Quitar hover rosa */
-    display: block !important;
-    /* Ocupa todo el ancho */
-    padding: 0.5rem 0 !important;
-    /* Ajusta espacio */
-}
-
-#mainMenuOffcanvas.show .nav-link::after {
-    width: 0 !important;
-    /* Quitar subrayado */
-    // transition: none !important;
-    content: none !important;
-}
-
-.example-header-image {
-    border-radius: 50%;
-    background-color: $fondo2;
-    width: 50px;
-    height: 50px;
-    color: white;
-    font-weight: bold;
+// =============================================
+// Avatar
+// =============================================
+.avatar-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .avatar-circle {
-    // width: 40px;
-    // height: 40px;
-    // border-radius: 50%;
-    background-color: $fondo2;
-    /* solo el círculo azul */
-    color: white;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: $color-primary;
+  color: $color-white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
 }
 
-.avatar-button {
-    background: transparent;
-    /* quitar fondo del botón */
-    border: none;
-    padding: 0;
-    min-width: 0;
-    /* elimina ancho extra de mat-button */
-}
-
-.color-icon {
-    color: $fondo2;
-}
-
-
-#mainMenuOffcanvas {
-    /* Opcional: asegurar que el offcanvas ocupe toda la altura */
-    height: 100vh;
-}
-
-#mainMenuOffcanvas .offcanvas-header {
-    height: 56px; /* Ajusta según tu header */
-}
-
-// #mainMenuOffcanvas .offcanvas-body {
-//     height: calc(100vh - 56px) !important;
-//     max-height: calc(100vh - 56px) !important;
-//     overflow-y: auto !important;
-// }
-
-.avatar-button {
-  font-size: 10px;
-}
-
+// =============================================
+// Campana + badge
+// =============================================
 .notif-button {
-    color: $fondo2;
-    background: transparent;
-    border: none;
+  color: #444;
+  transition: color 0.2s;
+
+  &:hover { color: $color-primary; }
 }
 
 .notif-badge {
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    background: $fondo;
-    color: #fff;
-    border-radius: 999px;
-    font-size: 0.65rem;
-    line-height: 1;
-    padding: 2px 6px;
-    min-width: 18px;
-    text-align: center;
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 50px;
+  background: $color-primary;
+  color: $color-white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  pointer-events: none;
+}
+
+// =============================================
+// Panel de notificaciones
+// =============================================
+
+// Sobreescribir ancho del mat-menu
+::ng-deep .notif-menu {
+  .mat-mdc-menu-panel {
+    max-width: $notif-width !important;
+    min-width: $notif-width !important;
+    border-radius: $border-radius-card !important;
+    box-shadow: 0 8px 32px rgba(82, 63, 105, 0.15) !important;
+    overflow: hidden;
+  }
+  .mat-mdc-menu-content {
+    padding: 0 !important;
+  }
 }
 
 .notif-panel {
-    width: 320px;
-    max-width: 90vw;
-    padding: 0.75rem;
+  width: $notif-width;
+  max-height: 480px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  // Scrollbar fina
+  &::-webkit-scrollbar       { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: $color-border; border-radius: 4px; }
 }
 
+// Cabecera del panel
 .notif-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem 0.75rem;
+  background: $color-white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid $color-border;
 }
 
 .notif-title {
-    font-weight: 600;
-    font-size: 0.95rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #2d2d3a;
 }
 
 .notif-refresh {
-    font-size: 0.75rem;
-    line-height: 1;
+  background: none;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-pill;
+  font-size: 0.75rem;
+  color: $color-text-muted;
+  padding: 0.2rem 0.65rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover:not(:disabled) {
+    border-color: $color-primary;
+    color: $color-primary;
+  }
+
+  &:disabled { opacity: 0.45; cursor: not-allowed; }
 }
 
+// Mensaje de acción
 .notif-info {
-    margin: 0.5rem 0;
-    background: #f1f5f9;
-    color: #334155;
-    padding: 6px 8px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  color: $color-primary;
+  background: $color-unread-bg;
 }
 
+// Estado vacío / error
 .notif-empty {
-    font-size: 0.85rem;
-    color: #6c757d;
-    padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  color: $color-text-muted;
+  font-size: 0.85rem;
+  text-align: center;
+
+  &-icon { font-size: 1.5rem; opacity: 0.5; }
 }
 
 .notif-error {
-    font-size: 0.85rem;
-    color: #b42318;
-    padding: 0.5rem 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.82rem;
+  color: #c0392b;
+  background: #fdf0f0;
 }
+
+// ── Ítem individual ───────────────────────────────────────────────────────
 
 .notif-item {
-    padding: 0.5rem 0;
-}
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: $color-unread-bg;
+  transition: background 0.15s;
 
-.notif-item.is-read {
-    opacity: 0.75;
-}
+  // Indicador de no leída (línea izquierda)
+  border-left: 3px solid $color-primary;
 
-.notif-item-title {
-    font-weight: 600;
-    font-size: 0.9rem;
-}
+  &:hover { background: darken($color-unread-bg, 2%); }
 
-.notif-item-message {
-    font-size: 0.8rem;
-    color: #6c757d;
-    margin-top: 2px;
-}
+  &-body {
+    flex: 1;
+    min-width: 0;
+  }
 
-.notif-item-meta {
-    font-size: 0.75rem;
-    color: #4b5563;
-    margin-top: 4px;
-}
-
-.notif-action {
-    margin-top: 6px;
-}
-
-.notif-links {
-    margin-top: 4px;
-}
-
-.notif-link {
-    font-size: 0.75rem;
-    color: $fondo2;
-    text-decoration: none;
-}
-
-.notif-link:hover {
-    text-decoration: underline;
-}
-
-.notif-toast {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    background: #143f66;
-    color: #fff;
-    padding: 0.75rem 1rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 12px 24px rgba(16, 39, 63, 0.2);
+  &-title {
     font-size: 0.85rem;
-    z-index: 1100;
-    max-width: 320px;
+    font-weight: 600;
+    color: #2d2d3a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &-message {
+    font-size: 0.8rem;
+    color: $color-text-muted;
+    margin-top: 0.2rem;
+    line-height: 1.4;
+    // Limitar a 2 líneas
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  &-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+  }
+
+  &-dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: $color-text-muted;
+  }
+
+  &-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+    flex-shrink: 0;
+  }
 }
 
+// Tag de estado
+.notif-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.15rem 0.5rem;
+  border-radius: $border-radius-pill;
+  background: rgba($color-primary, 0.1);
+  color: $color-primary;
+  text-transform: capitalize;
+}
 
+// Importe ofertado
+.notif-importe {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #2d8a4e;
+}
 
+// Enlace "Ver detalle"
+.notif-link {
+  font-size: 0.75rem;
+  color: $color-primary;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover { text-decoration: underline; }
+}
+
+// Botón marcar leída ✓
+.notif-mark-read {
+  background: none;
+  border: 1px solid $color-border;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: $color-text-muted;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+
+  &:hover {
+    border-color: #2d8a4e;
+    color: #2d8a4e;
+    background: rgba(#2d8a4e, 0.07);
+  }
+}
+
+// =============================================
+// Toast de nueva notificación
+// =============================================
+.notif-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  background: #2d2d3a;
+  color: $color-white;
+  padding: 0.65rem 1.1rem;
+  border-radius: $border-radius-card;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  animation: toast-in 0.25s ease, toast-out 0.3s ease 3.7s forwards;
+  pointer-events: none;
+
+  // Barra de progreso inferior
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: $color-primary;
+    border-radius: 0 0 $border-radius-card $border-radius-card;
+    animation: toast-progress 4s linear forwards;
+  }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(8px); }
+}
+
+@keyframes toast-progress {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
+// =============================================
+// Widget-49 — Detalle de boda
+// =============================================
+.widget-49 {
+  width: 100%;
+
+  &__title-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  &__date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: $color-primary;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    text-align: center;
+    color: $color-white;
+
+    &-day   { font-size: 1.5rem; font-weight: 600; line-height: 1; }
+    &-month { font-size: 0.75rem; text-transform: uppercase; line-height: 1; letter-spacing: 0.05em; }
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 1rem;
+    h2, h5 { margin: 0; }
+  }
+
+  &__points {
+    font-weight: 400;
+    font-size: 14px;
+    margin-top: 0.5rem;
+    padding-left: 0;
+    list-style-type: none;
+  }
+
+  &__point-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    color: $color-text-muted;
+    span { margin-left: 0.5rem; }
+  }
+
+  &__action {
+    text-align: center;
+    margin-top: 1rem;
+
+    button {
+      text-transform: uppercase;
+      border: 1px solid $color-primary;
+      background: transparent;
+      color: $color-primary;
+      padding: 0.375rem 1.25rem;
+      border-radius: $border-radius-pill;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $color-primary;
+        color: $color-white;
+      }
+    }
+  }
+}
+
+// =============================================
+// Contador
+// =============================================
+.countdown {
+  &__value { font-size: 1.5rem; font-weight: 700; }
+  &__label { display: block; font-size: 0.85rem; color: #6c757d; }
+}
+
+// =============================================
+// Utilidades
+// =============================================
+.text-color { color: #6c757d; font-weight: 600; }

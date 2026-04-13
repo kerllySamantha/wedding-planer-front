@@ -3,155 +3,175 @@
 <hr class="my-4">
 
 <div class="container mt-3">
-    <div class="row align-items-start justify-content-between">
+  <div class="row align-items-start justify-content-between">
 
-        <!-- Columna izquierda: Detalles de la boda -->
-        <div class="col-lg-6 col-md-7 mb-4">
-            <div class="card card-margin shadow-sm rounded-3 p-4">
-                <div class="widget-49">
-                    <div class="widget-49-title-wrapper mb-3">
-                        <div class="widget-49-date-primary me-3">
-                            <span class="widget-49-date-day">{{ fechaCountdown()?.days }}</span>
-                            <span class="widget-49-date-month">{{ fechaCountdown()?.months }}</span>
-                        </div>
-                        <div class="widget-49-meeting-info">
-                            <h2 class=" mb-1">{{ perfil()?.usuario?.name }}</h2>
-                            <h5 class="text-muted mb-0">{{ bodaEncontrada()?.ubicacion }}</h5>
-                        </div>
-                    </div>
+    <!-- Columna izquierda: Detalles de la boda -->
+    <div class="col-lg-6 col-md-7 mb-4">
+      <div class="card card-margin shadow-sm rounded-3 p-4">
+        <div class="widget-49">
 
-                    <hr>
-
-                    <ul class="widget-49-meeting-points list-unstyled">
-                        <li class="widget-49-meeting-item mb-2">
-                            <span>📅 Fecha de la boda: <strong>{{ fechaFormateada() }}</strong></span>
-                        </li>
-                        <li class="widget-49-meeting-item mb-2">
-                            <span>📍 Ubicación: <strong>{{ bodaEncontrada()?.provincia?.nombre }}, {{bodaEncontrada()?.poblacion?.nombre}}</strong></span>
-                        </li>
-                        <li class="widget-49-meeting-item mb-2">
-                            <!-- <span>👥 Invitados confirmados: <strong>{{ bodaEncontrada()?.invitadosConfirmados -->
-                                    <!-- }}</strong></span> -->
-                        </li>
-                        <li class="widget-49-meeting-item mb-2">
-                            <span>💰 Presupuesto gastado: <strong>{{ presupuestoGastado() | number:'1.2-2' }} €</strong></span>
-                        </li>
-                        <li class="widget-49-meeting-item">
-                            <!-- <span>✅ Tareas realizadas: <strong>{{ bodaEncontrada()?.tareasHechas }}</strong></span> -->
-                        </li>
-                    </ul>
-
-                    <!-- <div class="widget-49-meeting-action text-center mt-3">
-                        <button class="btn btn-sm btn-flash-border-primary rounded-pill px-4">
-                            Ver detalles completos
-                        </button>
-                    </div> -->
-                </div>
+          <div class="widget-49__title-wrapper mb-3">
+            <!-- Círculo de fecha -->
+            <div class="widget-49__date me-3">
+              <span class="widget-49__date-day">{{ countdown()?.days }}</span>
+              <span class="widget-49__date-month">{{ countdown()?.months }}</span>
             </div>
-        </div>
 
-        <!-- Columna derecha: Contador -->
-        <div class="col-lg-4 col-md-5">
-            <div class="card card-margin text-center shadow-sm rounded-3 p-3">
-                <div class="card-header bg-light fw-semibold border-bottom">
-                    🕐 Faltan para mi boda...
-                </div>
-                <div class="card-body py-3">
-                    <div class="d-flex justify-content-center align-items-center gap-3">
-                        <div>
-                            <span class="fs-4 fw-bold">{{ fechaCountdown()?.days }}</span>
-                            <small class="d-block text-muted">días</small>
-                        </div>
-                        <div>
-                            <span class="fs-4 fw-bold">{{ fechaCountdown()?.hours }}</span>
-                            <small class="d-block text-muted">hrs</small>
-                        </div>
-                        <div>
-                            <span class="fs-4 fw-bold">{{ fechaCountdown()?.minutes }}</span>
-                            <small class="d-block text-muted">min</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer bg-white border-top-0">
-                    <small class="text-muted">{{ fechaFormateada() }}</small>
-                </div>
+            <!-- Nombre e info principal -->
+            <div class="widget-49__info">
+              <h2 class="mb-1">{{ perfil()?.data?.usuario}}</h2>
+              <h5 class="text-muted mb-0">{{ boda()?.ubicacion }}</h5>
             </div>
-        </div>
+          </div>
 
+          <hr>
+
+          <ul class="widget-49__points list-unstyled">
+            <li class="widget-49__point-item mb-2">
+              <span>📅 Fecha de la boda: <strong>{{ fechaFormateada() }}</strong></span>
+            </li>
+            <li class="widget-49__point-item mb-2">
+              <span>📍 Ubicación: <strong>{{ boda()?.provincia?.nombre }}, {{ boda()?.poblacion?.nombre }}</strong></span>
+            </li>
+            <li class="widget-49__point-item mb-2">
+              <span>💰 Presupuesto gastado: <strong>{{ presupuestoGastado() | number:'1.2-2' }} €</strong></span>
+            </li>
+          </ul>
+
+        </div>
+      </div>
     </div>
+
+    <!-- Columna derecha: Contador regresivo -->
+    <div class="col-lg-4 col-md-5">
+      <div class="card card-margin text-center shadow-sm rounded-3 p-3">
+        <div class="card-header bg-light fw-semibold border-bottom">
+          🕐 Faltan para mi boda...
+        </div>
+
+        <div class="card-body py-3">
+          <div class="d-flex justify-content-center align-items-center gap-3">
+            <div>
+              <span class="countdown__value">{{ countdown()?.days }}</span>
+              <small class="countdown__label">días</small>
+            </div>
+            <div>
+              <span class="countdown__value">{{ countdown()?.hours }}</span>
+              <small class="countdown__label">hrs</small>
+            </div>
+            <div>
+              <span class="countdown__value">{{ countdown()?.minutes }}</span>
+              <small class="countdown__label">min</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer bg-white border-top-0">
+          <small class="text-muted">{{ fechaFormateada() }}</small>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
+<!-- Notificaciones y presupuestos -->
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card card-margin shadow-sm rounded-3 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="h5 mb-0">Notificaciones y presupuestos</h2>
-                    <button class="btn btn-sm btn-outline-secondary" (click)="cargarNotificaciones()"
-                        [disabled]="notificacionesLoading()">Recargar</button>
-                </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="card card-margin shadow-sm rounded-3 p-4">
 
-                @if (mensajeAccion()) {
-                <div class="alert alert-info mb-3">{{ mensajeAccion() }}</div>
-                }
-
-                @if (notificacionesLoading()) {
-                <div class="text-muted">Cargando notificaciones...</div>
-                } @else if (notificacionesError()) {
-                <div class="alert alert-danger mb-0">{{ notificacionesError() }}</div>
-                } @else if (notificaciones().length === 0) {
-                <div class="text-muted">No hay notificaciones por ahora.</div>
-                } @else {
-                @for (notif of notificaciones(); track notif.id) {
-                <div class="border rounded-3 p-3 mb-3">
-                    <div class="d-flex justify-content-between align-items-start gap-3">
-                        <div>
-                            <div class="fw-semibold">{{ notif.titulo || 'Notificacion' }}</div>
-                            <div class="text-muted small">{{ notif.mensaje }}</div>
-
-                            @if (esNotificacionPresupuesto(notif)) {
-                            <div class="mt-2 small">
-                                <span class="me-2">Estado: {{ obtenerEstadoPresupuesto(notif) }}</span>
-                                @if (obtenerImporteOfertado(notif) != null) {
-                                <span>Oferta: {{ obtenerImporteOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}</span>
-                                }
-                            </div>
-                            @if (obtenerProductoReferencia(notif) || obtenerFechaInicioReferencia(notif)) {
-                            <div class="mt-2 small text-muted">
-                                @if (obtenerProductoReferencia(notif)) {
-                                <span class="me-2">
-                                    {{ obtenerModalidadReferencia(notif) || 'producto' }} #{{ obtenerProductoReferencia(notif) }}
-                                </span>
-                                }
-                                @if (obtenerFechaInicioReferencia(notif)) {
-                                <span>
-                                    {{ obtenerFechaInicioReferencia(notif) }}
-                                    @if (obtenerFechaFinReferencia(notif)) {
-                                    → {{ obtenerFechaFinReferencia(notif) }}
-                                    }
-                                </span>
-                                }
-                            </div>
-                            }
-                            }
-                        </div>
-
-                        @if (esNotificacionPresupuesto(notif)) {
-                        <div class="text-end">
-                            <button class="btn btn-sm btn-primary"
-                                (click)="aceptarPresupuestoDesdeNotificacion(notif)"
-                                [disabled]="estaAceptandoPresupuesto(obtenerPresupuestoId(notif)) || estaAceptadoPresupuesto(obtenerPresupuestoId(notif))">
-                                @if (estaAceptandoPresupuesto(obtenerPresupuestoId(notif))) { Bloqueando... }
-                                @else if (estaAceptadoPresupuesto(obtenerPresupuestoId(notif))) { Aceptado }
-                                @else { Aceptar y bloquear fecha }
-                            </button>
-                        </div>
-                        }
-                    </div>
-                </div>
-                }
-                }
-            </div>
+        <!-- Cabecera de sección -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2 class="h5 mb-0">Notificaciones y presupuestos</h2>
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            (click)="cargarNotificaciones()"
+            [disabled]="notificacionesLoading()">
+            Recargar
+          </button>
         </div>
+
+        <!-- Mensaje de acción -->
+        @if (mensajeAccion()) {
+          <div class="alert alert-info mb-3">{{ mensajeAccion() }}</div>
+        }
+
+        <!-- Estados de carga / error / vacío -->
+        @if (notificacionesLoading()) {
+          <div class="text-muted">Cargando notificaciones...</div>
+
+        } @else if (notificacionesError()) {
+          <div class="alert alert-danger mb-0">{{ notificacionesError() }}</div>
+
+        } @else if (notificaciones().length === 0) {
+          <div class="text-muted">No hay notificaciones por ahora.</div>
+
+        } @else {
+          <!-- Lista de notificaciones -->
+          @for (notif of notificaciones(); track notif.id) {
+            <div class="border rounded-3 p-3 mb-3">
+              <div class="d-flex justify-content-between align-items-start gap-3">
+
+                <!-- Contenido de la notificación -->
+                <div>
+                  <div class="fw-semibold">{{ notif.titulo || 'Notificación' }}</div>
+                  <div class="text-muted small">{{ notif.mensaje }}</div>
+
+                  @if (esPresupuesto(notif)) {
+                    <div class="mt-2 small">
+                      <span class="me-2">Estado: {{ estadoPresupuestoTexto(notif) }}</span>
+
+                      @if (importeOfertado(notif) != null) {
+                        <span>Oferta: {{ importeOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}</span>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Acciones del presupuesto -->
+                @if (esPresupuesto(notif)) {
+                  <div class="text-end d-flex flex-column gap-2">
+
+                    <button
+                      class="btn btn-sm btn-outline-secondary"
+                      (click)="verDetallePresupuesto(notif)">
+                      Ver detalle
+                    </button>
+
+                    @if (puedeResponderPresupuesto(notif)) {
+                      <!-- Rechazar -->
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="rechazarPresupuesto(notif)"
+                        [disabled]="rechazandoPresupuesto(presupuestoId(notif))">
+                        {{ rechazandoPresupuesto(presupuestoId(notif)) ? 'Rechazando...' : 'Rechazar' }}
+                      </button>
+
+                      <!-- Aceptar -->
+                      <button
+                        class="btn btn-sm btn-primary"
+                        (click)="aceptarPresupuesto(notif)"
+                        [disabled]="aceptandoPresupuesto(presupuestoId(notif)) || presupuestoAceptado(presupuestoId(notif))">
+                        @if (aceptandoPresupuesto(presupuestoId(notif))) {
+                          Bloqueando...
+                        } @else if (presupuestoAceptado(presupuestoId(notif))) {
+                          Aceptado
+                        } @else {
+                          Aceptar y bloquear fecha
+                        }
+                      </button>
+                    }
+
+                  </div>
+                }
+
+              </div>
+            </div>
+          }
+        }
+
+      </div>
     </div>
+  </div>
 </div>

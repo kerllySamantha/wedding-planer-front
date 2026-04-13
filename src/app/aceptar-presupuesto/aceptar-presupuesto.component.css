@@ -1,8 +1,6 @@
 .budget-detail-page {
   min-height: calc(100vh - 80px);
-  background:
-    radial-gradient(circle at top right, rgba(233, 30, 99, 0.12), transparent 30%),
-    linear-gradient(180deg, #fff9fb 0%, #f7f3ef 100%);
+  background: radial-gradient(circle at top right, rgba(233, 30, 99, 0.12), transparent 30%), linear-gradient(180deg, #fff9fb 0%, #f7f3ef 100%);
   padding: 2rem 1rem 4rem;
 }
 
@@ -241,30 +239,24 @@
     padding: 1.25rem;
     border-radius: 24px;
   }
-
   .budget-header,
   .budget-grid {
     grid-template-columns: 1fr;
     display: grid;
   }
-
   .price-box {
     min-width: auto;
   }
-
   .budget-panel dl div {
     flex-direction: column;
   }
-
   .budget-panel dd {
     text-align: left;
   }
-
   .actions-row {
     justify-content: stretch;
   }
-
   .actions-row button {
     width: 100%;
   }
-}
+}/*# sourceMappingURL=aceptar-presupuesto.component.css.map */

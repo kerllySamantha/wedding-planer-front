@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  reverbKey: 'ejduzccgbzpw2dyg9pmf',     
-  reverbHost: 'localhost',
+  reverbKey: 'T5ncFGLbNhmoogmz8iUUFUYfAicxQTzs',
+  reverbHost: 'weddingplaner.local', 
   reverbPort: 8080,
   apiUrl: 'http://weddingplaner.local/api'
 };

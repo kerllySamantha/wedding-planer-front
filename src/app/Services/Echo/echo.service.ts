@@ -37,7 +37,7 @@ export class EchoService {
       authEndpoint: `${environment.apiUrl}/broadcasting/auth`,
       auth: {
         headers: {
-          // getter dinamico: lee el token en cada peticion
+         
           get Authorization() {
             return `Bearer ${localStorage.getItem('token')}`;
           },

@@ -3,12 +3,30 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { PedirPresupuestoInfo, ResponderPresupuestoPayload } from '../Interfaces/PedirPresupuesto';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { Producto } from '../Interfaces/Producto';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
 
+/**
+ * Panel del proveedor para gestionar una solicitud de presupuesto.
+ *
+ * Responsabilidades:
+ *  1. Ver los datos de la solicitud del cliente (solo lectura).
+ *  2. Responder con una propuesta formal: producto concreto, fechas, importe.
+ *  3. Rechazar la solicitud con un motivo obligatorio.
+ *
+ * La reserva se crea automáticamente en el backend cuando el cliente acepta
+ * la propuesta. Este componente NO abre ni gestiona el modal del calendario.
+ */
 @Component({
   selector: 'app-responder-admin-presupuesto',
   imports: [CommonModule, CurrencyPipe, DatePipe, RouterLink, ReactiveFormsModule],
@@ -16,56 +34,102 @@ import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-pre
   styleUrl: './responder-admin-presupuesto.component.scss',
 })
 export class ResponderAdminPresupuestoComponent {
-  private route = inject(ActivatedRoute);
-  private empresasCtx = inject(EmpresasApiServiceService);
+
+  private route           = inject(ActivatedRoute);
+  private empresasCtx     = inject(EmpresasApiServiceService);
   private pedirPresupuestoCtx = inject(PedirPresupuestoService);
 
-  protected solicitud = signal<PedirPresupuestoInfo | null>(null);
+  // ── Datos ────────────────────────────────────────────────────────────
+  protected solicitud        = signal<PedirPresupuestoInfo | null>(null);
   protected productosEmpresa = signal<Producto[]>([]);
+
+  /**
+   * Productos filtrados por el tipo solicitado por el cliente.
+   * Si no hay coincidencia exacta, muestra todos (fallback).
+   */
   protected productosFiltrados = computed(() => {
     const tipoId = this.solicitud()?.tipo_producto_id;
     if (!tipoId) return this.productosEmpresa();
     const filtrados = this.productosEmpresa().filter(p => p.tipo_producto?.id === tipoId);
     return filtrados.length ? filtrados : this.productosEmpresa();
   });
+
+  /** Tipo de producto que solicitó el cliente (para mostrarlo en la vista). */
   protected tipoSolicitado = computed(() => {
     const tipoId = this.solicitud()?.tipo_producto_id;
     if (!tipoId) return null;
-    const tipo = this.productosEmpresa()
-      .map(p => p.tipo_producto)
-      .find(t => t?.id === tipoId);
-    if (!tipo) return { nombre: `Tipo #${tipoId}`, modalidad: null };
-    return { nombre: tipo.nombre, modalidad: tipo.modalidad };
+    const tipo = this.productosEmpresa().map(p => p.tipo_producto).find(t => t?.id === tipoId);
+    return tipo ? { nombre: tipo.nombre, modalidad: tipo.modalidad }
+                : { nombre: `Tipo #${tipoId}`, modalidad: null };
   });
+
+  /** True si el tipo solicitado ya no existe en el catálogo del proveedor. */
   protected tipoNoDisponible = computed(() => {
     const tipoId = this.solicitud()?.tipo_producto_id;
     if (!tipoId) return false;
     return this.productosEmpresa().every(p => p.tipo_producto?.id !== tipoId);
   });
-  protected enviandoRespuesta = signal(false);
-  protected respuestaError = signal<string | null>(null);
-  protected respuestaOk = signal<string | null>(null);
-  protected resumenPropuesta = signal<{
-    productoNombre: string;
-    modalidad: 'servicio' | 'producto';
-    fechaInicio: string;
-    fechaFin: string;
-    importe: number | null;
-  } | null>(null);
 
-  respuestaForm = new FormGroup({
-    producto_id: new FormControl<number | null>(null, Validators.required),
-    fecha_inicio: new FormControl<string>('', Validators.required),
-    fecha_fin: new FormControl<string>(''),
-    importe_ofertado: new FormControl<number | null>(null, Validators.required),
-    comentario_empresa: new FormControl<string>(''),
+  // ── Estado UI ────────────────────────────────────────────────────────
+  protected enviandoRespuesta = signal(false);
+  protected enviandoRechazo   = signal(false);
+  protected respuestaError    = signal<string | null>(null);
+  protected respuestaOk       = signal<string | null>(null);
+
+  /**
+   * Resumen de la propuesta en curso, actualizado reactivamente
+   * para mostrar al proveedor un preview antes de enviar.
+   */
+  protected resumenPropuesta = computed(() => {
+    const productoId = this.respuestaForm.get('producto_id')?.value;
+    const modalidad  = this.modalidadDelProducto(productoId);
+    if (!productoId || !modalidad) return null;
+
+    const producto    = this.productosEmpresa().find(p => p.id === productoId);
+    const fechaInicio = this.respuestaForm.get('fecha_inicio')?.value?.trim() ?? '';
+    const fechaFin    = this.respuestaForm.get('fecha_fin')?.value?.trim()    ?? '';
+    const importe     = this.respuestaForm.get('importe_ofertado')?.value     ?? null;
+
+    return { productoNombre: producto?.nombre ?? 'Producto', modalidad, fechaInicio, fechaFin, importe };
   });
 
+  // ── Formulario de propuesta ──────────────────────────────────────────
+  respuestaForm = new FormGroup(
+    {
+      producto_id:        new FormControl<number | null>(null, Validators.required),
+      fecha_inicio:       new FormControl<string>('',          Validators.required),
+      fecha_fin:          new FormControl<string>(''),
+      importe_ofertado:   new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
+      comentario_empresa: new FormControl<string>(''),
+    },
+    { validators: [this.fechasValidator(), this.importeValidator()] }
+  );
+
+  // ── Formulario de rechazo ────────────────────────────────────────────
+  // Absorbe la gestión que antes no existía: el proveedor puede rechazar
+  // una solicitud indicando el motivo, en lugar de simplemente ignorarla.
+  rechazoForm = new FormGroup({
+    motivo_rechazo: new FormControl<string>('', [
+      Validators.required,
+      Validators.minLength(10),
+      Validators.maxLength(500),
+    ]),
+  });
+
+  mostrarFormRechazo = signal(false);
+
+  // ── Resolver ─────────────────────────────────────────────────────────
   private pedirPresupuestoRoute = toSignal(
     this.route.data.pipe(
       map(data => {
-        const solicitud = data['solicitud'] as PedirPresupuestoInfo | { data?: PedirPresupuestoInfo } | null | undefined;
-        return (solicitud as { data?: PedirPresupuestoInfo } | null)?.data ?? (solicitud as PedirPresupuestoInfo | null) ?? null;
+        const solicitud = data['solicitud'] as
+          | PedirPresupuestoInfo
+          | { data?: PedirPresupuestoInfo }
+          | null
+          | undefined;
+        return (solicitud as { data?: PedirPresupuestoInfo } | null)?.data
+          ?? (solicitud as PedirPresupuestoInfo | null)
+          ?? null;
       })
     ),
     { initialValue: null }
@@ -80,102 +144,115 @@ export class ResponderAdminPresupuestoComponent {
       }
     });
 
+    // Al cambiar el producto seleccionado, limpiar fechas para forzar
+    // al proveedor a introducir fechas coherentes con el nuevo producto.
     this.respuestaForm.get('producto_id')?.valueChanges.subscribe(() => {
-      this.respuestaForm.get('fecha_inicio')?.setValue('');
-      this.respuestaForm.get('fecha_fin')?.setValue('');
+      this.respuestaForm.patchValue(
+        { fecha_inicio: '', fecha_fin: '' },
+        { emitEvent: false }
+      );
     });
-
-    this.respuestaForm.valueChanges.subscribe(() => this.actualizarResumenPropuesta());
-    this.actualizarResumenPropuesta();
   }
 
-  private cargarProductosEmpresa() {
+  // ── Helpers privados ─────────────────────────────────────────────────
+
+  private cargarProductosEmpresa(): void {
     const empresaId =
       Number(this.solicitud()?.empresa_id) ||
       Number(localStorage.getItem('idEmpresa'));
-    if (!empresaId) {
-      this.productosEmpresa.set([]);
-      return;
-    }
+
+    if (!empresaId) { this.productosEmpresa.set([]); return; }
 
     this.empresasCtx.getEmpresaProductos(empresaId).subscribe({
-      next: (res) => this.productosEmpresa.set(res?.data ?? []),
-      error: () => this.productosEmpresa.set([]),
+      next:  res => this.productosEmpresa.set(res?.data ?? []),
+      error: ()  => this.productosEmpresa.set([]),
     });
   }
 
-  modalidadSeleccionada(): 'producto' | 'servicio' | null {
-    const productoId = this.respuestaForm.get('producto_id')?.value;
+  /** Devuelve la modalidad del producto con el id dado. */
+  modalidadDelProducto(productoId: number | null | undefined): 'producto' | 'servicio' | null {
     if (!productoId) return null;
-    const producto = this.productosEmpresa().find(p => p.id === productoId);
-    return producto?.tipo_producto?.modalidad ?? null;
+    return this.productosEmpresa().find(p => p.id === productoId)?.tipo_producto?.modalidad ?? null;
   }
 
-  private toBackendProducto(value: string): string | null {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
-    return value;
+  /** Modalidad del producto actualmente seleccionado en el formulario. */
+  get modalidadSeleccionada(): 'producto' | 'servicio' | null {
+    return this.modalidadDelProducto(this.respuestaForm.get('producto_id')?.value);
   }
 
-  private toBackendServicio(value: string): string | null {
-    const match = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})(?::\d{2})?$/.exec(value);
-    if (!match) return null;
-    return `${match[1]} ${match[2]}:00`;
+  // ── Validadores ──────────────────────────────────────────────────────
+
+  /**
+   * Valida que las fechas sean coherentes según la modalidad:
+   *  - producto: fecha inicio y fin obligatorias; fin >= inicio
+   *  - servicio: fecha + hora inicio y fin obligatorias; fin > inicio
+   */
+  private fechasValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const productoId   = control.get('producto_id')?.value;
+      const modalidad    = this.modalidadDelProducto(productoId);
+      const inicioRaw    = control.get('fecha_inicio')?.value?.trim() ?? '';
+      const finRaw       = control.get('fecha_fin')?.value?.trim()    ?? '';
+
+      if (!modalidad || !inicioRaw) return null;
+
+      if (modalidad === 'servicio') {
+        // Para servicios se espera "YYYY-MM-DD HH:mm" o "YYYY-MM-DDTHH:mm"
+        const inicio = Date.parse(inicioRaw);
+        const fin    = finRaw ? Date.parse(finRaw) : NaN;
+        if (isNaN(inicio))        return { fechaInicioInvalida: true };
+        if (!finRaw)              return { horaFinRequerida: true };
+        if (isNaN(fin))           return { fechaFinInvalida: true };
+        if (fin <= inicio)        return { horaFinAnterior: true };
+      }
+
+      if (modalidad === 'producto') {
+        // Para productos se esperan fechas "YYYY-MM-DD"
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(inicioRaw)) return { fechaInicioInvalida: true };
+        if (finRaw && !/^\d{4}-\d{2}-\d{2}$/.test(finRaw)) return { fechaFinInvalida: true };
+        if (finRaw && finRaw < inicioRaw) return { fechaFinAnterior: true };
+      }
+
+      return null;
+    };
   }
 
-  private normalizarFechaProducto(value: string): { inicio: string; fin: string } | null {
-    const inicio = this.toBackendProducto(value);
-    if (!inicio) return null;
-    const finRaw = this.respuestaForm.get('fecha_fin')?.value?.trim() || value;
-    const fin = this.toBackendProducto(finRaw);
-    if (!fin) return null;
-    return { inicio, fin };
+  /** El importe no puede ser negativo. */
+  private importeValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const importe = control.get('importe_ofertado')?.value;
+      if (importe !== null && importe < 0) return { importeNegativo: true };
+      return null;
+    };
   }
 
-  private normalizarFechaServicio(value: string): { inicio: string; fin: string } | null {
-    const finRaw = this.respuestaForm.get('fecha_fin')?.value?.trim();
-    const inicio = this.toBackendServicio(value);
-    const fin = finRaw ? this.toBackendServicio(finRaw) : null;
-    if (!inicio || !fin) return null;
-    return { inicio, fin };
+  // ── Normalización de fechas para el backend ──────────────────────────
+
+  private normalizarFechaProducto(inicio: string, fin: string): { inicio: string; fin: string } | null {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(inicio)) return null;
+    const finNorm = /^\d{4}-\d{2}-\d{2}$/.test(fin) ? fin : inicio;
+    return { inicio, fin: finNorm };
   }
 
-  private actualizarResumenPropuesta() {
-    const productoId = this.respuestaForm.get('producto_id')?.value;
-    const modalidad = this.modalidadSeleccionada();
-    if (!productoId || !modalidad) {
-      this.resumenPropuesta.set(null);
-      return;
-    }
-
-    const producto = this.productosEmpresa().find(p => p.id === productoId);
-    const fechaInicio = this.respuestaForm.get('fecha_inicio')?.value?.trim() || '';
-    const fechaFin = this.respuestaForm.get('fecha_fin')?.value?.trim() || '';
-
-    this.resumenPropuesta.set({
-      productoNombre: producto?.nombre ?? 'Producto',
-      modalidad,
-      fechaInicio,
-      fechaFin,
-      importe: this.respuestaForm.get('importe_ofertado')?.value ?? null,
-    });
+  private normalizarFechaServicio(inicio: string, fin: string): { inicio: string; fin: string } | null {
+    const norm = (v: string): string | null => {
+      const m = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})(?::\d{2})?$/.exec(v);
+      return m ? `${m[1]} ${m[2]}:00` : null;
+    };
+    const i = norm(inicio);
+    const f = fin ? norm(fin) : null;
+    if (!i || !f) return null;
+    return { inicio: i, fin: f };
   }
 
-  private validarRangoServicio(inicio: string, fin: string): boolean {
-    const startMs = Date.parse(inicio);
-    const endMs = Date.parse(fin);
-    if (Number.isNaN(startMs) || Number.isNaN(endMs)) return false;
-    return endMs > startMs;
-  }
+  // ── Acciones ─────────────────────────────────────────────────────────
 
-  enviarRespuesta() {
+  enviarRespuesta(): void {
     this.respuestaError.set(null);
     this.respuestaOk.set(null);
 
     const solicitudId = this.solicitud()?.id;
-    if (!solicitudId) {
-      this.respuestaError.set('No se encontro la solicitud.');
-      return;
-    }
+    if (!solicitudId) { this.respuestaError.set('No se encontró la solicitud.'); return; }
 
     if (this.respuestaForm.invalid) {
       this.respuestaForm.markAllAsTouched();
@@ -183,38 +260,34 @@ export class ResponderAdminPresupuestoComponent {
       return;
     }
 
-    const modalidad = this.modalidadSeleccionada();
+    const modalidad = this.modalidadSeleccionada;
     if (!modalidad) {
       this.respuestaError.set('Selecciona un producto para determinar la modalidad.');
       return;
     }
 
-    const fechaInicioRaw = this.respuestaForm.get('fecha_inicio')?.value?.trim() || '';
-    const fechas =
-      modalidad === 'servicio'
-        ? this.normalizarFechaServicio(fechaInicioRaw)
-        : this.normalizarFechaProducto(fechaInicioRaw);
+    const inicioRaw = this.respuestaForm.get('fecha_inicio')?.value?.trim() ?? '';
+    const finRaw    = this.respuestaForm.get('fecha_fin')?.value?.trim()    ?? '';
+
+    const fechas = modalidad === 'servicio'
+      ? this.normalizarFechaServicio(inicioRaw, finRaw)
+      : this.normalizarFechaProducto(inicioRaw, finRaw);
 
     if (!fechas) {
       this.respuestaError.set(
         modalidad === 'servicio'
-          ? 'Faltan fecha y hora (inicio y fin) con formato valido.'
-          : 'Falta la fecha con formato valido.'
+          ? 'Introduce fecha y hora de inicio y fin con formato válido.'
+          : 'Introduce la fecha con formato válido (YYYY-MM-DD).'
       );
       return;
     }
 
-    if (modalidad === 'servicio' && !this.validarRangoServicio(fechas.inicio, fechas.fin)) {
-      this.respuestaError.set('La hora de fin debe ser posterior a la de inicio.');
-      return;
-    }
-
     const payload: ResponderPresupuestoPayload = {
-      producto_id: Number(this.respuestaForm.get('producto_id')?.value),
+      producto_id:        Number(this.respuestaForm.get('producto_id')?.value),
       modalidad,
-      fecha_inicio: fechas.inicio,
-      fecha_fin: fechas.fin,
-      importe_ofertado: Number(this.respuestaForm.get('importe_ofertado')?.value),
+      fecha_inicio:       fechas.inicio,
+      fecha_fin:          fechas.fin,
+      importe_ofertado:   Number(this.respuestaForm.get('importe_ofertado')?.value),
       comentario_empresa: this.respuestaForm.get('comentario_empresa')?.value?.trim() || undefined,
     };
 
@@ -222,13 +295,50 @@ export class ResponderAdminPresupuestoComponent {
     this.pedirPresupuestoCtx.responderPresupuesto(solicitudId, payload).subscribe({
       next: () => {
         this.enviandoRespuesta.set(false);
-        this.respuestaOk.set('Propuesta enviada. Queda pendiente de usuario.');
+        this.respuestaOk.set('Propuesta enviada. El cliente recibirá una notificación.');
       },
-      error: (err) => {
+      error: err => {
         this.enviandoRespuesta.set(false);
         this.respuestaError.set(err?.error?.message ?? 'No se pudo enviar la propuesta.');
-      }
+      },
     });
   }
 
+  /**
+   * Rechaza la solicitud con un motivo.
+   * El cliente recibirá una notificación con el motivo del rechazo.
+   */
+  rechazarSolicitud(): void {
+    this.respuestaError.set(null);
+    this.respuestaOk.set(null);
+
+    if (this.rechazoForm.invalid) {
+      this.rechazoForm.markAllAsTouched();
+      return;
+    }
+
+    const solicitudId = this.solicitud()?.id;
+    if (!solicitudId) { this.respuestaError.set('No se encontró la solicitud.'); return; }
+
+    const motivo = this.rechazoForm.get('motivo_rechazo')?.value?.trim() ?? '';
+
+    this.enviandoRechazo.set(true);
+    this.pedirPresupuestoCtx.rechazarPresupuesto(solicitudId).subscribe({
+      next: () => {
+        this.enviandoRechazo.set(false);
+        this.respuestaOk.set('Solicitud rechazada. El cliente ha sido notificado.');
+        this.mostrarFormRechazo.set(false);
+      },
+      error: err => {
+        this.enviandoRechazo.set(false);
+        this.respuestaError.set(err?.error?.message ?? 'No se pudo rechazar la solicitud.');
+      },
+    });
+  }
+
+  toggleFormRechazo(): void {
+    this.mostrarFormRechazo.update(v => !v);
+    this.rechazoForm.reset();
+    this.respuestaError.set(null);
+  }
 }

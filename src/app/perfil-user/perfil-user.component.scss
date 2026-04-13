@@ -1,153 +1,183 @@
-$fondo :#e91e63;
-$fondo2 : #f76c6f;
+// =============================================
+// Variables
+// =============================================
+$color-primary:       #f76c6f;
+$color-primary-dark:  #e91e63;
+$color-bg:            #F4F7FD;
+$color-text-muted:    #727686;
+$color-border:        #e6e4e9;
+$color-shadow:        rgba(82, 63, 105, 0.1);
+$color-white:         #ffffff;
+
+$border-radius-card:  8px;
+$border-radius-pill:  50px;
+
+$font-heading:        "Merriweather", serif;
+
+// =============================================
+// Base
+// =============================================
+body {
+  background: $color-bg;
+  margin-top: 20px;
+}
 
 h1 {
-    font-family: "Merriweather";
-    font-size: 2em;
-    line-height: 2.25rem;
+  font-family: $font-heading;
+  font-size: 2em;
+  line-height: 2.25rem;
 }
 
-/* Fondo general y márgenes */
-body {
-    background: #F4F7FD;
-    margin-top: 20px;
-}
-
-/* Tarjetas con margen y sombra */
-.card-margin {
-    margin-bottom: 1.875rem;
-}
-
+// =============================================
+// Card
+// =============================================
 .card {
-    border: 0;
-    box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: #ffffff;
-    border: 1px solid #e6e4e9;
-    border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: $color-white;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-card;
+  box-shadow: 0 0 10px 0 $color-shadow;
+
+  &-margin {
+    margin-bottom: 1.875rem;
+  }
+
+  &-header {
+    &:first-child {
+      border-radius: calc(#{$border-radius-card} - 1px) calc(#{$border-radius-card} - 1px) 0 0;
+    }
+
+    &.no-border {
+      border: 0;
+      background: none;
+      padding: 0 0.9375rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      min-height: 50px;
+    }
+  }
 }
 
-.card-header.no-border {
-    border: 0;
-    background: none;
-    padding: 0 0.9375rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    min-height: 50px;
-}
-
-.card-header:first-child {
-    border-radius: calc(8px - 1px) calc(8px - 1px) 0 0;
-}
-
-/* Widget principal de la boda */
+// =============================================
+// Widget-49 — Detalle de boda
+// =============================================
 .widget-49 {
-    width: 100%;
-}
+  width: 100%;
 
-.widget-49-title-wrapper {
+  // Cabecera: círculo de fecha + info
+  &__title-wrapper {
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
-}
+  }
 
-/* Círculo de fecha estilo widget-49 */
-.widget-49-date-primary {
+  // Círculo de fecha
+  &__date {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: $fondo2;
+    background-color: $color-primary;
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
     flex-shrink: 0;
     text-align: center;
-}
+    color: $color-white;
 
-.widget-49-date-primary .widget-49-date-day {
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: $fondo2;
-    line-height: 1;
-}
+    &-day {
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1;
+    }
 
-.widget-49-date-primary .widget-49-date-month {
-    font-size: 1rem;
-    color: $fondo2;
-    text-transform: uppercase;
-    line-height: 1;
-}
+    &-month {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+  }
 
-/* Información del usuario/boda al lado del círculo */
-.widget-49-meeting-info {
+  // Información textual
+  &__info {
     display: flex;
     flex-direction: column;
     margin-left: 1rem;
-}
 
-.widget-49-meeting-info h2,
-.widget-49-meeting-info h5 {
-    margin: 0;
-}
+    h2,
+    h5 {
+      margin: 0;
+    }
+  }
 
-/* Lista de detalles de la boda */
-.widget-49-meeting-points {
+  // Lista de detalles
+  &__points {
     font-weight: 400;
     font-size: 14px;
     margin-top: 0.5rem;
     padding-left: 0;
     list-style-type: none;
-}
+  }
 
-.widget-49-meeting-points .widget-49-meeting-item {
+  &__point-item {
     display: flex;
     align-items: center;
     margin-bottom: 0.5rem;
-    color: #727686;
-}
+    color: $color-text-muted;
 
-.widget-49-meeting-points .widget-49-meeting-item span {
-    margin-left: 0.5rem;
-}
+    span {
+      margin-left: 0.5rem;
+    }
+  }
 
-/* Botón dentro de la tarjeta */
-.widget-49-meeting-action {
+  // Acción / botón
+  &__action {
     text-align: center;
     margin-top: 1rem;
+
+    button {
+      text-transform: uppercase;
+      border: 1px solid $color-primary;
+      background: transparent;
+      color: $color-primary;
+      padding: 0.375rem 1.25rem;
+      border-radius: $border-radius-pill;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $color-primary;
+        color: $color-white;
+      }
+    }
+  }
 }
 
-.widget-49-meeting-action button {
-    text-transform: uppercase;
-    border: 1px solid $fondo2;
-    background: transparent;
-    color: $fondo2;
-    padding: 0.375rem 1.25rem;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-}
-
-.widget-49-meeting-action button:hover {
-    background-color: $fondo2;
-    color: #fff;
-    cursor: pointer;
-}
-
-/* Contador de días */
-.card-body .d-flex span.fs-4 {
+// =============================================
+// Contador (card countdown)
+// =============================================
+.countdown {
+  &__value {
+    font-size: 1.5rem;   // fs-4 equivalente
     font-weight: 700;
-}
+  }
 
-.card-body .d-flex small {
+  &__label {
+    display: block;
     font-size: 0.85rem;
     color: #6c757d;
+  }
 }
 
+// =============================================
+// Utilidades
+// =============================================
 .text-color {
-    color: #6c757d;
-    font-weight: 600;
+  color: #6c757d;
+  font-weight: 600;
 }
