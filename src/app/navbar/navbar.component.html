@@ -1,111 +1,4 @@
-@if(esRutaHome()) {
-<nav class="navbar navbar-expand-lg bg-white py-2">
-  <div class="container-fluid align-items-center justify-content-between">
-
-    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
-      data-bs-target="#mainMenuOffcanvas" aria-controls="mobileMenu" aria-expanded="false"
-      aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <a class="navbar-brand" [routerLink]="['/']">
-      <img src="assets/images/logo2.png" alt="Logo" width="260">
-    </a>
-
-    <a class="btn btn-light border-0 d-lg-none order-3" [routerLink]="['/login']">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
-        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1
-          1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516
-          10.68 10.289 10 8 10s-3.516.68-4.168
-          1.332c-.678.678-.83 1.418-.832 1.664z"/>
-      </svg>
-    </a>
-
-    <!-- Menú central escritorio -->
-    <div class="d-none d-lg-flex justify-content-center flex-grow-1">
-      <ul class="navbar-nav flex-row gap-3">
-        <li class="nav-item"><a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Mi Boda</a></li>
-        <li class="nav-item"><a class="nav-link" [routerLink]="['/dashboard-proveedores']">Proveedores</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
-      </ul>
-    </div>
-
-    <!-- Offcanvas móvil -->
-    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mainMenuOffcanvas" aria-labelledby="mainMenuOffcanvasLabel">
-      <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title" id="mobileMenuLabel">Menú</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <ul class="navbar-nav flex-column gap-3 text-start">
-          @if(autServicectx.rol() === 'usuario' && autServicectx.auth()) {
-            <li class="nav-item"><a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Mi Boda</a></li>
-          }
-          <li class="nav-item"><a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Proveedores</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Derecha escritorio -->
-    <div class="d-none d-lg-flex align-items-end ms-auto order-lg-2">
-      @if(autServicectx.auth()) {
-        <div class="d-flex flex-row align-items-center gap-3">
-
-          <!-- Campana de notificaciones -->
-          <button class="btn btn-link p-0 position-relative notif-button"
-            [matMenuTriggerFor]="notifMenuHome"
-            (click)="cargarNotificaciones()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
-              <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7a5.002 5.002 0 0 0-4.005-4.901"/>
-            </svg>
-            @if (notificacionesNoLeidas() > 0) {
-              <span class="notif-badge">{{ notificacionesNoLeidas() }}</span>
-            }
-          </button>
-
-          <!-- Avatar -->
-          <button class="p-0 avatar-button" [matMenuTriggerFor]="userMenuHome">
-            <div class="d-flex justify-content-center align-items-center avatar-circle">
-              {{ nombreU() }}
-            </div>
-          </button>
-
-          <mat-menu #userMenuHome="matMenu" yPosition="below" xPosition="after">
-            <button mat-menu-item [routerLink]="['/']">Inicio</button>
-            <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
-            <button mat-menu-item [routerLink]="['/configuracion']">Configuración</button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
-          </mat-menu>
-
-          <!-- Panel notificaciones -->
-          <mat-menu #notifMenuHome="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after" class="notif-menu">
-            <ng-container *ngTemplateOutlet="notifPanel"></ng-container>
-          </mat-menu>
-
-        </div>
-      } @else {
-        <div class="d-flex flex-column align-items-end gap-2">
-          <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
-            [routerLink]="['/dashboard-empresas']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-            <span class="area-empresas">Área Empresas</span>
-          </a>
-          <div class="d-flex flex-row gap-3">
-            <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
-            <a [routerLink]="['/registerUser']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link p-0">Regístrate</a>
-          </div>
-        </div>
-      }
-    </div>
-
-  </div>
-</nav>
-}
-
-@else if (estaEnRuta('dashboard-empresas')) {
+@if (estaEnRuta('dashboard-empresas')) {
 <nav class="navbar navbar-expand-lg">
   <div class="row w-100">
     <div class="col d-flex align-items-center justify-content-center">
@@ -115,13 +8,8 @@
     </div>
   </div>
 </nav>
-}
 
-@if (toastMessage()) {
-  <div class="notif-toast">{{ toastMessage() }}</div>
-}
-
-@else if (estaEnRuta('login') || estaEnRuta('registerUser')) {
+} @else if (estaEnRuta('login') || estaEnRuta('registerUser')) {
 <nav class="navbar navbar-expand-lg fondo py-2 d-flex align-items-center justify-content-center">
   <div class="row">
     <div class="col d-flex align-items-center">
@@ -131,9 +19,139 @@
     </div>
   </div>
 </nav>
-}
 
-@else {
+} @else if (esRutaHome()) {
+<nav class="navbar navbar-expand-lg bg-white py-2">
+  <div class="container-fluid align-items-center justify-content-between ">
+
+    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#mainMenuOffcanvas" aria-controls="mobileMenu" aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <a class="navbar-brand" [routerLink]="['/']">
+      <img src="assets/images/logo2.png" alt="Logo" width="300">
+    </a>
+
+    <a class="btn btn-light border-0 d-lg-none order-3" [routerLink]="['login']" data-bs-toggle="collapse"
+      data-bs-target="#userMenu" aria-expanded="false" aria-controls="userMenu">
+
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person"
+        viewBox="0 0 16 16">
+        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1
+              1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516
+              10.68 10.289 10 8 10s-3.516.68-4.168
+              1.332c-.678.678-.83 1.418-.832 1.664z" />
+      </svg>
+    </a>
+
+    <!-- Menú central escritorio -->
+    <div class="d-none d-lg-flex justify-content-center flex-grow-1">
+      <ul class="navbar-nav flex-row gap-3">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">Mi Boda</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['dashboard-proveedores']">Proveedores</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+      </ul>
+    </div>
+
+    <!-- Offcanvas móvil -->
+    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mainMenuOffcanvas"
+      aria-labelledby="mainMenuOffcanvasLabel">
+      <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="mobileMenuLabel">Menú</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav flex-column gap-3 text-start">
+          @if(autServicectx.rol() === 'usuario' && autServicectx.auth()) {
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['mi-boda']" routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: false }">Mi Boda</a>
+          </li>
+          }
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }">Proveedores</a>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Derecha escritorio -->
+    <div class="d-none d-lg-flex align-items-end ms-auto order-lg-2">
+      @if(autServicectx.auth()) {
+      <div class="d-flex flex-row align-items-center gap-3">
+
+        <!-- Campana de notificaciones -->
+        <button class="btn btn-link p-0 position-relative notif-button" [matMenuTriggerFor]="notifMenuHome"
+          (click)="cargarNotificaciones()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-bell"
+            viewBox="0 0 16 16">
+            <path
+              d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7a5.002 5.002 0 0 0-4.005-4.901" />
+          </svg>
+          @if (notificacionesNoLeidas() > 0) {
+          <span class="notif-badge">{{ notificacionesNoLeidas() }}</span>
+          }
+        </button>
+
+        <!-- Avatar -->
+        <button class="p-0 avatar-button" [matMenuTriggerFor]="userMenuHome">
+          <div class="d-flex justify-content-center align-items-center avatar-circle">
+            {{ nombreU() }}
+          </div>
+        </button>
+
+        <mat-menu #userMenuHome="matMenu" yPosition="below" xPosition="after">
+          <button mat-menu-item [routerLink]="['/']">Inicio</button>
+          <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
+          <button mat-menu-item [routerLink]="['/configuracion']">Configuración</button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
+        </mat-menu>
+
+        <mat-menu #notifMenuHome="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after"
+          class="notif-menu">
+          <ng-container *ngTemplateOutlet="notifPanel"></ng-container>
+        </mat-menu>
+
+      </div>
+      } @else {
+      <div class="d-flex flex-column align-items-end gap-2">
+        <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
+          [routerLink]="['/dashboard-empresas']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-briefcase text-primary" viewBox="0 0 16 16">
+            <path
+              d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5m1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0M1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5" />
+          </svg>
+
+          <span class="area-empresas">Área Empresas</span>
+        </a>
+
+        <div class="d-flex flex-row gap-3">
+          <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
+          <a [routerLink]="['/registerUser']" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-link p-0">Regístrate</a>
+        </div>
+      </div>
+      }
+    </div>
+
+  </div>
+</nav>
+
+} @else {
 <nav class="navbar navbar-expand-lg bg-white py-2">
   <div class="container-fluid align-items-center justify-content-between">
 
@@ -149,49 +167,65 @@
 
     <!-- Icono persona móvil -->
     <button class="btn btn-light border-0 d-lg-none order-3" [matMenuTriggerFor]="userMenu">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person"
+        viewBox="0 0 16 16">
         <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1
           1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516
           10.68 10.289 10 8 10s-3.516.68-4.168
-          1.332c-.678.678-.83 1.418-.832 1.664z"/>
+          1.332c-.678.678-.83 1.418-.832 1.664z" />
       </svg>
     </button>
 
-    <mat-menu #userMenu="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after" class="custom-dropdown-menu">
+    <mat-menu #userMenu="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after"
+      class="custom-dropdown-menu">
       @if(!rolAuth()) {
-        <button mat-menu-item [routerLink]="['/login']">Accede</button>
-        <button mat-menu-item [routerLink]="['/registerUser']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Registro</button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item [routerLink]="['/dashboard-empresas']" routerLinkActive="active">Empresas</button>
+      <button mat-menu-item [routerLink]="['/login']">Accede</button>
+      <button mat-menu-item [routerLink]="['/registerUser']" routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">Registro</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item [routerLink]="['/dashboard-empresas']" routerLinkActive="active">Empresas</button>
       } @else {
-        <button mat-menu-item [routerLink]="['/']">Inicio</button>
-        <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
-        <button mat-menu-item [routerLink]="['/configuracion']">Configuración</button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
+      <button mat-menu-item [routerLink]="['/']">Inicio</button>
+      <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
+      <button mat-menu-item [routerLink]="['/configuracion']">Configuración</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
       }
     </mat-menu>
 
     <!-- Menú central escritorio -->
     <div class="d-none d-lg-flex justify-content-center flex-grow-1">
       <ul class="navbar-nav flex-row gap-3">
-        <li class="nav-item"><a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Mi Boda</a></li>
-        <li class="nav-item"><a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Proveedores</a></li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">Mi Boda</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">Proveedores</a>
+        </li>
         <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
       </ul>
     </div>
 
     <!-- Offcanvas móvil -->
-    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mainMenuOffcanvas" aria-labelledby="mainMenuOffcanvasLabel">
+    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mainMenuOffcanvas"
+      aria-labelledby="mainMenuOffcanvasLabel">
       <div class="offcanvas-header border-bottom">
         <h5 class="offcanvas-title" id="mobileMenuLabel">Menú</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
         <ul class="navbar-nav flex-column gap-3 text-start">
-          <li class="nav-item"><a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">Mi Boda</a></li>
-          <li class="nav-item"><a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">Proveedores</a></li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/mi-boda']" routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">Mi Boda</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">Proveedores</a>
+          </li>
           <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
           <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
         </ul>
@@ -201,57 +235,71 @@
     <!-- Derecha escritorio -->
     <div class="d-none d-lg-flex align-items-end ms-auto order-lg-2">
       @if(autServicectx.auth()) {
-        <div class="d-flex flex-row align-items-center gap-3">
+      <div class="d-flex flex-row align-items-center gap-3">
 
-          <!-- Campana -->
-          <button class="btn btn-link p-0 position-relative notif-button"
-            [matMenuTriggerFor]="notifMenuMain"
-            (click)="cargarNotificaciones()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
-              <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7a5.002 5.002 0 0 0-4.005-4.901"/>
-            </svg>
-            @if (notificacionesNoLeidas() > 0) {
-              <span class="notif-badge">{{ notificacionesNoLeidas() }}</span>
-            }
-          </button>
+        <!-- Campana -->
+        <button class="btn btn-link p-0 position-relative notif-button" [matMenuTriggerFor]="notifMenuMain"
+          (click)="cargarNotificaciones()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-bell"
+            viewBox="0 0 16 16">
+            <path
+              d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7a5.002 5.002 0 0 0-4.005-4.901" />
+          </svg>
+          @if (notificacionesNoLeidas() > 0) {
+          <span class="notif-badge">{{ notificacionesNoLeidas() }}</span>
+          }
+        </button>
 
-          <!-- Avatar -->
-          <button class="p-0 avatar-button" [matMenuTriggerFor]="userMenuMain">
-            <div class="d-flex justify-content-center align-items-center avatar-circle">
-              {{ nombreU() }}
-            </div>
-          </button>
-
-          <mat-menu #userMenuMain="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after">
-            <button mat-menu-item [routerLink]="['/']">Inicio</button>
-            <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
-            <button mat-menu-item [routerLink]="['/configuracion']">Configuración</button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
-          </mat-menu>
-
-          <!-- Panel notificaciones -->
-          <mat-menu #notifMenuMain="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after" class="notif-menu">
-            <ng-container *ngTemplateOutlet="notifPanel"></ng-container>
-          </mat-menu>
-
-        </div>
-      } @else {
-        <div class="d-flex flex-column align-items-end gap-2">
-          <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
-            [routerLink]="['/dashboard-empresas']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-            <span class="area-empresas">Área Empresas</span>
-          </a>
-          <div class="d-flex flex-row gap-3">
-            <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
-            <a [routerLink]="['/registerUser']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link p-0">Regístrate</a>
+        <!-- Avatar -->
+        <button class="p-0 avatar-button" [matMenuTriggerFor]="userMenuMain">
+          <div class="d-flex justify-content-center align-items-center avatar-circle">
+            {{ nombreU() }}
           </div>
+        </button>
+
+        <mat-menu #userMenuMain="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after">
+          <button mat-menu-item [routerLink]="['/']">Inicio</button>
+          <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
+          <button mat-menu-item [routerLink]="['/configuracion']">Configuración</button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
+        </mat-menu>
+
+        <!-- Panel notificaciones -->
+        <mat-menu #notifMenuMain="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after"
+          class="notif-menu">
+          <ng-container *ngTemplateOutlet="notifPanel"></ng-container>
+        </mat-menu>
+
+      </div>
+      } @else {
+      <div class="d-flex flex-column align-items-end gap-2">
+        <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
+          [routerLink]="['/dashboard-empresas']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-briefcase text-brief"
+            viewBox="0 0 16 16">
+            <path
+              d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5m1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0M1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5" />
+          </svg>
+          <span class="area-empresas">Área Empresas</span>
+        </a>
+
+        <div class="d-flex flex-row gap-3">
+          <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
+          <a [routerLink]="['/registerUser']" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" class="nav-link p-0">Regístrate</a>
         </div>
+      </div>
       }
     </div>
 
   </div>
 </nav>
+}
+
+@if (toastMessage()) {
+<div class="notif-toast">{{ toastMessage() }}</div>
 }
 
 <!-- ── Template compartido del panel de notificaciones ─────────────────── -->
@@ -266,68 +314,67 @@
     </div>
 
     @if (mensajeAccion()) {
-      <div class="notif-info">{{ mensajeAccion() }}</div>
+    <div class="notif-info">{{ mensajeAccion() }}</div>
     }
 
     <mat-divider></mat-divider>
 
     @if (notificacionesLoading()) {
-      <div class="notif-empty">Cargando...</div>
+    <div class="notif-empty">Cargando...</div>
 
     } @else if (notificacionesError()) {
-      <div class="notif-error">{{ notificacionesError() }}</div>
+    <div class="notif-error">{{ notificacionesError() }}</div>
 
     } @else if (notificaciones().length === 0) {
-      <div class="notif-empty">
-        <span class="notif-empty-icon">🔔</span>
-        No tienes notificaciones pendientes.
-      </div>
+    <div class="notif-empty">
+      <span class="notif-empty-icon">🔔</span>
+      No tienes notificaciones pendientes.
+    </div>
 
     } @else {
-      @for (notif of notificaciones(); track notif.id) {
-        <div class="notif-item">
+    @for (notif of notificaciones(); track notif.id) {
+    <div class="notif-item">
 
-          <div class="notif-item-body">
-            <div class="notif-item-title">{{ notif.titulo || 'Notificación' }}</div>
-            <div class="notif-item-message">{{ notif.mensaje }}</div>
+      <div class="notif-item-body">
+        <div class="notif-item-title">{{ notif.titulo || 'Notificación' }}</div>
+        <div class="notif-item-message">{{ notif.mensaje }}</div>
 
-            @if (esNotificacionPresupuesto(notif)) {
-              <div class="notif-item-meta">
-                <span class="notif-tag">{{ estadoPresupuesto(notif) }}</span>
-                @if (importeOfertado(notif) != null) {
-                  <span class="notif-importe">
-                    {{ importeOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}
-                  </span>
-                }
-              </div>
-
-              @if (productoReferencia(notif) || fechaInicioReferencia(notif)) {
-                <div class="notif-item-dates">
-                  @if (productoReferencia(notif)) {
-                    <span>{{ modalidadReferencia(notif) || 'producto' }} #{{ productoReferencia(notif) }}</span>
-                  }
-                  @if (fechaInicioReferencia(notif)) {
-                    <span>
-                      {{ fechaInicioReferencia(notif) }}
-                      @if (fechaFinReferencia(notif)) { → {{ fechaFinReferencia(notif) }} }
-                    </span>
-                  }
-                </div>
-              }
-            }
-          </div>
-
-          <!-- Acciones -->
-          <div class="notif-item-actions">
-            <a class="notif-link" (click)="irADetalleDesdeNotificacion(notif)">Ver detalle</a>
-            <button class="notif-mark-read" (click)="marcarLeida(notif)" title="Marcar como leída">
-              ✓
-            </button>
-          </div>
-
+        @if (esNotificacionPresupuesto(notif)) {
+        <div class="notif-item-meta">
+          <span class="notif-tag">{{ estadoPresupuesto(notif) }}</span>
+          @if (importeOfertado(notif) != null) {
+          <span class="notif-importe">
+            {{ importeOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}
+          </span>
+          }
         </div>
-        <mat-divider></mat-divider>
-      }
+
+        @if (productoReferencia(notif) || fechaInicioReferencia(notif)) {
+        <div class="notif-item-dates">
+          @if (productoReferencia(notif)) {
+          <span>{{ modalidadReferencia(notif) || 'producto' }} #{{ productoReferencia(notif) }}</span>
+          }
+          @if (fechaInicioReferencia(notif)) {
+          <span>
+            {{ fechaInicioReferencia(notif) }}
+            @if (fechaFinReferencia(notif)) { → {{ fechaFinReferencia(notif) }} }
+          </span>
+          }
+        </div>
+        }
+        }
+      </div>
+
+      <div class="notif-item-actions">
+        <a class="notif-link" (click)="irADetalleDesdeNotificacion(notif)">Ver detalle</a>
+        <button class="notif-mark-read" (click)="marcarLeida(notif)" title="Marcar como leída">
+          ✓
+        </button>
+      </div>
+
+    </div>
+    <mat-divider></mat-divider>
+    }
     }
 
   </div>

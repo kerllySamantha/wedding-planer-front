@@ -6,6 +6,8 @@
     </div>
 
     <app-modal-calendar-form [data]="modalData" [event]="selectedEvent()" (editar)="modalMode.set('edit')"
-        [mode]="modalMode()" (guardarReserva)="guardarReserva($event)" (cerrar)="cerrarModal()">
+        [mode]="modalMode()" (guardarReserva)="guardarReserva($event)" 
+        (cerrar)="cerrarModal()" 
+        (eliminarReserva)="eliminarReserva($event)">
     </app-modal-calendar-form>
 </section>

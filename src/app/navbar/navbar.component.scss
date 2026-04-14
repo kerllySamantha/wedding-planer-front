@@ -127,6 +127,11 @@ h1 {
   }
 }
 
+.text-brief{
+  color: $color-primary;
+  font-weight: bold;
+}
+
 .notif-panel {
   width: $notif-width;
   max-height: 480px;

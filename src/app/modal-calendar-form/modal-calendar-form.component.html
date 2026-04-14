@@ -1,224 +1,357 @@
 <div class="modal fade" id="calendarModal" tabindex="-1" aria-hidden="true" aria-labelledby="modalReservaLabel">
-    <form [formGroup]="form" (ngSubmit)="mode() !== 'view' && guardar($event)" novalidate>
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow-lg border-0">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content shadow-lg border-0">
 
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title d-flex align-items-center" id="modalReservaLabel">
-                        <i class="bi bi-calendar-event me-2 text-primary"></i>
-                        {{ mode() === 'edit' ? 'Editar' : mode() === 'create' ? 'Nueva' : 'Detalles de' }} Reserva
-                    </h5>
-                    <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body p-4">
-
-                    @if(form.hasError('horaInvalida') && form.get('tipo_reserva')?.value === 'servicio') {
-                    <div class="alert alert-danger py-2 small mb-3">
-                        <i class="bi bi-clock-history me-2"></i>La hora de fin debe ser posterior a la de inicio.
-                    </div>
-                    }
-
-                    @if(form.hasError('notasCancelacionInvalidas')) {
-                    <div class="alert alert-warning py-2 small mb-3">
-                        <i class="bi bi-chat-left-dots me-2"></i>Para cancelar, explica el motivo en notas (mín. 10
-                        carac.).
-                    </div>
-                    }
-
-                    @if(mode() === 'create' || mode() === 'edit') {
-
-                    <div class="mb-4">
-                        <label class="form-label fw-bold small text-uppercase text-muted">Título de la Reserva</label>
-                        <input type="text" class="form-control form-control-lg" formControlName="titulo"
-                            [class.is-invalid]="form.get('titulo')?.invalid && form.get('titulo')?.touched">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-bold small text-uppercase text-muted d-block">Tipo de
-                            Reserva</label>
-                        <div class="btn-group w-100" role="group">
-
-                            <input type="radio" class="btn-check" formControlName="tipo_reserva" value="producto"
-                                id="tipoProd"
-                                [disabled]="sinProductosModalidad('producto')">
-                            <label class="btn btn-outline-primary" for="tipoProd"
-                                [class.opacity-50]="sinProductosModalidad('producto')"
-                                [title]="sinProductosModalidad('producto') ? 'No hay productos disponibles' : 'Producto'">
-                                Producto
-                            </label>
-
-                            <input type="radio" class="btn-check" formControlName="tipo_reserva" value="servicio"
-                                id="tipoServ"
-                                [disabled]="sinProductosModalidad('servicio')">
-                            <label class="btn btn-outline-primary" for="tipoServ"
-                                [class.opacity-50]="sinProductosModalidad('servicio')"
-                                [title]="sinProductosModalidad('servicio') ? 'No hay servicios disponibles' : 'Servicio'">
-                                Servicio
-                            </label>
-
-                            <input type="radio" class="btn-check" formControlName="tipo_reserva" value="bloqueo"
-                                id="tipoBloq">
-                            <label class="btn btn-outline-primary" for="tipoBloq">Bloqueo</label>
-
-                        </div>
-                    </div>
-
-                    @if(tipoReservaActual() === 'producto' || tipoReservaActual() === 'servicio') {
-                    @if(productosFiltrados().length > 0) {
-                    <div class="mb-4">
-                        <label class="form-label fw-bold small text-uppercase text-muted">
-                            {{ tipoReservaActual() === 'servicio' ? 'Servicio' : 'Producto' }} a reservar
-                        </label>
-                        <select class="form-select" formControlName="productoSeleccionado">
-                            <option [ngValue]="null" disabled>Selecciona una opción...</option>
-                            @for(p of productosFiltrados(); track p.id) {
-                            <option [ngValue]="p.id">
-                                {{ p.nombre }} — {{ p.precio_min | currency:'EUR':'symbol':'1.0-0' }} / {{ p.precio_max
-                                | currency:'EUR':'symbol':'1.0-0' }}
-                            </option>
-                            }
-                        </select>
-                    </div>
-                    } @else {
-                    <div class="alert alert-warning py-2 small mb-4">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        No hay {{ tipoReservaActual() === 'servicio' ? 'servicios' : 'productos' }} disponibles para
-                        reservar.
-                    </div>
-                    }
-                    }
-
-                    @if(form.get('tipo_reserva')?.value) {
-                    <div formGroupName="fecha" class="p-3 border rounded shadow-sm bg-white mb-4">
-
-                        @if(form.get('tipo_reserva')?.value === 'producto') {
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold">Fecha Inicio</label>
-                                <input type="date" class="form-control" formControlName="start">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold">Fecha Fin</label>
-                                <input type="date" class="form-control" formControlName="end">
-                            </div>
-                        </div>
-                        }
-
-                        @if(form.get('tipo_reserva')?.value === 'servicio') {
-                        <div class="row g-3">
-                            <!-- <div class="col-12">
-                                <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input" type="checkbox" formControlName="allDay"
-                                        id="allDaySwitch">
-                                    <label class="form-check-label" for="allDaySwitch">Ocupa todo el día</label>
-                                </div>
-                            </div> -->
-                            <div class="col-12">
-                                <label class="form-label small fw-bold">Fecha del Servicio</label>
-                                <input type="date" class="form-control" formControlName="start">
-                            </div>
-
-                            <div class="col-6">
-                                <label class="small text-muted">Hora Inicio</label>
-                                <input type="time" class="form-control" formControlName="startStr">
-                            </div>
-
-                            <div class="col-6">
-                                <label class="small text-muted">Hora Fin</label>
-                                <input type="time" class="form-control" formControlName="endStr">
-                            </div>
-                        </div>
-                        }
-
-                        @if(form.get('tipo_reserva')?.value === 'bloqueo') {
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold">Desde</label>
-                                <input type="date" class="form-control" formControlName="start">
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold">Hasta</label>
-                                <input type="date" class="form-control" formControlName="end">
-                            </div>
-                        </div>
-                        }
-
-                        @if(form.hasError('fechaFinInvalida')){
-                        <div class="text-danger small mt-2">
-                            <i class="bi bi-exclamation-triangle-fill"></i> La fecha de fin es anterior al inicio.
-                        </div>
-                        }
-                    </div>
-                    }
-
-                    <div class="mb-4">
-                        <label class="form-label fw-bold small text-uppercase text-muted">Estado</label>
-                        <div class="d-flex flex-wrap gap-2">
-                            @for(est of ['pendiente', 'confirmada', 'cancelada', 'bloqueada']; track est) {
-                            <input type="radio" class="btn-check" formControlName="estado" [value]="est"
-                                [id]="'st-'+est">
-                            <label class="btn btn-sm btn-outline-secondary flex-fill" [for]="'st-'+est">
-                                {{ est | titlecase }}
-                            </label>
-                            }
-                        </div>
-                    </div>
-
-                    <div class="mb-0">
-                        <label class="form-label fw-bold small text-uppercase text-muted">Notas Internas</label>
-                        <textarea class="form-control" rows="2" formControlName="notas"
-                            placeholder="Ej: Motivo del bloqueo o detalles específicos..."></textarea>
-                    </div>
-
-                    } @else if(mode() === 'view') {
-                    <div class="view-details">
-                        <h3 class="mb-1">{{ event()?.title }}</h3>
-                        <div class="mb-3">
-                            <span class="badge rounded-pill px-3 py-2" [style.background]="event()?.backgroundColor">
-                                {{ event()?.extendedProps?.['estado'] | titlecase }}
-                            </span>
-                        </div>
-                        <div class="card bg-light border-0">
-                            <div class="card-body">
-                                <p class="mb-2"><strong>📅 Fecha:</strong> {{ event()?.start | date:'longDate' }}</p>
-                                @if(event()?.extendedProps?.tipo_reserva === 'servicio'){
-                                <p class="mb-2">
-                                    <strong>🕒 Horario:</strong>
-                                    {{ event()?.start | date:'HH:mm' }} - {{ event()?.end | date:'HH:mm' }}
-                                </p>
-                                }
-                                <p class="mb-2"><strong>🏢 Empresa:</strong> {{
-
-                                    event()?.extendedProps?.['empresa']?.nombre_empresa || 'N/A' }}</p>
-                                <p class="mb-2"><strong>🏢 Tipo:</strong> {{
-                                    event()?.extendedProps?.tipo_reserva }}</p>
-                                @if(event()?.extendedProps?.['notas']){
-                                <hr>
-                                <p class="mb-0 text-muted italic small">"{{ event()?.extendedProps?.['notas'] }}"</p>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    }
-                </div>
-
-                <div class="modal-footer bg-light border-top-0">
-                    @if(mode() === 'create' || mode() === 'edit') {
-                    <button type="button" class="btn btn-light px-4" (click)="cerrarModal()">Cancelar</button>
-                    <button class="btn btn-primary px-4 shadow-sm" [disabled]="form.invalid" type="submit">
-                        {{ mode() === 'edit' ? 'Actualizar Cambios' : 'Crear Reserva' }}
-                    </button>
-                    }
-                    @if(mode() === 'view') {
-                    <button type="button" class="btn btn-outline-danger me-auto"
-                        (click)="cerrar.emit()">Eliminar</button>
-                    <button type="button" class="btn btn-primary px-4" (click)="edit()">Modificar</button>
-                    }
-                </div>
-
-            </div>
+      <form [formGroup]="form" (ngSubmit)="mode() !== 'view' && guardar($event)" novalidate>
+        <div class="modal-header bg-light">
+          <h5 class="modal-title d-flex align-items-center" id="modalReservaLabel">
+            <i class="bi bi-calendar-event me-2 text-primary"></i>
+            {{ mode() === 'edit' ? 'Editar' : mode() === 'create' ? 'Nueva' : 'Detalles de' }} Reserva
+          </h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()" aria-label="Close"></button>
         </div>
-    </form>
+
+        <div class="modal-body p-4">
+
+          <!-- Alertas globales -->
+          @if(formError('horaInvalida') && form.get('tipo_reserva')?.value === 'servicio') {
+            <div class="alert alert-danger py-2 small mb-3">
+              <i class="bi bi-clock-history me-2"></i>
+              La hora de fin debe ser posterior a la de inicio.
+            </div>
+          }
+
+          @if(formError('notasCancelacionInvalidas')) {
+            <div class="alert alert-warning py-2 small mb-3">
+              <i class="bi bi-chat-left-dots me-2"></i>
+              Para cancelar, explica el motivo en notas, mínimo 10 caracteres.
+            </div>
+          }
+
+          @if(mode() === 'create' || mode() === 'edit') {
+
+            <!-- Datos básicos -->
+            <div class="mb-4">
+              <label class="form-label fw-bold small text-uppercase text-muted">Título de la reserva</label>
+              <input
+                type="text"
+                class="form-control form-control-lg"
+                formControlName="titulo"
+                [class.is-invalid]="controlInvalid('titulo')"
+                placeholder="Ej: Reserva catering boda"
+              >
+              @if(controlError('titulo', 'required')) {
+                <div class="invalid-feedback d-block">
+                  El título es obligatorio.
+                </div>
+              }
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-bold small text-uppercase text-muted d-block">Tipo de reserva</label>
+
+              <div class="btn-group w-100" role="group">
+                <input
+                  type="radio"
+                  class="btn-check"
+                  formControlName="tipo_reserva"
+                  value="producto"
+                  id="tipoProd"
+                  [attr.disabled]="sinProductosModalidad('producto') ? '' : null"
+                >
+                <label
+                  class="btn btn-outline-primary"
+                  for="tipoProd"
+                  [class.opacity-50]="sinProductosModalidad('producto')">
+                  Producto
+                </label>
+
+                <input
+                  type="radio"
+                  class="btn-check"
+                  formControlName="tipo_reserva"
+                  value="servicio"
+                  id="tipoServ"
+                  [attr.disabled]="sinProductosModalidad('servicio') ? '' : null"
+                >
+                <label
+                  class="btn btn-outline-primary"
+                  for="tipoServ"
+                  [class.opacity-50]="sinProductosModalidad('servicio')">
+                  Servicio
+                </label>
+
+                <input
+                  type="radio"
+                  class="btn-check"
+                  formControlName="tipo_reserva"
+                  value="bloqueo"
+                  id="tipoBloq"
+                >
+                <label class="btn btn-outline-primary" for="tipoBloq">Bloqueo</label>
+              </div>
+
+              @if(controlError('tipo_reserva', 'required')) {
+                <div class="text-danger small mt-2">
+                  Debes seleccionar un tipo de reserva.
+                </div>
+              }
+            </div>
+
+            @if(tipoReservaActual() === 'producto' || tipoReservaActual() === 'servicio') {
+              @if(productosFiltrados().length > 0) {
+                <div class="mb-4">
+                  <label class="form-label fw-bold small text-uppercase text-muted">
+                    {{ tipoReservaActual() === 'servicio' ? 'Servicio' : 'Producto' }} a reservar
+                  </label>
+
+                  <select
+                    class="form-select"
+                    formControlName="productoSeleccionado"
+                    [class.is-invalid]="controlInvalid('productoSeleccionado')"
+                  >
+                    <option [ngValue]="null" disabled>Selecciona una opción...</option>
+                    @for(p of productosFiltrados(); track p.id) {
+                      <option [ngValue]="p.id">
+                        {{ p.nombre }} — {{ p.precio_min | currency:'EUR':'symbol':'1.0-0' }} / {{ p.precio_max | currency:'EUR':'symbol':'1.0-0' }}
+                      </option>
+                    }
+                  </select>
+
+                  @if(controlError('productoSeleccionado', 'required')) {
+                    <div class="invalid-feedback d-block">
+                      Debes seleccionar un producto o servicio.
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="alert alert-warning py-2 small mb-4">
+                  <i class="bi bi-exclamation-triangle me-2"></i>
+                  No hay {{ tipoReservaActual() === 'servicio' ? 'servicios' : 'productos' }} disponibles para reservar.
+                </div>
+              }
+            }
+
+            <!-- Fechas -->
+            @if(form.get('tipo_reserva')?.value) {
+              <div formGroupName="fecha" class="p-3 border rounded shadow-sm bg-white mb-4">
+                <h6 class="fw-bold mb-3">Fecha y horario</h6>
+
+                @if(form.get('tipo_reserva')?.value === 'producto') {
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Fecha inicio</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        formControlName="start"
+                        [class.is-invalid]="controlInvalid('fecha.start')"
+                      >
+                      @if(controlError('fecha.start', 'required')) {
+                        <div class="invalid-feedback d-block">La fecha de inicio es obligatoria.</div>
+                      }
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Fecha fin</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        formControlName="end"
+                        [class.is-invalid]="controlInvalid('fecha.end') || formError('fechaFinRequerida') || formError('fechaFinInvalida')"
+                      >
+                      @if(controlError('fecha.end', 'required') || formError('fechaFinRequerida')) {
+                        <div class="invalid-feedback d-block">La fecha de fin es obligatoria.</div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @if(form.get('tipo_reserva')?.value === 'servicio') {
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label class="form-label small fw-bold">Fecha del servicio</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        formControlName="start"
+                        [class.is-invalid]="controlInvalid('fecha.start')"
+                      >
+                      @if(controlError('fecha.start', 'required')) {
+                        <div class="invalid-feedback d-block">La fecha del servicio es obligatoria.</div>
+                      }
+                    </div>
+
+                    <div class="col-6">
+                      <label class="small text-muted">Hora inicio</label>
+                      <input
+                        type="time"
+                        class="form-control"
+                        formControlName="startStr"
+                        [class.is-invalid]="controlInvalid('fecha.startStr') || formError('horaInvalida')"
+                      >
+                      @if(controlError('fecha.startStr', 'required')) {
+                        <div class="invalid-feedback d-block">La hora de inicio es obligatoria.</div>
+                      }
+                    </div>
+
+                    <div class="col-6">
+                      <label class="small text-muted">Hora fin</label>
+                      <input
+                        type="time"
+                        class="form-control"
+                        formControlName="endStr"
+                        [class.is-invalid]="controlInvalid('fecha.endStr') || formError('horaInvalida')"
+                      >
+                      @if(controlError('fecha.endStr', 'required')) {
+                        <div class="invalid-feedback d-block">La hora de fin es obligatoria.</div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @if(form.get('tipo_reserva')?.value === 'bloqueo') {
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Desde</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        formControlName="start"
+                        [class.is-invalid]="controlInvalid('fecha.start')"
+                      >
+                      @if(controlError('fecha.start', 'required')) {
+                        <div class="invalid-feedback d-block">La fecha inicial es obligatoria.</div>
+                      }
+                    </div>
+
+                    <div class="col-md-6">
+                      <label class="form-label small fw-bold">Hasta</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        formControlName="end"
+                        [class.is-invalid]="controlInvalid('fecha.end') || formError('fechaFinRequerida') || formError('fechaFinInvalida')"
+                      >
+                      @if(controlError('fecha.end', 'required') || formError('fechaFinRequerida')) {
+                        <div class="invalid-feedback d-block">La fecha final es obligatoria.</div>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @if(formError('fechaFinInvalida')) {
+                  <div class="text-danger small mt-2">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                    La fecha de fin no puede ser anterior a la fecha de inicio.
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Estado -->
+            <div class="mb-4">
+              <label class="form-label fw-bold small text-uppercase text-muted">Estado</label>
+              <div class="d-flex flex-wrap gap-2">
+                @for(est of ['pendiente', 'confirmada', 'cancelada', 'bloqueada']; track est) {
+                  <input
+                    type="radio"
+                    class="btn-check"
+                    formControlName="estado"
+                    [value]="est"
+                    [id]="'st-' + est"
+                  >
+                  <label class="btn btn-sm btn-outline-secondary flex-fill" [for]="'st-' + est">
+                    {{ est | titlecase }}
+                  </label>
+                }
+              </div>
+            </div>
+
+            <!-- Notas -->
+            <div class="mb-0">
+              <label class="form-label fw-bold small text-uppercase text-muted">Notas internas</label>
+              <textarea
+                class="form-control"
+                rows="3"
+                formControlName="notas"
+                [class.is-invalid]="formError('notasCancelacionInvalidas')"
+                placeholder="Ej: motivo del bloqueo o detalles específicos..."
+              ></textarea>
+
+              @if(formError('notasCancelacionInvalidas')) {
+                <div class="invalid-feedback d-block">
+                  Si cancelas la reserva, debes indicar un motivo de al menos 10 caracteres.
+                </div>
+              }
+            </div>
+
+          } @else if(mode() === 'view') {
+            <div class="view-details">
+              <h3 class="mb-1">{{ event()?.title }}</h3>
+              <div class="mb-3">
+                <span class="badge rounded-pill px-3 py-2" [style.background]="event()?.backgroundColor">
+                  {{ event()?.extendedProps?.['estado'] | titlecase }}
+                </span>
+              </div>
+
+              <div class="card bg-light border-0">
+                <div class="card-body">
+                  <p class="mb-2"><strong>📅 Fecha:</strong> {{ event()?.start | date:'longDate' }}</p>
+
+                  @if(event()?.extendedProps?.tipo_reserva === 'servicio') {
+                    <p class="mb-2">
+                      <strong>🕒 Horario:</strong>
+                      {{ event()?.start | date:'HH:mm' }} - {{ event()?.end | date:'HH:mm' }}
+                    </p>
+                  }
+
+                  <p class="mb-2">
+                    <strong>🏢 Empresa:</strong>
+                    {{ event()?.extendedProps?.['empresa']?.nombre_empresa || 'N/A' }}
+                  </p>
+
+                  <p class="mb-2">
+                    <strong>🏢 Tipo:</strong>
+                    {{ event()?.extendedProps?.tipo_reserva }}
+                  </p>
+
+                  @if(event()?.extendedProps?.['notas']) {
+                    <hr>
+                    <p class="mb-0 text-muted italic small">"{{ event()?.extendedProps?.['notas'] }}"</p>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="modal-footer">
+          @if(mode() === 'view') {
+            <button type="button" class="btn btn-light px-4" (click)="cerrar.emit()">
+              Cerrar
+            </button>
+          }
+
+          @if(puedeEliminarEvento()) {
+            <button type="button" class="btn btn-outline-danger me-auto" (click)="eliminar()">
+              Eliminar
+            </button>
+          }
+
+          @if(puedeEditarEvento()) {
+            <button type="button" class="btn btn-outline-primary" (click)="edit()">
+              Editar
+            </button>
+          }
+
+          @if(mode() === 'create' || mode() === 'edit') {
+            <button type="submit" class="btn btn-primary" [disabled]="esSoloLectura()">
+              Guardar
+            </button>
+          }
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

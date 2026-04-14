@@ -20,8 +20,8 @@ import { filter } from 'rxjs';
   imports: [
     RouterLink, RouterLinkActive,
     MatSidenavModule, MatCheckboxModule,
-    NgTemplateOutlet,
     MatButtonModule, MatMenuModule, MatDividerModule,
+    NgTemplateOutlet,
     CurrencyPipe,
   ],
   templateUrl: './navbar.component.html',
