@@ -18,46 +18,44 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './perfil-user.component.scss',
 })
 export class PerfilUserComponent implements OnInit, OnDestroy {
-
-  // ── Servicios ─────────────────────────────────────────────────────────────
-
-  private readonly perfilServiceCtx    = inject(PerfilServiceServiceService);
-  private readonly notificacionesCtx   = inject(NotificacionesService);
-  private readonly bodaCtx             = inject(CountdownServiceService);
-  private readonly echoSvc             = inject(EchoService);
+  private readonly perfilServiceCtx = inject(PerfilServiceServiceService);
+  private readonly notificacionesCtx = inject(NotificacionesService);
+  private readonly bodaCtx = inject(CountdownServiceService);
+  private readonly echoSvc = inject(EchoService);
   private readonly pedirPresupuestoCtx = inject(PedirPresupuestoService);
-  private readonly router              = inject(Router);
+  private readonly router = inject(Router);
 
-  // ── Estado público (signals) ──────────────────────────────────────────────
-
-  // perfil se carga en ngOnInit como Observable y se almacena en signal tipado
-  readonly perfil          = signal<PerfilResponse | null>(null);
-  readonly boda            = this.bodaCtx.bodaEncontrada;
-  readonly countdown       = this.bodaCtx.countdownValue;
+  readonly perfil = signal<PerfilResponse | null>(null);
+  readonly boda = this.bodaCtx.bodaEncontrada;
+  readonly countdown = this.bodaCtx.countdownValue;
   readonly fechaFormateada = this.bodaCtx.fechaFormateada;
 
-  readonly notificaciones        = signal<Notificacion[]>([]);
+  readonly notificaciones = signal<Notificacion[]>([]);
   readonly notificacionesLoading = signal<boolean>(false);
-  readonly notificacionesError   = signal<string | null>(null);
-  readonly mensajeAccion         = signal<string | null>(null);
+  readonly notificacionesError = signal<string | null>(null);
+  readonly mensajeAccion = signal<string | null>(null);
+  readonly expandedNotifId = signal<number | string | null>(null);
 
-  // ── Estado privado ────────────────────────────────────────────────────────
-
-  private readonly aceptandoIds  = signal<Set<string>>(new Set());
-  private readonly aceptadosIds  = signal<Set<string>>(new Set());
+  private readonly aceptandoIds = signal<Set<string>>(new Set());
+  private readonly aceptadosIds = signal<Set<string>>(new Set());
   private readonly rechazandoIds = signal<Set<string>>(new Set());
-
   private unsubscribeNotificaciones: (() => void) | null = null;
-
-  // ── Ciclo de vida ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
     const userId = Number(localStorage.getItem('id'));
 
+    if (!userId) {
+      console.error('Usuario no identificado');
+      return;
+    }
+
+    this.bodaCtx.cargarBodaDelUsuario();
+
     this.perfilServiceCtx.getPerfilByUserId(userId).subscribe({
       next: (res) => {
         this.perfil.set(res);
-        // Notificaciones dependen del id del perfil: las cargamos tras recibirlo
+        console.log('Perfil cargado:', res);
+        console.log('Boda signal actual:', this.boda());
         this.cargarNotificaciones();
       },
       error: (err: HttpErrorResponse) => {
@@ -70,7 +68,19 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.unsubscribeNotificaciones?.();
   }
 
-  // ── Computed helpers ──────────────────────────────────────────────────────
+  cargarPerfil(userId: number): void {
+    this.perfilServiceCtx.getPerfilByUserId(userId).subscribe({
+      next: (res) => {
+        this.perfil.set(res);
+        console.log('Perfil cargado:', res);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error al cargar perfil:', err);
+      },
+    });
+  }
+
+
 
   presupuestoGastado(): number {
     const boda = this.boda();
@@ -78,11 +88,9 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     return boda.presupuestos.reduce((total, p) => total + p.monto_total, 0);
   }
 
-  // ── Notificaciones ────────────────────────────────────────────────────────
-
   cargarNotificaciones(page = 1): void {
-    const userId = this.perfil()?.data?.id;
-    if (userId == null) {
+    const userId = Number(localStorage.getItem('id'));
+    if (!userId) {
       this.notificacionesError.set('Usuario no identificado.');
       return;
     }
@@ -96,14 +104,24 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
         this.notificacionesLoading.set(false);
       },
       error: (err: HttpErrorResponse) => {
-        const msg = err.error?.message ?? err.error?.mensaje ?? 'Error al cargar notificaciones.';
+        const msg =
+          err.error?.message ??
+          err.error?.mensaje ??
+          'Error al cargar notificaciones.';
         this.notificacionesError.set(msg);
         this.notificacionesLoading.set(false);
       },
     });
   }
 
-  // ── Helpers de notificación ───────────────────────────────────────────────
+  toggleExpandNotification(notif: Notificacion): void {
+    const id = notif?.id ?? null;
+    this.expandedNotifId.update((current) => (current === id ? null : id));
+  }
+
+  estaExpandida(notif: Notificacion): boolean {
+    return this.expandedNotifId() === (notif?.id ?? null);
+  }
 
   esPresupuesto(notif: Notificacion): boolean {
     return notif?.tipo === 'presupuesto';
@@ -118,24 +136,32 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     return notif?.referencia?.importe_ofertado ?? null;
   }
 
-  // ── Estado del presupuesto ────────────────────────────────────────────────
-
   private resolverEstadoPresupuesto(notif: Notificacion): string {
     const estado = notif?.referencia?.estado;
     if (!estado) return 'pendiente';
-    // EstadoPedirPresupuesto es un objeto: devolvemos la clave con valor truthy
-    return estado.aceptado_empresa || estado.rechazado_empresa || estado.pendiente || 'pendiente';
+    return (
+      estado.aceptado_empresa ||
+      estado.rechazado_empresa ||
+      estado.pendiente ||
+      'pendiente'
+    );
   }
 
   estadoPresupuestoTexto(notif: Notificacion): string {
     switch (this.resolverEstadoPresupuesto(notif)) {
       case 'pendiente_usuario':
-      case 'aceptado_empresa':  return 'Pendiente de tu respuesta';
-      case 'aceptado_usuario':  return 'Aceptado';
-      case 'rechazado_usuario': return 'Rechazado por ti';
-      case 'rechazado_empresa': return 'Rechazado por proveedor';
-      case 'pendiente':         return 'Pendiente';
-      default:                  return 'En gestión';
+      case 'aceptado_empresa':
+        return 'Pendiente de tu respuesta';
+      case 'aceptado_usuario':
+        return 'Aceptado';
+      case 'rechazado_usuario':
+        return 'Rechazado por ti';
+      case 'rechazado_empresa':
+        return 'Rechazado por proveedor';
+      case 'pendiente':
+        return 'Pendiente';
+      default:
+        return 'En gestión';
     }
   }
 
@@ -143,12 +169,10 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     const estado = this.resolverEstadoPresupuesto(notif);
     return (
       estado === 'pendiente_usuario' ||
-      estado === 'aceptado_empresa'  ||
+      estado === 'aceptado_empresa' ||
       estado === 'pendiente'
     );
   }
-
-  // ── Flags de carga por ID ─────────────────────────────────────────────────
 
   aceptandoPresupuesto(id: string | null): boolean {
     return id != null && this.aceptandoIds().has(id);
@@ -165,16 +189,27 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   private setFlag(
     set$: ReturnType<typeof signal<Set<string>>>,
     id: string,
-    value: boolean
+    value: boolean,
   ): void {
-    set$.update(prev => {
+    set$.update((prev) => {
       const next = new Set(prev);
       value ? next.add(id) : next.delete(id);
       return next;
     });
   }
 
-  // ── Acciones ──────────────────────────────────────────────────────────────
+  marcarLeida(notif: Notificacion): void {
+    if (!notif?.id || notif.leido === true) return;
+
+    this.notificacionesCtx.marcarLeida(notif.id).subscribe({
+      next: (_res: NotificacionResponse) => {
+        this.notificaciones.update((prev) =>
+          prev.map((n) => (n.id === notif.id ? { ...n, leido: true } : n)),
+        );
+      },
+      error: () => {},
+    });
+  }
 
   verDetallePresupuesto(notif: Notificacion): void {
     const id = this.presupuestoId(notif);
@@ -184,14 +219,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     }
 
     if (notif?.id) {
-      this.notificacionesCtx.marcarLeida(notif.id).subscribe({
-        next: (_res: NotificacionResponse) => {
-          this.notificaciones.update(prev =>
-            prev.map(n => n.id === notif.id ? { ...n, leido: true } : n)
-          );
-        },
-        error: () => { /* silencioso */ },
-      });
+      this.marcarLeida(notif);
     }
 
     this.router.navigate(['/presupuesto', id], {
@@ -220,7 +248,10 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       },
       error: (err: HttpErrorResponse) => {
         this.setFlag(this.aceptandoIds, id, false);
-        const msg = err.error?.message ?? err.error?.mensaje ?? 'No se pudo aceptar el presupuesto.';
+        const msg =
+          err.error?.message ??
+          err.error?.mensaje ??
+          'No se pudo aceptar el presupuesto.';
         this.mensajeAccion.set(msg);
       },
     });
@@ -246,7 +277,10 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       },
       error: (err: HttpErrorResponse) => {
         this.setFlag(this.rechazandoIds, id, false);
-        const msg = err.error?.message ?? err.error?.mensaje ?? 'No se pudo rechazar el presupuesto.';
+        const msg =
+          err.error?.message ??
+          err.error?.mensaje ??
+          'No se pudo rechazar el presupuesto.';
         this.mensajeAccion.set(msg);
       },
     });

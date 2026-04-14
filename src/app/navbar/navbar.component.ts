@@ -1,4 +1,4 @@
-import { CurrencyPipe, NgTemplateOutlet } from '@angular/common';
+import { CurrencyPipe, NgTemplateOutlet, DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -10,49 +10,45 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { NotificacionesService } from '../Services/Notificacion/notificaciones.service';
 import { Notificacion } from '../Interfaces/Notificacion';
-import { PedirPresupuestoInfo, EstadoPedirPresupuesto } from '../Interfaces/PedirPresupuesto';
-import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
+import { PedirPresupuestoInfo } from '../Interfaces/PedirPresupuesto';
 import { EchoService } from '../Services/Echo/echo.service';
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
   imports: [
-    RouterLink, RouterLinkActive,
-    MatSidenavModule, MatCheckboxModule,
-    MatButtonModule, MatMenuModule, MatDividerModule,
+    RouterLink,
+    RouterLinkActive,
+    MatSidenavModule,
+    MatCheckboxModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatDividerModule,
     NgTemplateOutlet,
     CurrencyPipe,
+    DatePipe,
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+  readonly autServicectx = inject(AuthenticationService);
+  private readonly notificacionesCtx = inject(NotificacionesService);
+  private readonly echoSvc = inject(EchoService);
+  private readonly router = inject(Router);
 
-  // ── Servicios ─────────────────────────────────────────────────────────────
-
-  readonly autServicectx       = inject(AuthenticationService);
-  private readonly notificacionesCtx   = inject(NotificacionesService);
-  private readonly pedirPresupuestoCtx = inject(PedirPresupuestoService);
-  private readonly echoSvc             = inject(EchoService);
-  private readonly router              = inject(Router);
-
-  // ── Estado ────────────────────────────────────────────────────────────────
-
-  readonly nombreU       = signal<string | null>(null);
-  readonly rolAuth       = computed(() => !!this.autServicectx.rol());
-  readonly toastMessage  = signal<string | null>(null);
+  readonly nombreU = signal<string | null>(null);
+  readonly rolAuth = computed(() => !!this.autServicectx.rol());
+  readonly toastMessage = signal<string | null>(null);
   readonly mensajeAccion = signal<string | null>(null);
-
   readonly notificacionesLoading = signal<boolean>(false);
-  readonly notificacionesError   = signal<string | null>(null);
+  readonly notificacionesError = signal<string | null>(null);
+  readonly expandedNotifId = signal<number | string | null>(null);
 
-  /** Todas las notificaciones recibidas */
   private readonly _notificaciones = signal<Notificacion[]>([]);
 
-  /** Solo las no leídas — lo que se muestra en el panel */
   readonly notificaciones = computed(() =>
-    this._notificaciones().filter(n => !this.esLeida(n))
+    this._notificaciones().filter((n) => !this.esLeida(n))
   );
 
   readonly notificacionesNoLeidas = computed(() => this.notificaciones().length);
@@ -61,17 +57,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private toastTimer: number | null = null;
   private unsubscribeNotificaciones: (() => void) | null = null;
 
-  // ── Constructor ───────────────────────────────────────────────────────────
-
   constructor() {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      this.rutaActiva = event.urlAfterRedirects;
-    });
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        this.rutaActiva = event.urlAfterRedirects;
+      });
   }
-
-  // ── Ciclo de vida ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
     this.letraNombre();
@@ -87,8 +79,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.toastTimer = null;
     }
   }
-
-  // ── Navegación ────────────────────────────────────────────────────────────
 
   esRutaHome(): boolean {
     return this.router.url === '/';
@@ -106,8 +96,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return this.rutaActiva.includes(ruta);
   }
 
-  // ── Sesión ────────────────────────────────────────────────────────────────
-
   letraNombre(): void {
     const inicial = localStorage.getItem('nombre')?.charAt(0) ?? null;
     this.nombreU.set(inicial);
@@ -120,8 +108,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
       error: (err: HttpErrorResponse) => console.error('Error al cerrar sesión', err),
     });
   }
-
-  // ── Notificaciones ────────────────────────────────────────────────────────
 
   cargarNotificaciones(): void {
     const usuarioId = Number(localStorage.getItem('id'));
@@ -140,42 +126,65 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.notificacionesLoading.set(false);
       },
       error: (err: HttpErrorResponse) => {
-        this.notificacionesError.set(err.error?.message ?? 'No se pudieron cargar las notificaciones.');
+        this.notificacionesError.set(
+          err.error?.message ?? 'No se pudieron cargar las notificaciones.'
+        );
         this.notificacionesLoading.set(false);
       },
     });
   }
 
-  irADetalleDesdeNotificacion(notif: Notificacion): void {
+  toggleExpandNotification(notif: Notificacion, event?: Event): void {
+    event?.stopPropagation();
+    const id = notif?.id ?? null;
+    if (id == null) return;
+    this.expandedNotifId.update((current) => (current === id ? null : id));
+  }
+
+  estaExpandida(notif: Notificacion): boolean {
+    return this.expandedNotifId() === (notif?.id ?? null);
+  }
+
+  irADetalleDesdeNotificacion(notif: Notificacion, event?: Event): void {
+    event?.stopPropagation();
     const presupuestoId = this.presupuestoId(notif);
     if (!presupuestoId) return;
 
     this.marcarLeida(notif);
+    this.expandedNotifId.set(null);
     this.router.navigate(['/presupuesto', presupuestoId]);
   }
 
-  /** Marca la notificación como leída en servidor y la elimina del panel */
-  marcarLeida(notif: Notificacion): void {
+  onNotifCardClick(notif: Notificacion): void {
+    if (this.esNotificacionPresupuesto(notif)) {
+      this.toggleExpandNotification(notif);
+      return;
+    }
+    this.marcarLeida(notif);
+  }
+
+  marcarLeida(notif: Notificacion, event?: Event): void {
+    event?.stopPropagation();
     if (!notif?.id || this.esLeida(notif)) return;
 
     this.notificacionesCtx.marcarLeida(notif.id).subscribe({
       next: () => {
-        this._notificaciones.update(prev =>
-          prev.map(n => n.id === notif.id ? { ...n, leido: true } : n)
+        this._notificaciones.update((prev) =>
+          prev.map((n) => (n.id === notif.id ? { ...n, leido: true } : n))
         );
+        if (this.expandedNotifId() === notif.id) {
+          this.expandedNotifId.set(null);
+        }
       },
-      error: () => { /* silencioso */ },
+      error: () => {},
     });
   }
-
-  // ── Helpers de notificación ───────────────────────────────────────────────
 
   esLeida(notif?: Notificacion | null): boolean {
     if (!notif) return false;
     const v = notif.leido;
     if (typeof v === 'boolean') return v;
-    if (typeof v === 'number')  return v === 1;
-    // if (typeof v === 'string')  return v === '1' || v.toLowerCase() === 'true';
+    if (typeof v === 'number') return v === 1;
     return false;
   }
 
@@ -187,11 +196,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   presupuestoId(notif: Notificacion): string | number | null {
-    return (
-      notif?.referencia?.id ??
-      notif?.referencia_id ??
-      null
-    );
+    return notif?.referencia?.id ?? notif?.referencia_id ?? null;
   }
 
   importeOfertado(notif: Notificacion): number | null {
@@ -223,13 +228,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return notif?.referencia?.fecha_fin ?? null;
   }
 
-  // ── Echo (WebSocket) ──────────────────────────────────────────────────────
-
   private iniciarEscuchaNotificaciones(): void {
     const userId = this.autServicectx.usuario_id();
     if (!userId) return;
 
-    this.echoSvc.prepare()
+    this.echoSvc
+      .prepare()
       .then(() => {
         this.echoSvc.init();
         this.unsubscribeNotificaciones?.();
@@ -242,15 +246,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
               this.cargarNotificaciones();
               return;
             }
-            this._notificaciones.update(prev => {
-              const existe = prev.some(n => n.id === nueva.id);
+            this._notificaciones.update((prev) => {
+              const existe = prev.some((n) => n.id === nueva.id);
               return existe ? prev : [nueva, ...prev];
             });
             this.mostrarToast(nueva.titulo ?? 'Nueva notificación');
           }
         );
       })
-      .catch(err => console.error('Error preparando Echo:', err));
+      .catch((err) => console.error('Error preparando Echo:', err));
   }
 
   private mostrarToast(mensaje: string): void {
@@ -268,14 +272,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
     if (id == null) return null;
 
     return {
-      id:              id as number,
-      tipo:            (payload?.['tipo']   as string)  ?? 'presupuesto',
-      titulo:          (payload?.['titulo'] as string)  ?? 'Nueva notificación',
-      mensaje:         (payload?.['mensaje'] as string) ?? '',
-      leido:           false,
-      referencia_id:   (payload?.['referencia_id']   as number | string | null) ?? null,
+      id: id as number,
+      tipo: (payload?.['tipo'] as string) ?? 'presupuesto',
+      titulo: (payload?.['titulo'] as string) ?? 'Nueva notificación',
+      mensaje: (payload?.['mensaje'] as string) ?? '',
+      leido: false,
+      referencia_id: (payload?.['referencia_id'] as number | string | null) ?? null,
       referencia_type: (payload?.['referencia_type'] as string | null) ?? null,
-      referencia:      (payload?.['referencia'] as PedirPresupuestoInfo | null) ?? null,
+      referencia: (payload?.['referencia'] as PedirPresupuestoInfo | null) ?? null,
     };
   }
 }
