@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CountdownServiceService } from '../Services/countdown-service.service';
@@ -35,6 +35,31 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly notificacionesError = signal<string | null>(null);
   readonly mensajeAccion = signal<string | null>(null);
   readonly expandedNotifId = signal<number | string | null>(null);
+  readonly filtroNotificaciones = signal<'todas' | 'no_leidas' | 'presupuestos'>(
+    'todas',
+  );
+
+  readonly totalNotificaciones = computed(() => this.notificaciones().length);
+  readonly totalNoLeidas = computed(
+    () => this.notificaciones().filter((notif) => !notif.leido).length,
+  );
+  readonly totalPresupuestos = computed(
+    () =>
+      this.notificaciones().filter((notif) => this.esPresupuesto(notif)).length,
+  );
+  readonly notificacionesFiltradas = computed(() => {
+    const filtro = this.filtroNotificaciones();
+    const notificaciones = this.notificaciones();
+
+    switch (filtro) {
+      case 'no_leidas':
+        return notificaciones.filter((notif) => !notif.leido);
+      case 'presupuestos':
+        return notificaciones.filter((notif) => this.esPresupuesto(notif));
+      default:
+        return notificaciones;
+    }
+  });
 
   private readonly aceptandoIds = signal<Set<string>>(new Set());
   private readonly aceptadosIds = signal<Set<string>>(new Set());
@@ -101,6 +126,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.notificacionesCtx.getNotificaciones(userId, page).subscribe({
       next: (paginated) => {
         this.notificaciones.set(paginated.data);
+        this.expandedNotifId.set(null);
         this.notificacionesLoading.set(false);
       },
       error: (err: HttpErrorResponse) => {
@@ -117,6 +143,17 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   toggleExpandNotification(notif: Notificacion): void {
     const id = notif?.id ?? null;
     this.expandedNotifId.update((current) => (current === id ? null : id));
+  }
+
+  cambiarFiltroNotificaciones(
+    filtro: 'todas' | 'no_leidas' | 'presupuestos',
+  ): void {
+    this.filtroNotificaciones.set(filtro);
+    this.expandedNotifId.set(null);
+  }
+
+  filtroActivo(filtro: 'todas' | 'no_leidas' | 'presupuestos'): boolean {
+    return this.filtroNotificaciones() === filtro;
   }
 
   estaExpandida(notif: Notificacion): boolean {

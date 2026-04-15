@@ -77,6 +77,27 @@
 
 <!-- Notificaciones y presupuestos -->
 <div class="container mt-4">
+  <div class="row g-3 mb-3">
+    <div class="col-md-4">
+      <div class="mini-stat-card">
+        <div class="mini-stat-card__label">Total notificaciones</div>
+        <div class="mini-stat-card__value">{{ totalNotificaciones() }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="mini-stat-card">
+        <div class="mini-stat-card__label">No leídas</div>
+        <div class="mini-stat-card__value">{{ totalNoLeidas() }}</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="mini-stat-card">
+        <div class="mini-stat-card__label">Presupuestos</div>
+        <div class="mini-stat-card__value">{{ totalPresupuestos() }}</div>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-12">
       <div class="card card-margin shadow-sm rounded-3 p-4">
@@ -84,11 +105,37 @@
         <!-- Cabecera de sección -->
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h2 class="h5 mb-0">Notificaciones y presupuestos</h2>
+          <div class="d-flex gap-2">
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              (click)="cargarNotificaciones()"
+              [disabled]="notificacionesLoading()">
+              Recargar
+            </button>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap mb-3">
           <button
-            class="btn btn-sm btn-outline-secondary"
-            (click)="cargarNotificaciones()"
-            [disabled]="notificacionesLoading()">
-            Recargar
+            class="btn btn-sm"
+            [class.btn-primary]="filtroActivo('todas')"
+            [class.btn-outline-primary]="!filtroActivo('todas')"
+            (click)="cambiarFiltroNotificaciones('todas')">
+            Todas
+          </button>
+          <button
+            class="btn btn-sm"
+            [class.btn-primary]="filtroActivo('no_leidas')"
+            [class.btn-outline-primary]="!filtroActivo('no_leidas')"
+            (click)="cambiarFiltroNotificaciones('no_leidas')">
+            No leídas
+          </button>
+          <button
+            class="btn btn-sm"
+            [class.btn-primary]="filtroActivo('presupuestos')"
+            [class.btn-outline-primary]="!filtroActivo('presupuestos')"
+            (click)="cambiarFiltroNotificaciones('presupuestos')">
+            Presupuestos
           </button>
         </div>
 
@@ -104,18 +151,23 @@
         } @else if (notificacionesError()) {
           <div class="alert alert-danger mb-0">{{ notificacionesError() }}</div>
 
-        } @else if (notificaciones().length === 0) {
+        } @else if (notificacionesFiltradas().length === 0) {
           <div class="text-muted">No hay notificaciones por ahora.</div>
 
         } @else {
           <!-- Lista de notificaciones -->
-          @for (notif of notificaciones(); track notif.id) {
+          @for (notif of notificacionesFiltradas(); track notif.id) {
             <div class="border rounded-3 p-3 mb-3">
               <div class="d-flex justify-content-between align-items-start gap-3">
 
                 <!-- Contenido de la notificación -->
                 <div>
-                  <div class="fw-semibold">{{ notif.titulo || 'Notificación' }}</div>
+                  <div class="fw-semibold d-flex align-items-center gap-2">
+                    {{ notif.titulo || 'Notificación' }}
+                    @if (!notif.leido) {
+                      <span class="badge rounded-pill text-bg-warning">Nueva</span>
+                    }
+                  </div>
                   <div class="text-muted small">{{ notif.mensaje }}</div>
 
                   @if (esPresupuesto(notif)) {
@@ -127,12 +179,32 @@
                       }
                     </div>
                   }
+
+                  @if (estaExpandida(notif)) {
+                    <div class="mt-3 border-top pt-2 small text-muted">
+                      <div><strong>Tipo:</strong> {{ notif.tipo || 'General' }}</div>
+                      <div><strong>ID notificación:</strong> {{ notif.id }}</div>
+                    </div>
+                  }
                 </div>
 
                 <!-- Acciones del presupuesto -->
-                @if (esPresupuesto(notif)) {
-                  <div class="text-end d-flex flex-column gap-2">
+                <div class="text-end d-flex flex-column gap-2">
+                  <button
+                    class="btn btn-sm btn-outline-dark"
+                    (click)="toggleExpandNotification(notif)">
+                    {{ estaExpandida(notif) ? 'Ocultar detalle' : 'Más info' }}
+                  </button>
 
+                  @if (!notif.leido) {
+                    <button
+                      class="btn btn-sm btn-outline-success"
+                      (click)="marcarLeida(notif)">
+                      Marcar como leída
+                    </button>
+                  }
+
+                  @if (esPresupuesto(notif)) {
                     <button
                       class="btn btn-sm btn-outline-secondary"
                       (click)="verDetallePresupuesto(notif)">
@@ -163,8 +235,8 @@
                       </button>
                     }
 
-                  </div>
-                }
+                  }
+                </div>
 
               </div>
             </div>
