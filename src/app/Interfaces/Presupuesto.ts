@@ -1,119 +1,107 @@
-import { Categoria, CategoriaSimple } from "./Categoria";
-import { ProductoBase, ProductoSimple } from "./Producto";
+import { CategoriaSimple } from "./Categoria";
 import { TipoSimple } from "./Tipos";
 
+export type EstadoPresupuesto =
+  'pendiente' |
+  'pendiente_usuario' |
+  'aceptado_empresa' |
+  'aceptado_usuario' |
+  'rechazado_empresa' |
+  'rechazado_usuario';
+
 export interface Presupuesto {
-    id: number;
-    boda_id: number;
-    nombre?: string;
-    descripcion?: string;
-    monto_total: number;
-    monto_pagado?: number;
-    monto_restante?: number;
-    estado: boolean;
-    fecha_creacion: string;
-    items?: PresupuestoItem[];
-    tipos: TipoSimple
+  id: number;
+  boda_id: number;
+  nombre?: string;
+  descripcion?: string;
+  monto_total: number;
+  monto_pagado?: number;
+  monto_restante?: number;
+  estado: EstadoPresupuesto;
+  fecha_creacion: string;
+  items?: PresupuestoItem[];
+  tipos: TipoSimple;
 }
 
-
 export interface PresupuestoCreate {
-
-    boda_id: number;
-    monto_total: number;
-    estado: boolean;
-    tipo_producto_id: number,
-    fecha_creacion: string;
+  boda_id: number;
+  monto_total: number;
+  estado: EstadoPresupuesto;
+  tipo_producto_id: number;
+  fecha_creacion: string;
 }
 
 export interface Presupuestos {
-    data: Presupuesto[]
+  data: Presupuesto[];
 }
 
 export interface PresupuestoItem {
-    id?: number;
-    presupuesto_id: number;
-    categoria_id?: number;
-    tipo_producto_id: number;
-    nombre_categoria_personalizada?: string;
-    nombre_tipo_personalizado?: string;
-    monto_estimado: number;
-    monto_pagado?: number;
-    diferencia?: number;
-    es_personalizado?: boolean;
-    notas?: string;
-    categoria?: CategoriaSimple;
-    tipo_producto?: TipoSimple;
+  id?: number;
+  presupuesto_id: number;
+  categoria_id?: number;
+  tipo_producto_id: number;
+  nombre_categoria_personalizada?: string;
+  nombre_tipo_personalizado?: string;
+  monto_estimado: number;
+  monto_pagado?: number;
+  diferencia?: number;
+  es_personalizado?: boolean;
+  notas?: string;
+  categoria?: CategoriaSimple;
+  tipo_producto?: TipoSimple;
 }
 
 export interface PresupuestoItems {
-    data: PresupuestoItem[]
+  data: PresupuestoItem[];
 }
 
 export interface ItemsDetalleCreate {
-    presupuesto_id: number;
-    categoria_id?: number;
-    tipo_producto_id: number;
-    nombre_categoria_personalizada?: string;
-    nombre_tipo_personalizado?: string;
-    monto_estimado: number;
-    monto_pagado?: number;
-    es_personalizado?: boolean;
-    notas?: string;
+  presupuesto_id: number;
+  categoria_id?: number;
+  tipo_producto_id: number;
+  nombre_categoria_personalizada?: string;
+  nombre_tipo_personalizado?: string;
+  monto_estimado: number;
+  monto_pagado?: number;
+  es_personalizado?: boolean;
+  notas?: string;
 }
 
 export interface PresupuestoBoda {
-    id: number;
-    monto_total: number;
-    monto_pagado?: number;
-    monto_restante?: number;
-    estado: number;
-    fecha_creacion: string;
-    tipo_producto: TipoProducto;
-    items_presupuesto: ItemPresupuesto[];
-}
-{ }
-export interface PresupuestosBoda {
-    status: string,
-    message: string,
-    data: PresupuestoBoda[]
+  id: number;
+  monto_total: number;
+  monto_pagado?: number;
+  monto_restante?: number;
+  estado: EstadoPresupuesto;
+  fecha_creacion: string;
+  tipo_producto: TipoProducto;
+  items_presupuesto: ItemPresupuesto[];
 }
 
+export interface PresupuestosBoda {
+  status: string;
+  message: string;
+  data: PresupuestoBoda[];
+}
 
 export interface TipoProducto {
-    id: number;
-    nombre: string;
+  id: number;
+  nombre: string;
 }
 
 export interface ItemPresupuesto {
-    id?: number;
-    presupuesto_id?: number;
-    categoria_id?: number;
-    tipo_producto_id?: number;
-    nombre_categoria_personalizada?: string;
-    nombre_tipo_personalizado?: string;
-    monto_estimado?: number;
-    monto_pagado?: number;
-    diferencia?: number;
-    es_personalizado?: boolean;
-    notas?: string;
+  id?: number;
+  presupuesto_id?: number;
+  categoria_id?: number;
+  tipo_producto_id?: number;
+  nombre_categoria_personalizada?: string;
+  nombre_tipo_personalizado?: string;
+  monto_estimado?: number;
+  monto_pagado?: number;
+  diferencia?: number;
+  es_personalizado?: boolean;
+  notas?: string;
 }
-
-// export interface Presupuesto {
-//     id: number;
-//     monto_total: number;
-//     estado: number;
-//     fecha_creacion: string;
-//     tipo_producto: TipoProducto;
-//     items_presupuesto: ItemPresupuesto[];
-// }
-
-// export interface PresupuestoResponse {
-//     status: string;
-//     message: string;
-//     data: Presupuesto[];
-// }
-
 
 export interface SolicitudFormModel {
   fecha: Date | null;
@@ -122,4 +110,4 @@ export interface SolicitudFormModel {
   nombre: string;
   email: string;
   mensaje: string;
-};
+}

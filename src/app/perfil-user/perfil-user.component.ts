@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CountdownServiceService } from '../Services/countdown-service.service';
@@ -36,6 +43,10 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly mensajeAccion = signal<string | null>(null);
   readonly expandedNotifId = signal<number | string | null>(null);
 
+  readonly notificacionesNoLeidas = computed(
+    () => this.notificaciones().filter((n) => !this.esLeida(n)).length,
+  );
+
   private readonly aceptandoIds = signal<Set<string>>(new Set());
   private readonly aceptadosIds = signal<Set<string>>(new Set());
   private readonly rechazandoIds = signal<Set<string>>(new Set());
@@ -54,8 +65,6 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.perfilServiceCtx.getPerfilByUserId(userId).subscribe({
       next: (res) => {
         this.perfil.set(res);
-        console.log('Perfil cargado:', res);
-        console.log('Boda signal actual:', this.boda());
         this.cargarNotificaciones();
       },
       error: (err: HttpErrorResponse) => {
@@ -72,15 +81,12 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.perfilServiceCtx.getPerfilByUserId(userId).subscribe({
       next: (res) => {
         this.perfil.set(res);
-        console.log('Perfil cargado:', res);
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error al cargar perfil:', err);
       },
     });
   }
-
-
 
   presupuestoGastado(): number {
     const boda = this.boda();
@@ -100,7 +106,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
 
     this.notificacionesCtx.getNotificaciones(userId, page).subscribe({
       next: (paginated) => {
-        this.notificaciones.set(paginated.data);
+        this.notificaciones.set(paginated.data ?? []);
         this.notificacionesLoading.set(false);
       },
       error: (err: HttpErrorResponse) => {
@@ -123,22 +129,46 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     return this.expandedNotifId() === (notif?.id ?? null);
   }
 
+  esLeida(notif?: Notificacion | null): boolean {
+    if (!notif) return false;
+    const v = notif.leido;
+    if (typeof v === 'boolean') return v;
+    if (typeof v === 'number') return v === 1;
+    return false;
+  }
+
   esPresupuesto(notif: Notificacion): boolean {
-    return notif?.tipo === 'presupuesto';
+    const tipo = (notif?.tipo ?? '').toLowerCase();
+    return tipo.includes('presupuesto');
+  }
+
+  esReserva(notif: Notificacion): boolean {
+    const tipo = (notif?.tipo ?? '').toLowerCase();
+    return tipo.includes('reserva');
   }
 
   presupuestoId(notif: Notificacion): string | null {
-    const id = notif?.referencia?.id;
+    const ref = notif?.referencia as any;
+
+    const id =
+      ref?.pedir_presupuesto_id ??
+      (this.esPresupuesto(notif) ? ref?.id : null) ??
+      null;
+
     return id != null ? String(id) : null;
   }
 
   importeOfertado(notif: Notificacion): number | null {
-    return notif?.referencia?.importe_ofertado ?? null;
+    const value = notif?.referencia?.importe_ofertado;
+    if (value == null) return null;
+    const num = Number(value);
+    return Number.isFinite(num) ? num : null;
   }
 
   private resolverEstadoPresupuesto(notif: Notificacion): string {
     const estado = notif?.referencia?.estado;
     if (!estado) return 'pendiente';
+
     return (
       estado.aceptado_empresa ||
       estado.rechazado_empresa ||
@@ -199,7 +229,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   }
 
   marcarLeida(notif: Notificacion): void {
-    if (!notif?.id || notif.leido === true) return;
+    if (!notif?.id || this.esLeida(notif)) return;
 
     this.notificacionesCtx.marcarLeida(notif.id).subscribe({
       next: (_res: NotificacionResponse) => {
@@ -211,39 +241,61 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     });
   }
 
-  verDetallePresupuesto(notif: Notificacion): void {
-    const id = this.presupuestoId(notif);
-    if (id == null) {
-      this.mensajeAccion.set('No se pudo abrir el detalle del presupuesto.');
-      return;
-    }
-
+  abrirNotificacion(notif: Notificacion): void {
     if (notif?.id) {
       this.marcarLeida(notif);
     }
 
-    this.router.navigate(['/presupuesto', id], {
-      state: { presupuesto: notif.referencia ?? null },
-    });
+    if (this.esPresupuesto(notif)) {
+      const id = this.presupuestoId(notif);
+
+      if (id == null) {
+        this.mensajeAccion.set('No se pudo abrir el detalle del presupuesto.');
+        return;
+      }
+
+      this.router.navigate(['/presupuesto', id], {
+        state: { presupuesto: notif.referencia ?? null },
+      });
+      return;
+    }
+
+    this.mensajeAccion.set('La notificación se ha marcado como leída.');
+  }
+
+  verDetallePresupuesto(notif: Notificacion): void {
+    this.abrirNotificacion(notif);
   }
 
   aceptarPresupuesto(notif: Notificacion): void {
     this.mensajeAccion.set(null);
+
+    if (!this.esPresupuesto(notif)) {
+      this.mensajeAccion.set(
+        'Esta notificación no corresponde a un presupuesto.',
+      );
+      return;
+    }
+
     const id = this.presupuestoId(notif);
+    console.log('ACEPTAR PERFIL -> notif', notif);
+    console.log('ACEPTAR PERFIL -> id enviado', id);
 
     if (id == null) {
       this.mensajeAccion.set('No se pudo identificar el presupuesto.');
       return;
     }
+
     if (this.aceptandoPresupuesto(id) || this.presupuestoAceptado(id)) return;
 
     this.setFlag(this.aceptandoIds, id, true);
 
     this.pedirPresupuestoCtx.aceptarPresupuesto(id).subscribe({
-      next: () => {
+      next: (res) => {
         this.setFlag(this.aceptandoIds, id, false);
         this.setFlag(this.aceptadosIds, id, true);
         this.mensajeAccion.set('Fecha bloqueada correctamente.');
+        console.log('ACEPTAR PERFIL -> respuesta backend', res);
         this.cargarNotificaciones();
       },
       error: (err: HttpErrorResponse) => {
@@ -253,6 +305,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
           err.error?.mensaje ??
           'No se pudo aceptar el presupuesto.';
         this.mensajeAccion.set(msg);
+        console.error('ACEPTAR PERFIL -> error backend', err);
       },
     });
   }

@@ -25,8 +25,8 @@ import { filter } from 'rxjs';
     MatMenuModule,
     MatDividerModule,
     NgTemplateOutlet,
-    CurrencyPipe,
-    DatePipe,
+    // CurrencyPipe,
+    // DatePipe,
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
@@ -265,6 +265,53 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.toastTimer = null;
     }, 4000);
   }
+
+  marcarTodasLeidas(): void {
+  const pendientes = this.notificaciones().filter((n) => !this.esLeida(n));
+
+  if (!pendientes.length) {
+    this.mensajeAccion.set('No hay notificaciones pendientes.');
+    return;
+  }
+
+  this.notificacionesLoading.set(true);
+  this.mensajeAccion.set(null);
+
+  let completadas = 0;
+  let errores = 0;
+
+  pendientes.forEach((notif) => {
+    if (!notif.id) {
+      errores++;
+      completadas++;
+      return;
+    }
+
+    this.notificacionesCtx.marcarLeida(notif.id).subscribe({
+      next: () => {
+        this._notificaciones.update((prev) =>
+          prev.map((n) => (n.id === notif.id ? { ...n, leido: true } : n))
+        );
+
+        completadas++;
+        if (completadas === pendientes.length) {
+          this.notificacionesLoading.set(false);
+          this.mensajeAccion.set(
+            errores ? 'Algunas notificaciones no pudieron actualizarse.' : 'Todas las notificaciones se marcaron como leídas.'
+          );
+        }
+      },
+      error: () => {
+        errores++;
+        completadas++;
+        if (completadas === pendientes.length) {
+          this.notificacionesLoading.set(false);
+          this.mensajeAccion.set('Algunas notificaciones no pudieron actualizarse.');
+        }
+      }
+    });
+  });
+}
 
   private mapNotificacionFromEvent(data: Record<string, unknown>): Notificacion | null {
     const payload = (data?.['data'] ?? data) as Record<string, unknown>;

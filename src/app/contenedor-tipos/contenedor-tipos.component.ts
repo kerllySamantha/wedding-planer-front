@@ -127,8 +127,8 @@ export class ContenedorTiposComponent {
           const basePresupuesto: PresupuestoCreate = {
             boda_id: bodaId,
             tipo_producto_id: item.tipo_producto_id,
-            monto_total: 0, // ⬅️ Inicialmente vacío
-            estado: true,
+            monto_total: 0, 
+            estado: 'pendiente' ,
             fecha_creacion: new Date().toISOString().slice(0, 19).replace('T', ' ')
           };
 
@@ -286,7 +286,7 @@ export class ContenedorTiposComponent {
       boda_id: bodaId,
       tipo_producto_id: item.tipo_producto_id,
       monto_total: 0,
-      estado: true,
+      estado: 'pendiente',
       fecha_creacion: new Date().toISOString().slice(0, 19).replace('T', ' ')
     };
 

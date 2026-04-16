@@ -4,13 +4,14 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
 import { ReservasServiceServiceService } from '../Services/Reservas/reservas-service-service.service';
+import { EstadoPresupuesto } from '../Interfaces/Presupuesto';
 
 @Component({
   selector: 'app-aceptar-presupuesto',
   standalone: true,
   imports: [CommonModule, DatePipe, CurrencyPipe, RouterLink, NavbarComponent],
   templateUrl: './aceptar-presupuesto.component.html',
-  styleUrl: './aceptar-presupuesto.component.scss'
+  styleUrl: './aceptar-presupuesto.component.scss',
 })
 export class AceptarPresupuestoComponent {
   private route = inject(ActivatedRoute);
@@ -36,14 +37,19 @@ export class AceptarPresupuestoComponent {
       data = history.state?.presupuesto;
     }
 
+    const idDesdeState = data?.id;
+    const idDesdeRuta = this.route.snapshot.paramMap.get('id');
+
     if (data && data.id) {
       this.asignarPresupuesto(data);
+      this.cargarPresupuesto(String(data.id));
       return;
     }
 
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.cargarPresupuesto(id);
+    const idFinal = idDesdeState ?? idDesdeRuta;
+
+    if (idFinal) {
+      this.cargarPresupuesto(String(idFinal));
     } else {
       this.error.set('No se ha indicado ningun presupuesto.');
     }
@@ -68,7 +74,7 @@ export class AceptarPresupuestoComponent {
         console.error(err);
         this.error.set('Error al cargar el presupuesto.');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -81,21 +87,30 @@ export class AceptarPresupuestoComponent {
 
     this.presupuestoService.aceptarPresupuesto(id).subscribe({
       next: (response) => {
-        const reservaId = response?.reserva_id ?? response?.reserva?.id ?? this.reservaId();
+        const reservaId =
+          response?.reserva_id ?? response?.reserva?.id ?? this.reservaId();
         if (reservaId != null) {
           this.reservaId.set(reservaId);
           localStorage.setItem('reserva_id', String(reservaId));
         }
 
         this.procesandoAceptar.set(false);
-        this.accionMensaje.set(response?.message ?? response?.mensaje ?? 'Presupuesto aceptado. La fecha ha quedado bloqueada.');
+        this.accionMensaje.set(
+          response?.message ??
+            response?.mensaje ??
+            'Presupuesto aceptado. La fecha ha quedado bloqueada.',
+        );
         this.cargarPresupuesto(String(id));
       },
       error: (err) => {
         console.error(err);
         this.procesandoAceptar.set(false);
-        this.accionMensaje.set(err?.error?.message ?? err?.error?.mensaje ?? 'No se pudo aceptar el presupuesto.');
-      }
+        this.accionMensaje.set(
+          err?.error?.message ??
+            err?.error?.mensaje ??
+            'No se pudo aceptar el presupuesto.',
+        );
+      },
     });
   }
 
@@ -115,13 +130,16 @@ export class AceptarPresupuestoComponent {
       error: (err) => {
         console.error(err);
         this.procesandoRechazar.set(false);
-        this.accionMensaje.set(err?.error?.message ?? err?.error?.mensaje ?? 'No se pudo rechazar el presupuesto.');
-      }
+        this.accionMensaje.set(
+          err?.error?.message ??
+            err?.error?.mensaje ??
+            'No se pudo rechazar el presupuesto.',
+        );
+      },
     });
   }
-
   simularPagoYConfirmarReserva() {
-    const reservaId = this.reservaId();
+    const reservaId = this.reservaId() ?? localStorage.getItem('reserva_id');
     if (reservaId == null || this.procesandoPago()) return;
 
     this.accionMensaje.set(null);
@@ -131,30 +149,46 @@ export class AceptarPresupuestoComponent {
       next: () => {
         this.procesandoPago.set(false);
         this.reservaConfirmada.set(true);
-        this.accionMensaje.set('Pago simulado completado. La reserva ha pasado a confirmada.');
+        this.accionMensaje.set(
+          'Pago simulado completado. La reserva ha pasado a confirmada.',
+        );
+
         const presupuestoId = this.presupuesto()?.id;
         if (presupuestoId) {
           this.cargarPresupuesto(String(presupuestoId));
         }
       },
       error: (err) => {
-        console.error(err);
+        console.error('ERROR CONFIRMAR RESERVA', err);
         this.procesandoPago.set(false);
-        this.accionMensaje.set(err?.error?.message ?? err?.error?.mensaje ?? 'No se pudo confirmar la reserva.');
-      }
+        this.accionMensaje.set(
+          err?.error?.message ??
+            err?.error?.mensaje ??
+            'No se pudo confirmar la reserva.',
+        );
+      },
     });
   }
 
   puedeAceptar(): boolean {
-    return this.esEstadoPendienteUsuario(this.presupuesto()?.estado);
+    const estado = this.normalizarEstado(this.presupuesto()?.estado);
+    return estado === 'pendiente_usuario' || estado === 'aceptado_empresa';
   }
 
   puedeRechazar(): boolean {
-    return this.esEstadoPendienteUsuario(this.presupuesto()?.estado);
+    const estado = this.normalizarEstado(this.presupuesto()?.estado);
+    return estado === 'pendiente_usuario' || estado === 'aceptado_empresa';
   }
 
   puedeConfirmarReserva(): boolean {
-    return !this.puedeAceptar() && !!this.reservaId() && !this.reservaConfirmada();
+    const estadoReserva = (
+      this.obtenerEstadoReserva(this.presupuesto()) ?? ''
+    ).toLowerCase();
+    return (
+      estadoReserva === 'bloqueada' &&
+      !!this.reservaId() &&
+      !this.reservaConfirmada()
+    );
   }
 
   mostrarHorario(): boolean {
@@ -163,8 +197,20 @@ export class AceptarPresupuestoComponent {
 
   private asignarPresupuesto(presupuesto: any) {
     this.presupuesto.set(presupuesto);
-    this.reservaId.set(this.obtenerReservaId(presupuesto));
-    this.reservaConfirmada.set(this.obtenerEstadoReserva(presupuesto) === 'confirmada');
+
+    const reservaIdDetectada =
+      this.obtenerReservaId(presupuesto) ??
+      this.reservaId() ??
+      localStorage.getItem('reserva_id');
+
+    if (reservaIdDetectada != null) {
+      this.reservaId.set(reservaIdDetectada);
+    }
+
+    this.reservaConfirmada.set(
+      (this.obtenerEstadoReserva(presupuesto) ?? '').toLowerCase() ===
+        'confirmada',
+    );
   }
 
   private esEstadoPendienteUsuario(estado: unknown): boolean {
@@ -174,36 +220,74 @@ export class AceptarPresupuestoComponent {
 
   private normalizarEstado(estado: unknown): string {
     if (!estado) return 'pendiente';
-    if (typeof estado === 'string') return estado.toLowerCase();
+
+    if (typeof estado === 'string') {
+      return estado.toLowerCase();
+    }
+
     if (typeof estado === 'object') {
       const estadoObj = estado as Record<string, unknown>;
+
       return String(
-        estadoObj['aceptado_empresa']
-        ?? estadoObj['rechazado_empresa']
-        ?? estadoObj['pendiente']
-        ?? 'pendiente'
+        estadoObj['aceptado_usuario'] ??
+          estadoObj['rechazado_usuario'] ??
+          estadoObj['aceptado_empresa'] ??
+          estadoObj['rechazado_empresa'] ??
+          estadoObj['pendiente_usuario'] ??
+          estadoObj['pendiente'] ??
+          'pendiente',
       ).toLowerCase();
     }
+
     return 'pendiente';
   }
 
   private obtenerReservaId(presupuesto: any): number | string | null {
-    return (
-      presupuesto?.reserva_id ??
-      presupuesto?.reserva?.id ??
-      null
-    );
+    return presupuesto?.reserva_id ?? presupuesto?.reserva?.id ?? null;
   }
 
   private obtenerEstadoReserva(presupuesto: any): string | null {
-    return (
-      presupuesto?.reserva?.estado ??
-      presupuesto?.estado_reserva ??
-      null
-    );
+    return presupuesto?.reserva?.estado ?? presupuesto?.estado_reserva ?? null;
   }
 
-  mapEstado(estado: unknown): string {
+  estadoFinalTexto(): string {
+    const p = this.presupuesto();
+    if (!p) return 'Pendiente';
+
+    const estadoPresupuesto = this.normalizarEstado(p.estado);
+    const estadoReserva = (this.obtenerEstadoReserva(p) ?? '').toLowerCase();
+
+    if (estadoReserva === 'confirmada') {
+      return 'Aceptado y pagado';
+    }
+
+    if (estadoReserva === 'bloqueada') {
+      return 'Aceptado y fecha bloqueada';
+    }
+
+    if (estadoPresupuesto === 'aceptado_usuario') {
+      return 'Aceptado';
+    }
+
+    if (
+      estadoPresupuesto === 'aceptado_empresa' ||
+      estadoPresupuesto === 'pendiente_usuario'
+    ) {
+      return 'Pendiente de tu confirmación';
+    }
+
+    if (estadoPresupuesto === 'rechazado_usuario') {
+      return 'Rechazado por ti';
+    }
+
+    if (estadoPresupuesto === 'rechazado_empresa') {
+      return 'Rechazado por proveedor';
+    }
+
+    return 'Pendiente';
+  }
+
+  mapEstado(estado: EstadoPresupuesto): string {
     switch (this.normalizarEstado(estado)) {
       case 'aceptado_usuario':
       case 'accepted':
@@ -231,10 +315,15 @@ export class AceptarPresupuestoComponent {
 
     return {
       ...p,
-      estadoTexto: this.mapEstado(p.estado),
+      estadoTexto: this.estadoFinalTexto(),
       reservaId: this.obtenerReservaId(p),
       estadoReserva: this.obtenerEstadoReserva(p),
-      modalidadTexto: p.modalidad === 'servicio' ? 'Servicio' : p.modalidad === 'producto' ? 'Producto' : 'No especificada'
+      modalidadTexto:
+        p.modalidad === 'servicio'
+          ? 'Servicio'
+          : p.modalidad === 'producto'
+            ? 'Producto'
+            : 'No especificada',
     };
   });
 }

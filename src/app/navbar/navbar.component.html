@@ -128,8 +128,7 @@
       } @else {
       <div class="d-flex flex-column align-items-end gap-2">
         <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
-          [routerLink]="['/dashboard-empresas']" routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }">
+          [routerLink]="['/dashboard-empresas']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
             class="bi bi-briefcase text-primary" viewBox="0 0 16 16">
             <path
@@ -141,8 +140,8 @@
 
         <div class="d-flex flex-row gap-3">
           <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
-          <a [routerLink]="['/registerUser']" routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }" class="nav-link p-0">Regístrate</a>
+          <a [routerLink]="['/registerUser']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link p-0">Regístrate</a>
         </div>
       </div>
       }
@@ -275,10 +274,9 @@
       } @else {
       <div class="d-flex flex-column align-items-end gap-2">
         <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
-          [routerLink]="['/dashboard-empresas']" routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-briefcase text-brief"
-            viewBox="0 0 16 16">
+          [routerLink]="['/dashboard-empresas']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-briefcase text-brief" viewBox="0 0 16 16">
             <path
               d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5m1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0M1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5" />
           </svg>
@@ -287,8 +285,8 @@
 
         <div class="d-flex flex-row gap-3">
           <a [routerLink]="['/login']" class="nav-link p-0">Accede</a>
-          <a [routerLink]="['/registerUser']" routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }" class="nav-link p-0">Regístrate</a>
+          <a [routerLink]="['/registerUser']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link p-0">Regístrate</a>
         </div>
       </div>
       }
@@ -307,75 +305,83 @@
   <div class="notif-panel" (click)="$event.stopPropagation()">
 
     <div class="notif-header">
-      <span class="notif-title">Notificaciones</span>
-      <button class="notif-refresh" (click)="cargarNotificaciones()" [disabled]="notificacionesLoading()">
-        Recargar
-      </button>
+      <div class="notif-header-main">
+        <span class="notif-title">Notificaciones</span>
+        <span class="notif-subtitle">{{ notificacionesNoLeidas() }} pendientes</span>
+      </div>
+
+      <div class="notif-header-actions">
+        <button class="notif-action-btn" (click)="cargarNotificaciones()" [disabled]="notificacionesLoading()">
+          {{ notificacionesLoading() ? 'Actualizando...' : 'Recargar' }}
+        </button>
+
+        <button
+          class="notif-action-btn notif-action-btn--soft"
+          (click)="marcarTodasLeidas()"
+          [disabled]="notificacionesLoading() || notificaciones().length === 0">
+          Marcar todas
+        </button>
+
+        <button class="notif-action-btn notif-action-btn--primary" [routerLink]="['/perfil-user']">
+          Ver todas
+        </button>
+      </div>
     </div>
 
     @if (mensajeAccion()) {
-    <div class="notif-info">{{ mensajeAccion() }}</div>
+      <div class="notif-info">{{ mensajeAccion() }}</div>
     }
-
-    <mat-divider></mat-divider>
 
     @if (notificacionesLoading()) {
-    <div class="notif-empty">Cargando...</div>
+      <div class="notif-empty">Cargando notificaciones...</div>
 
     } @else if (notificacionesError()) {
-    <div class="notif-error">{{ notificacionesError() }}</div>
+      <div class="notif-error">{{ notificacionesError() }}</div>
 
     } @else if (notificaciones().length === 0) {
-    <div class="notif-empty">
-      <span class="notif-empty-icon">🔔</span>
-      No tienes notificaciones pendientes.
-    </div>
+      <div class="notif-empty">
+        <span class="notif-empty-icon">🔔</span>
+        No tienes notificaciones pendientes.
+      </div>
 
     } @else {
-    @for (notif of notificaciones(); track notif.id) {
-    <div class="notif-item">
+      <div class="notif-list">
+        @for (notif of notificaciones(); track notif.id) {
+          <article class="notif-item">
+            <div class="notif-item-body" (click)="irADetalleDesdeNotificacion(notif, $event)">
+              <div class="notif-item-top">
+                <div class="notif-item-title-wrap">
+                  <div class="notif-item-title">
+                    {{ notif.titulo || 'Notificación' }}
+                  </div>
 
-      <div class="notif-item-body">
-        <div class="notif-item-title">{{ notif.titulo || 'Notificación' }}</div>
-        <div class="notif-item-message">{{ notif.mensaje }}</div>
+                  @if (!esLeida(notif)) {
+                    <span class="notif-pill">Nueva</span>
+                  }
+                </div>
+              </div>
 
-        @if (esNotificacionPresupuesto(notif)) {
-        <div class="notif-item-meta">
-          <span class="notif-tag">{{ estadoPresupuesto(notif) }}</span>
-          @if (importeOfertado(notif) != null) {
-          <span class="notif-importe">
-            {{ importeOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}
-          </span>
-          }
-        </div>
+              <div class="notif-item-message">
+                {{ notif.mensaje }}
+              </div>
+            </div>
 
-        @if (productoReferencia(notif) || fechaInicioReferencia(notif)) {
-        <div class="notif-item-dates">
-          @if (productoReferencia(notif)) {
-          <span>{{ modalidadReferencia(notif) || 'producto' }} #{{ productoReferencia(notif) }}</span>
-          }
-          @if (fechaInicioReferencia(notif)) {
-          <span>
-            {{ fechaInicioReferencia(notif) }}
-            @if (fechaFinReferencia(notif)) { → {{ fechaFinReferencia(notif) }} }
-          </span>
-          }
-        </div>
-        }
+            <div class="notif-item-actions">
+              <button class="notif-link" type="button" (click)="irADetalleDesdeNotificacion(notif, $event)">
+                Abrir
+              </button>
+
+              <button
+                class="notif-mark-read"
+                type="button"
+                (click)="marcarLeida(notif, $event)"
+                title="Marcar como leída">
+                ✓
+              </button>
+            </div>
+          </article>
         }
       </div>
-
-      <div class="notif-item-actions">
-        <a class="notif-link" (click)="irADetalleDesdeNotificacion(notif)">Ver detalle</a>
-        <button class="notif-mark-read" (click)="marcarLeida(notif)" title="Marcar como leída">
-          ✓
-        </button>
-      </div>
-
-    </div>
-    <mat-divider></mat-divider>
     }
-    }
-
   </div>
 </ng-template>

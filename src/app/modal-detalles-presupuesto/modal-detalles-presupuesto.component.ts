@@ -92,7 +92,7 @@ export class ModalDetallesPresupuestoComponent implements OnInit {
       validators: [Validators.required, Validators.maxLength(600)],
     }),
     presupuesto: new FormControl<number>(0, {
-      nonNullable: true, validators: [Validators.required, Validators.max(600)],
+      nonNullable: true, validators: [Validators.required, Validators.max(5000)],
 
     })
   });

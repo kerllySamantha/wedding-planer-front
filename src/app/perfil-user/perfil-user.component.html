@@ -5,21 +5,17 @@
 <div class="container mt-3">
   <div class="row align-items-start justify-content-between">
 
-    <!-- Columna izquierda: Detalles de la boda -->
     <div class="col-lg-6 col-md-7 mb-4">
       <div class="card card-margin shadow-sm rounded-3 p-4">
         <div class="widget-49">
-
           <div class="widget-49__title-wrapper mb-3">
-            <!-- Círculo de fecha -->
             <div class="widget-49__date me-3">
               <span class="widget-49__date-day">{{ countdown()?.days }}</span>
               <span class="widget-49__date-month">{{ countdown()?.months }}</span>
             </div>
 
-            <!-- Nombre e info principal -->
             <div class="widget-49__info">
-              <h2 class="mb-1">{{ perfil()?.data?.usuario?.name}}</h2>
+              <h2 class="mb-1">{{ perfil()?.data?.usuario?.name }}</h2>
               <h5 class="text-muted mb-0">{{ boda()?.ubicacion }}</h5>
             </div>
           </div>
@@ -31,18 +27,17 @@
               <span>📅 Fecha de la boda: <strong>{{ fechaFormateada() }}</strong></span>
             </li>
             <li class="widget-49__point-item mb-2">
-              <span>📍 Ubicación: <strong>{{ boda()?.provincia?.nombre }}, {{ boda()?.poblacion?.nombre }}</strong></span>
+              <span>📍 Ubicación: <strong>{{ boda()?.provincia?.nombre }}, {{ boda()?.poblacion?.nombre
+                  }}</strong></span>
             </li>
             <li class="widget-49__point-item mb-2">
               <span>💰 Presupuesto gastado: <strong>{{ presupuestoGastado() | number:'1.2-2' }} €</strong></span>
             </li>
           </ul>
-
         </div>
       </div>
     </div>
 
-    <!-- Columna derecha: Contador regresivo -->
     <div class="col-lg-4 col-md-5">
       <div class="card card-margin text-center shadow-sm rounded-3 p-3">
         <div class="card-header bg-light fw-semibold border-bottom">
@@ -75,100 +70,112 @@
   </div>
 </div>
 
-<!-- Notificaciones y presupuestos -->
 <div class="container mt-4">
   <div class="row">
     <div class="col-12">
-      <div class="card card-margin shadow-sm rounded-3 p-4">
+      <div class="card card-margin shadow-sm rounded-4 border-0 perfil-notif-card">
 
-        <!-- Cabecera de sección -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h2 class="h5 mb-0">Notificaciones y presupuestos</h2>
-          <button
-            class="btn btn-sm btn-outline-secondary"
-            (click)="cargarNotificaciones()"
-            [disabled]="notificacionesLoading()">
-            Recargar
-          </button>
+        <div class="perfil-notif-header">
+          <div>
+            <h2 class="h5 mb-1">Centro de notificaciones</h2>
+            <p class="perfil-notif-subtitle mb-0">
+              Revisa presupuestos, cambios y avisos importantes de tu boda.
+            </p>
+          </div>
+
+          <div class="perfil-notif-header-actions">
+            <span class="perfil-notif-counter">
+              {{ notificacionesNoLeidas() }} pendientes
+            </span>
+
+            <button class="btn btn-sm btn-outline-secondary" (click)="cargarNotificaciones()"
+              [disabled]="notificacionesLoading()">
+              Recargar
+            </button>
+          </div>
         </div>
 
-        <!-- Mensaje de acción -->
         @if (mensajeAccion()) {
-          <div class="alert alert-info mb-3">{{ mensajeAccion() }}</div>
+        <div class="alert alert-info mx-4 mt-3 mb-0">{{ mensajeAccion() }}</div>
         }
 
-        <!-- Estados de carga / error / vacío -->
         @if (notificacionesLoading()) {
-          <div class="text-muted">Cargando notificaciones...</div>
+        <div class="perfil-notif-state">
+          Cargando notificaciones...
+        </div>
 
         } @else if (notificacionesError()) {
-          <div class="alert alert-danger mb-0">{{ notificacionesError() }}</div>
+        <div class="alert alert-danger mx-4 my-4">{{ notificacionesError() }}</div>
 
         } @else if (notificaciones().length === 0) {
-          <div class="text-muted">No hay notificaciones por ahora.</div>
+        <div class="perfil-notif-empty">
+          <div class="perfil-notif-empty-icon">🔔</div>
+          <div class="fw-semibold">No tienes notificaciones por ahora</div>
+          <div class="text-muted small">Cuando recibas novedades aparecerán aquí.</div>
+        </div>
 
         } @else {
-          <!-- Lista de notificaciones -->
+        <div class="perfil-notif-list">
           @for (notif of notificaciones(); track notif.id) {
-            <div class="border rounded-3 p-3 mb-3">
-              <div class="d-flex justify-content-between align-items-start gap-3">
+          <article class="perfil-notif-item" [class.perfil-notif-item--read]="esLeida(notif)">
+            <div class="perfil-notif-main">
+              <div class="perfil-notif-top">
+                <div class="perfil-notif-title-wrap">
+                  <h3 class="perfil-notif-title mb-0">
+                    {{ notif.titulo || 'Notificación' }}
+                  </h3>
 
-                <!-- Contenido de la notificación -->
-                <div>
-                  <div class="fw-semibold">{{ notif.titulo || 'Notificación' }}</div>
-                  <div class="text-muted small">{{ notif.mensaje }}</div>
-
-                  @if (esPresupuesto(notif)) {
-                    <div class="mt-2 small">
-                      <span class="me-2">Estado: {{ estadoPresupuestoTexto(notif) }}</span>
-
-                      @if (importeOfertado(notif) != null) {
-                        <span>Oferta: {{ importeOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}</span>
-                      }
-                    </div>
+                  @if (!esLeida(notif)) {
+                  <span class="perfil-notif-pill">Nueva</span>
                   }
                 </div>
-
-                <!-- Acciones del presupuesto -->
-                @if (esPresupuesto(notif)) {
-                  <div class="text-end d-flex flex-column gap-2">
-
-                    <button
-                      class="btn btn-sm btn-outline-secondary"
-                      (click)="verDetallePresupuesto(notif)">
-                      Ver detalle
-                    </button>
-
-                    @if (puedeResponderPresupuesto(notif)) {
-                      <!-- Rechazar -->
-                      <button
-                        class="btn btn-sm btn-outline-danger"
-                        (click)="rechazarPresupuesto(notif)"
-                        [disabled]="rechazandoPresupuesto(presupuestoId(notif))">
-                        {{ rechazandoPresupuesto(presupuestoId(notif)) ? 'Rechazando...' : 'Rechazar' }}
-                      </button>
-
-                      <!-- Aceptar -->
-                      <button
-                        class="btn btn-sm btn-primary"
-                        (click)="aceptarPresupuesto(notif)"
-                        [disabled]="aceptandoPresupuesto(presupuestoId(notif)) || presupuestoAceptado(presupuestoId(notif))">
-                        @if (aceptandoPresupuesto(presupuestoId(notif))) {
-                          Bloqueando...
-                        } @else if (presupuestoAceptado(presupuestoId(notif))) {
-                          Aceptado
-                        } @else {
-                          Aceptar y bloquear fecha
-                        }
-                      </button>
-                    }
-
-                  </div>
-                }
-
               </div>
+
+              <p class="perfil-notif-message mb-0">
+                {{ notif.mensaje }}
+              </p>
+
+              @if (esPresupuesto(notif)) {
+              <div class="perfil-notif-meta">
+                <span class="perfil-notif-tag">
+                  {{ estadoPresupuestoTexto(notif) }}
+                </span>
+
+                @if (importeOfertado(notif) != null) {
+                <span class="perfil-notif-price">
+                  {{ importeOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}
+                </span>
+                }
+              </div>
+              }
             </div>
+
+            <div class="perfil-notif-actions">
+              <button class="btn btn-sm btn-outline-secondary" (click)="abrirNotificacion(notif)">
+                Ver detalle
+              </button>
+
+              <!-- @if (esPresupuesto(notif) && puedeResponderPresupuesto(notif)) {
+              <button class="btn btn-sm btn-outline-danger" (click)="rechazarPresupuesto(notif)"
+                [disabled]="rechazandoPresupuesto(presupuestoId(notif))">
+                {{ rechazandoPresupuesto(presupuestoId(notif)) ? 'Rechazando...' : 'Rechazar' }}
+              </button> -->
+
+              <!-- <button class="btn btn-sm btn-primary" (click)="aceptarPresupuesto(notif)"
+                [disabled]="aceptandoPresupuesto(presupuestoId(notif)) || presupuestoAceptado(presupuestoId(notif))">
+                @if (aceptandoPresupuesto(presupuestoId(notif))) {
+                Bloqueando...
+                } @else if (presupuestoAceptado(presupuestoId(notif))) {
+                Aceptado
+                } @else {
+                Aceptar
+                }
+              </button> -->
+              <!-- } -->
+            </div>
+          </article>
           }
+        </div>
         }
 
       </div>
