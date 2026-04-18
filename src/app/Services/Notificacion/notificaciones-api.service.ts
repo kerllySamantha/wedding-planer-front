@@ -31,6 +31,10 @@ override getNotificacion(idNotificacion: number): Observable<NotificacionRespons
   );
 }
 
+override eliminarNotificacion(idNotificacion: number): Observable<void> {
+  return this.http.delete<void>(`${this.apiUrl}/notificaciones/${idNotificacion}`);
+}
+
   override marcarLeida(id: number): Observable<NotificacionResponse> {
     const url = `${this.apiUrl}/notificaciones/${id}`;
     const payload = {
