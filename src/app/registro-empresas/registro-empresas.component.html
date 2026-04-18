@@ -1,107 +1,287 @@
-<router-outlet></router-outlet>
-<div class="row container-fluid d-flex align-items-stretch main-layout">
-    <!-- Columna izquierda con imagen -->
-    <div class="col-5 p-0 image-side">
-        <div class="image-overlay"></div>
-        <img src="assets/images/empresas.jpg" alt="Empresas">
-    </div>
+<div class="container-fluid p-0 main-layout">
+    <div class="row g-0 h-100">
 
-    <!-- Columna derecha con contenido -->
-    <div class="col-7 content-side d-flex justify-content-center mt-4">
-        <div id="layoutMain" class="container ">
-            <section class="text-center mb-4">
-    <a class="navbar-brand" [routerLink]="['/dashboard-empresas']">
-                    <img src="assets/images/logo2.png" alt="Logo" width="300">
+        <!-- ── Columna izquierda ── -->
+        <div class="col-lg-5 d-none d-lg-block p-0 image-side">
+            <div class="image-overlay"></div>
+            <img src="assets/images/empresas.jpg" alt="Empresas">
+            <div class="side-content">
+                <!-- <img src="assets/images/logo2.png" alt="Logo" class="side-logo"> -->
+                <h2 class="side-title">Haz crecer tu negocio</h2>
+                <p class="side-sub">Únete a miles de profesionales del sector nupcial.</p>
+                <ul class="feature-list">
+                    <li><span class="feat-dot"></span>Perfil de empresa verificado</li>
+                    <li><span class="feat-dot"></span>Acceso a miles de parejas</li>
+                    <li><span class="feat-dot"></span>Panel de estadísticas</li>
+                    <li><span class="feat-dot"></span>Soporte especializado</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ── Columna derecha ── -->
+        <div class="col-lg-7 col-12 content-side">
+            <header class="content-header">
+                <a class="brand-link" [routerLink]="['/dashboard-empresas']" aria-label="Ir al dashboard">
+                    <img src="assets/images/logo-sinfondo.png" alt="Logo" class="brand-logo">
                 </a>
-            </section>
-            <section class=" p-4">
-                <h1 class="h4 text-center mb-4">
-                    Prueba gratis Bodas.net y haz crecer tu negocio
-                </h1>
-        
-                <form action="/emp-AltaRun.php" method="POST">
-                    <!-- DATOS DE CONTACTO -->
-                    <div class="mb-4">
-                        <h2 class="h5 mb-3">Datos de contacto</h2>
-        
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="business_name" class="form-label">Nombre de la empresa</label>
-                                <input type="text" class="form-control" id="business_name" name="Nombre">
-                            </div>
-        
-                            <div class="col-md-6">
-                                <label for="Location" class="form-label">Población</label>
-                                <input type="text" class="form-control" id="Location" name="Location">
-                            </div>
-        
-                            <div class="col-md-6">
-                                <label for="group" class="form-label">Tipo de sector</label>
-                                <select id="group" name="vendorGroup" class="form-select">
-                                    <option value="">Selecciona grupo</option>
-                                    <option value="1">Banquetes</option>
-                                    <option value="2">Proveedores</option>
-                                    <option value="3">Novias</option>
-                                    <option value="4">Novios</option>
-                                </select>
-                            </div>
-        
-                            <div class="col-md-6">
-                                <label for="category" class="form-label">Sector de actividad</label>
-                                <select id="category" name="Sector" class="form-select" disabled>
-                                    <option value="">Selecciona una opción</option>
-                                </select>
-                            </div>
-        
-                            <div class="col-md-6">
-                                <label for="email" class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" id="email" name="Mail">
-                            </div>
-        
-                            <div class="col-md-6">
-                                <label for="phone" class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" id="phone" name="Telefono">
-                            </div>
-                        </div>
+            </header>
+
+            <div class="content-scroll">
+                <div id="layoutMain">
+                    <!-- <img src="assets/images/logo2.png" alt="Logo" class="side-logo"> -->
+                    <!--  -->
+                    <!-- Logo móvil (solo visible en pantallas pequeñas) -->
+                    <!-- <section class="text-center mb-4 d-lg-none">
+        <a [routerLink]="['/dashboard-empresas']">
+          <img src="assets/images/logo2.png" alt="Logo" width="220">
+        </a>
+      </section> -->
+
+                    <!-- Mensaje de éxito -->
+                    @if(successMessage){
+                    <div class="alert alert-success alert-dismissible d-flex align-items-center gap-2 mb-4"
+                        role="alert">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path
+                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+                        </svg>
+                        {{ successMessage }}
                     </div>
-        
-                    <!-- DATOS DE ACCESO -->
-                    <div class="mb-4">
-                        <h3 class="h5 mb-3">Datos de acceso</h3>
-        
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="Name" class="form-label">Nombre de usuario</label>
-                                <input type="text" class="form-control" id="Name" name="Login" minlength="5">
-                                <div class="form-text">Debe tener al menos 5 caracteres.</div>
-                            </div>
-        
-                            <div class="col-md-6">
-                                <label for="password" class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" id="password" name="Password">
-                                <div class="form-text">
-                                    Entre 8 y 48 caracteres, con minúscula, mayúscula y número, sin espacios.
+                    }
+
+                    <section class="p-4 form-card">
+                        <!-- <h1 class="h4 text-center mb-1">Prueba gratis Bodas.net</h1>
+        <p class="text-center text-muted small mb-4">Sin tarjeta de crédito · Empieza en 2 minutos</p> -->
+                        <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+                            <!-- ══ DATOS DE CONTACTO ══ -->
+                            <div class="mb-4">
+                                <h2 class="section-heading">Datos de contacto</h2>
+
+                                <div class="row g-3">
+
+                                    <!-- Nombre empresa -->
+                                    <div class="col-md-6">
+                                        <label for="direccion" class="form-label">Nombre de la empresa</label>
+                                        <input type="text" id="nombre_empresa" formControlName="nombre_empresa"
+                                            placeholder="Mi Empresa S.L."
+                                            [class.is-invalid]="isInvalid('nombre_empresa')"
+                                            [class.is-valid]="isValid('nombre_empresa')" class="form-control">
+                                        <div class="invalid-feedback">{{ getError('nombre_empresa') }}</div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="nombre_empresa" class="form-label">Dirección</label>
+                                        <input type="text" id="direccion" formControlName="direccion"
+                                            placeholder="Calle B, paso A" [class.is-invalid]="isInvalid('direccion')"
+                                            [class.is-valid]="isValid('direccion')" class="form-control">
+                                        <div class="invalid-feedback">{{ getError('direccion') }}</div>
+                                    </div>
+
+                                    <!-- Provincia -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Provincia</label>
+                                        <select class="form-select" formControlName="provincia">
+
+                                            <option [ngValue]="null">Selecciona provincia</option>
+
+                                            @for (provincia of provincias$ | async; track provincia.id) {
+                                            <option [ngValue]="provincia">
+                                                {{ provincia.nombre }}
+                                            </option>
+                                            }
+
+                                        </select>
+
+                                        @if (isInvalid('provincia')) {
+                                        <div class="invalid-feedback d-block">
+                                            {{ getError('provincia') }}
+                                        </div>
+                                        }
+                                    </div>
+
+                                    <!-- Localidad -->
+                                    <div class="col-md-6">
+                                        <label for="localidad" class="form-label">Localidad</label>
+
+                                        <select id="localidad" formControlName="localidad" class="form-select"
+                                            [class.is-invalid]="isInvalid('localidad')"
+                                            [class.is-valid]="isValid('localidad')">
+                                            <option [ngValue]="null">
+                                                {{ form.controls.provincia.value ? 'Selecciona una localidad' :
+                                                'Selecciona primero una provincia' }}
+                                            </option>
+
+                                            @for (poblacion of poblaciones$ | async; track poblacion.id) {
+                                            <option [ngValue]="poblacion">{{ poblacion.nombre }}</option>
+                                            }
+                                        </select>
+
+                                        <!-- @if(!form.controls.provincia.value) {
+                                        <div class="form-text text-warning mt-1">
+                                            Debes seleccionar una provincia antes de elegir la localidad.
+                                        </div>
+                                        } -->
+
+                                        <div class="invalid-feedback">{{ getError('localidad') }}</div>
+                                    </div>
+                                    <!-- Tipo (dependiente del grupo) -->
+                                    <div class="col-md-6">
+                                        <label for="tipos" class="form-label">Tipo de empresa</label>
+                                        <input type="text" id="tipos" formControlName="tipos" placeholder="¿Que tipo de empresa eres?" [class.is-invalid]="isInvalid('tipos')"
+                                            [class.is-valid]="isValid('tipos')" class="form-control">
+
+                                        <!-- <select id="tipos" formControlName="tipos" class="form-select"
+                                            [class.is-invalid]="isInvalid('tipos')" [class.is-valid]="isValid('tipos')">
+                                            <option [ngValue]="null" [disabled]="!allTipos().length">
+                                                {{ tipos().length ? 'Selecciona una opción' : 'Selecciona primero grupo'
+                                                }}
+                                            </option>
+
+                                            @for (tipo of allTipos(); track tipo.id) {
+                                            <option [ngValue]="tipo.id">{{ tipo.nombre }}</option>
+                                            }
+                                        </select> -->
+
+                                        @if(form.controls.grupo.value && !tipos().length) {
+                                        <div class="form-text text-warning mt-1">
+                                            No hay tipos disponibles para el grupo seleccionado.
+                                        </div>
+                                        }
+
+                                        <div class="invalid-feedback">{{ getError('tipos') }}</div>
+                                    </div>
+
+
+
+
+
+                                    <!-- Email -->
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">Correo electrónico</label>
+                                        <input type="email" id="email" formControlName="email"
+                                            placeholder="empresa@email.com" [class.is-invalid]="isInvalid('email')"
+                                            [class.is-valid]="isValid('email')" class="form-control">
+                                        <div class="invalid-feedback">{{ getError('email') }}</div>
+                                    </div>
+
+                                    <!-- Teléfono -->
+                                    <div class="col-md-6">
+                                        <label for="telefono" class="form-label">Teléfono</label>
+                                        <input type="tel" id="telefono" formControlName="telefono"
+                                            placeholder="600 000 000" [class.is-invalid]="isInvalid('telefono')"
+                                            [class.is-valid]="isValid('telefono')" class="form-control">
+                                        <div class="invalid-feedback">{{ getError('telefono') }}</div>
+                                    </div>
+
                                 </div>
                             </div>
-                        </div>
-                    </div>
-        
-                    <!-- POLÍTICAS -->
-                    <div class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox" id="confirm" name="confirm">
-                        <label class="form-check-label" for="confirm">
-                            Acepto las <a href="https://www.bodas.net/condiciones-legales.php" target="_blank">condiciones de
-                                uso</a>
-                            y el <a href="https://www.bodas.net/legal/privacy.php" target="_blank">aviso de privacidad</a>.
-                        </label>
-                    </div>
-        
-                    <!-- BOTÓN -->
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">Crea tu cuenta</button>
-                    </div>
-                </form>
-            </section>
+
+                            <!-- ══ DATOS DE ACCESO ══ -->
+                            <div class="mb-4">
+                                <h3 class="section-heading">Datos de acceso</h3>
+
+                                <div class="row g-3">
+
+                                    <!-- Username -->
+                                    <div class="col-md-6">
+                                        <label for="username" class="form-label">Nombre de usuario</label>
+                                        <input type="text" id="username" formControlName="username"
+                                            placeholder="minimo5chars" autocomplete="off"
+                                            [class.is-invalid]="isInvalid('username')"
+                                            [class.is-valid]="isValid('username')" class="form-control">
+                                        <div class="form-text">Debe tener al menos 5 caracteres.</div>
+                                        <div class="invalid-feedback">{{ getError('username') }}</div>
+                                    </div>
+
+                                    <!-- Password -->
+                                    <div class="col-md-6">
+                                        <label for="password" class="form-label">Contraseña</label>
+                                        <div class="input-group">
+                                            <input [type]="showPassword ? 'text' : 'password'" id="password"
+                                                formControlName="password" placeholder="••••••••"
+                                                [class.is-invalid]="isInvalid('password')"
+                                                [class.is-valid]="isValid('password')" class="form-control">
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                (click)="togglePassword()"
+                                                [title]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                                                @if(!showPassword){
+                                                <svg width="16" height="16" fill="none" stroke="currentColor"
+                                                    stroke-width="2" viewBox="0 0 24 24">
+                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                                }
+                                                @if(showPassword){
+                                                <svg width="16" height="16" fill="none" stroke="currentColor"
+                                                    stroke-width="2" viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                                                    <line x1="1" y1="1" x2="23" y2="23" />
+                                                </svg>
+                                                }
+                                            </button>
+                                            <div class="invalid-feedback">{{ getError('password') }}</div>
+                                        </div>
+
+                                        <!-- Barra de fortaleza -->
+                                        @if(form.get('password')?.value){
+                                        <div class="strength-bar mt-2">
+                                            <div class="strength-fill" [style.width]="strengthWidth"
+                                                [style.background]="passwordStrength.color">
+                                            </div>
+                                        </div>
+                                        }
+                                        @if(form.get('password')?.value){
+                                        <div class="form-text mt-1">
+                                            Fortaleza: <strong [style.color]="passwordStrength.color">{{
+                                                passwordStrength.label }}</strong>
+                                        </div>
+                                        }
+                                        @if(!form.get('password')?.value){
+                                        <div class="form-text">
+                                            Entre 8 y 48 caracteres, con minúscula, mayúscula y número, sin espacios.
+                                        </div>
+                                        }
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <!-- ══ POLÍTICAS ══ -->
+                            <!-- <div class="mb-4">
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="terminos"
+                formControlName="terminos"
+                [class.is-invalid]="isInvalid('terminos')">
+              <label class="form-check-label" for="terminos">
+                Acepto las
+                <a href="https://www.bodas.net/condiciones-legales.php" target="_blank">condiciones de uso</a>
+                y el
+                <a href="https://www.bodas.net/legal/privacy.php" target="_blank">aviso de privacidad</a>.
+              </label>
+              <div class="invalid-feedback">{{ getError('terminos') }}</div>
+            </div>
+          </div> -->
+
+                            <!-- ══ BOTÓN ══ -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-md vendor-login-btn">
+                                    Crea tu cuenta
+                                </button>
+                            </div>
+
+                            <!-- Debug: estado del form (quitar en producción) -->
+                            <!-- <pre class="mt-3 small text-muted">{{ form.value | json }}</pre> -->
+
+                        </form>
+                    </section>
+                </div>
+            </div>
         </div>
     </div>
 </div>

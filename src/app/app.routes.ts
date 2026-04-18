@@ -23,132 +23,162 @@ import { ResponderAdminPresupuestoComponent } from './responder-admin-presupuest
 import { solicitudResolver } from './Resolver/solicitud.resolver';
 import { APP_PATHS } from './app.paths';
 import { AceptarPresupuestoComponent } from './aceptar-presupuesto/aceptar-presupuesto.component';
+import { LoginEmpresasComponent } from './login-empresas/login-empresas.component';
 
 const userOnly = {
-    canActivate: [rolGuard],
-    data: { rol: ['usuario'] }
+  canActivate: [rolGuard],
+  data: { rol: ['usuario'] },
 };
 
 const providerOnly = {
-    canActivate: [rolGuard],
-    data: { rol: ['empresa'] }
+  canActivate: [rolGuard],
+  data: { rol: ['empresa'] },
 };
 
 const publicRoutes: Routes = [
-    {
-        path: APP_PATHS.home,
-        component: DashboardComponent
-    },
-    {
-        path: APP_PATHS.publicSuppliers,
-        component: DashboardProveedoresComponent
-    },
-    {
-        path: `${APP_PATHS.supplierDetails}/:id`,
-        component: DetallesProveedoresComponent,
-        resolve: { proveedor: empresaResolver }
-    },
-    {
-        path: APP_PATHS.budgetTool,
-        component: ContenedorProveedoresComponent,
-        canActivate: [rolredirectGuard]
-    },
-    {
-        path: APP_PATHS.companyArea,
-        component: DashboardEmpresasComponent
-    }
+  {
+    path: APP_PATHS.home,
+    component: DashboardComponent,
+  },
+  {
+    path: APP_PATHS.publicSuppliers,
+    component: DashboardProveedoresComponent,
+  },
+  {
+    path: `${APP_PATHS.supplierDetails}/:id`,
+    component: DetallesProveedoresComponent,
+    resolve: { proveedor: empresaResolver },
+  },
+  {
+    path: APP_PATHS.budgetTool,
+    component: ContenedorProveedoresComponent,
+    canActivate: [rolredirectGuard],
+  },
+  {
+    path: APP_PATHS.companyArea,
+    component: DashboardEmpresasComponent,
+    canActivate: [rolredirectGuard],
+    // redirectTo: APP_PATHS.loginEmpresa,
+    // pathMatch: 'full',
+  },
+  
 ];
 
 const authRoutes: Routes = [
-    { path: APP_PATHS.login, component: LoginUsuariosComponent },
-    { path: APP_PATHS.registerUser, component: RegistroUsuariosComponent },
-    { path: APP_PATHS.registerCompany, component: RegistroEmpresasComponent }
+  { path: APP_PATHS.login, component: LoginUsuariosComponent },
+  { path: APP_PATHS.loginEmpresa, component: LoginEmpresasComponent },
+  { path: APP_PATHS.registerUser, component: RegistroUsuariosComponent },
+  { path: APP_PATHS.registerCompany, component: RegistroEmpresasComponent },
 ];
 
 const userRoutes: Routes = [
-    {
-        path: APP_PATHS.userWedding,
-        component: MiBodaComponent,
-        ...userOnly
-    },
-    {
-        path: APP_PATHS.userProfile,
-        component: PerfilUserComponent,
-        ...userOnly
-    },
-    {
-        path: 'presupuesto/:id',
-        component: AceptarPresupuestoComponent,
-        ...userOnly
-    }
+  {
+    path: APP_PATHS.userWedding,
+    component: MiBodaComponent,
+    ...userOnly,
+  },
+  {
+    path: APP_PATHS.userProfile,
+    component: PerfilUserComponent,
+    ...userOnly,
+  },
+  {
+    path: 'presupuesto/:id',
+    component: AceptarPresupuestoComponent,
+    ...userOnly,
+  },
 ];
 
 const providerRoutes: Routes = [
-    {
-        path: APP_PATHS.providerDashboard,
-        component: AdminDashboardProveedoresComponent,
-        ...providerOnly,
-        children: [
-            {
-                path: '',
-                pathMatch: 'full',
-                component: CardsDashboardProveedorComponent
-            },
-            {
-                path: 'calendar',
-                component: CalendarProveedoresComponent
-            },
-            {
-                path: 'configuracion',
-                component: ConfiguracionAdminComponent
-            },
-            {
-                path: 'resenias',
-                component: ReseniasAdminComponent
-            },
-            {
-                path: 'solicitudes',
-                component: AdminSolicitudesDashboardComponent
-            },
-            {
-                path: 'solicitudes/:id/responder',
-                component: ResponderAdminPresupuestoComponent,
-                resolve: { solicitud: solicitudResolver }
-            },
-            {
-                path: 'solicitudes/:id',
-                component: CardInfoSolicitudComponent,
-                resolve: { solicitud: solicitudResolver }
-            }
-        ]
-    }
+  {
+    path: APP_PATHS.providerDashboard,
+    component: AdminDashboardProveedoresComponent,
+    ...providerOnly,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: CardsDashboardProveedorComponent,
+      },
+      {
+        path: 'calendar',
+        component: CalendarProveedoresComponent,
+      },
+      {
+        path: 'configuracion',
+        component: ConfiguracionAdminComponent,
+      },
+      {
+        path: 'resenias',
+        component: ReseniasAdminComponent,
+      },
+      {
+        path: 'solicitudes',
+        component: AdminSolicitudesDashboardComponent,
+      },
+      {
+        path: 'solicitudes/:id/responder',
+        component: ResponderAdminPresupuestoComponent,
+        resolve: { solicitud: solicitudResolver },
+      },
+      {
+        path: 'solicitudes/:id',
+        component: CardInfoSolicitudComponent,
+        resolve: { solicitud: solicitudResolver },
+      },
+    ],
+  },
 ];
 
 const legacyRedirects: Routes = [
-    { path: 'empresas', redirectTo: APP_PATHS.companyArea, pathMatch: 'full' },
-    { path: 'registro/usuario', redirectTo: APP_PATHS.registerUser, pathMatch: 'full' },
-    { path: 'registro/empresa', redirectTo: APP_PATHS.registerCompany, pathMatch: 'full' },
-    { path: 'usuario', redirectTo: APP_PATHS.userWedding, pathMatch: 'full' },
-    { path: 'usuario/mi-boda', redirectTo: APP_PATHS.userWedding, pathMatch: 'full' },
-    { path: 'usuario/perfil', redirectTo: APP_PATHS.userProfile, pathMatch: 'full' },
-    { path: 'empresa/solicitudes', redirectTo: APP_PATHS.providerRequests, pathMatch: 'full' },
-    { path: 'empresa/solicitudes/:id', redirectTo: `${APP_PATHS.providerRequests}/:id`, pathMatch: 'full' }
+  { path: 'empresas', redirectTo: APP_PATHS.companyArea, pathMatch: 'full' },
+  {
+    path: 'registro/usuario',
+    redirectTo: APP_PATHS.registerUser,
+    pathMatch: 'full',
+  },
+  {
+    path: 'registro/empresa',
+    redirectTo: APP_PATHS.registerCompany,
+    pathMatch: 'full',
+  },
+  { path: 'usuario', redirectTo: APP_PATHS.userWedding, pathMatch: 'full' },
+  {
+    path: 'usuario/mi-boda',
+    redirectTo: APP_PATHS.userWedding,
+    pathMatch: 'full',
+  },
+  {
+    path: 'usuario/perfil',
+    redirectTo: APP_PATHS.userProfile,
+    pathMatch: 'full',
+  },
+  {
+    path: 'empresa/solicitudes',
+    redirectTo: APP_PATHS.providerRequests,
+    pathMatch: 'full',
+  },
+  {
+    path: 'empresa/solicitudes/:id',
+    redirectTo: `${APP_PATHS.providerRequests}/:id`,
+    pathMatch: 'full',
+  },
 ];
 
 export const routes: Routes = [
-    {
-        path: '',
-        pathMatch: 'full',
-        canActivate: [rolredirectGuard],
-        children: []
-    },
-    ...publicRoutes,
-    ...authRoutes,
-    ...userRoutes,
-    ...providerRoutes,
-    ...legacyRedirects,
-    {
-        path: '**',
-        redirectTo: APP_PATHS.home
-    }
+  {
+    path: '',
+    pathMatch: 'full',
+    canActivate: [rolredirectGuard],
+    children: [],
+  },
+  ...publicRoutes,
+  ...authRoutes,
+  ...userRoutes,
+  ...providerRoutes,
+  ...legacyRedirects,
+  {
+    path: '**',
+    redirectTo: APP_PATHS.home,
+  },
 ];

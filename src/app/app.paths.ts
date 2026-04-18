@@ -3,6 +3,7 @@ export const APP_PATHS = {
   publicSuppliers: 'dashboard-proveedores',
   companyArea: 'dashboard-empresas',
   login: 'login',
+  loginEmpresa: 'login-empresa',
   registerUser: 'registerUser',
   registerCompany: 'registerEmpresa',
   userWedding: 'mi-boda',

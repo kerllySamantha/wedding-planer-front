@@ -74,12 +74,14 @@ export class ServicioFiltrado {
     const filtros = this.filtros();
 
     if (filtros) {
-      const { nombre, direccion, provincia, poblacion, categoria } = filtros;
+      const { nombre, direccion, provincia, poblacion, categoria, tipos } = filtros;
       empresas = empresas.filter(empresa =>
         (!nombre || empresa.nombre_empresa.toLowerCase().includes(nombre.toLowerCase())) &&
         (!poblacion || empresa.poblacion.id === poblacion) &&
         (!provincia || empresa.provincia.id === provincia) && 
-        (!categoria || empresa.productos.some(producto => producto.categoria.id === categoria))
+        (!categoria || empresa.productos.some(producto => producto.categoria.id === categoria))&&
+        (!tipos || empresa.productos.some(producto => producto.tipo_producto.id === tipos))
+        
 
       );
     }

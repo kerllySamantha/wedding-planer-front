@@ -14,6 +14,7 @@ export class FiltroEmpresasServiceService {
   loading = signal(true);
   error = signal<string | null>(null);
   categoriaSeleccionadaId = signal<number | null>(null);
+  tipoSeleccionadoId = signal<number|null>(null)
 
 
   protected empresasResource = resource({
@@ -41,6 +42,10 @@ export class FiltroEmpresasServiceService {
 
   seleccionarCategoria(id: number | null) {
     this.categoriaSeleccionadaId.set(id);
+  }
+
+  seleccionarTipo(id: number | null){
+    this.tipoSeleccionadoId.set(id);
   }
 
   reloadEmpresas() {

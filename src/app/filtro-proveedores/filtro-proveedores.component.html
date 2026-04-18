@@ -58,6 +58,16 @@
                 </mat-select>
             </mat-form-field>
 
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Tipo Producto</mat-label>
+                <mat-select formControlName="tipos" placeholder="Selecciona un tipo">
+                    @for (tipo of allTipos(); track tipo.id) {
+                    <mat-option [value]="tipo">{{ tipo.nombre }}</mat-option>
+                    }
+                </mat-select>
+
+            </mat-form-field>
+
 
 
             <!-- Botones de acción -->
