@@ -1,5 +1,12 @@
-import { Component, inject, ViewEncapsulation } from '@angular/core';
-import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
+import {
+  FormGroup,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+} from '@angular/forms';
 import { tap, map, switchMap, of } from 'rxjs';
 import { Categoria } from '../Interfaces/Categoria';
 import { CategoriasServiceService } from '../Services/Catergorias/categoria-service.service';
@@ -13,29 +20,39 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-
+import { TipoData } from '../Interfaces/Tipos';
+import { TiposHttpService } from '../Services/Tipos/tipos-http.service';
+import { TipoProducto } from '../Interfaces/Presupuesto';
 
 @Component({
   selector: 'app-filtro-proveedores',
   standalone: true,
-  imports: [AsyncPipe, CommonModule, ReactiveFormsModule, MatSlideToggleModule, FormsModule, MatFormFieldModule,
-    MatInputModule, MatSelectModule, MatSlideToggleModule, MatIconModule,
-    MatButtonModule
-
+  imports: [
+    AsyncPipe,
+    CommonModule,
+    ReactiveFormsModule,
+    MatSlideToggleModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatIconModule,
+    MatButtonModule,
   ],
   templateUrl: './filtro-proveedores.component.html',
   styleUrl: './filtro-proveedores.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
 export class FiltroProveedoresComponent {
-
   filtradoEmpresctx = inject(ServicioFiltrado);
-  regionesServerctx = inject(RegionsServer)
+  regionesServerctx = inject(RegionsServer);
   categoriasctx = inject(CategoriasServiceService);
   private _formBuilder = inject(FormBuilder);
+  tiposCtx = inject(TiposHttpService);
+  allTipos = signal<TipoData[]>([]);
   // serviciosctx = inject(ServiciosServiceService);
   mostrarFiltros = false;
-
 
   // isChecked = true;
   formGroup = this._formBuilder.group({
@@ -46,16 +63,17 @@ export class FiltroProveedoresComponent {
   form = new FormGroup({
     nombre: new FormControl<string | null>(''),
     provincia: new FormControl<Provincia | null>(null),
-    localidad: new FormControl<Town| null>(null),
+    localidad: new FormControl<Town | null>(null),
     vacantes: new FormControl(null),
     categoria: new FormControl<Categoria | null>(null),
+    tipos: new FormControl<TipoData|null>(null)
     // servicio: new FormControl<Servicio | null>(null)
   });
 
   provincias$ = this.regionesServerctx.getProvincias();
   categorias$ = this.categoriasctx.getCategorias().pipe(
-    tap(response => console.log(response?.data as Categoria[])),
-    map(response => response?.data as Categoria[])
+    tap((response) => console.log(response?.data as Categoria[])),
+    map((response) => response?.data as Categoria[]),
   );
 
   // servicios$ = this.serviciosctx.getServicios().pipe(
@@ -66,14 +84,29 @@ export class FiltroProveedoresComponent {
   errorsProvincia: boolean = false;
 
   poblaciones$ = this.form.controls.provincia.valueChanges.pipe(
-    switchMap(provincia => {
+    switchMap((provincia) => {
       return provincia ? this.regionesServerctx.getTowns(provincia.id) : of([]);
-    })
+    }),
   );
 
-
   ngOnInit() {
+    this.getTipos();
+    this.form.valueChanges.subscribe({next(value) {
+      console.log(value.tipos);
+    },})
+  }
 
+  getTipos(): void {
+    this.tiposCtx.getTipos().subscribe({
+      next: (data) => {
+        const lista = data?.data ?? [];
+        this.allTipos.set(lista);
+        console.log('Todos los tipos:', this.allTipos());
+      },
+      error: (err: Error) => {
+        console.log(err.message);
+      },
+    });
   }
 
   onReset() {
@@ -82,17 +115,17 @@ export class FiltroProveedoresComponent {
       provincia: null,
       localidad: null,
       categoria: null,
+      tipos: null,
     });
 
-
     this.filtradoEmpresctx.setFilters({
-      nombre: " ",
+      nombre: ' ',
       provincia: undefined,
       poblacion: undefined,
       categoria: undefined,
+      tipos: undefined
     });
   }
-
 
   submit(event: Event) {
     event.preventDefault();
@@ -102,14 +135,13 @@ export class FiltroProveedoresComponent {
       provincia: this.form.controls.provincia.value?.id ?? 0,
       ciudad: this.form.controls.localidad.value?.id,
       categoria: this.form.controls.categoria.value?.id,
+      tipos: this.form.controls.tipos.value?.id ?? 0
+
       // servicio: this.form.controls.servicio.value?.id
-
-
     };
 
-    console.log(formData)
+    console.log(formData);
 
     this.filtradoEmpresctx.setFilters(formData);
   }
-
 }

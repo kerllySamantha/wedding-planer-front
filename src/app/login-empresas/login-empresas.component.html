@@ -1,52 +1,123 @@
 <section class="vendor-section">
     <div class="vendor-content container-fluid">
 
-        <div class=" text-center flex-fill">
-<button [routerLink]="['/registerEmpresa']" class="btn accede fw-semibold px-4 py-2">Regístrate
-                gratis</button>
+        <div class="vendor-left">
+            <div class="vendor-copy">
+                <span class="vendor-eyebrow">PORTAL DE PROVEEDORES</span>
+
+                <h1>
+                    Tu negocio, <br>
+                    en manos de <br>
+                    novias
+                </h1>
+
+                <p>
+                    Gestiona reservas, presupuestos y disponibilidad desde un solo lugar.
+                </p>
+
+                <ul class="vendor-benefits">
+                    <li>
+                        <span class="check-circle"><i class="bi bi-check-lg"></i></span>
+                        <span>Calendario de reservas en tiempo real</span>
+                    </li>
+                    <li>
+                        <span class="check-circle"><i class="bi bi-check-lg"></i></span>
+                        <span>Presupuestos y ofertas personalizadas</span>
+                    </li>
+                    <li>
+                        <span class="check-circle"><i class="bi bi-check-lg"></i></span>
+                        <span>Notificaciones automáticas de clientes</span>
+                    </li>
+                </ul>
+
+                <button [routerLink]="['/registerEmpresa']" class="btn vendor-register-btn fw-semibold">
+                    <i class="bi bi-arrow-up-right-circle me-2"></i>
+                    Regístrate gratis
+                </button>
+            </div>
         </div>
 
-
-        <div class="card border-0 shadow-none me-5">
-            <div class="card-body py-5 px-md-5 d-flex align-items-center">
-                <form class="vendor-login-form text-white mx-auto" name="form" (submit)="onSubmit($event)" action=""
-                    [formGroup]="form">
-
-                    <h2 class="mb-4 fw-semibold text-center">Acceso empresas</h2>
-
-
-                    <div class="mb-3 position-relative">
-                        <div class="input-group bg-light">
-                            <span class="input-group-text rounded-start-2 border-end-0">
-                                <i class="bi bi-person"></i>
-                            </span>
-                            <input type="text" class="form-control text-dark border-start-0 rounded-end-2"
-                                placeholder="Usuario" name="email" id="Login" formControlName="email" required>
-                        </div>
+        <div class="vendor-right">
+            <div class="vendor-login-card">
+                <div class="vendor-login-head">
+                    <div class="vendor-login-icon">
+                        <i class="bi bi-briefcase-fill"></i>
                     </div>
 
+                    <div>
+                        <h2>Acceso empresas</h2>
+                        <!-- <p>Panel de gestión</p> -->
+                    </div>
+                </div>
 
-                    <div class="mb-3 position-relative">
-                        <div class="input-group bg-light">
-                            <span class="input-group-text border-end-0 rounded-start-2">
-                                <i class="bi bi-key"></i>
-                            </span>
-                            <input type="password" class="form-control border-start-0 rounded-end-2 text-dark"
-                                placeholder="Contraseña" name="password" id="Password" formControlName="password"
-                                required>
+                <form class="vendor-login-form" [formGroup]="form" (ngSubmit)="onSubmit($event)" novalidate>
+
+                    <div class="field-group">
+                        <div class="field-wrap">
+                            <span class="field-icon"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control" placeholder="Correo electrónico"
+                                formControlName="email" [class.is-invalid]="campoInvalido('email')">
                         </div>
+
+                        @if (campoInvalido('email')) {
+                        <div class="invalid-feedback d-block">
+                            @if (email?.errors?.['required']) {
+                            El correo electrónico es obligatorio.
+                            }
+                            @if (email?.errors?.['email']) {
+                            Introduce un correo electrónico válido.
+                            }
+                        </div>
+                        }
                     </div>
 
-                    @if(error()){
+                    <div class="field-group">
+                        <div class="field-wrap">
 
+                            <span class="field-icon " (click)="togglePassword()">
+                                <i class="bi" [ngClass]="mostrarPassword ? 'bi-unlock' : 'bi-lock'"></i>
+                            </span>
 
-                    <span class="me-4 text-danger">{{messageError()}}</span>
+                            <input [type]="mostrarPassword ? 'text' : 'password'" class="form-control"
+                                placeholder="Contraseña" formControlName="password"
+                                [class.is-invalid]="campoInvalido('password')">
 
+                        </div>
+
+                        @if (campoInvalido('password')) {
+                        <div class="invalid-feedback d-block">
+                            @if (password?.errors?.['required']) {
+                            La contraseña es obligatoria.
+                            }
+                            @if (password?.errors?.['pattern']) {
+                            Debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.
+                            }
+                        </div>
+                        }
+                    </div>
+                    <!-- <div class="vendor-login-links">
+                        <a href="#">¿Has olvidado tu contraseña?</a>
+                    </div> -->
+
+                    @if (error()) {
+                    <div class="alert alert-danger mt-2">
+                        {{ messageError() }}
+                    </div>
                     }
 
+                    <button type="submit" class="btn vendor-login-btn fw-semibold" [disabled]="loading">
+                        {{ loading ? 'Accediendo...' : 'Acceder' }}
+                    </button>
 
-                    <button type="submit" class="btn fw-semibold mt-3">Accede</button>
-                    <a href="#" class="d-block mt-3 text-center">¿Has olvidado tu contraseña?</a>
+                    <div class="vendor-divider">
+                        <span>o</span>
+                    </div>
+
+                    <p class="vendor-register-text">
+                        ¿Aún no tienes cuenta?
+                        <br>
+                        <a [routerLink]="['/registerEmpresa']">Regístrate aquí</a>
+                    </p>
                 </form>
             </div>
         </div>
