@@ -5,7 +5,7 @@
             @for (item of empresa()?.fotos; track item.path; let idx = $index) {
             @if (idx === 0) {
             <img [src]="item.url" [alt]="empresa()?.nombre_empresa"
-                class="img-fluid rounded-4 h-80 object-fit-cover" />
+                class="img-fluid rounded-4 object-fit-cover presentacion-img" />
             }
             }
         </div>

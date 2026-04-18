@@ -1,3 +1,12 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.card {
+    width: 100%;
+}
+
 .searcher__submit {
     color: #fff;
     background-color: #f76c6f;
@@ -10,4 +19,12 @@
     border: none;
     display: flex;
     justify-items: flex-end;
+}
+
+.presentacion-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    object-fit: cover;
+    display: block;
 }
