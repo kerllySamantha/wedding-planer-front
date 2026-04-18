@@ -13,6 +13,7 @@ export abstract class NotificacionesService {
 abstract getNotificaciones(user_id: number, page: number): Observable<Paginated<Notificacion>>;
 abstract getNotificacion(idNotificacion: number): Observable<NotificacionResponse>;
 abstract marcarLeida(idNotificacion: number): Observable<NotificacionResponse>;
+abstract eliminarNotificacion(idNotificacion: number): Observable<void>;
 
 
 }

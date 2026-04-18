@@ -17,6 +17,7 @@ import { EchoService } from '../Services/Echo/echo.service';
 import { Notificacion, NotificacionResponse } from '../Interfaces/Notificacion';
 import { PerfilResponse } from '../Interfaces/Perfil';
 import { HttpErrorResponse } from '@angular/common/http';
+import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-perfil-user',
@@ -104,9 +105,13 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.notificacionesLoading.set(true);
     this.notificacionesError.set(null);
 
-    this.notificacionesCtx.getNotificaciones(userId, page).subscribe({
-      next: (paginated) => {
-        this.notificaciones.set(paginated.data ?? []);
+    this.notificacionesCtx.getNotificaciones(userId, page).pipe(
+      map((paginated) => this.normalizarNotificaciones(paginated.data ?? [])),
+      switchMap((base) => this.sincronizarSolicitudesPresupuesto(base)),
+      map((notifs) => this.deduplicarNotificaciones(notifs)),
+    ).subscribe({
+      next: (notificaciones) => {
+        this.notificaciones.set(notificaciones);
         this.notificacionesLoading.set(false);
       },
       error: (err: HttpErrorResponse) => {
@@ -116,6 +121,24 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
           'Error al cargar notificaciones.';
         this.notificacionesError.set(msg);
         this.notificacionesLoading.set(false);
+      },
+    });
+  }
+
+  eliminarNotificacion(notif: Notificacion): void {
+    if (!notif?.id) return;
+
+    this.notificacionesCtx.eliminarNotificacion(Number(notif.id)).subscribe({
+      next: () => {
+        this.notificaciones.update((prev) => prev.filter((n) => n.id !== notif.id));
+        this.mensajeAccion.set('Notificación eliminada.');
+      },
+      error: (err: HttpErrorResponse) => {
+        this.mensajeAccion.set(
+          err.error?.message ??
+          err.error?.mensaje ??
+          'No se pudo eliminar la notificación.',
+        );
       },
     });
   }
@@ -148,11 +171,11 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   }
 
   presupuestoId(notif: Notificacion): string | null {
-    const ref = notif?.referencia as any;
-
+    const ref = notif?.referencia as Record<string, unknown> | null;
     const id =
-      ref?.pedir_presupuesto_id ??
-      (this.esPresupuesto(notif) ? ref?.id : null) ??
+      ref?.['pedir_presupuesto_id'] ??
+      ref?.['id'] ??
+      notif?.referencia_id ??
       null;
 
     return id != null ? String(id) : null;
@@ -337,5 +360,129 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
         this.mensajeAccion.set(msg);
       },
     });
+  }
+
+  private normalizarNotificaciones(notificaciones: Notificacion[]): Notificacion[] {
+    return notificaciones.map((notif) => {
+      const referencia = notif?.referencia as Record<string, unknown> | null;
+      const fallbackRefId = (
+        referencia?.['pedir_presupuesto_id'] ??
+        referencia?.['id'] ??
+        notif.referencia_id ??
+        null
+      ) as string | number | null;
+
+      return {
+        ...notif,
+        referencia_id: fallbackRefId,
+      };
+    });
+  }
+
+  private sincronizarSolicitudesPresupuesto(
+    notificaciones: Notificacion[],
+  ): Observable<Notificacion[]> {
+    const solicitudes = notificaciones
+      .filter((notif) => this.esPresupuesto(notif))
+      .map((notif) => ({
+        notifId: notif.id,
+        solicitudId: this.presupuestoId(notif),
+      }))
+      .filter((item) => item.solicitudId != null) as Array<{
+      notifId: number;
+      solicitudId: string;
+    }>;
+
+    if (solicitudes.length === 0) {
+      return of(notificaciones);
+    }
+
+    const solicitudesUnicas = Array.from(
+      new Set(solicitudes.map((item) => item.solicitudId)),
+    );
+
+    const requestMap: Record<string, Observable<any | null>> = {};
+    solicitudesUnicas.forEach((id) => {
+      requestMap[id] = this.pedirPresupuestoCtx.getPedirPresupuesto(id).pipe(
+        catchError(() => of(null)),
+      );
+    });
+
+    return forkJoin(requestMap).pipe(
+      map((detallePorSolicitud) =>
+        notificaciones.map((notif) => {
+          if (!this.esPresupuesto(notif)) return notif;
+          const solicitudId = this.presupuestoId(notif);
+          if (!solicitudId) return notif;
+
+          const solicitudActualizada = detallePorSolicitud[solicitudId] ?? null;
+          if (!solicitudActualizada) return notif;
+
+          return {
+            ...notif,
+            referencia_id: solicitudId,
+            referencia: {
+              ...(notif.referencia ?? {}),
+              ...solicitudActualizada,
+            },
+          };
+        }),
+      ),
+    );
+  }
+
+  private deduplicarNotificaciones(notificaciones: Notificacion[]): Notificacion[] {
+    const byReferencia = new Map<string, Notificacion>();
+
+    for (const notif of notificaciones) {
+      const referencia = this.referenciaUnica(notif);
+      if (!referencia) continue;
+
+      const existente = byReferencia.get(referencia);
+      if (!existente) {
+        byReferencia.set(referencia, notif);
+        continue;
+      }
+
+      const estadoActual = this.resolverEstadoPresupuesto(notif);
+      const estadoExistente = this.resolverEstadoPresupuesto(existente);
+      const prioridadActual = this.prioridadEstado(estadoActual);
+      const prioridadExistente = this.prioridadEstado(estadoExistente);
+
+      if (
+        prioridadActual > prioridadExistente ||
+        (prioridadActual === prioridadExistente && Number(notif.id) > Number(existente.id))
+      ) {
+        byReferencia.set(referencia, notif);
+      }
+    }
+
+    const sinReferencia = notificaciones.filter((notif) => !this.referenciaUnica(notif));
+    return [...sinReferencia, ...Array.from(byReferencia.values())]
+      .sort((a, b) => Number(b.id) - Number(a.id));
+  }
+
+  private referenciaUnica(notif: Notificacion): string | null {
+    if (this.esPresupuesto(notif)) {
+      const solicitudId = this.presupuestoId(notif);
+      return solicitudId ? `presupuesto:${solicitudId}` : null;
+    }
+    return notif?.id != null ? `notif:${notif.id}` : null;
+  }
+
+  private prioridadEstado(estado: string): number {
+    switch ((estado ?? '').toLowerCase()) {
+      case 'aceptado_usuario':
+        return 4;
+      case 'aceptado_empresa':
+      case 'pendiente_usuario':
+        return 3;
+      case 'rechazado_usuario':
+      case 'rechazado_empresa':
+        return 2;
+      case 'pendiente':
+      default:
+        return 1;
+    }
   }
 }
