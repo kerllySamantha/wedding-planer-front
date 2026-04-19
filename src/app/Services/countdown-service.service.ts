@@ -23,19 +23,32 @@ export class CountdownServiceService {
   public fechaFormateada = signal<string>('');
   private totalesEdicion = signal<{ total: number; pagado: number; restante: number } | null>(null);
   public bodaEncontrada = computed(() => this.boda());
+  private totalDesdeItems(presupuesto: any, campo: 'monto_estimado' | 'monto_pagado'): number | null {
+    const items = presupuesto?.items_presupuesto ?? presupuesto?.items;
+    if (!Array.isArray(items) || items.length === 0) return null;
+
+    return items.reduce((acc: number, item: any) => acc + (item?.[campo] ?? 0), 0);
+  }
+
   public costeEstimado = computed(() => {
     const override = this.totalesEdicion();
     if (override) return override.total;
     const boda = this.bodaEncontrada();
     const presupuestos = boda?.presupuestos ?? [];
-    return presupuestos.reduce((total, p) => total + (p.monto_total ?? 0), 0);
+    return presupuestos.reduce((total, p) => {
+      const totalItems = this.totalDesdeItems(p, 'monto_estimado');
+      return total + (totalItems ?? p.monto_total ?? 0);
+    }, 0);
   });
   public totalPagado = computed(() => {
     const override = this.totalesEdicion();
     if (override) return override.pagado;
     const boda = this.bodaEncontrada();
     const presupuestos = boda?.presupuestos ?? [];
-    return presupuestos.reduce((total, p) => total + (p.monto_pagado ?? 0), 0);
+    return presupuestos.reduce((total, p) => {
+      const pagadoItems = this.totalDesdeItems(p, 'monto_pagado');
+      return total + (pagadoItems ?? p.monto_pagado ?? 0);
+    }, 0);
   });
   public totalRestante = computed(() => {
     const override = this.totalesEdicion();
