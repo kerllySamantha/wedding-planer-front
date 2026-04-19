@@ -34,8 +34,8 @@ import { PedirPresupuestoService } from './Services/PedirPresupuestos/pedir-pres
 import { PedirPresupuestoApiService } from './Services/PedirPresupuestos/pedir-presupuesto-api.service';
 import { NotificacionesApiService } from './Services/Notificacion/notificaciones-api.service';
 import { NotificacionesService } from './Services/Notificacion/notificaciones.service';
-const url_back = 'http://localhost:8000/api';
-const url_local = "http://weddingplaner.local/api";
+import { environment } from './Interfaces/Enviroment';
+
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes),
   provideHttpClient(
@@ -54,7 +54,7 @@ export const appConfig: ApplicationConfig = {
   { provide: PerfilServiceServiceService, useExisting: PerfilApiServiceService },
   { provide: CategoriasServiceService, useExisting: CategoriasApiServiceService },
   { provide: AuthenticationService, useExisting: AutenticarHttpClientService },
-  { provide: API_URL, useValue: url_local },
+  { provide: API_URL, useValue: environment.apiUrl },
   { provide: RegionsServer, useExisting: RegionesApiServer },
   { provide: TiposHttpService, useExisting: TiposApiService },
   { provide: ItemsDetallesService, useExisting: ItemsDetallesApiService },
