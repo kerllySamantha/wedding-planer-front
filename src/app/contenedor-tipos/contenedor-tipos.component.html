@@ -36,7 +36,7 @@
                 
                 <!-- <td><input type="number" [(ngModel)]="detalle.monto_asignado" name="monto_asignado"
                         class="form-control" /></td> -->
-                <td><input type="number" [(ngModel)]="detalle.monto_estimado" (ngModelChange)="onDetalleChange(detalle)" name="monto_estimado_{{detalle.tipo_producto_id}}"
+                <td><input type="number" [(ngModel)]="detalle.monto_estimado" (ngModelChange)="onDetalleChange(detalle)" [readonly]="!esMontoEstimadoEditable(detalle)" name="monto_estimado_{{detalle.tipo_producto_id}}"
                         class="form-control"> </td>
                 <td><input type="number" [(ngModel)]="detalle.monto_pagado" (ngModelChange)="onDetalleChange(detalle)" name="monto_pagado_{{detalle.tipo_producto_id}}"
                         class="form-control" />
