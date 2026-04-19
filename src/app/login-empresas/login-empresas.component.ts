@@ -45,7 +45,7 @@ export class LoginEmpresasComponent {
       nonNullable: true,
       validators: [
         Validators.required,
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/),
+        // Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/),
       ],
     }),
   });
