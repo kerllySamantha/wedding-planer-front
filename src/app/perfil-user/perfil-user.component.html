@@ -79,7 +79,7 @@
           <div>
             <h2 class="h5 mb-1">Centro de notificaciones</h2>
             <p class="perfil-notif-subtitle mb-0">
-              Revisa presupuestos, cambios y avisos importantes de tu boda.
+              Revisa solicitudes de presupuesto, cambios y avisos importantes de tu boda.
             </p>
           </div>
 
@@ -153,6 +153,9 @@
             <div class="perfil-notif-actions">
               <button class="btn btn-sm btn-outline-secondary" (click)="abrirNotificacion(notif)">
                 Ver detalle
+              </button>
+              <button class="btn btn-sm btn-outline-danger" (click)="eliminarNotificacion(notif)">
+                Eliminar
               </button>
 
               <!-- @if (esPresupuesto(notif) && puedeResponderPresupuesto(notif)) {

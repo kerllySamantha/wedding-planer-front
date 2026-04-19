@@ -34,6 +34,7 @@ export class ContenedorTiposComponent {
 
   lastId: number | null = null;
   private baseTotalesPorCategoria: Record<number, Record<number, { estimado: number; pagado: number }>> = {};
+  private presupuestosBaseActuales: Array<{ monto_total: number; monto_pagado: number }> = [];
   private presupuestoIdPorTipo = new Map<number, number>();
   private creandoPresupuestoPorTipo = new Set<number>();
   private autoSaveTimers = new Map<number, number>();
@@ -62,6 +63,10 @@ export class ContenedorTiposComponent {
         this.presupuestoctx.getPresupuestosByBoda(boda.id).subscribe({
           next: (presRes) => {
             const presupuestos = presRes?.data ?? [];
+            this.presupuestosBaseActuales = presupuestos.map((p) => ({
+              monto_total: p.monto_total ?? 0,
+              monto_pagado: p.monto_pagado ?? 0
+            }));
             this.presupuestoIdPorTipo.clear();
             presupuestos.forEach((p) => {
               const tipoId = p.tipo_producto?.id;
@@ -73,10 +78,8 @@ export class ContenedorTiposComponent {
               // Buscar presupuesto existente para este tipo
               const p = presupuestos.find(x => x.tipo_producto?.id === t.id);
               const primerItem = p?.items_presupuesto?.[0];
-              const montoEstimado =
-                primerItem?.monto_estimado ?? p?.monto_total ?? 0;
-              const montoPagado =
-                primerItem?.monto_pagado ?? p?.monto_pagado ?? 0;
+              const montoEstimado = p?.monto_total ?? primerItem?.monto_estimado ?? 0;
+              const montoPagado = p?.monto_pagado ?? primerItem?.monto_pagado ?? 0;
               const diferencia =
                 primerItem?.diferencia ?? (montoEstimado - montoPagado);
 
@@ -214,6 +217,10 @@ export class ContenedorTiposComponent {
     return montoEstimado - montoPagado;
   }
 
+  esMontoEstimadoEditable(item: PresupuestoItem): boolean {
+    return (item.monto_pagado ?? 0) <= 0;
+  }
+
   private setBaseTotalesCategoria(categoriaId: number, detalles: PresupuestoItem[]) {
     const base: Record<number, { estimado: number; pagado: number }> = {};
     detalles.forEach((item) => {
@@ -229,7 +236,7 @@ export class ContenedorTiposComponent {
     const boda = this.bodactx.bodaEncontrada();
     if (!boda) return;
 
-    const presupuestos = boda.presupuestos ?? [];
+    const presupuestos = this.presupuestosBaseActuales;
     const baseTotal = presupuestos.reduce((total, p) => total + (p.monto_total ?? 0), 0);
     const basePagado = presupuestos.reduce((total, p) => total + (p.monto_pagado ?? 0), 0);
 
@@ -326,8 +333,6 @@ export class ContenedorTiposComponent {
 
 
 }
-
-
 
 
 
