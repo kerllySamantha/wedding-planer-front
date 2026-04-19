@@ -12,6 +12,32 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+## CORS troubleshooting (API calls blocked)
+
+If you see an error like:
+
+```text
+Access to XMLHttpRequest at 'http://weddingplaner.local/api/notificaciones?...'
+from origin 'http://weddingplaner.local:4200' has been blocked by CORS policy:
+The 'Access-Control-Allow-Origin' header has a value 'http://localhost:4200'
+that is not equal to the supplied origin.
+```
+
+it means the **frontend origin** and the backend **allowed origin** do not match.
+
+- Frontend origin in this case: `http://weddingplaner.local:4200`
+- Allowed origin returned by backend: `http://localhost:4200`
+
+To avoid this in local development, this project now uses an Angular proxy (`proxy.conf.json`) and the frontend calls `/api` (relative path). This keeps requests on the same frontend origin (`http://weddingplaner.local:4200`) and proxies them to `http://weddingplaner.local`.
+
+If you still get CORS errors, verify:
+
+1. You are running the app with `ng serve` (development config includes `proxyConfig`).
+2. `proxy.conf.json` points to the correct backend host.
+3. Backend CORS allows `http://weddingplaner.local:4200` for any direct (non-proxied) browser request.
+
+> Note: This is a backend CORS configuration issue. The `/api/notificaciones` endpoint fails before your business logic runs.
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:

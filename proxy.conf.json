@@ -1,0 +1,12 @@
+{
+  "/api": {
+    "target": "http://weddingplaner.local",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/sanctum": {
+    "target": "http://weddingplaner.local",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

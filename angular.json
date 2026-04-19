@@ -74,7 +74,8 @@
               "buildTarget": "wedding-planer-front:build:production"
             },
             "development": {
-              "buildTarget": "wedding-planer-front:build:development"
+              "buildTarget": "wedding-planer-front:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
