@@ -40,6 +40,24 @@ export class ContenedorTiposComponent {
   private autoSaveTimers = new Map<number, number>();
   private autoSaveDelayMs = 700;
 
+  private calcularMontoTotalPresupuesto(presupuesto: any): number {
+    const items = presupuesto?.items_presupuesto;
+    if (Array.isArray(items) && items.length > 0) {
+      return items.reduce((acc: number, item: any) => acc + (item?.monto_estimado ?? 0), 0);
+    }
+
+    return presupuesto?.monto_total ?? 0;
+  }
+
+  private calcularMontoPagadoPresupuesto(presupuesto: any): number {
+    const items = presupuesto?.items_presupuesto;
+    if (Array.isArray(items) && items.length > 0) {
+      return items.reduce((acc: number, item: any) => acc + (item?.monto_pagado ?? 0), 0);
+    }
+
+    return presupuesto?.monto_pagado ?? 0;
+  }
+
   constructor() {
     effect(() => {
       const id = this.categoriaIdSeleccionada();
@@ -64,15 +82,9 @@ export class ContenedorTiposComponent {
           next: (presRes) => {
             const presupuestos = presRes?.data ?? [];
             this.presupuestosBaseActuales = presupuestos.map((p) => {
-              const primerItem = p.items_presupuesto?.[0];
-              const montoTotal =
-                primerItem?.monto_estimado ?? p.monto_total ?? 0;
-              const montoPagado =
-                primerItem?.monto_pagado ?? p.monto_pagado ?? 0;
-
               return {
-                monto_total: montoTotal,
-                monto_pagado: montoPagado
+                monto_total: this.calcularMontoTotalPresupuesto(p),
+                monto_pagado: this.calcularMontoPagadoPresupuesto(p)
               };
             });
             this.presupuestoIdPorTipo.clear();
@@ -86,8 +98,8 @@ export class ContenedorTiposComponent {
               // Buscar presupuesto existente para este tipo
               const p = presupuestos.find(x => x.tipo_producto?.id === t.id);
               const primerItem = p?.items_presupuesto?.[0];
-              const montoEstimado = p?.monto_total ?? primerItem?.monto_estimado ?? 0;
-              const montoPagado = p?.monto_pagado ?? primerItem?.monto_pagado ?? 0;
+              const montoEstimado = primerItem?.monto_estimado ?? p?.monto_total ?? 0;
+              const montoPagado = primerItem?.monto_pagado ?? p?.monto_pagado ?? 0;
               const diferencia =
                 primerItem?.diferencia ?? (montoEstimado - montoPagado);
 
@@ -352,4 +364,3 @@ export class ContenedorTiposComponent {
 
 
 }
-
