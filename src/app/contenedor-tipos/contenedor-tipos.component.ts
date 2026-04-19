@@ -63,10 +63,18 @@ export class ContenedorTiposComponent {
         this.presupuestoctx.getPresupuestosByBoda(boda.id).subscribe({
           next: (presRes) => {
             const presupuestos = presRes?.data ?? [];
-            this.presupuestosBaseActuales = presupuestos.map((p) => ({
-              monto_total: p.monto_total ?? 0,
-              monto_pagado: p.monto_pagado ?? 0
-            }));
+            this.presupuestosBaseActuales = presupuestos.map((p) => {
+              const primerItem = p.items_presupuesto?.[0];
+              const montoTotal =
+                primerItem?.monto_estimado ?? p.monto_total ?? 0;
+              const montoPagado =
+                primerItem?.monto_pagado ?? p.monto_pagado ?? 0;
+
+              return {
+                monto_total: montoTotal,
+                monto_pagado: montoPagado
+              };
+            });
             this.presupuestoIdPorTipo.clear();
             presupuestos.forEach((p) => {
               const tipoId = p.tipo_producto?.id;
@@ -207,6 +215,17 @@ export class ContenedorTiposComponent {
   }
 
   onDetalleChange(item: PresupuestoItem) {
+    if (!this.esMontoEstimadoEditable(item)) {
+      const categoriaId = item.categoria_id;
+      const baseItem =
+        categoriaId != null
+          ? this.baseTotalesPorCategoria[categoriaId]?.[item.tipo_producto_id]
+          : undefined;
+      if (baseItem != null) {
+        item.monto_estimado = baseItem.estimado;
+      }
+    }
+
     this.programarAutoGuardado(item);
     this.recalcularResumen();
   }
@@ -333,6 +352,4 @@ export class ContenedorTiposComponent {
 
 
 }
-
-
 
