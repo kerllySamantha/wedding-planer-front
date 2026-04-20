@@ -13,7 +13,7 @@ export abstract class EmpresasServiceServiceService {
 
   abstract getEmpresas(): Observable<Empresas | null>;
   abstract getEmpresa(idUsuario: bigint): Observable<Empresa | null>;
-  abstract postEmpresa(usuario: CreateEmpresa): Observable<CreateEmpresa | null>;
+  abstract postEmpresa(usuario: CreateEmpresa): Observable<Empresa | null>;
   abstract editEmpresa(idUsuario: string | null, usuario: CreateUser): Observable<Object | null>;
   abstract deleteEmpresa(idUsuario: bigint): Observable<Object | null>;
   abstract getEmpresaByUser(idUsuario: number): Observable<EmpresaResponse | null>;

@@ -11,13 +11,13 @@ export interface EmpresaLigera {
 }
 
 export interface EmpresaBase {
-  id: number;
+  id?: number;
   nombre_empresa: string;
   direccion: string;
   telefono: string;
-  descripcion: string;
+  descripcion?: string;
   logo?: string;
-  fotos: Foto[] | null;
+  fotos?: Foto[] | null;
   poblacion: Poblacion,
   provincia: Provincia,
   tipo_servicio: string
@@ -42,11 +42,19 @@ export interface Empresa extends EmpresaBase {
 
 
 
-export interface CreateEmpresa extends EmpresaBase {
-  // categoria_id: number;
-  name: string;
-  email: string;
-  password: string;
-  rol: string;
+export interface CreateEmpresa  {
+ 
+  nombre_empresa: string,
+  tipo_servicio: string,
+  email: string,
+  telefono: string,
+  name: string,
+  password: string,
+  poblacion_id : number,
+  direccion: string
+
 }
+
+
+
 

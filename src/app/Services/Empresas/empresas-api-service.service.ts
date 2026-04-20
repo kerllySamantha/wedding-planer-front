@@ -3,7 +3,7 @@ import { EmpresasServiceServiceService } from './empresas-service-service.servic
 import { HttpClient } from '@angular/common/http';
 import { API_URL } from '../../Tokens/serviceTokens';
 import { CreateEmpresa, Empresa, EmpresaResponse, Empresas } from '../../Interfaces/Empresa';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Productos } from '../../Interfaces/Producto';
 
 @Injectable({
@@ -43,21 +43,24 @@ export class EmpresasApiServiceService  extends EmpresasServiceServiceService{
     );
   }
 
-  override postEmpresa(empresa: CreateEmpresa): Observable<CreateEmpresa| null> {
-    const postObject = {
-      name: empresa.name,
-      email: empresa.email,
-      password: empresa.password,
-      rol: 'empresa',
-      direccion: empresa.direccion,
-      telefono: empresa.telefono,
-      descripcion: empresa.descripcion,
-      nombre_empresa: empresa.nombre_empresa,
-      // categoria_id: empresa.categoria_id
-    
-    }
-    return this.http.post<CreateEmpresa>(`${this.apiUrl}/empresas`, postObject);
-  }
+override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
+  const postObject = {
+    name: empresa.name,
+    email: empresa.email,
+    password: empresa.password,
+    rol: 'empresa',
+    direccion: empresa.direccion,
+    telefono: empresa.telefono,
+    // descripcion: empresa.descripcion,
+    nombre_empresa: empresa.nombre_empresa,
+    tipo_servicio: empresa.tipo_servicio,
+    poblacion_id: empresa.poblacion_id
+  };
+
+  return this.http.post<Empresa>(`${this.apiUrl}/empresas`, postObject).pipe(
+    tap((response) => console.log(response))
+  );
+}
 
 
 
@@ -69,7 +72,7 @@ export class EmpresasApiServiceService  extends EmpresasServiceServiceService{
       rol: 'empresa',
       direccion: empresa.direccion,
       telefono: empresa.telefono,
-      descripcion: empresa.descripcion,
+      // descripcion: empresa.descripcion,
       nombre_empresa: empresa.nombre_empresa,
       // categoria_id: empresa.categoria_id
     }

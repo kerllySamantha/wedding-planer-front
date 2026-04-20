@@ -1,14 +1,24 @@
 .fondo {
   background-color: #f0f0f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-.submit-button {
-  background-color: #f76c6f;
-  color: white;
-  font-weight: 600;
+.fondo > .d-flex {
+  flex: 1;
+  padding: 1rem 0 1.25rem;
 }
-.submit-button:hover {
-  background-color: rgb(244.3677419355, 59.6322580645, 63.6193548387);
+
+.login-row {
+  width: 72%;
+  max-width: 980px;
+  min-height: 620px;
+  border: 1px solid #e8e8e8;
+  border-radius: 1.1rem;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 10px 30px rgba(20, 20, 43, 0.07);
 }
 
 .image-fondo {
@@ -16,49 +26,250 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+  min-height: 100%;
+  position: relative;
+  background-color: #ddd;
 }
 
-.login-row {
-  width: 60%;
-  max-width: 900px;
-  min-height: 460px;
-  border: 1px solid #e8e8e8;
-  border-radius: 1rem;
-  overflow: hidden;
-  background-color: white;
-}
-.login-row .column-login {
+.column-login {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.login-row .column-login .login-content {
-  width: 80%;
-  max-width: 400px;
+  padding: 1.25rem 1.35rem !important;
+  background: white;
 }
 
-.form-control,
-.btn-style {
-  border-radius: 0 !important;
-  border-top: #f0f0f0;
-  border-left: #f0f0f0;
-  border-right: #f0f0f0;
-}
-.form-control::-moz-placeholder, .btn-style::-moz-placeholder {
-  text-emphasis-color: #f76c6f;
-}
-.form-control::placeholder,
-.btn-style::placeholder {
-  -webkit-text-emphasis-color: #f76c6f;
-          text-emphasis-color: #f76c6f;
-}
-
-.novios {
-  color: #5d646b;
+.login-content {
+  width: 100%;
+  max-width: 410px;
 }
 
 h2 {
-  font-family: "Merriweather";
-  font-size: 2em;
-  line-height: 2.25rem;
+  font-family: "Merriweather", serif;
+  font-size: 1.45rem;
+  line-height: 1.65rem;
+  color: #1f2333;
+  margin-bottom: 0.35rem;
+}
+
+.subtitle-text {
+  font-size: 0.82rem;
+  color: #7d8597;
+}
+.subtitle-text a {
+  color: #f76c6f;
+  font-weight: 600;
+  text-decoration: none;
+}
+.subtitle-text a:hover {
+  text-decoration: underline;
+}
+
+.campo {
+  margin-bottom: 0.7rem !important;
+}
+
+.bloque-input {
+  border: 1.5px solid #e8e8e8;
+  border-radius: 0.75rem;
+  padding: 2px 8px;
+  transition: all 0.2s ease;
+  background: #fafafa;
+}
+.bloque-input:focus-within {
+  border-color: #f76c6f;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(247, 108, 111, 0.1);
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.input-group-text {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 0.35rem 0 0.15rem;
+  color: #b5b5b5;
+  display: flex;
+  align-items: center;
+}
+
+.input-group input,
+.form-control {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-size: 0.84rem !important;
+  padding: 0.42rem 0.3rem !important;
+  color: #1f2333;
+}
+.input-group input::-moz-placeholder, .form-control::-moz-placeholder {
+  color: #bfc4ce;
+}
+.input-group input::placeholder,
+.form-control::placeholder {
+  color: #bfc4ce;
+}
+
+.form-control:focus {
+  box-shadow: none !important;
+}
+
+.row.gx-2 {
+  --bs-gutter-x: .65rem;
+}
+
+.novios-block {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fafafa;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 0.75rem;
+  padding: 0.48rem 0.75rem;
+  margin-top: 0.15rem;
+}
+
+.novios-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #888;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.novios-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.novio-option {
+  cursor: pointer;
+}
+.novio-option input[type=radio] {
+  display: none;
+}
+.novio-option .novio-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 0.6rem;
+  font-size: 0.8rem;
+  color: #777;
+  background: white;
+  transition: 0.2s ease;
+  font-weight: 500;
+}
+.novio-option input[type=radio]:checked + .novio-btn {
+  border-color: #f76c6f;
+  color: #f76c6f;
+  background: rgba(247, 108, 111, 0.06);
+}
+.novio-option:hover .novio-btn {
+  border-color: #f76c6f;
+  color: #f76c6f;
+}
+
+.submit-button {
+  background-color: #f76c6f;
+  color: white;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border: none;
+  border-radius: 0.75rem !important;
+  padding: 0.62rem !important;
+  transition: all 0.2s ease;
+  box-shadow: 0 8px 18px rgba(247, 108, 111, 0.18);
+}
+.submit-button:hover {
+  background-color: rgb(245.1677419355, 74.3322580645, 78.0193548387);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.empresa-block {
+  border-top: 1px solid #f1f1f1;
+  padding-top: 0.7rem;
+  margin-top: 0.55rem;
+}
+.empresa-block p {
+  font-size: 0.8rem;
+  color: #9aa1ad;
+}
+
+.empresa-link {
+  color: #f76c6f !important;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.empresa-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 991.98px) {
+  .login-row {
+    width: 88%;
+    min-height: auto;
+  }
+  .column-login {
+    padding: 1.15rem !important;
+  }
+  .login-content {
+    max-width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  .fondo > .d-flex {
+    padding: 0.75rem 0 1rem;
+  }
+  .login-row {
+    width: 95%;
+    border-radius: 0.95rem;
+  }
+  .image-fondo {
+    display: none;
+  }
+  .column-login {
+    padding: 1.1rem 0.95rem !important;
+  }
+  .login-content {
+    width: 100%;
+  }
+  h2 {
+    font-size: 1.28rem;
+    line-height: 1.45rem;
+  }
+  .novios-block {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.55rem;
+  }
+  .novios-options {
+    width: 100%;
+  }
+  .novio-option {
+    flex: 1;
+  }
+  .novio-option .novio-btn {
+    justify-content: center;
+    width: 100%;
+  }
+}
+@media (max-width: 576px) {
+  .row.gx-2 > [class*=col-] {
+    margin-bottom: 0.2rem;
+  }
+  .bloque-input {
+    border-radius: 0.65rem;
+  }
+  .submit-button {
+    padding: 0.7rem !important;
+  }
 }/*# sourceMappingURL=registro-usuarios.component.css.map */

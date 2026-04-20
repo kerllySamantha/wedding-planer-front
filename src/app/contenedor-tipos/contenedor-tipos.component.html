@@ -41,7 +41,7 @@
                 <td><input type="number" [(ngModel)]="detalle.monto_pagado" (ngModelChange)="onDetalleChange(detalle)" name="monto_pagado_{{detalle.tipo_producto_id}}"
                         class="form-control" />
                 </td>
-                <td>{{ calcularDiferencia(detalle) | number:'1.2-2' }}</td>
+                <td>{{ calcularDiferencia(detalle) }}</td>
             </tr>
 
 

@@ -5,16 +5,17 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { CategoriasServiceService } from '../Services/Catergorias/categoria-service.service';
 import { TipoSimple } from '../Interfaces/Tipos';
-import { ItemsDetalleCreate, PresupuestoCreate, PresupuestoItem } from '../Interfaces/Presupuesto';
+import { ItemPresupuesto, ItemsDetalleCreate, Presupuesto, PresupuestoBoda, PresupuestoCreate, PresupuestoItem } from '../Interfaces/Presupuesto';
 import { ItemsDetallesService } from '../Services/ItemDetalles/items-detalles.service';
 import { CountdownServiceService } from '../Services/countdown-service.service';
 import { PresupuestoHttpService } from '../Services/Presupuesto/presupuesto-http-service.service';
 import { DecimalPipe } from '@angular/common';
+import { Boda } from '../Interfaces/Boda';
 
 @Component({
   selector: 'app-contenedor-tipos',
   standalone: true,
-  imports: [FormsModule, MatProgressSpinnerModule, DecimalPipe],
+  imports: [FormsModule, MatProgressSpinnerModule],
   templateUrl: './contenedor-tipos.component.html',
   styleUrls: ['./contenedor-tipos.component.scss']
 })
@@ -40,19 +41,19 @@ export class ContenedorTiposComponent {
   private autoSaveTimers = new Map<number, number>();
   private autoSaveDelayMs = 700;
 
-  private calcularMontoTotalPresupuesto(presupuesto: any): number {
+  private calcularMontoTotalPresupuesto(presupuesto: PresupuestoBoda): number {
     const items = presupuesto?.items_presupuesto;
     if (Array.isArray(items) && items.length > 0) {
-      return items.reduce((acc: number, item: any) => acc + (item?.monto_estimado ?? 0), 0);
+      return items.reduce((acc: number, item: ItemPresupuesto) => acc + (item?.monto_estimado ?? 0), 0);
     }
 
     return presupuesto?.monto_total ?? 0;
   }
 
-  private calcularMontoPagadoPresupuesto(presupuesto: any): number {
+  private calcularMontoPagadoPresupuesto(presupuesto: PresupuestoBoda): number {
     const items = presupuesto?.items_presupuesto;
     if (Array.isArray(items) && items.length > 0) {
-      return items.reduce((acc: number, item: any) => acc + (item?.monto_pagado ?? 0), 0);
+      return items.reduce((acc: number, item: ItemPresupuesto) => acc + (item?.monto_pagado ?? 0), 0);
     }
 
     return presupuesto?.monto_pagado ?? 0;
@@ -60,12 +61,17 @@ export class ContenedorTiposComponent {
 
   constructor() {
     effect(() => {
+        console.log(this.bodactx.bodaEncontrada())
       const id = this.categoriaIdSeleccionada();
       if (id && id !== this.lastId) {
         this.lastId = id;
         this.cargarTipos(id);
       }
     });
+  }
+
+  ngOnInit(){
+    console.log(this.bodactx.bodaEncontrada())
   }
 
   private cargarTipos(categoriaId: number) {

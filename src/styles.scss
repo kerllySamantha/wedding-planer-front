@@ -23,7 +23,7 @@ html {
                 primary: theme.$primary-palette ,
                 tertiary: theme.$primary-palette,
             ),
-            typography: SourGummyLight,
+            typography:  SourGummyLight,
             density: 0,
         ));
 }
@@ -111,39 +111,21 @@ html {
 html,
 body {
     height: 100%;
-}
-
-body {
     margin: 0;
-    font-family: PlayWrite;
+    font-family:  PlayWrite;
+}
+h2, h1{
+    font-family:   PlayWrite !important;
 }
 
-html,
-body {
-    height: 100%;
-}
 
-body {
-    margin: 0;
-    font-family: PlayWrite;
-}
 
-html,
-body {
-    height: 100%;
-}
+// body {
+//     margin: 0;
+//     font-family: PlayWrite;
+// }
 
-body {
-    margin: 0;
-    font-family: PlayWrite;
-}
-
-html,
-body {
-    height: 100%;
-}
-
-body {
-    margin: 0;
-    font-family: PlayWrite;
-}
+// html,
+// body {
+//     height: 100%;
+// }
