@@ -1,19 +1,28 @@
-$primary-color: #f76c6f;
-$border-color: #e8e8e8;
-
 @use "sass:color";
 
+$primary-color: #f76c6f;
+$border-color: #e8e8e8;
+$surface-color: #ffffff;
+$text-muted: #5d646b;
+
 .fondo {
-    background-color: #f0f0f0;
+    background: linear-gradient(180deg, #f8f8f8 0%, #efefef 100%);
+    min-height: 100vh;
+}
+
+.auth-wrapper {
+    min-height: calc(100vh - 72px);
+    padding: 1.5rem;
 }
 
 .submit-button {
     background-color: $primary-color;
     color: white;
     font-weight: 600;
+    border: none;
 
     &:hover {
-       @debug color.scale($primary-color, $lightness: -10%);
+        background-color: color.scale($primary-color, $lightness: -12%);
     }
 }
 
@@ -22,41 +31,48 @@ $border-color: #e8e8e8;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    min-height: 100%;
 }
 
 .login-row {
-    width: 60%;
-    max-width: 900px;
-    min-height: 460px;
+    width: min(100%, 980px);
+    min-height: clamp(520px, 72vh, 700px);
     border: 1px solid $border-color;
     border-radius: 1rem;
     overflow: hidden;
-    background-color: white;
+    background-color: $surface-color;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.08);
 
     .column-login {
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.3rem, 3vw, 2.8rem);
 
         .login-content {
-            width: 80%;
-            max-width: 400px;
+            width: 100%;
+            max-width: 430px;
         }
     }
 }
 
 h2 {
     font-family: "Merriweather";
-    font-size: 2em;
-    line-height: 2.25rem;
+    font-size: clamp(1.7rem, 2.2vw, 2rem);
+    line-height: 1.2;
 }
 
 .bloque-input {
     border: 2px solid $border-color;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 8px;
-    transition: .2s;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
     background: white;
+}
+
+.bloque-input:focus-within {
+    border-color: color.scale($primary-color, $lightness: -8%);
+    box-shadow: 0 0 0 3px rgba(247, 108, 111, 0.2);
 }
 
 .bloque-input.group-invalid {
@@ -81,7 +97,16 @@ h2 {
     box-shadow: none !important;
 }
 
+.input-group input {
+    color: #1c2227;
+
+    &::placeholder {
+        color: $text-muted;
+    }
+}
+
 .bloque-info {
+    min-height: 1.25rem;
     margin-top: 4px;
 }
 
@@ -94,8 +119,23 @@ h2 {
     display: flex;
     align-items: center;
     font-size: 15px;
-    animation: fadeIn .25s ease-out;
+    animation: fadeIn 0.25s ease-out;
     margin-top: 15px;
+}
+
+@media (max-width: 991.98px) {
+    .auth-wrapper {
+        min-height: auto;
+        padding: 1rem;
+    }
+
+    .login-row {
+        min-height: auto;
+    }
+
+    .image-fondo {
+        min-height: 220px;
+    }
 }
 
 @keyframes fadeIn {
