@@ -196,7 +196,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   presupuestoId(notif: Notificacion): string | number | null {
-    return notif?.referencia?.id ?? notif?.referencia_id ?? null;
+    const ref = notif?.referencia as Record<string, unknown> | null;
+    const id = (
+      ref?.['pedir_presupuesto_id'] ??
+      ref?.['solicitud_id'] ??
+      ref?.['presupuesto_solicitud_id'] ??
+      notif?.referencia_id ??
+      null
+    ) as string | number | null;
+
+    return id;
   }
 
   importeOfertado(notif: Notificacion): number | null {

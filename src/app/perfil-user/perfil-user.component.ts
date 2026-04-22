@@ -196,7 +196,8 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     const ref = notif?.referencia as Record<string, unknown> | null;
     const id =
       ref?.['pedir_presupuesto_id'] ??
-      ref?.['id'] ??
+      ref?.['solicitud_id'] ??
+      ref?.['presupuesto_solicitud_id'] ??
       notif?.referencia_id ??
       null;
 
@@ -421,7 +422,8 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       const referencia = notif?.referencia as Record<string, unknown> | null;
       const fallbackRefId = (
         referencia?.['pedir_presupuesto_id'] ??
-        referencia?.['id'] ??
+        referencia?.['solicitud_id'] ??
+        referencia?.['presupuesto_solicitud_id'] ??
         notif.referencia_id ??
         null
       ) as string | number | null;
