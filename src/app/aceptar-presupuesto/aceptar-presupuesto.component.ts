@@ -26,7 +26,6 @@ export class AceptarPresupuestoComponent {
   procesandoAceptar = signal(false);
   procesandoRechazar = signal(false);
   procesandoPago = signal(false);
-  reservaConfirmada = signal(false);
   reservaId = signal<number | string | null>(null);
 
   ngOnInit() {
@@ -59,7 +58,6 @@ export class AceptarPresupuestoComponent {
     this.loading.set(true);
     this.error.set(null);
     this.reservaId.set(null);
-    this.reservaConfirmada.set(false);
 
     this.presupuestoService.getPedirPresupuesto(id).subscribe({
       next: (res) => {
@@ -149,7 +147,6 @@ export class AceptarPresupuestoComponent {
     this.reservasService.confirmarReserva(reservaId).subscribe({
       next: () => {
         this.procesandoPago.set(false);
-        this.reservaConfirmada.set(true);
         this.accionMensaje.set(
           'Pago simulado completado. La reserva ha pasado a confirmada.',
         );
@@ -177,7 +174,7 @@ export class AceptarPresupuestoComponent {
     const reservaCerrada =
       estadoReserva === 'confirmada' || estadoReserva === 'bloqueada';
 
-    if (reservaCerrada || this.reservaConfirmada()) return false;
+    if (reservaCerrada || this.esReservaConfirmada()) return false;
 
     return estado === 'pendiente_usuario' || estado === 'aceptado_empresa';
   }
@@ -188,7 +185,7 @@ export class AceptarPresupuestoComponent {
     if (
       estadoReserva === 'confirmada' ||
       estadoReserva === 'bloqueada' ||
-      this.reservaConfirmada()
+      this.esReservaConfirmada()
     ) {
       return false;
     }
@@ -201,7 +198,7 @@ export class AceptarPresupuestoComponent {
     return (
       estadoReserva === 'bloqueada' &&
       !!this.reservaId() &&
-      !this.reservaConfirmada()
+      !this.esReservaConfirmada()
     );
   }
 
@@ -218,10 +215,6 @@ export class AceptarPresupuestoComponent {
       this.reservaId.set(reservaIdDetectada);
     }
 
-    this.reservaConfirmada.set(
-      (this.obtenerEstadoReserva(presupuesto) ?? '').toLowerCase() ===
-        'confirmada',
-    );
   }
 
   private esEstadoPendienteUsuario(estado: unknown): boolean {
@@ -263,6 +256,10 @@ export class AceptarPresupuestoComponent {
 
   private estadoReservaActual(): string {
     return (this.obtenerEstadoReserva(this.presupuesto()) ?? '').toLowerCase();
+  }
+
+  esReservaConfirmada(): boolean {
+    return this.estadoReservaActual() === 'confirmada';
   }
 
   estadoFinalTexto(): string {
