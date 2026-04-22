@@ -123,7 +123,6 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.notificacionesCtx.getNotificaciones(userId, page).pipe(
       map((paginated) => this.normalizarNotificaciones(paginated.data ?? [])),
       switchMap((base) => this.sincronizarSolicitudesPresupuesto(base)),
-      map((notifs) => this.deduplicarNotificaciones(notifs)),
     ).subscribe({
       next: (notificaciones) => {
         this.notificaciones.set(notificaciones);
@@ -333,18 +332,6 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     return this.estadoPresupuestoTexto(notifMock);
   }
 
-  irADetallePresupuesto(presupuesto: any): void {
-    const id = presupuesto?.pedir_presupuesto_id ?? presupuesto?.solicitud_id ?? presupuesto?.id;
-    if (!id) {
-      this.mensajeAccion.set('No se pudo abrir el detalle de este presupuesto.');
-      return;
-    }
-
-    this.router.navigate(['/presupuesto', id], {
-      state: { presupuesto },
-    });
-  }
-
   verDetallePresupuesto(notif: Notificacion): void {
     this.abrirNotificacion(notif);
   }
@@ -490,58 +477,4 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     );
   }
 
-  private deduplicarNotificaciones(notificaciones: Notificacion[]): Notificacion[] {
-    const byReferencia = new Map<string, Notificacion>();
-
-    for (const notif of notificaciones) {
-      const referencia = this.referenciaUnica(notif);
-      if (!referencia) continue;
-
-      const existente = byReferencia.get(referencia);
-      if (!existente) {
-        byReferencia.set(referencia, notif);
-        continue;
-      }
-
-      const estadoActual = this.resolverEstadoPresupuesto(notif);
-      const estadoExistente = this.resolverEstadoPresupuesto(existente);
-      const prioridadActual = this.prioridadEstado(estadoActual);
-      const prioridadExistente = this.prioridadEstado(estadoExistente);
-
-      if (
-        prioridadActual > prioridadExistente ||
-        (prioridadActual === prioridadExistente && Number(notif.id) > Number(existente.id))
-      ) {
-        byReferencia.set(referencia, notif);
-      }
-    }
-
-    const sinReferencia = notificaciones.filter((notif) => !this.referenciaUnica(notif));
-    return [...sinReferencia, ...Array.from(byReferencia.values())]
-      .sort((a, b) => Number(b.id) - Number(a.id));
-  }
-
-  private referenciaUnica(notif: Notificacion): string | null {
-    if (this.esPresupuesto(notif)) {
-      const solicitudId = this.presupuestoId(notif);
-      return solicitudId ? `presupuesto:${solicitudId}` : null;
-    }
-    return notif?.id != null ? `notif:${notif.id}` : null;
-  }
-
-  private prioridadEstado(estado: string): number {
-    switch ((estado ?? '').toLowerCase()) {
-      case 'aceptado_usuario':
-        return 4;
-      case 'aceptado_empresa':
-      case 'pendiente_usuario':
-        return 3;
-      case 'rechazado_usuario':
-      case 'rechazado_empresa':
-        return 2;
-      case 'pendiente':
-      default:
-        return 1;
-    }
-  }
 }

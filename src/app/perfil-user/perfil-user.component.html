@@ -73,10 +73,8 @@
               <small class="text-muted">
                 Pagado: {{ (presupuesto.monto_pagado || 0) | currency:'EUR':'symbol':'1.0-0':'es' }}
               </small>
-              <div class="mt-2">
-                <button class="btn btn-sm btn-outline-secondary" (click)="irADetallePresupuesto(presupuesto)">
-                  Ver detalle
-                </button>
+              <div class="small text-muted mt-2">
+                Presupuesto interno (calculadora)
               </div>
             </div>
           </article>
@@ -133,7 +131,7 @@
       <div>
         <h2 class="h5 mb-1">Actividad y notificaciones</h2>
         <p class="perfil-notif-subtitle mb-0">
-          Tu historial de solicitudes se mantiene visible aunque abras los detalles.
+          Aquí se registra todo el historial de solicitudes (pendientes, aceptadas y rechazadas).
         </p>
       </div>
 
