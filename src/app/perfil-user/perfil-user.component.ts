@@ -47,6 +47,14 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly notificacionesNoLeidas = computed(
     () => this.notificaciones().filter((n) => !this.esLeida(n)).length,
   );
+  readonly solicitudesServidor = computed(() =>
+    this.notificaciones()
+      .filter((n) => this.esPresupuesto(n))
+      .sort((a, b) => Number(b.id) - Number(a.id)),
+  );
+  readonly solicitudesNoLeidas = computed(
+    () => this.solicitudesServidor().filter((n) => !this.esLeida(n)).length,
+  );
   readonly presupuestosOrdenados = computed(() =>
     [...(this.boda()?.presupuestos ?? [])].sort(
       (a, b) =>

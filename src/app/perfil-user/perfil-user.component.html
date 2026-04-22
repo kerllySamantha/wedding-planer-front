@@ -33,8 +33,8 @@
       <section class="card card-margin shadow-sm rounded-4 p-4">
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
           <div>
-            <h3 class="h5 mb-1">Presupuesto de la boda</h3>
-            <p class="text-muted mb-0">Resumen real de lo contratado, pagado y pendiente.</p>
+            <h3 class="h5 mb-1">Calculadora de presupuesto</h3>
+            <p class="text-muted mb-0">Este bloque es solo para planificación interna de la boda.</p>
           </div>
           <span class="perfil-notif-counter">{{ presupuestosOrdenados().length }} servicios</span>
         </div>
@@ -66,7 +66,7 @@
             <div>
               <h4 class="h6 mb-1">{{ tipoPresupuestoTexto(presupuesto) }}</h4>
               <p class="text-muted mb-1">Creado: {{ presupuesto.fecha_creacion | date:'dd/MM/yyyy' }}</p>
-              <span class="perfil-notif-tag">{{ estadoPresupuestoDesdePresupuesto(presupuesto) }}</span>
+              <span class="perfil-notif-tag">Partida de calculadora</span>
             </div>
             <div class="text-end">
               <div class="presupuesto-total">{{ presupuesto.monto_total | currency:'EUR':'symbol':'1.0-0':'es' }}</div>
@@ -131,12 +131,12 @@
       <div>
         <h2 class="h5 mb-1">Actividad y notificaciones</h2>
         <p class="perfil-notif-subtitle mb-0">
-          Aquí se registra todo el historial de solicitudes (pendientes, aceptadas y rechazadas).
+          Aquí solo se muestran solicitudes enviadas al servidor.
         </p>
       </div>
 
       <div class="perfil-notif-header-actions">
-        <span class="perfil-notif-counter">{{ notificacionesNoLeidas() }} pendientes</span>
+        <span class="perfil-notif-counter">{{ solicitudesNoLeidas() }} pendientes</span>
 
         <button class="btn btn-sm btn-outline-secondary" (click)="cargarNotificaciones()"
           [disabled]="notificacionesLoading()">
@@ -153,15 +153,15 @@
     <div class="perfil-notif-state">Cargando notificaciones...</div>
     } @else if (notificacionesError()) {
     <div class="alert alert-danger mx-4 my-4">{{ notificacionesError() }}</div>
-    } @else if (notificaciones().length === 0) {
+    } @else if (solicitudesServidor().length === 0) {
     <div class="perfil-notif-empty">
       <div class="perfil-notif-empty-icon">🔔</div>
-      <div class="fw-semibold">No tienes notificaciones por ahora</div>
-      <div class="text-muted small">Cuando recibas novedades aparecerán aquí.</div>
+      <div class="fw-semibold">No tienes solicitudes enviadas por ahora</div>
+      <div class="text-muted small">Cuando envíes una solicitud al servidor aparecerá aquí.</div>
     </div>
     } @else {
     <div class="perfil-notif-list">
-      @for (notif of notificaciones(); track notif.id) {
+      @for (notif of solicitudesServidor(); track notif.id) {
       <article class="perfil-notif-item" [class.perfil-notif-item--read]="esLeida(notif)">
         <div class="perfil-notif-main">
           <div class="perfil-notif-top">
@@ -174,8 +174,6 @@
           </div>
 
           <p class="perfil-notif-message mb-0">{{ notif.mensaje }}</p>
-
-          @if (esPresupuesto(notif)) {
           <div class="perfil-notif-meta">
             <span class="perfil-notif-tag">{{ estadoPresupuestoTexto(notif) }}</span>
             <span class="text-muted small">{{ nombreProveedor(notif) }}</span>
@@ -186,7 +184,6 @@
             </span>
             }
           </div>
-          }
         </div>
 
         <div class="perfil-notif-actions">
