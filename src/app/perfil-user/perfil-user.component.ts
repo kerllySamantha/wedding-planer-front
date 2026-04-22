@@ -58,6 +58,20 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly solicitudesNoLeidas = computed(
     () => this.solicitudesReales().filter((n) => !this.esLeida(n)).length,
   );
+  readonly totalOfertadoSolicitudes = computed(() =>
+    this.solicitudesReales().reduce(
+      (total, notif) => total + (this.importeOfertado(notif) ?? 0),
+      0,
+    ),
+  );
+  readonly totalPagadoSolicitudes = computed(() =>
+    this.solicitudesReales()
+      .filter((notif) => (this.estadoReservaSolicitud(notif) ?? '').toLowerCase() === 'confirmada')
+      .reduce((total, notif) => total + (this.importeOfertado(notif) ?? 0), 0),
+  );
+  readonly totalPendienteSolicitudes = computed(() =>
+    Math.max(0, this.totalOfertadoSolicitudes() - this.totalPagadoSolicitudes()),
+  );
   readonly presupuestosOrdenados = computed(() =>
     [...(this.boda()?.presupuestos ?? [])].sort(
       (a, b) =>
