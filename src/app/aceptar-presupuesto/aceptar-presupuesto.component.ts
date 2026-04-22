@@ -170,25 +170,14 @@ export class AceptarPresupuestoComponent {
 
   puedeAceptar(): boolean {
     const estado = this.normalizarEstado(this.presupuesto()?.estado);
-    const estadoReserva = this.estadoReservaActual();
-    const reservaCerrada =
-      estadoReserva === 'confirmada' || estadoReserva === 'bloqueada';
-
-    if (reservaCerrada || this.esReservaConfirmada()) return false;
+    if (this.esReservaConfirmada()) return false;
 
     return estado === 'pendiente_usuario' || estado === 'aceptado_empresa';
   }
 
   puedeRechazar(): boolean {
     const estado = this.normalizarEstado(this.presupuesto()?.estado);
-    const estadoReserva = this.estadoReservaActual();
-    if (
-      estadoReserva === 'confirmada' ||
-      estadoReserva === 'bloqueada' ||
-      this.esReservaConfirmada()
-    ) {
-      return false;
-    }
+    if (this.esReservaConfirmada()) return false;
 
     return estado === 'pendiente_usuario' || estado === 'aceptado_empresa';
   }
