@@ -13,7 +13,7 @@ import { AuthenticationService } from '../Services/Autentication/authenticationS
 import { PerfilApiServiceService } from '../Services/Perfiles/perfil-api-service.service';
 import { Perfil } from '../Interfaces/Perfil';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
-import { PedirPresupuestoStore } from '../Interfaces/PedirPresupuesto';
+import { PedirPresupuestoInfo, PedirPresupuestoStore } from '../Interfaces/PedirPresupuesto';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { Producto, Productos } from '../Interfaces/Producto';
 import { TipoSimple } from '../Interfaces/Tipos';
@@ -46,6 +46,7 @@ export class ModalDetallesPresupuestoComponent implements OnInit {
 
   editar = signal<boolean>(false);
   enviando = signal<boolean>(false);
+  errorSolicitud = signal<string | null>(null);
   empresa = signal<Empresa | null>(null);
   productosEmpresa = signal<Producto[] | []>([])
   perfil = signal<Perfil | null>(null);
@@ -277,6 +278,7 @@ private getProductos(idEmpresa: number): void {
       console.error('Faltan datos obligatorios para pedir el presupuesto.');
       return;
     }
+    this.errorSolicitud.set(null);
 
     const payload: PedirPresupuestoStore = {
       nombre: raw.nombre.trim(),
@@ -294,11 +296,64 @@ private getProductos(idEmpresa: number): void {
     };
 
     console.log('Payload enviado desde el modal:', payload);
-    this.postPedirPresupuesto(payload);
+    this.validarSolicitudDuplicadaYEnviar(payload);
+  }
+
+  private validarSolicitudDuplicadaYEnviar(payload: PedirPresupuestoStore): void {
+    this.pedirPresupuestoCtx.getEmpresaPedirPresupuesto(String(payload.empresa_id)).subscribe({
+      next: (solicitudes) => {
+        const duplicada = (solicitudes ?? []).find((solicitud) => {
+          const mismoUsuario = Number(solicitud.user_id) === Number(payload.user_id);
+          const mismoTipo = Number(solicitud.tipo_producto_id) === Number(payload.tipo_producto_id);
+          return mismoUsuario && mismoTipo && this.esSolicitudActiva(solicitud);
+        });
+
+        if (duplicada) {
+          this.errorSolicitud.set(
+            'Ya tienes una solicitud activa o aceptada para este servicio. Revisa su detalle en tu perfil.',
+          );
+          return;
+        }
+
+        this.postPedirPresupuesto(payload);
+      },
+      error: () => {
+        this.errorSolicitud.set('No se pudo validar si ya existe una solicitud similar.');
+      },
+    });
+  }
+
+  private esSolicitudActiva(solicitud: PedirPresupuestoInfo): boolean {
+    const estado = this.normalizarEstadoSolicitud(solicitud?.estado);
+    return (
+      estado === 'pendiente' ||
+      estado === 'pendiente_usuario' ||
+      estado === 'aceptado_empresa' ||
+      estado === 'aceptado_usuario'
+    );
+  }
+
+  private normalizarEstadoSolicitud(estado: unknown): string {
+    if (!estado) return 'pendiente';
+    if (typeof estado === 'string') return estado.toLowerCase();
+    if (typeof estado === 'object') {
+      const estadoObj = estado as Record<string, unknown>;
+      return String(
+        estadoObj['aceptado_usuario'] ??
+        estadoObj['aceptado_empresa'] ??
+        estadoObj['pendiente_usuario'] ??
+        estadoObj['pendiente'] ??
+        estadoObj['rechazado_usuario'] ??
+        estadoObj['rechazado_empresa'] ??
+        'pendiente',
+      ).toLowerCase();
+    }
+    return 'pendiente';
   }
 
   postPedirPresupuesto(pedirPresupuesto: PedirPresupuestoStore): void {
     this.enviando.set(true);
+    this.errorSolicitud.set(null);
 
     this.pedirPresupuestoCtx.storePedirPresupuesto(pedirPresupuesto).subscribe({
       next: (value) => {
@@ -307,6 +362,7 @@ private getProductos(idEmpresa: number): void {
       },
       error: (error) => {
         this.enviando.set(false);
+        this.errorSolicitud.set('No se pudo enviar la solicitud. Intentalo de nuevo.');
         console.error('Error al enviar la solicitud de presupuesto:', error);
       },
     });

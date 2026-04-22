@@ -124,13 +124,13 @@
             </div>
           </article>
 
-          <article class="timeline-step" [class.is-done]="reservaConfirmada()"
+          <article class="timeline-step" [class.is-done]="esReservaConfirmada()"
             [class.is-current]="puedeConfirmarReserva()">
             <span>4</span>
             <div>
               <h3>Pago y confirmación</h3>
               <p>
-                @if (reservaConfirmada()) {
+                @if (esReservaConfirmada()) {
                 El pago se ha registrado y la reserva está confirmada.
                 } @else if (puedeConfirmarReserva()) {
                 La fecha está bloqueada. Falta realizar el pago simulado para confirmar la reserva.
@@ -167,7 +167,7 @@
         </button>
         }
 
-        @if (reservaConfirmada()) {
+        @if (esReservaConfirmada()) {
         <button class="btn-success" type="button" disabled>
           Pagado y confirmado
         </button>

@@ -47,6 +47,46 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly notificacionesNoLeidas = computed(
     () => this.notificaciones().filter((n) => !this.esLeida(n)).length,
   );
+  readonly solicitudesServidor = computed(() =>
+    this.notificaciones()
+      .filter((n) => this.esPresupuesto(n))
+      .sort((a, b) => Number(b.id) - Number(a.id)),
+  );
+  readonly solicitudesReales = computed(() =>
+    this.solicitudesServidor().filter((n) => this.esSolicitudReal(n)),
+  );
+  readonly solicitudesNoLeidas = computed(
+    () => this.solicitudesReales().filter((n) => !this.esLeida(n)).length,
+  );
+  readonly totalOfertadoSolicitudes = computed(() =>
+    this.solicitudesReales().reduce(
+      (total, notif) => total + (this.importeOfertado(notif) ?? 0),
+      0,
+    ),
+  );
+  readonly totalPagadoSolicitudes = computed(() =>
+    this.solicitudesReales()
+      .filter((notif) => (this.estadoReservaSolicitud(notif) ?? '').toLowerCase() === 'confirmada')
+      .reduce((total, notif) => total + (this.importeOfertado(notif) ?? 0), 0),
+  );
+  readonly totalPendienteSolicitudes = computed(() =>
+    Math.max(0, this.totalOfertadoSolicitudes() - this.totalPagadoSolicitudes()),
+  );
+  readonly presupuestosOrdenados = computed(() =>
+    [...(this.boda()?.presupuestos ?? [])].sort(
+      (a, b) =>
+        new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime(),
+    ),
+  );
+  readonly presupuestoTotal = computed(() =>
+    this.presupuestosOrdenados().reduce((total, p) => total + (p.monto_total ?? 0), 0),
+  );
+  readonly presupuestoPagado = computed(() =>
+    this.presupuestosOrdenados().reduce((total, p) => total + (p.monto_pagado ?? 0), 0),
+  );
+  readonly presupuestoPendiente = computed(() =>
+    Math.max(0, this.presupuestoTotal() - this.presupuestoPagado()),
+  );
 
   private readonly aceptandoIds = signal<Set<string>>(new Set());
   private readonly aceptadosIds = signal<Set<string>>(new Set());
@@ -108,7 +148,6 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.notificacionesCtx.getNotificaciones(userId, page).pipe(
       map((paginated) => this.normalizarNotificaciones(paginated.data ?? [])),
       switchMap((base) => this.sincronizarSolicitudesPresupuesto(base)),
-      map((notifs) => this.deduplicarNotificaciones(notifs)),
     ).subscribe({
       next: (notificaciones) => {
         this.notificaciones.set(notificaciones);
@@ -174,7 +213,8 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     const ref = notif?.referencia as Record<string, unknown> | null;
     const id =
       ref?.['pedir_presupuesto_id'] ??
-      ref?.['id'] ??
+      ref?.['solicitud_id'] ??
+      ref?.['presupuesto_solicitud_id'] ??
       notif?.referencia_id ??
       null;
 
@@ -188,16 +228,71 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     return Number.isFinite(num) ? num : null;
   }
 
+  esSolicitudReal(notif: Notificacion): boolean {
+    const ref = notif?.referencia as Record<string, unknown> | null;
+    if (!this.esPresupuesto(notif)) return false;
+    const solicitudId =
+      ref?.['pedir_presupuesto_id'] ??
+      ref?.['solicitud_id'] ??
+      ref?.['presupuesto_solicitud_id'] ??
+      notif?.referencia_id ??
+      null;
+    if (!solicitudId) return false;
+
+    return !!(
+      ref?.['pedir_presupuesto_id'] ||
+      ref?.['solicitud_id'] ||
+      ref?.['presupuesto_solicitud_id'] ||
+      ref?.['importe_ofertado'] != null ||
+      ref?.['fecha_inicio'] ||
+      ref?.['modalidad'] ||
+      ref?.['empresa_id']
+    );
+  }
+
+  estadoReservaSolicitud(notif: Notificacion): string | null {
+    const ref = notif?.referencia as Record<string, any> | null;
+    return (ref?.['reserva']?.estado ?? ref?.['estado_reserva'] ?? null) as string | null;
+  }
+
+  mostrarDetalleAceptada(notif: Notificacion): boolean {
+    const estado = this.resolverEstadoPresupuesto(notif);
+    return estado === 'aceptado_usuario' || this.estadoReservaSolicitud(notif) != null;
+  }
+
+  productoServicioTexto(notif: Notificacion): string {
+    const ref = notif?.referencia as Record<string, any> | null;
+    return (
+      ref?.['tipo_producto']?.nombre ??
+      ref?.['producto']?.nombre ??
+      ref?.['servicio']?.nombre ??
+      ref?.['tipo_producto_nombre'] ??
+      (ref?.['tipo_producto_id'] ? `Servicio #${ref?.['tipo_producto_id']}` : 'Servicio')
+    );
+  }
+
   private resolverEstadoPresupuesto(notif: Notificacion): string {
-    const estado = notif?.referencia?.estado;
+    const estado = notif?.referencia?.estado as unknown;
     if (!estado) return 'pendiente';
 
-    return (
-      estado.aceptado_empresa ||
-      estado.rechazado_empresa ||
-      estado.pendiente ||
-      'pendiente'
-    );
+    if (typeof estado === 'string') {
+      return estado.toLowerCase();
+    }
+
+    if (typeof estado === 'object') {
+      const estadoObj = estado as Record<string, string>;
+      return String(
+        estadoObj['aceptado_usuario'] ||
+          estadoObj['rechazado_usuario'] ||
+          estadoObj['pendiente_usuario'] ||
+          estadoObj['aceptado_empresa'] ||
+          estadoObj['rechazado_empresa'] ||
+          estadoObj['pendiente'] ||
+          'pendiente',
+      ).toLowerCase();
+    }
+
+    return 'pendiente';
   }
 
   estadoPresupuestoTexto(notif: Notificacion): string {
@@ -265,10 +360,6 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   }
 
   abrirNotificacion(notif: Notificacion): void {
-    if (notif?.id) {
-      this.marcarLeida(notif);
-    }
-
     if (this.esPresupuesto(notif)) {
       const id = this.presupuestoId(notif);
 
@@ -283,7 +374,31 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.mensajeAccion.set('La notificación se ha marcado como leída.');
+    this.mensajeAccion.set('Abriendo detalle de la notificación.');
+  }
+
+  nombreProveedor(notif: Notificacion): string {
+    const referencia = notif?.referencia as Record<string, any> | null;
+    return (
+      referencia?.['empresa']?.nombre ??
+      referencia?.['proveedor']?.nombre ??
+      referencia?.['nombre_empresa'] ??
+      'Proveedor'
+    );
+  }
+
+  tipoPresupuestoTexto(presupuesto: any): string {
+    return (
+      presupuesto?.tipos?.nombre ??
+      presupuesto?.tipo_producto?.nombre ??
+      presupuesto?.nombre ??
+      'Servicio'
+    );
+  }
+
+  estadoPresupuestoDesdePresupuesto(presupuesto: any): string {
+    const notifMock = { referencia: { estado: presupuesto?.estado } } as Notificacion;
+    return this.estadoPresupuestoTexto(notifMock);
   }
 
   verDetallePresupuesto(notif: Notificacion): void {
@@ -367,7 +482,8 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       const referencia = notif?.referencia as Record<string, unknown> | null;
       const fallbackRefId = (
         referencia?.['pedir_presupuesto_id'] ??
-        referencia?.['id'] ??
+        referencia?.['solicitud_id'] ??
+        referencia?.['presupuesto_solicitud_id'] ??
         notif.referencia_id ??
         null
       ) as string | number | null;
@@ -431,58 +547,4 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     );
   }
 
-  private deduplicarNotificaciones(notificaciones: Notificacion[]): Notificacion[] {
-    const byReferencia = new Map<string, Notificacion>();
-
-    for (const notif of notificaciones) {
-      const referencia = this.referenciaUnica(notif);
-      if (!referencia) continue;
-
-      const existente = byReferencia.get(referencia);
-      if (!existente) {
-        byReferencia.set(referencia, notif);
-        continue;
-      }
-
-      const estadoActual = this.resolverEstadoPresupuesto(notif);
-      const estadoExistente = this.resolverEstadoPresupuesto(existente);
-      const prioridadActual = this.prioridadEstado(estadoActual);
-      const prioridadExistente = this.prioridadEstado(estadoExistente);
-
-      if (
-        prioridadActual > prioridadExistente ||
-        (prioridadActual === prioridadExistente && Number(notif.id) > Number(existente.id))
-      ) {
-        byReferencia.set(referencia, notif);
-      }
-    }
-
-    const sinReferencia = notificaciones.filter((notif) => !this.referenciaUnica(notif));
-    return [...sinReferencia, ...Array.from(byReferencia.values())]
-      .sort((a, b) => Number(b.id) - Number(a.id));
-  }
-
-  private referenciaUnica(notif: Notificacion): string | null {
-    if (this.esPresupuesto(notif)) {
-      const solicitudId = this.presupuestoId(notif);
-      return solicitudId ? `presupuesto:${solicitudId}` : null;
-    }
-    return notif?.id != null ? `notif:${notif.id}` : null;
-  }
-
-  private prioridadEstado(estado: string): number {
-    switch ((estado ?? '').toLowerCase()) {
-      case 'aceptado_usuario':
-        return 4;
-      case 'aceptado_empresa':
-      case 'pendiente_usuario':
-        return 3;
-      case 'rechazado_usuario':
-      case 'rechazado_empresa':
-        return 2;
-      case 'pendiente':
-      default:
-        return 1;
-    }
-  }
 }

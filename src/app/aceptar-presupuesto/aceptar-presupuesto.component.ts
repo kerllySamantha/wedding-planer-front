@@ -26,7 +26,6 @@ export class AceptarPresupuestoComponent {
   procesandoAceptar = signal(false);
   procesandoRechazar = signal(false);
   procesandoPago = signal(false);
-  reservaConfirmada = signal(false);
   reservaId = signal<number | string | null>(null);
 
   ngOnInit() {
@@ -58,6 +57,7 @@ export class AceptarPresupuestoComponent {
   cargarPresupuesto(id: string) {
     this.loading.set(true);
     this.error.set(null);
+    this.reservaId.set(null);
 
     this.presupuestoService.getPedirPresupuesto(id).subscribe({
       next: (res) => {
@@ -91,7 +91,6 @@ export class AceptarPresupuestoComponent {
           response?.reserva_id ?? response?.reserva?.id ?? this.reservaId();
         if (reservaId != null) {
           this.reservaId.set(reservaId);
-          localStorage.setItem('reserva_id', String(reservaId));
         }
 
         this.procesandoAceptar.set(false);
@@ -139,7 +138,7 @@ export class AceptarPresupuestoComponent {
     });
   }
   simularPagoYConfirmarReserva() {
-    const reservaId = this.reservaId() ?? localStorage.getItem('reserva_id');
+    const reservaId = this.reservaId();
     if (reservaId == null || this.procesandoPago()) return;
 
     this.accionMensaje.set(null);
@@ -148,7 +147,6 @@ export class AceptarPresupuestoComponent {
     this.reservasService.confirmarReserva(reservaId).subscribe({
       next: () => {
         this.procesandoPago.set(false);
-        this.reservaConfirmada.set(true);
         this.accionMensaje.set(
           'Pago simulado completado. La reserva ha pasado a confirmada.',
         );
@@ -172,22 +170,24 @@ export class AceptarPresupuestoComponent {
 
   puedeAceptar(): boolean {
     const estado = this.normalizarEstado(this.presupuesto()?.estado);
+    if (this.esReservaConfirmada()) return false;
+
     return estado === 'pendiente_usuario' || estado === 'aceptado_empresa';
   }
 
   puedeRechazar(): boolean {
     const estado = this.normalizarEstado(this.presupuesto()?.estado);
+    if (this.esReservaConfirmada()) return false;
+
     return estado === 'pendiente_usuario' || estado === 'aceptado_empresa';
   }
 
   puedeConfirmarReserva(): boolean {
-    const estadoReserva = (
-      this.obtenerEstadoReserva(this.presupuesto()) ?? ''
-    ).toLowerCase();
+    const estadoReserva = this.estadoReservaActual();
     return (
       estadoReserva === 'bloqueada' &&
       !!this.reservaId() &&
-      !this.reservaConfirmada()
+      !this.esReservaConfirmada()
     );
   }
 
@@ -198,19 +198,12 @@ export class AceptarPresupuestoComponent {
   private asignarPresupuesto(presupuesto: any) {
     this.presupuesto.set(presupuesto);
 
-    const reservaIdDetectada =
-      this.obtenerReservaId(presupuesto) ??
-      this.reservaId() ??
-      localStorage.getItem('reserva_id');
+    const reservaIdDetectada = this.obtenerReservaId(presupuesto);
 
     if (reservaIdDetectada != null) {
       this.reservaId.set(reservaIdDetectada);
     }
 
-    this.reservaConfirmada.set(
-      (this.obtenerEstadoReserva(presupuesto) ?? '').toLowerCase() ===
-        'confirmada',
-    );
   }
 
   private esEstadoPendienteUsuario(estado: unknown): boolean {
@@ -248,6 +241,14 @@ export class AceptarPresupuestoComponent {
 
   private obtenerEstadoReserva(presupuesto: any): string | null {
     return presupuesto?.reserva?.estado ?? presupuesto?.estado_reserva ?? null;
+  }
+
+  private estadoReservaActual(): string {
+    return (this.obtenerEstadoReserva(this.presupuesto()) ?? '').toLowerCase();
+  }
+
+  esReservaConfirmada(): boolean {
+    return this.estadoReservaActual() === 'confirmada';
   }
 
   estadoFinalTexto(): string {
