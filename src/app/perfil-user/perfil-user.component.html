@@ -31,56 +31,10 @@
       </section>
 
       <section class="card card-margin shadow-sm rounded-4 p-4">
-        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
-          <div>
-            <h3 class="h5 mb-1">Calculadora de presupuesto</h3>
-            <p class="text-muted mb-0">Este bloque es solo para planificación interna de la boda.</p>
-          </div>
-          <span class="perfil-notif-counter">{{ presupuestosOrdenados().length }} servicios</span>
-        </div>
-
-        <div class="resumen-grid mb-4">
-          <article class="resumen-card">
-            <span>Total planificado</span>
-            <strong>{{ presupuestoTotal() | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
-          </article>
-          <article class="resumen-card resumen-card--ok">
-            <span>Total pagado</span>
-            <strong>{{ presupuestoPagado() | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
-          </article>
-          <article class="resumen-card resumen-card--warn">
-            <span>Saldo pendiente</span>
-            <strong>{{ presupuestoPendiente() | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
-          </article>
-        </div>
-
-        @if (presupuestosOrdenados().length === 0) {
-        <div class="perfil-notif-empty p-4">
-          <div class="perfil-notif-empty-icon">🧾</div>
-          <div class="fw-semibold">Todavía no tienes presupuestos cargados</div>
-        </div>
-        } @else {
-        <div class="presupuestos-lista">
-          @for (presupuesto of presupuestosOrdenados(); track presupuesto.id) {
-          <article class="presupuesto-item">
-            <div>
-              <h4 class="h6 mb-1">{{ tipoPresupuestoTexto(presupuesto) }}</h4>
-              <p class="text-muted mb-1">Creado: {{ presupuesto.fecha_creacion | date:'dd/MM/yyyy' }}</p>
-              <span class="perfil-notif-tag">Partida de calculadora</span>
-            </div>
-            <div class="text-end">
-              <div class="presupuesto-total">{{ presupuesto.monto_total | currency:'EUR':'symbol':'1.0-0':'es' }}</div>
-              <small class="text-muted">
-                Pagado: {{ (presupuesto.monto_pagado || 0) | currency:'EUR':'symbol':'1.0-0':'es' }}
-              </small>
-              <div class="small text-muted mt-2">
-                Presupuesto interno (calculadora)
-              </div>
-            </div>
-          </article>
-          }
-        </div>
-        }
+        <h3 class="h5 mb-1">Solicitudes reales de presupuesto</h3>
+        <p class="text-muted mb-0">
+          Este perfil muestra solo solicitudes enviadas al servidor (no datos de calculadora interna).
+        </p>
       </section>
     </div>
 
@@ -153,7 +107,7 @@
     <div class="perfil-notif-state">Cargando notificaciones...</div>
     } @else if (notificacionesError()) {
     <div class="alert alert-danger mx-4 my-4">{{ notificacionesError() }}</div>
-    } @else if (solicitudesServidor().length === 0) {
+    } @else if (solicitudesReales().length === 0) {
     <div class="perfil-notif-empty">
       <div class="perfil-notif-empty-icon">🔔</div>
       <div class="fw-semibold">No tienes solicitudes enviadas por ahora</div>
@@ -161,7 +115,7 @@
     </div>
     } @else {
     <div class="perfil-notif-list">
-      @for (notif of solicitudesServidor(); track notif.id) {
+      @for (notif of solicitudesReales(); track notif.id) {
       <article class="perfil-notif-item" [class.perfil-notif-item--read]="esLeida(notif)">
         <div class="perfil-notif-main">
           <div class="perfil-notif-top">
@@ -184,6 +138,26 @@
             </span>
             }
           </div>
+
+          @if (mostrarDetalleAceptada(notif)) {
+          <div class="perfil-detalle-aceptada mt-2 small text-muted">
+            @if (notif.referencia?.fecha_inicio) {
+            <div><strong>Fecha inicio:</strong> {{ notif.referencia?.fecha_inicio | date:'dd/MM/yyyy HH:mm' }}</div>
+            }
+            @if (notif.referencia?.fecha_fin) {
+            <div><strong>Fecha fin:</strong> {{ notif.referencia?.fecha_fin | date:'dd/MM/yyyy HH:mm' }}</div>
+            }
+            @if (notif.referencia?.modalidad) {
+            <div><strong>Modalidad:</strong> {{ notif.referencia?.modalidad }}</div>
+            }
+            @if (estadoReservaSolicitud(notif)) {
+            <div><strong>Estado reserva:</strong> {{ estadoReservaSolicitud(notif) }}</div>
+            }
+            @if (notif.referencia?.comentario_empresa) {
+            <div><strong>Comentario:</strong> {{ notif.referencia?.comentario_empresa }}</div>
+            }
+          </div>
+          }
         </div>
 
         <div class="perfil-notif-actions">

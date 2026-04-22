@@ -52,8 +52,11 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       .filter((n) => this.esPresupuesto(n))
       .sort((a, b) => Number(b.id) - Number(a.id)),
   );
+  readonly solicitudesReales = computed(() =>
+    this.solicitudesServidor().filter((n) => this.esSolicitudReal(n)),
+  );
   readonly solicitudesNoLeidas = computed(
-    () => this.solicitudesServidor().filter((n) => !this.esLeida(n)).length,
+    () => this.solicitudesReales().filter((n) => !this.esLeida(n)).length,
   );
   readonly presupuestosOrdenados = computed(() =>
     [...(this.boda()?.presupuestos ?? [])].sort(
@@ -209,6 +212,32 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     if (value == null) return null;
     const num = Number(value);
     return Number.isFinite(num) ? num : null;
+  }
+
+  esSolicitudReal(notif: Notificacion): boolean {
+    const ref = notif?.referencia as Record<string, unknown> | null;
+    if (!this.esPresupuesto(notif)) return false;
+    if (!this.presupuestoId(notif)) return false;
+
+    return !!(
+      ref?.['pedir_presupuesto_id'] ||
+      ref?.['solicitud_id'] ||
+      ref?.['presupuesto_solicitud_id'] ||
+      ref?.['importe_ofertado'] != null ||
+      ref?.['fecha_inicio'] ||
+      ref?.['modalidad'] ||
+      ref?.['empresa_id']
+    );
+  }
+
+  estadoReservaSolicitud(notif: Notificacion): string | null {
+    const ref = notif?.referencia as Record<string, any> | null;
+    return (ref?.['reserva']?.estado ?? ref?.['estado_reserva'] ?? null) as string | null;
+  }
+
+  mostrarDetalleAceptada(notif: Notificacion): boolean {
+    const estado = this.resolverEstadoPresupuesto(notif);
+    return estado === 'aceptado_usuario' || this.estadoReservaSolicitud(notif) != null;
   }
 
   private resolverEstadoPresupuesto(notif: Notificacion): string {
