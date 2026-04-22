@@ -204,15 +204,27 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   }
 
   private resolverEstadoPresupuesto(notif: Notificacion): string {
-    const estado = notif?.referencia?.estado;
+    const estado = notif?.referencia?.estado as unknown;
     if (!estado) return 'pendiente';
 
-    return (
-      estado.aceptado_empresa ||
-      estado.rechazado_empresa ||
-      estado.pendiente ||
-      'pendiente'
-    );
+    if (typeof estado === 'string') {
+      return estado.toLowerCase();
+    }
+
+    if (typeof estado === 'object') {
+      const estadoObj = estado as Record<string, string>;
+      return String(
+        estadoObj['aceptado_usuario'] ||
+          estadoObj['rechazado_usuario'] ||
+          estadoObj['pendiente_usuario'] ||
+          estadoObj['aceptado_empresa'] ||
+          estadoObj['rechazado_empresa'] ||
+          estadoObj['pendiente'] ||
+          'pendiente',
+      ).toLowerCase();
+    }
+
+    return 'pendiente';
   }
 
   estadoPresupuestoTexto(notif: Notificacion): string {
@@ -317,8 +329,20 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   }
 
   estadoPresupuestoDesdePresupuesto(presupuesto: any): string {
-    const notifMock = { referencia: presupuesto } as Notificacion;
+    const notifMock = { referencia: { estado: presupuesto?.estado } } as Notificacion;
     return this.estadoPresupuestoTexto(notifMock);
+  }
+
+  irADetallePresupuesto(presupuesto: any): void {
+    const id = presupuesto?.pedir_presupuesto_id ?? presupuesto?.solicitud_id ?? presupuesto?.id;
+    if (!id) {
+      this.mensajeAccion.set('No se pudo abrir el detalle de este presupuesto.');
+      return;
+    }
+
+    this.router.navigate(['/presupuesto', id], {
+      state: { presupuesto },
+    });
   }
 
   verDetallePresupuesto(notif: Notificacion): void {
