@@ -58,6 +58,8 @@ export class AceptarPresupuestoComponent {
   cargarPresupuesto(id: string) {
     this.loading.set(true);
     this.error.set(null);
+    this.reservaId.set(null);
+    this.reservaConfirmada.set(false);
 
     this.presupuestoService.getPedirPresupuesto(id).subscribe({
       next: (res) => {
@@ -91,7 +93,6 @@ export class AceptarPresupuestoComponent {
           response?.reserva_id ?? response?.reserva?.id ?? this.reservaId();
         if (reservaId != null) {
           this.reservaId.set(reservaId);
-          localStorage.setItem('reserva_id', String(reservaId));
         }
 
         this.procesandoAceptar.set(false);
@@ -139,7 +140,7 @@ export class AceptarPresupuestoComponent {
     });
   }
   simularPagoYConfirmarReserva() {
-    const reservaId = this.reservaId() ?? localStorage.getItem('reserva_id');
+    const reservaId = this.reservaId();
     if (reservaId == null || this.procesandoPago()) return;
 
     this.accionMensaje.set(null);
@@ -198,10 +199,7 @@ export class AceptarPresupuestoComponent {
   private asignarPresupuesto(presupuesto: any) {
     this.presupuesto.set(presupuesto);
 
-    const reservaIdDetectada =
-      this.obtenerReservaId(presupuesto) ??
-      this.reservaId() ??
-      localStorage.getItem('reserva_id');
+    const reservaIdDetectada = this.obtenerReservaId(presupuesto);
 
     if (reservaIdDetectada != null) {
       this.reservaId.set(reservaIdDetectada);
