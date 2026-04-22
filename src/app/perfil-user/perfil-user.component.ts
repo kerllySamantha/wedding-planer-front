@@ -215,7 +215,6 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       ref?.['pedir_presupuesto_id'] ??
       ref?.['solicitud_id'] ??
       ref?.['presupuesto_solicitud_id'] ??
-      notif?.referencia_id ??
       null;
 
     return id != null ? String(id) : null;
@@ -231,7 +230,12 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   esSolicitudReal(notif: Notificacion): boolean {
     const ref = notif?.referencia as Record<string, unknown> | null;
     if (!this.esPresupuesto(notif)) return false;
-    if (!this.presupuestoId(notif)) return false;
+    const solicitudId =
+      ref?.['pedir_presupuesto_id'] ??
+      ref?.['solicitud_id'] ??
+      ref?.['presupuesto_solicitud_id'] ??
+      null;
+    if (!solicitudId) return false;
 
     return !!(
       ref?.['pedir_presupuesto_id'] ||
@@ -252,6 +256,17 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   mostrarDetalleAceptada(notif: Notificacion): boolean {
     const estado = this.resolverEstadoPresupuesto(notif);
     return estado === 'aceptado_usuario' || this.estadoReservaSolicitud(notif) != null;
+  }
+
+  productoServicioTexto(notif: Notificacion): string {
+    const ref = notif?.referencia as Record<string, any> | null;
+    return (
+      ref?.['tipo_producto']?.nombre ??
+      ref?.['producto']?.nombre ??
+      ref?.['servicio']?.nombre ??
+      ref?.['tipo_producto_nombre'] ??
+      (ref?.['tipo_producto_id'] ? `Servicio #${ref?.['tipo_producto_id']}` : 'Servicio')
+    );
   }
 
   private resolverEstadoPresupuesto(notif: Notificacion): string {
@@ -467,7 +482,6 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
         referencia?.['pedir_presupuesto_id'] ??
         referencia?.['solicitud_id'] ??
         referencia?.['presupuesto_solicitud_id'] ??
-        notif.referencia_id ??
         null
       ) as string | number | null;
 

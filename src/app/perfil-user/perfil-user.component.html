@@ -151,6 +151,7 @@
           <div class="perfil-notif-meta">
             <span class="perfil-notif-tag">{{ estadoPresupuestoTexto(notif) }}</span>
             <span class="text-muted small">{{ nombreProveedor(notif) }}</span>
+            <span class="text-muted small">• {{ productoServicioTexto(notif) }}</span>
 
             @if (importeOfertado(notif) != null) {
             <span class="perfil-notif-price">
