@@ -173,18 +173,31 @@ export class AceptarPresupuestoComponent {
 
   puedeAceptar(): boolean {
     const estado = this.normalizarEstado(this.presupuesto()?.estado);
+    const estadoReserva = this.estadoReservaActual();
+    const reservaCerrada =
+      estadoReserva === 'confirmada' || estadoReserva === 'bloqueada';
+
+    if (reservaCerrada || this.reservaConfirmada()) return false;
+
     return estado === 'pendiente_usuario' || estado === 'aceptado_empresa';
   }
 
   puedeRechazar(): boolean {
     const estado = this.normalizarEstado(this.presupuesto()?.estado);
+    const estadoReserva = this.estadoReservaActual();
+    if (
+      estadoReserva === 'confirmada' ||
+      estadoReserva === 'bloqueada' ||
+      this.reservaConfirmada()
+    ) {
+      return false;
+    }
+
     return estado === 'pendiente_usuario' || estado === 'aceptado_empresa';
   }
 
   puedeConfirmarReserva(): boolean {
-    const estadoReserva = (
-      this.obtenerEstadoReserva(this.presupuesto()) ?? ''
-    ).toLowerCase();
+    const estadoReserva = this.estadoReservaActual();
     return (
       estadoReserva === 'bloqueada' &&
       !!this.reservaId() &&
@@ -246,6 +259,10 @@ export class AceptarPresupuestoComponent {
 
   private obtenerEstadoReserva(presupuesto: any): string | null {
     return presupuesto?.reserva?.estado ?? presupuesto?.estado_reserva ?? null;
+  }
+
+  private estadoReservaActual(): string {
+    return (this.obtenerEstadoReserva(this.presupuesto()) ?? '').toLowerCase();
   }
 
   estadoFinalTexto(): string {
