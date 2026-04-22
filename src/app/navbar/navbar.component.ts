@@ -201,6 +201,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       ref?.['pedir_presupuesto_id'] ??
       ref?.['solicitud_id'] ??
       ref?.['presupuesto_solicitud_id'] ??
+      notif?.referencia_id ??
       null
     ) as string | number | null;
 

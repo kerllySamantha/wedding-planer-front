@@ -215,6 +215,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       ref?.['pedir_presupuesto_id'] ??
       ref?.['solicitud_id'] ??
       ref?.['presupuesto_solicitud_id'] ??
+      notif?.referencia_id ??
       null;
 
     return id != null ? String(id) : null;
@@ -234,6 +235,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       ref?.['pedir_presupuesto_id'] ??
       ref?.['solicitud_id'] ??
       ref?.['presupuesto_solicitud_id'] ??
+      notif?.referencia_id ??
       null;
     if (!solicitudId) return false;
 
@@ -482,6 +484,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
         referencia?.['pedir_presupuesto_id'] ??
         referencia?.['solicitud_id'] ??
         referencia?.['presupuesto_solicitud_id'] ??
+        notif.referencia_id ??
         null
       ) as string | number | null;
 
