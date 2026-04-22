@@ -10,6 +10,11 @@
             Rellena este formulario y {{ empresa()?.nombre_empresa }} se pondra en contacto contigo en breve.
             Todos los datos se enviaran de forma confidencial.
         </p>
+        @if (errorSolicitud()) {
+        <div class="alert alert-warning py-2 px-3 mb-3">
+            {{ errorSolicitud() }}
+        </div>
+        }
 
         <form id="presupuestoForm" novalidate [formGroup]="form" class="contact-form" (ngSubmit)="enviarSolicitud()">
             <mat-form-field appearance="outline" class="field field-full">
