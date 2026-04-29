@@ -46,6 +46,29 @@
                 </div>
             </dl>
         </article>
+        <article class="settings-card settings-card--full">
+            <h2>Productos y servicios de tu empresa</h2>
+            <p class="settings-subtitle mb-3">Aquí ves lo que tienes cargado en catálogo (como lo verá el usuario).</p>
+            @if ((data.productos?.length ?? 0) > 0) {
+            <div class="types-by-category">
+                @for (grupo of productosAgrupadosPorCategoria(); track grupo.categoria) {
+                <div class="category-row">
+                    <p class="category-name">{{ grupo.categoria }}</p>
+                    <div class="types-row">
+                        @for (producto of grupo.productos; track producto.id) {
+                        <span class="type-chip">
+                            <strong>{{ producto.nombre }}</strong>
+                            <small>· {{ producto.tipo_producto.nombre }} ({{ producto.tipo_producto.modalidad }})</small>
+                        </span>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <p class="text-muted mb-0">No tienes productos/servicios cargados todavía.</p>
+            }
+        </article>
     </div>
     } @else {
     <div class="settings-grid">

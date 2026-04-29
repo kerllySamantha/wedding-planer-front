@@ -78,7 +78,7 @@
           <select class="form-select" formControlName="producto_id">
             <option [ngValue]="null" disabled>Selecciona un producto</option>
             @for (p of productosFiltrados(); track p.id) {
-            <option [ngValue]="p.id">{{ p.nombre }} ({{ p.tipo_producto.modalidad }})</option>
+            <option [ngValue]="p.id">{{ p.nombre }} · {{ p.tipo_producto.nombre }} ({{ p.tipo_producto.modalidad }}) · {{ p.categoria.nombre }}</option>
             }
           </select>
         </div>
@@ -86,6 +86,32 @@
         <div class="col-md-3">
           <label class="form-label small fw-bold text-uppercase text-muted">Importe ofertado</label>
           <input type="number" class="form-control" formControlName="importe_ofertado" min="0">
+        </div>
+      </div>
+
+      <div class="border rounded p-3 mt-3">
+        <h3 class="h6 mb-3">Añadir producto/servicio a mi empresa</h3>
+        <div [formGroup]="nuevoProductoForm" class="row g-2">
+          <div class="col-md-4">
+            <input class="form-control" placeholder="Nombre del producto/servicio" formControlName="nombre">
+          </div>
+          <div class="col-md-2">
+            <select class="form-select" formControlName="modalidad">
+              <option value="servicio">Servicio</option>
+              <option value="producto">Producto</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" placeholder="Tipo (ej: Catering)" formControlName="tipo_producto_nombre">
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" placeholder="Categoría (ej: Banquete)" formControlName="categoria_nombre">
+          </div>
+        </div>
+        <div class="d-flex justify-content-end mt-2">
+          <button type="button" class="btn btn-outline-primary btn-sm" [disabled]="creandoProducto()" (click)="crearProductoServicio()">
+            {{ creandoProducto() ? 'Guardando...' : 'Añadir a mi catálogo' }}
+          </button>
         </div>
       </div>
 

@@ -9,7 +9,7 @@ import {
   Empresas,
 } from '../../Interfaces/Empresa';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
-import { Productos } from '../../Interfaces/Producto';
+import { Productos, ProductosPorCategoria } from '../../Interfaces/Producto';
 
 @Injectable({
   providedIn: 'root',
@@ -123,9 +123,9 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
 
   override getEmpresaProductos(
     idEmpresa: number,
-  ): Observable<Productos | null> {
+  ): Observable<Productos | ProductosPorCategoria | null> {
     return this.http
-      .get<Productos>(
+      .get<ProductosPorCategoria>(
         `${this.apiUrl}/empresas/${idEmpresa.toString()}/productos`,
       )
       .pipe(
