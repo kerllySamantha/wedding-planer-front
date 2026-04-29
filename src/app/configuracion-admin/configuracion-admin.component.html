@@ -93,19 +93,18 @@
         <h2>Categorías y tipos</h2>
         <p class="settings-subtitle mb-3">Marca productos existentes o añade productos personalizados por tipo.</p>
         <div class="types-by-category">
-            @for (categoria of categorias(); track categoria.id) {
+            @for (tipoPermitido of tiposPermitidosPorEmpresa(); track tipoPermitido.tipoId) {
             <div class="category-row category-row--edit">
-                <p class="category-name">{{ categoria.nombre }}</p>
+                <p class="category-name">{{ tipoPermitido.categoriaNombre }}</p>
                 <div class="types-row types-row--stacked d-block">
-                    @for (tipo of categoria.tipos; track tipo.id) {
                     <div class="type-editor-card">
                         <div class="type-editor-card__header">
-                            <span class="fw-semibold">{{ tipo.nombre }}</span>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="agregarCampoNuevoProducto(tipo.id)">+ Añadir producto</button>
+                            <span class="fw-semibold">{{ tipoPermitido.tipoNombre }}</span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="agregarCampoNuevoProducto(tipoPermitido.tipoId)">+ Añadir producto</button>
                         </div>
 
                         <div class="type-editor-card__checks">
-                            @for (producto of productosPorTipo(tipo.id); track producto.id) {
+                            @for (producto of productosPorTipo(tipoPermitido.tipoId); track producto.id) {
                             <label class="mb-0 d-flex align-items-center gap-1">
                                 <input type="checkbox" [checked]="productosSeleccionados().includes(producto.id)"
                                     (change)="onProductoToggle(producto.id, $any($event.target).checked)">
@@ -117,16 +116,27 @@
                         @for (nuevo of (nuevosProductosPorTipo()[tipo.id] ); track $index; let idx = $index) {
                         <div class="type-editor-card__new-item">
                             <input class="form-control form-control-sm" placeholder="Nombre del producto extra"
-                                [value]="nuevo" (input)="onNuevoProductoInput(tipo.id, idx, $any($event.target).value)">
-                            <button type="button" class="btn btn-sm btn-outline-danger" (click)="eliminarCampoNuevoProducto(tipo.id, idx)">Quitar</button>
+                                [value]="nuevo.nombre" (input)="onNuevoProductoInput(tipoPermitido.tipoId, idx, $any($event.target).value)">
+                            <input class="form-control form-control-sm" placeholder="Descripción (opcional)"
+                                [value]="nuevo.descripcion" (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'descripcion', $any($event.target).value)">
+                            <div class="row g-2">
+                                <div class="col">
+                                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio mínimo"
+                                        [value]="nuevo.precio_min" (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'precio_min', $any($event.target).value)">
+                                </div>
+                                <div class="col">
+                                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio máximo"
+                                        [value]="nuevo.precio_max" (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" (click)="eliminarCampoNuevoProducto(tipoPermitido.tipoId, idx)">Quitar</button>
                         </div>
                         }
                     </div>
-                    } @empty {
-                    <span class="text-muted small">Sin tipos registrados</span>
-                    }
                 </div>
             </div>
+            } @empty {
+            <span class="text-muted small">No hay tipos de producto activos para esta empresa.</span>
             }
         </div>
         @if (form.controls.productosSeleccionados.touched && form.controls.productosSeleccionados.errors?.['minSeleccionados']) {

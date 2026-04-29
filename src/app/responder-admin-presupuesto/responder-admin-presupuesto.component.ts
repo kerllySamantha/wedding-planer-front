@@ -84,21 +84,25 @@ export class ResponderAdminPresupuestoComponent {
    */
   protected resumenPropuesta = computed(() => {
     const productoId = this.respuestaForm.get('producto_id')?.value;
-    const modalidad  = this.modalidadDelProducto(productoId);
-    if (!productoId || !modalidad) return null;
+    const modalidad  = this.respuestaForm.get('modalidad')?.value;
+    if (!modalidad) return null;
 
     const producto    = this.productosEmpresa().find(p => p.id === productoId);
     const fechaInicio = this.respuestaForm.get('fecha_inicio')?.value?.trim() ?? '';
     const fechaFin    = this.respuestaForm.get('fecha_fin')?.value?.trim()    ?? '';
     const importe     = this.respuestaForm.get('importe_ofertado')?.value     ?? null;
 
-    return { productoNombre: producto?.nombre ?? 'Producto', modalidad, fechaInicio, fechaFin, importe };
+    const nombrePersonalizado = this.respuestaForm.get('producto_personalizado_nombre')?.value?.trim();
+    return { productoNombre: nombrePersonalizado || producto?.nombre || 'Producto', modalidad, fechaInicio, fechaFin, importe };
   });
 
   // ── Formulario de propuesta ──────────────────────────────────────────
   respuestaForm = new FormGroup(
     {
-      producto_id:        new FormControl<number | null>(null, Validators.required),
+      tipo_producto_respuesta: new FormControl<'catalogo' | 'personalizado'>('catalogo', Validators.required),
+      producto_id:        new FormControl<number | null>(null),
+      producto_personalizado_nombre: new FormControl<string>(''),
+      modalidad:          new FormControl<'servicio' | 'producto' | 'dia'>('servicio', Validators.required),
       fecha_inicio:       new FormControl<string>('',          Validators.required),
       fecha_fin:          new FormControl<string>(''),
       importe_ofertado:   new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
@@ -299,8 +303,8 @@ export class ResponderAdminPresupuestoComponent {
   }
 
   /** Modalidad del producto actualmente seleccionado en el formulario. */
-  get modalidadSeleccionada(): 'producto' | 'servicio' | null {
-    return this.modalidadDelProducto(this.respuestaForm.get('producto_id')?.value);
+  get modalidadSeleccionada(): 'producto' | 'servicio' | 'dia' | null {
+    return this.respuestaForm.get('modalidad')?.value ?? null;
   }
 
   // ── Validadores ──────────────────────────────────────────────────────
@@ -312,8 +316,7 @@ export class ResponderAdminPresupuestoComponent {
    */
   private fechasValidator(): ValidatorFn {
     return (control: AbstractControl) => {
-      const productoId   = control.get('producto_id')?.value;
-      const modalidad    = this.modalidadDelProducto(productoId);
+      const modalidad    = control.get('modalidad')?.value as 'servicio' | 'producto' | 'dia' | null;
       const inicioRaw    = control.get('fecha_inicio')?.value?.trim() ?? '';
       const finRaw       = control.get('fecha_fin')?.value?.trim()    ?? '';
 
@@ -329,7 +332,7 @@ export class ResponderAdminPresupuestoComponent {
         if (fin <= inicio)        return { horaFinAnterior: true };
       }
 
-      if (modalidad === 'producto') {
+      if (modalidad === 'producto' || modalidad === 'dia') {
         // Para productos se esperan fechas "YYYY-MM-DD"
         if (!/^\d{4}-\d{2}-\d{2}$/.test(inicioRaw)) return { fechaInicioInvalida: true };
         if (finRaw && !/^\d{4}-\d{2}-\d{2}$/.test(finRaw)) return { fechaFinInvalida: true };
@@ -353,7 +356,7 @@ export class ResponderAdminPresupuestoComponent {
 
   private normalizarFechaProducto(inicio: string, fin: string): { inicio: string; fin: string } | null {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(inicio)) return null;
-    const finNorm = /^\d{4}-\d{2}-\d{2}$/.test(fin) ? fin : inicio;
+    const finNorm = /^\d{4}-\d{2}-\d{2}$/.test(fin) ? fin : '';
     return { inicio, fin: finNorm };
   }
 
@@ -385,7 +388,19 @@ export class ResponderAdminPresupuestoComponent {
 
     const modalidad = this.modalidadSeleccionada;
     if (!modalidad) {
-      this.respuestaError.set('Selecciona un producto para determinar la modalidad.');
+      this.respuestaError.set('Selecciona una modalidad.');
+      return;
+    }
+
+    const tipoRespuesta = this.respuestaForm.get('tipo_producto_respuesta')?.value;
+    const productoId = this.respuestaForm.get('producto_id')?.value;
+    const productoPersonalizadoNombre = this.respuestaForm.get('producto_personalizado_nombre')?.value?.trim();
+    if (tipoRespuesta === 'catalogo' && !productoId) {
+      this.respuestaError.set('Debes indicar un producto del sistema o un nombre de producto personalizado.');
+      return;
+    }
+    if (tipoRespuesta === 'personalizado' && !productoPersonalizadoNombre) {
+      this.respuestaError.set('Debes indicar un producto del sistema o un nombre de producto personalizado.');
       return;
     }
 
@@ -406,10 +421,11 @@ export class ResponderAdminPresupuestoComponent {
     }
 
     const payload: ResponderPresupuestoPayload = {
-      producto_id:        Number(this.respuestaForm.get('producto_id')?.value),
+      producto_id:        tipoRespuesta === 'catalogo' ? Number(productoId) : undefined,
+      producto_personalizado_nombre: tipoRespuesta === 'personalizado' ? productoPersonalizadoNombre : undefined,
       modalidad,
       fecha_inicio:       fechas.inicio,
-      fecha_fin:          fechas.fin,
+      fecha_fin:          fechas.fin || undefined,
       importe_ofertado:   Number(this.respuestaForm.get('importe_ofertado')?.value),
       comentario_empresa: this.respuestaForm.get('comentario_empresa')?.value?.trim() || undefined,
     };

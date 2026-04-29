@@ -22,6 +22,8 @@ export interface PedirPresupuestoInfo {
     boda_id?: number,
     reserva_id?: number,
     producto_id?: number,
+    producto_personalizado_nombre?: string | null,
+    es_producto_personalizado?: boolean,
     modalidad?: 'servicio' | 'producto',
     fecha_inicio?: string,
     fecha_fin?: string,
@@ -50,10 +52,11 @@ export interface AceptarPresupuestoResponse {
 }
 
 export interface ResponderPresupuestoPayload {
-    producto_id: number;
-    modalidad: 'servicio' | 'producto';
+    producto_id?: number;
+    producto_personalizado_nombre?: string;
+    modalidad: 'servicio' | 'producto' | 'dia';
     fecha_inicio: string;
-    fecha_fin: string;
+    fecha_fin?: string;
     importe_ofertado: number;
     comentario_empresa?: string;
 }
