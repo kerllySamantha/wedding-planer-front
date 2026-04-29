@@ -50,47 +50,45 @@
             </div>
         </article>
 
-        <article class="settings-card">
-            <h2>Galería de fotos</h2>
-            <p class="settings-subtitle mb-3">Sube imágenes y el servidor devolverá la URL transformada.</p>
-            <input type="file" accept="image/*" (change)="onImageSelected($event)">
-            @if (loadingUpload()) { <p class="mt-2">Subiendo imagen...</p> }
-            <ul class="gallery-list mt-3">
-                @for (url of galeriaUrls(); track url) {
-                <li><a [href]="url" target="_blank" rel="noopener">{{ url }}</a></li>
-                } @empty {
-                <li class="text-muted">Sin imágenes nuevas en esta sesión.</li>
-                }
-            </ul>
-        </article>
     </div>
 
     <article class="settings-card">
         <h2>Categorías y tipos (edit completo)</h2>
-        <p class="settings-subtitle mb-3">Selecciona categorías y luego los tipos que ofrece el proveedor.</p>
-        <div class="selector-grid">
-            <div>
-                <h3 class="selector-title">Categorías</h3>
-                @for (categoria of categorias(); track categoria.id) {
-                <label class="check-item">
-                    <input type="checkbox" [checked]="categoriasSeleccionadas().includes(categoria.id)"
-                        (change)="onCategoriaToggle(categoria.id, $any($event.target).checked)">
-                    <span>{{ categoria.nombre }}</span>
-                </label>
-                }
+        <p class="settings-subtitle mb-3">Lista horizontal por categoría: primero categoría y luego sus tipos de producto (con checkbox solo en tipo).</p>
+        <div class="types-by-category">
+            @for (categoria of categorias(); track categoria.id) {
+            <div class="category-row">
+                <p class="category-name">{{ categoria.nombre }}</p>
+                <div class="types-row">
+                    @for (tipo of categoria.tipos; track tipo.id) {
+                    <label class="type-chip">
+                        <input type="checkbox" [checked]="tiposSeleccionados().includes(tipo.id)"
+                            (change)="onTipoToggle(tipo.id, $any($event.target).checked)">
+                        <span>{{ tipo.nombre }}</span>
+                    </label>
+                    } @empty {
+                    <span class="text-muted small">Sin tipos registrados</span>
+                    }
+                </div>
             </div>
-            <div>
-                <h3 class="selector-title">Tipos</h3>
-                @for (tipo of tiposVisibles(); track tipo.id) {
-                <label class="check-item">
-                    <input type="checkbox" [checked]="tiposSeleccionados().includes(tipo.id)"
-                        (change)="onTipoToggle(tipo.id, $any($event.target).checked)">
-                    <span>{{ tipo.nombre }}</span>
-                </label>
-                } @empty {
-                <p class="text-muted m-0">Selecciona una categoría para ver tipos.</p>
-                }
-            </div>
+            }
+        </div>
+    </article>
+
+    <article class="settings-card">
+        <h2>Galería de fotos</h2>
+        <p class="settings-subtitle mb-3">Esta sección está al final, con previsualización de fotos y enlaces.</p>
+        <input type="file" accept="image/*" (change)="onImageSelected($event)">
+        @if (loadingUpload()) { <p class="mt-2">Subiendo imagen...</p> }
+        <div class="gallery-preview mt-3">
+            @for (url of galeriaUrls(); track url) {
+            <a class="preview-item" [href]="url" target="_blank" rel="noopener">
+                <img [src]="url" alt="Vista previa de foto subida">
+                <small>{{ url }}</small>
+            </a>
+            } @empty {
+            <p class="text-muted m-0">Sin imágenes nuevas en esta sesión.</p>
+            }
         </div>
     </article>
     }

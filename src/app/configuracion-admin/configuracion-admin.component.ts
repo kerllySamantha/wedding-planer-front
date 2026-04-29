@@ -19,7 +19,6 @@ export class ConfiguracionAdminComponent {
   categoriaCtx = inject(CategoriasApiServiceService);
   empresa = signal<Empresa | null>(null);
   categorias = signal<InfoCategoria[]>([]);
-  categoriasSeleccionadas = signal<number[]>([]);
   tiposSeleccionados = signal<number[]>([]);
   galeriaUrls = signal<string[]>([]);
   loadingUpload = signal(false);
@@ -59,9 +58,6 @@ export class ConfiguracionAdminComponent {
           poblacion_id: empresa.poblacion?.id ?? 0,
           direccion: empresa.direccion ?? ''
         };
-        this.categoriasSeleccionadas.set(
-          [...new Set((empresa.productos ?? []).map((item) => item.categoria.id))]
-        );
         this.tiposSeleccionados.set(
           [...new Set((empresa.productos ?? []).map((item) => item.tipo_producto.id))]
         );
@@ -75,14 +71,6 @@ export class ConfiguracionAdminComponent {
       next: (data) => this.categorias.set(data?.data ?? []),
       error: (err) => console.error('Error al cargar categorías', err)
     });
-  }
-
-  onCategoriaToggle(categoriaId: number, checked: boolean) {
-    const current = new Set(this.categoriasSeleccionadas());
-    checked ? current.add(categoriaId) : current.delete(categoriaId);
-    this.categoriasSeleccionadas.set(Array.from(current));
-    const tiposValidos = this.tiposVisibles().map((tipo) => tipo.id);
-    this.tiposSeleccionados.set(this.tiposSeleccionados().filter((id) => tiposValidos.includes(id)));
   }
 
   onTipoToggle(tipoId: number, checked: boolean) {
@@ -116,13 +104,6 @@ export class ConfiguracionAdminComponent {
       });
     };
     reader.readAsDataURL(file);
-  }
-
-  tiposVisibles() {
-    const selected = new Set(this.categoriasSeleccionadas());
-    return this.categorias()
-      .filter(cat => selected.has(cat.id))
-      .flatMap(cat => cat.tipos ?? []);
   }
 
   activarEdicion() {
