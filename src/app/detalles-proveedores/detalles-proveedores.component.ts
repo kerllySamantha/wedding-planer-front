@@ -10,6 +10,8 @@ import { ProductoEmpresa } from '../Interfaces/Producto';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDetallesPresupuestoComponent } from '../modal-detalles-presupuesto/modal-detalles-presupuesto.component';
+import { AuthenticationService } from '../Services/Autentication/authenticationService';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-detalles-proveedores',
@@ -21,6 +23,8 @@ import { ModalDetallesPresupuestoComponent } from '../modal-detalles-presupuesto
 export class DetallesProveedoresComponent {
 
   private route = inject(ActivatedRoute);
+  private readonly authCtx = inject(AuthenticationService);
+  private readonly router = inject(Router);
   protected empresaId = this.route.snapshot.params['id'];
 
   private fotosConRatio = signal<{ foto: Foto; ratio: number }[]>([]);
@@ -99,6 +103,13 @@ export class DetallesProveedoresComponent {
   }
 
   abrirModal() {
+    if (!this.authCtx.auth()) {
+      this.router.navigate(['/login'], {
+        queryParams: { redirect: `/proveedores/${this.empresaId}` },
+      });
+      return;
+    }
+
     const dialogRef = this.dialog.open(ModalDetallesPresupuestoComponent, {
       // width: '400px',
       data: {
@@ -116,6 +127,3 @@ export class DetallesProveedoresComponent {
 
 
 }
-
-
-
