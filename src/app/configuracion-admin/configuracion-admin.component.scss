@@ -9,6 +9,12 @@
     gap: 0.4rem;
 }
 
+.actions-row {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.3rem;
+}
+
 .settings-kicker {
     margin: 0;
     font-size: 0.82rem;
@@ -102,11 +108,27 @@
     margin-bottom: 0.55rem;
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+}
+
+.form-grid label {
+    display: grid;
+    gap: 0.35rem;
+    font-weight: 600;
+    color: #143f66;
+}
+
 @media (max-width: 767.98px) {
     .settings-grid {
         grid-template-columns: 1fr;
     }
     .selector-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-grid {
         grid-template-columns: 1fr;
     }
 }
