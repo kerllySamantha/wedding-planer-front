@@ -15,6 +15,7 @@ import { PedirPresupuestoInfo, ResponderPresupuestoPayload } from '../Interfaces
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { ProductoEmpresa } from '../Interfaces/Producto';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
+import { CreateEmpresa, Empresa } from '../Interfaces/Empresa';
 
 /**
  * Panel del proveedor para gestionar una solicitud de presupuesto.
@@ -73,6 +74,7 @@ export class ResponderAdminPresupuestoComponent {
   // ── Estado UI ────────────────────────────────────────────────────────
   protected enviandoRespuesta = signal(false);
   protected enviandoRechazo   = signal(false);
+  protected creandoProducto   = signal(false);
   protected respuestaError    = signal<string | null>(null);
   protected respuestaOk       = signal<string | null>(null);
 
@@ -116,6 +118,13 @@ export class ResponderAdminPresupuestoComponent {
     ]),
   });
 
+  nuevoProductoForm = new FormGroup({
+    nombre: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
+    modalidad: new FormControl<'producto' | 'servicio'>('servicio', Validators.required),
+    tipo_producto_nombre: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
+    categoria_nombre: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
+  });
+
   mostrarFormRechazo = signal(false);
 
   // ── Resolver ─────────────────────────────────────────────────────────
@@ -141,6 +150,7 @@ export class ResponderAdminPresupuestoComponent {
       if (data) {
         this.solicitud.set(data);
         this.cargarProductosEmpresa();
+        this.autocompletarTipoYCategoria();
       }
     });
 
@@ -164,9 +174,122 @@ export class ResponderAdminPresupuestoComponent {
     if (!empresaId) { this.productosEmpresa.set([]); return; }
 
     this.empresasCtx.getEmpresaProductos(empresaId).subscribe({
-      next:  res => this.productosEmpresa.set((res?.data ?? []) as ProductoEmpresa[]),
+      next:  res => {
+        this.productosEmpresa.set((res?.data ?? []) as ProductoEmpresa[]);
+        this.autocompletarTipoYCategoria();
+      },
       error: ()  => this.productosEmpresa.set([]),
     });
+  }
+
+  private autocompletarTipoYCategoria(): void {
+    const tipoId = this.solicitud()?.tipo_producto_id;
+    if (!tipoId) return;
+    const productoTipo = this.productosEmpresa().find(p => Number(p.tipo_producto?.id) === Number(tipoId));
+    if (!productoTipo) return;
+    this.nuevoProductoForm.patchValue({
+      tipo_producto_nombre: productoTipo.tipo_producto.nombre,
+      categoria_nombre: productoTipo.categoria?.nombre ?? '',
+      modalidad: productoTipo.tipo_producto.modalidad,
+    }, { emitEvent: false });
+  }
+
+  crearProductoServicio(): void {
+    this.respuestaError.set(null);
+    this.respuestaOk.set(null);
+    if (this.nuevoProductoForm.invalid) {
+      this.nuevoProductoForm.markAllAsTouched();
+      return;
+    }
+
+    const empresaId = Number(this.solicitud()?.empresa_id) || Number(localStorage.getItem('idEmpresa'));
+    if (!empresaId) { this.respuestaError.set('No se encontró la empresa.'); return; }
+    const raw = this.nuevoProductoForm.getRawValue();
+    const nombreNuevo = raw.nombre?.trim() ?? '';
+    const tipoNombre = raw.tipo_producto_nombre?.trim() ?? '';
+    const categoriaNombre = raw.categoria_nombre?.trim() ?? '';
+    const modalidad = raw.modalidad ?? 'servicio';
+
+    if (!nombreNuevo || !tipoNombre || !categoriaNombre) {
+      this.respuestaError.set('Completa nombre, tipo y categoría del producto/servicio.');
+      return;
+    }
+
+    this.creandoProducto.set(true);
+    this.empresasCtx.getEmpresa(BigInt(empresaId)).subscribe({
+      next: (empresaInfo) => {
+        if (!empresaInfo?.id) {
+          this.creandoProducto.set(false);
+          this.respuestaError.set('No se pudo cargar la empresa para guardar el producto.');
+          return;
+        }
+        const payload = this.buildEmpresaPayloadConProducto(empresaInfo, {
+          nombre: nombreNuevo,
+          tipo_producto_nombre: tipoNombre,
+          categoria_nombre: categoriaNombre,
+        });
+
+        this.empresasCtx.editEmpresa(String(empresaId), payload).subscribe({
+          next: () => {
+            this.creandoProducto.set(false);
+            this.respuestaOk.set(`"${nombreNuevo}" añadido como ${modalidad}. Ya puedes seleccionarlo en la propuesta.`);
+            this.nuevoProductoForm.patchValue({ nombre: '' });
+            this.cargarProductosEmpresa();
+          },
+          error: (err) => {
+            this.creandoProducto.set(false);
+            this.respuestaError.set(err?.error?.message ?? 'No se pudo añadir el producto/servicio.');
+          },
+        });
+      },
+      error: () => {
+        this.creandoProducto.set(false);
+        this.respuestaError.set('No se pudo cargar la empresa para guardar el producto.');
+      },
+    });
+  }
+
+  private buildEmpresaPayloadConProducto(empresa: Empresa, nuevo: { nombre: string; tipo_producto_nombre: string; categoria_nombre: string; }): CreateEmpresa {
+    const existentes: NonNullable<CreateEmpresa['productos']> = (empresa.productos ?? []).map(p => ({
+      id: p.id ?? null,
+      nombre: p.nombre,
+      descripcion: p.descripcion ?? '',
+      precio_max: p.precio_max ?? 0,
+      precio_min: p.precio_min ?? 0,
+      tipo_producto_nombre: p.tipo_producto?.nombre ?? '',
+      categoria_nombre: p.categoria?.nombre ?? '',
+    }));
+
+    const yaExiste = existentes.some(p =>
+      p.nombre.toLowerCase() === nuevo.nombre.toLowerCase() &&
+      p.tipo_producto_nombre.toLowerCase() === nuevo.tipo_producto_nombre.toLowerCase() &&
+      p.categoria_nombre.toLowerCase() === nuevo.categoria_nombre.toLowerCase()
+    );
+    if (!yaExiste) {
+      existentes.push({
+        id: null,
+        nombre: nuevo.nombre,
+        descripcion: '',
+        precio_max: 0,
+        precio_min: 0,
+        tipo_producto_nombre: nuevo.tipo_producto_nombre,
+        categoria_nombre: nuevo.categoria_nombre,
+      });
+    }
+
+    return {
+      nombre_empresa: empresa.nombre_empresa ?? '',
+      tipo_servicio: empresa.tipo_servicio ?? '',
+      email: empresa.usuario?.email ?? '',
+      telefono: empresa.telefono ?? '',
+      name: empresa.usuario?.name ?? '',
+      password: '',
+      poblacion_id: empresa.poblacion?.id ?? 0,
+      direccion: empresa.direccion ?? '',
+      descripcion: empresa.descripcion ?? '',
+      logo: empresa.logo ?? '',
+      productos: existentes,
+    };
   }
 
   /** Devuelve la modalidad del producto con el id dado. */

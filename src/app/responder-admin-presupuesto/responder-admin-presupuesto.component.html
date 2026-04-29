@@ -89,6 +89,32 @@
         </div>
       </div>
 
+      <div class="border rounded p-3 mt-3">
+        <h3 class="h6 mb-3">Añadir producto/servicio a mi empresa</h3>
+        <div [formGroup]="nuevoProductoForm" class="row g-2">
+          <div class="col-md-4">
+            <input class="form-control" placeholder="Nombre del producto/servicio" formControlName="nombre">
+          </div>
+          <div class="col-md-2">
+            <select class="form-select" formControlName="modalidad">
+              <option value="servicio">Servicio</option>
+              <option value="producto">Producto</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" placeholder="Tipo (ej: Catering)" formControlName="tipo_producto_nombre">
+          </div>
+          <div class="col-md-3">
+            <input class="form-control" placeholder="Categoría (ej: Banquete)" formControlName="categoria_nombre">
+          </div>
+        </div>
+        <div class="d-flex justify-content-end mt-2">
+          <button type="button" class="btn btn-outline-primary btn-sm" [disabled]="creandoProducto()" (click)="crearProductoServicio()">
+            {{ creandoProducto() ? 'Guardando...' : 'Añadir a mi catálogo' }}
+          </button>
+        </div>
+      </div>
+
       @if (modalidadSeleccionada === 'servicio') {
       <div class="row g-3 mt-2">
         <div class="col-md-4">
