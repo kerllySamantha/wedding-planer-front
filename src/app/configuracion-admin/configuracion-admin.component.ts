@@ -90,6 +90,21 @@ export class ConfiguracionAdminComponent {
     });
   }
 
+  productosAgrupadosPorCategoria(): Array<{ categoria: string; productos: Empresa['productos'] }> {
+    const productos = this.empresa()?.productos ?? [];
+    const map = new Map<string, Empresa['productos']>();
+    productos.forEach((p) => {
+      const categoria = p.categoria?.nombre ?? 'Sin categoría';
+      const actual = map.get(categoria) ?? [];
+      actual.push(p);
+      map.set(categoria, actual);
+    });
+    return Array.from(map.entries()).map(([categoria, productosCategoria]) => ({
+      categoria,
+      productos: productosCategoria,
+    }));
+  }
+
   onTipoToggle(tipoId: number, checked: boolean) {
     const current = new Set(this.tiposSeleccionados());
     checked ? current.add(tipoId) : current.delete(tipoId);
