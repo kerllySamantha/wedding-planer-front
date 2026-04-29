@@ -146,7 +146,8 @@ export class ConfiguracionAdminComponent {
 
     this.saving.set(true);
     this.empresaCtx.editEmpresa(String(empresa.id), formEmpresa).subscribe({
-      next: () => {
+      next: (value) => {
+        console.log(value)
         this.saving.set(false);
         this.modoEdicion.set(false);
         this.getEmpresa();

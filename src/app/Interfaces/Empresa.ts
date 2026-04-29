@@ -52,6 +52,8 @@ export interface CreateEmpresa  {
   password: string,
   poblacion_id : number,
   direccion: string
+  descripcion? : Text,
+  categoria_id?: number
 
 }
 
