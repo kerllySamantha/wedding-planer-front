@@ -118,6 +118,34 @@ export class ConfiguracionAdminComponent {
     return (this.empresa()?.productos ?? []).filter((p) => p.tipo_producto?.id === tipoId);
   }
 
+  tiposPermitidosPorEmpresa(): Array<{ categoriaId: number; categoriaNombre: string; tipoId: number; tipoNombre: string }> {
+    const empresaActual = this.empresa();
+    if (!empresaActual) return [];
+
+    const tipoIdsEmpresa = new Set(
+      (empresaActual.productos ?? [])
+        .map((p) => p.tipo_producto?.id)
+        .filter((id): id is number => typeof id === 'number')
+    );
+
+    if (tipoIdsEmpresa.size === 0) return [];
+
+    const permitidos: Array<{ categoriaId: number; categoriaNombre: string; tipoId: number; tipoNombre: string }> = [];
+    for (const categoria of this.categorias()) {
+      for (const tipo of categoria.tipos) {
+        if (tipoIdsEmpresa.has(tipo.id)) {
+          permitidos.push({
+            categoriaId: categoria.id,
+            categoriaNombre: categoria.nombre,
+            tipoId: tipo.id,
+            tipoNombre: tipo.nombre,
+          });
+        }
+      }
+    }
+    return permitidos;
+  }
+
   agregarCampoNuevoProducto(tipoId: number) {
     this.nuevosProductosPorTipo.update((prev) => ({
       ...prev,
