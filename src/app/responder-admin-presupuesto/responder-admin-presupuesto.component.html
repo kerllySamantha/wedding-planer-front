@@ -74,6 +74,25 @@
     <form [formGroup]="respuestaForm" (ngSubmit)="enviarRespuesta()">
       <div class="row g-3">
         <div class="col-md-6">
+          <label class="form-label small fw-bold text-uppercase text-muted">Tipo de selección</label>
+          <div class="d-flex gap-3">
+            <label><input type="radio" value="catalogo" formControlName="tipo_producto_respuesta"> Producto del catálogo</label>
+            <label><input type="radio" value="personalizado" formControlName="tipo_producto_respuesta"> Producto personalizado</label>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-bold text-uppercase text-muted">Modalidad</label>
+          <select class="form-select" formControlName="modalidad">
+            <option value="servicio">Servicio</option>
+            <option value="producto">Producto</option>
+            <option value="dia">Día</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row g-3 mt-1">
+        @if (respuestaForm.get('tipo_producto_respuesta')?.value === 'catalogo') {
+        <div class="col-md-6">
           <label class="form-label small fw-bold text-uppercase text-muted">Producto o servicio</label>
           <select class="form-select" formControlName="producto_id">
             <option [ngValue]="null" disabled>Selecciona un producto</option>
@@ -82,6 +101,12 @@
             }
           </select>
         </div>
+        } @else {
+        <div class="col-md-6">
+          <label class="form-label small fw-bold text-uppercase text-muted">Producto personalizado</label>
+          <input class="form-control" formControlName="producto_personalizado_nombre" placeholder="Nombre del producto personalizado">
+        </div>
+        }
 
         <div class="col-md-3">
           <label class="form-label small fw-bold text-uppercase text-muted">Importe ofertado</label>

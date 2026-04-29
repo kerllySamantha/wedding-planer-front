@@ -27,7 +27,7 @@ export class ConfiguracionAdminComponent {
   empresa = signal<Empresa | null>(null);
   categorias = signal<InfoCategoria[]>([]);
   productosSeleccionados = signal<number[]>([]);
-  nuevosProductosPorTipo = signal<Record<number, string[]>>({});
+  nuevosProductosPorTipo = signal<Record<number, Array<{ nombre: string; descripcion: string; precio_min: string; precio_max: string }>>>({});
   galeriaUrls = signal<string[]>([]);
   loadingUpload = signal(false);
   saving = signal(false);
@@ -121,7 +121,7 @@ export class ConfiguracionAdminComponent {
   agregarCampoNuevoProducto(tipoId: number) {
     this.nuevosProductosPorTipo.update((prev) => ({
       ...prev,
-      [tipoId]: [...(prev[tipoId] ?? []), ''],
+      [tipoId]: [...(prev[tipoId] ?? []), { nombre: '', descripcion: '', precio_min: '', precio_max: '' }],
     }));
   }
 
@@ -129,7 +129,15 @@ export class ConfiguracionAdminComponent {
     this.nuevosProductosPorTipo.update((prev) => {
       const lista = [...(prev[tipoId] ?? [])];
       if (idx < 0 || idx >= lista.length) return prev;
-      lista[idx] = value;
+      lista[idx] = { ...lista[idx], nombre: value };
+      return { ...prev, [tipoId]: lista };
+    });
+  }
+  onNuevoProductoFieldInput(tipoId: number, idx: number, field: 'descripcion' | 'precio_min' | 'precio_max', value: string) {
+    this.nuevosProductosPorTipo.update((prev) => {
+      const lista = [...(prev[tipoId] ?? [])];
+      if (idx < 0 || idx >= lista.length) return prev;
+      lista[idx] = { ...lista[idx], [field]: value };
       return { ...prev, [tipoId]: lista };
     });
   }
@@ -241,18 +249,18 @@ export class ConfiguracionAdminComponent {
       });
     }
 
-    Object.entries(this.nuevosProductosPorTipo()).forEach(([tipoIdStr, nombres]) => {
+    Object.entries(this.nuevosProductosPorTipo()).forEach(([tipoIdStr, productos]) => {
       const tipoInfo = this.findTipoById(Number(tipoIdStr));
       if (!tipoInfo) return;
-      nombres.forEach((nombre) => {
-        const nombreLimpio = nombre.trim();
+      productos.forEach((productoNuevo) => {
+        const nombreLimpio = productoNuevo.nombre.trim();
         if (!nombreLimpio) return;
         payload.push({
           id: null,
           nombre: nombreLimpio,
-          descripcion: '',
-          precio_max: 0,
-          precio_min: 0,
+          descripcion: productoNuevo.descripcion.trim() || undefined,
+          precio_max: productoNuevo.precio_max ? Number(productoNuevo.precio_max) : undefined,
+          precio_min: productoNuevo.precio_min ? Number(productoNuevo.precio_min) : undefined,
           tipo_producto_nombre: tipoInfo.nombre,
           categoria_nombre: tipoInfo.categoriaNombre,
         });

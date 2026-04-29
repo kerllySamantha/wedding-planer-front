@@ -115,9 +115,21 @@
                         </div>
 
                         @for (nuevo of (nuevosProductosPorTipo()[tipo.id] ?? []); track $index; let idx = $index) {
-                        <div class="type-editor-card__new-item">
+                        <div class="type-editor-card__new-item d-grid gap-2">
                             <input class="form-control form-control-sm" placeholder="Nombre del producto extra"
-                                [value]="nuevo" (input)="onNuevoProductoInput(tipo.id, idx, $any($event.target).value)">
+                                [value]="nuevo.nombre" (input)="onNuevoProductoInput(tipo.id, idx, $any($event.target).value)">
+                            <input class="form-control form-control-sm" placeholder="Descripción (opcional)"
+                                [value]="nuevo.descripcion" (input)="onNuevoProductoFieldInput(tipo.id, idx, 'descripcion', $any($event.target).value)">
+                            <div class="row g-2">
+                                <div class="col">
+                                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio mínimo"
+                                        [value]="nuevo.precio_min" (input)="onNuevoProductoFieldInput(tipo.id, idx, 'precio_min', $any($event.target).value)">
+                                </div>
+                                <div class="col">
+                                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio máximo"
+                                        [value]="nuevo.precio_max" (input)="onNuevoProductoFieldInput(tipo.id, idx, 'precio_max', $any($event.target).value)">
+                                </div>
+                            </div>
                             <button type="button" class="btn btn-sm btn-outline-danger" (click)="eliminarCampoNuevoProducto(tipo.id, idx)">Quitar</button>
                         </div>
                         }
