@@ -58,7 +58,8 @@ export interface CreateEmpresa  {
     id: number | null,
     nombre: string,
     descripcion?: string,
-    precio?: number,
+    precio_max?: number,
+    precio_min?: number,
     tipo_producto_nombre: string,
     categoria_nombre: string
   }[]

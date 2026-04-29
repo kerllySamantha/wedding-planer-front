@@ -3,7 +3,14 @@ import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-ser
 import { Empresa } from '../Interfaces/Empresa';
 import { CategoriasApiServiceService } from '../Services/Catergorias/categoria-api-service.service';
 import { InfoCategoria } from '../Interfaces/Categoria';
-import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
 import { CreateEmpresa } from '../Interfaces/Empresa';
 
 @Component({
@@ -14,7 +21,6 @@ import { CreateEmpresa } from '../Interfaces/Empresa';
   styleUrl: './configuracion-admin.component.scss',
 })
 export class ConfiguracionAdminComponent {
-
   empresaCtx = inject(EmpresasApiServiceService);
   categoriaCtx = inject(CategoriasApiServiceService);
   private fb = inject(FormBuilder);
@@ -26,23 +32,25 @@ export class ConfiguracionAdminComponent {
   saving = signal(false);
   modoEdicion = signal(false);
   idUser = signal<string>(localStorage.getItem('id')!);
-  form = this.fb.group({
-    nombre_empresa: ['', [Validators.required, Validators.minLength(2)]],
-    tipo_servicio: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    telefono: ['', [Validators.required]],
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    direccion: ['', [Validators.required, Validators.minLength(5)]],
-    tiposSeleccionados: this.fb.control<number[]>([], {
-      nonNullable: true,
-      validators: [this.minSeleccionados(1)]
-    }),
-  }, { validators: [this.cruceContactoValidator()] });
+  form = this.fb.group(
+    {
+      nombre_empresa: ['', [Validators.required, Validators.minLength(2)]],
+      tipo_servicio: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      telefono: ['', [Validators.required]],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      direccion: ['', [Validators.required, Validators.minLength(5)]],
+      tiposSeleccionados: this.fb.control<number[]>([], {
+        nonNullable: true,
+        validators: [this.minSeleccionados(1)],
+      }),
+    },
+    { validators: [this.cruceContactoValidator()] },
+  );
 
   ngOnInit() {
     this.getEmpresa();
     this.getCategorias();
-
   }
 
   getEmpresa() {
@@ -57,25 +65,28 @@ export class ConfiguracionAdminComponent {
           email: empresa.usuario?.email ?? '',
           telefono: empresa.telefono ?? '',
           name: empresa.usuario?.name ?? '',
-          direccion: empresa.direccion ?? ''
+          direccion: empresa.direccion ?? '',
         });
-        this.tiposSeleccionados.set(
-          [...new Set((empresa.productos ?? []).map((item) => item.tipo_producto.id))]
+        this.tiposSeleccionados.set([
+          ...new Set(
+            (empresa.productos ?? []).map((item) => item.tipo_producto.id),
+          ),
+        ]);
+        this.form.controls.tiposSeleccionados.setValue(
+          this.tiposSeleccionados(),
         );
-        this.form.controls.tiposSeleccionados.setValue(this.tiposSeleccionados());
         const fotos = (empresa.fotos ?? [])
           .map((foto) => this.normalizeImageUrl(foto?.url))
           .filter((url): url is string => Boolean(url));
         this.galeriaUrls.set(fotos);
-
       },
-    })
+    });
   }
 
   getCategorias() {
     this.categoriaCtx.getCategorias().subscribe({
       next: (data) => this.categorias.set(data?.data ?? []),
-      error: (err) => console.error('Error al cargar categorías', err)
+      error: (err) => console.error('Error al cargar categorías', err),
     });
   }
 
@@ -109,7 +120,7 @@ export class ConfiguracionAdminComponent {
         error: (err) => {
           console.error('Error al subir imagen', err);
           this.loadingUpload.set(false);
-        }
+        },
       });
     };
     reader.readAsDataURL(file);
@@ -133,7 +144,9 @@ export class ConfiguracionAdminComponent {
     }
 
     const values = this.form.getRawValue();
-    const productosPayload = this.buildProductosPayload(values.tiposSeleccionados ?? []);
+    const productosPayload = this.buildProductosPayload(
+      values.tiposSeleccionados ?? [],
+    );
     const formEmpresa: CreateEmpresa = {
       nombre_empresa: values.nombre_empresa ?? '',
       tipo_servicio: values.tipo_servicio ?? '',
@@ -145,7 +158,7 @@ export class ConfiguracionAdminComponent {
       direccion: values.direccion ?? '',
       descripcion: empresa.descripcion ?? '',
       logo: empresa.logo ?? '',
-      productos: productosPayload
+      productos: productosPayload,
     };
 
     this.saving.set(true);
@@ -158,11 +171,13 @@ export class ConfiguracionAdminComponent {
       error: (err) => {
         console.error('Error al guardar cambios del perfil', err);
         this.saving.set(false);
-      }
+      },
     });
   }
 
-  private buildProductosPayload(tiposSeleccionados: number[]): CreateEmpresa['productos'] {
+  private buildProductosPayload(
+    tiposSeleccionados: number[],
+  ): CreateEmpresa['productos'] {
     const empresaActual = this.empresa();
     const productosActuales = empresaActual?.productos ?? [];
     const payload: NonNullable<CreateEmpresa['productos']> = [];
@@ -171,21 +186,26 @@ export class ConfiguracionAdminComponent {
       const tipoInfo = this.findTipoById(tipoId);
       if (!tipoInfo) continue;
 
-      const productoExistente = productosActuales.find((p) => p.tipo_producto?.id === tipoId);
+      const productoExistente = productosActuales.find(
+        (p) => p.tipo_producto?.id === tipoId,
+      );
       payload.push({
         id: productoExistente?.id ?? null,
         nombre: productoExistente?.nombre ?? tipoInfo.nombre,
         descripcion: productoExistente?.descripcion ?? '',
-        precio: productoExistente?.precio_min ?? 0,
+        precio_max: productoExistente?.precio_max ?? 0,
+        precio_min: productoExistente?.precio_min ?? 0,
         tipo_producto_nombre: tipoInfo.nombre,
-        categoria_nombre: tipoInfo.categoriaNombre
+        categoria_nombre: tipoInfo.categoriaNombre,
       });
     }
 
     return payload;
   }
 
-  private findTipoById(tipoId: number): { nombre: string; categoriaNombre: string } | null {
+  private findTipoById(
+    tipoId: number,
+  ): { nombre: string; categoriaNombre: string } | null {
     for (const categoria of this.categorias()) {
       const tipo = categoria.tipos.find((item) => item.id === tipoId);
       if (tipo) {
