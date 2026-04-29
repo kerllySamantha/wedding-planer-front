@@ -52,19 +52,21 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
       );
   }
 
-  override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
-    const postObject = {
-      name: empresa.name,
-      email: empresa.email,
-      password: empresa.password,
-      rol: 'empresa',
-      direccion: empresa.direccion,
-      telefono: empresa.telefono,
-      // descripcion: empresa.descripcion,
-      nombre_empresa: empresa.nombre_empresa,
-      tipo_servicio: empresa.tipo_servicio,
-      poblacion_id: empresa.poblacion_id,
-    };
+override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
+  const postObject = {
+    name: empresa.name,
+    email: empresa.email,
+    password: empresa.password,
+    rol: 'empresa',
+    direccion: empresa.direccion,
+    telefono: empresa.telefono,
+    descripcion: empresa.descripcion ?? '',
+    nombre_empresa: empresa.nombre_empresa,
+    tipo_servicio: empresa.tipo_servicio,
+    poblacion_id: empresa.poblacion_id,
+    logo: empresa.logo ?? '',
+    productos: empresa.productos ?? []
+  };
 
     return this.http
       .post<Empresa>(`${this.apiUrl}/empresas`, postObject)
@@ -82,13 +84,14 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
       rol: 'empresa',
       direccion: empresa.direccion,
       telefono: empresa.telefono,
-      descripcion: empresa.descripcion,
+      descripcion: empresa.descripcion ?? '',
       nombre_empresa: empresa.nombre_empresa,
-      // categoria_id: empresa.categoria_id,
-    };
-    return this.http
-      .put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject)
-      .pipe(tap((response) => console.log(response)));
+      tipo_servicio: empresa.tipo_servicio,
+      poblacion_id: empresa.poblacion_id,
+      logo: empresa.logo ?? '',
+      productos: empresa.productos ?? []
+    }
+    return this.http.put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject)
   }
 
   override deleteEmpresa(idEmpresa: bigint): Observable<Object | null> {
