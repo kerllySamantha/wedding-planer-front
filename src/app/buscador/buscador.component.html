@@ -10,9 +10,9 @@
 
                 <form
                     class="d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-lg-start gap-2 w-100"
-                    role="search">
+                    role="search" (submit)="buscar($event)">
                     <input class="form-control searcher_input w-100" type="search"
-                        placeholder="Busca por nombre o categoría" aria-label="Search" />
+                        placeholder="Busca por nombre o categoría" aria-label="Search" [(ngModel)]="termino" name="searchTerm" />
                     <button class="btn btn-outline-success d-none d-sm-inline-block searcher__submit" type="submit">
                         Buscar
                     </button>
@@ -31,9 +31,9 @@
 
                     <form
                         class="d-flex flex-column flex-sm-row align-items-center justify-content-center mb-4 pb-4 justify-content-lg-start gap-2 w-100"
-                        role="search">
+                        role="search" (submit)="buscar($event)">
                         <input class="form-control searcher_input w-100 w-md-75 w-lg-100" type="search"
-                            placeholder="Busca por nombre o categoría" aria-label="Search" />
+                            placeholder="Busca por nombre o categoría" aria-label="Search" [(ngModel)]="termino" name="searchTerm" />
                         <button class="btn btn-outline-success d-none d-sm-inline-block searcher__submit" type="submit">
                             Buscar
                         </button>
@@ -50,9 +50,9 @@
 
                     <form
                         class="d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-lg-start gap-2 w-100"
-                        role="search">
+                        role="search" (submit)="buscar($event)">
                         <input class="form-control searcher_input w-100 w-md-75 w-lg-100" type="search"
-                            placeholder="Busca por nombre o categoría" aria-label="Search" />
+                            placeholder="Busca por nombre o categoría" aria-label="Search" [(ngModel)]="termino" name="searchTerm" />
                         <button class="btn btn-outline-success d-none d-sm-inline-block searcher__submit" type="submit">
                             Buscar
                         </button>
