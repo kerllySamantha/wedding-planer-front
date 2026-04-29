@@ -401,7 +401,7 @@ export class ModalCalendarFormComponent {
   private getProductos(idEmpresa: number): void {
     this.empresaCtx.getEmpresaProductos(idEmpresa).subscribe({
       next: (info) => {
-        this.productosEmpresa.set(info?.data ?? []);
+        this.productosEmpresa.set((info?.data ?? []) as any);
       },
       error: (error: Error) => {
         this.productosEmpresa.set([]);

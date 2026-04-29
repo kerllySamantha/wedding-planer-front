@@ -146,7 +146,7 @@ private getProductos(idEmpresa: number): void {
   console.log(idEmpresa);
   this.empresaCtx.getEmpresaProductos(idEmpresa).subscribe({
     next: (info) => {
-      this.productosEmpresa.set(info?.data ?? []);
+      this.productosEmpresa.set((info?.data ?? []) as any);
       const tipos = this.tiposEmpresa();
       if (tipos.length === 1 && !this.form.controls.tipo_producto_id.value) {
         this.form.controls.tipo_producto_id.patchValue(tipos[0].id, { emitEvent: false });

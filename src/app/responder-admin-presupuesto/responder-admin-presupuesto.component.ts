@@ -13,7 +13,7 @@ import {
 } from '@angular/forms';
 import { PedirPresupuestoInfo, ResponderPresupuestoPayload } from '../Interfaces/PedirPresupuesto';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
-import { Producto } from '../Interfaces/Producto';
+import { ProductoEmpresa } from '../Interfaces/Producto';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
 
 /**
@@ -41,7 +41,7 @@ export class ResponderAdminPresupuestoComponent {
 
   // ── Datos ────────────────────────────────────────────────────────────
   protected solicitud        = signal<PedirPresupuestoInfo | null>(null);
-  protected productosEmpresa = signal<Producto[]>([]);
+  protected productosEmpresa = signal<ProductoEmpresa[]>([]);
 
   /**
    * Productos filtrados por el tipo solicitado por el cliente.
@@ -50,7 +50,7 @@ export class ResponderAdminPresupuestoComponent {
   protected productosFiltrados = computed(() => {
     const tipoId = this.solicitud()?.tipo_producto_id;
     if (!tipoId) return this.productosEmpresa();
-    const filtrados = this.productosEmpresa().filter(p => p.tipo_producto?.id === tipoId);
+        const filtrados = this.productosEmpresa().filter(p => Number(p.tipo_producto?.id) === Number(tipoId));
     return filtrados.length ? filtrados : this.productosEmpresa();
   });
 
@@ -164,7 +164,7 @@ export class ResponderAdminPresupuestoComponent {
     if (!empresaId) { this.productosEmpresa.set([]); return; }
 
     this.empresasCtx.getEmpresaProductos(empresaId).subscribe({
-      next:  res => this.productosEmpresa.set(res?.data ?? []),
+      next:  res => this.productosEmpresa.set((res?.data ?? []) as ProductoEmpresa[]),
       error: ()  => this.productosEmpresa.set([]),
     });
   }
