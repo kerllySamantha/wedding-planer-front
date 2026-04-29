@@ -1,15 +1,15 @@
 <section class="settings-shell">
     <header class="settings-header">
         <p class="settings-kicker">Perfil del proveedor</p>
-        <h1 class="h1">Edita aqui la configuración de tu empresa</h1>
-
+        <h1 class="h1">Configura la imagen y los datos de tu empresa</h1>
+        <p class="settings-subtitle">Mantén tu ficha al día para que las parejas te encuentren más rápido y con una presentación profesional.</p>
     </header>
 
     @if (empresa(); as data) {
     @if (!modoEdicion()) {
     <div class="settings-grid">
         <article class="settings-card">
-            <h2>Información general (show)</h2>
+            <h2>Información general</h2>
             <dl class="settings-list">
                 <div>
                     <dt>Empresa</dt>
@@ -30,7 +30,7 @@
             </dl>
         </article>
         <article class="settings-card">
-            <h2>Ubicación y descripción (show)</h2>
+            <h2>Ubicación y descripción</h2>
             <dl class="settings-list">
                 <div>
                     <dt>Población</dt>
@@ -48,7 +48,7 @@
         </article>
         <article class="settings-card settings-card--full">
             <h2>Productos y servicios de tu empresa</h2>
-            <p class="settings-subtitle mb-3">Aquí ves lo que tienes cargado en catálogo (como lo verá el usuario).</p>
+            <p class="settings-subtitle mb-3">Así ven los usuarios tu catálogo actual.</p>
             @if ((data.productos?.length ?? 0) > 0) {
             <div class="types-by-category">
                 @for (grupo of productosAgrupadosPorCategoria(); track grupo.categoria) {
@@ -73,7 +73,7 @@
     } @else {
     <div class="settings-grid">
         <article class="settings-card settings-card--full" [formGroup]="form">
-            <h2>Editar empresa (edit)</h2>
+            <h2>Datos principales</h2>
             <div class="form-grid">
                 <label>Nombre de empresa <input class="form-control" formControlName="nombre_empresa"></label>
                 <label>Nombre de contacto <input class="form-control" formControlName="name"></label>
@@ -90,21 +90,21 @@
     </div>
 
     <article class="settings-card">
-        <h2>Categorías y tipos </h2>
-        <p class="settings-subtitle mb-3">El checkbox aplica a productos ya existentes en base de datos. Puedes añadir uno o más productos extra por cada tipo con el botón +.</p>
+        <h2>Categorías y tipos</h2>
+        <p class="settings-subtitle mb-3">Marca productos existentes o añade productos personalizados por tipo.</p>
         <div class="types-by-category">
             @for (categoria of categorias(); track categoria.id) {
-            <div class="category-row">
+            <div class="category-row category-row--edit">
                 <p class="category-name">{{ categoria.nombre }}</p>
-                <div class="types-row d-block">
+                <div class="types-row types-row--stacked d-block">
                     @for (tipo of categoria.tipos; track tipo.id) {
-                    <div class="mb-2 p-2 border rounded-3">
-                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <div class="type-editor-card">
+                        <div class="type-editor-card__header">
                             <span class="fw-semibold">{{ tipo.nombre }}</span>
                             <button type="button" class="btn btn-sm btn-outline-secondary" (click)="agregarCampoNuevoProducto(tipo.id)">+ Añadir producto</button>
                         </div>
 
-                        <div class="d-flex flex-wrap gap-2 mb-2">
+                        <div class="type-editor-card__checks">
                             @for (producto of productosPorTipo(tipo.id); track producto.id) {
                             <label class="mb-0 d-flex align-items-center gap-1">
                                 <input type="checkbox" [checked]="productosSeleccionados().includes(producto.id)"
@@ -115,7 +115,7 @@
                         </div>
 
                         @for (nuevo of (nuevosProductosPorTipo()[tipo.id] ?? []); track $index; let idx = $index) {
-                        <div class="d-flex align-items-center gap-2 mt-2">
+                        <div class="type-editor-card__new-item">
                             <input class="form-control form-control-sm" placeholder="Nombre del producto extra"
                                 [value]="nuevo" (input)="onNuevoProductoInput(tipo.id, idx, $any($event.target).value)">
                             <button type="button" class="btn btn-sm btn-outline-danger" (click)="eliminarCampoNuevoProducto(tipo.id, idx)">Quitar</button>
@@ -136,14 +136,13 @@
 
     <article class="settings-card">
         <h2>Galería de fotos</h2>
-        <p class="settings-subtitle mb-3">Esta sección está al final, con previsualización de fotos y enlaces.</p>
+        <p class="settings-subtitle mb-3">Sube imágenes que representen tu trabajo. Se mostrarán en tu perfil.</p>
         <input class="form-control" type="file" accept="image/*" (change)="onImageSelected($event)">
         @if (loadingUpload()) { <p class="mt-2">Subiendo imagen...</p> }
         <div class="gallery-preview mt-3">
             @for (url of galeriaUrls(); track url) {
             <a class="preview-item" [href]="url" target="_blank" rel="noopener">
                 <img [src]="url" alt="Vista previa de foto subida">
-                <!-- <small>{{ url }}</small> -->
                 <span class="preview-overlay">Ver imagen</span>
             </a>
             } @empty {
