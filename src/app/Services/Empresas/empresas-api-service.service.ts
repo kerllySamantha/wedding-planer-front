@@ -144,12 +144,18 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
 
   uploadImageBase64(
     imageBase64: string,
+    extension: string,
+    userId: number,
   ): Observable<{ data?: { url?: string }; url?: string } | null> {
     return this.http
       .post<{
         data?: { url?: string };
         url?: string;
-      }>(`${this.apiUrl}/imagenes`, { image: imageBase64 })
+      }>(`${this.apiUrl}/imagenes`, {
+        imagen: imageBase64,
+        extension,
+        user_id: userId,
+      })
       .pipe(
         map((response) => response || null),
         tap((response)  =>  console.log(response.url)),
