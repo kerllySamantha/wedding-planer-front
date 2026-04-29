@@ -91,19 +91,37 @@
 
     <article class="settings-card">
         <h2>Categorías y tipos </h2>
-        <p class="settings-subtitle mb-3">Lista horizontal por categoría: primero categoría y luego sus tipos de
-            producto (con checkbox solo en tipo).</p>
+        <p class="settings-subtitle mb-3">El checkbox aplica a productos ya existentes en base de datos. Puedes añadir uno o más productos extra por cada tipo con el botón +.</p>
         <div class="types-by-category">
             @for (categoria of categorias(); track categoria.id) {
             <div class="category-row">
                 <p class="category-name">{{ categoria.nombre }}</p>
-                <div class="types-row">
+                <div class="types-row d-block">
                     @for (tipo of categoria.tipos; track tipo.id) {
-                    <label class="type-chip">
-                        <input type="checkbox" [checked]="tiposSeleccionados().includes(tipo.id)"
-                            (change)="onTipoToggle(tipo.id, $any($event.target).checked)">
-                        <span>{{ tipo.nombre }}</span>
-                    </label>
+                    <div class="mb-2 p-2 border rounded-3">
+                        <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                            <span class="fw-semibold">{{ tipo.nombre }}</span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="agregarCampoNuevoProducto(tipo.id)">+ Añadir producto</button>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            @for (producto of productosPorTipo(tipo.id); track producto.id) {
+                            <label class="mb-0 d-flex align-items-center gap-1">
+                                <input type="checkbox" [checked]="productosSeleccionados().includes(producto.id)"
+                                    (change)="onProductoToggle(producto.id, $any($event.target).checked)">
+                                <span>{{ producto.nombre }}</span>
+                            </label>
+                            }
+                        </div>
+
+                        @for (nuevo of (nuevosProductosPorTipo()[tipo.id] ?? []); track $index; let idx = $index) {
+                        <div class="d-flex align-items-center gap-2 mt-2">
+                            <input class="form-control form-control-sm" placeholder="Nombre del producto extra"
+                                [value]="nuevo" (input)="onNuevoProductoInput(tipo.id, idx, $any($event.target).value)">
+                            <button type="button" class="btn btn-sm btn-outline-danger" (click)="eliminarCampoNuevoProducto(tipo.id, idx)">Quitar</button>
+                        </div>
+                        }
+                    </div>
                     } @empty {
                     <span class="text-muted small">Sin tipos registrados</span>
                     }
@@ -111,8 +129,8 @@
             </div>
             }
         </div>
-        @if (form.controls.tiposSeleccionados.touched && form.controls.tiposSeleccionados.errors?.['minSeleccionados']) {
-        <p class="text-danger mt-2 mb-0">Selecciona al menos un tipo de producto.</p>
+        @if (form.controls.productosSeleccionados.touched && form.controls.productosSeleccionados.errors?.['minSeleccionados']) {
+        <p class="text-danger mt-2 mb-0">Selecciona al menos un producto/tipo para continuar.</p>
         }
     </article>
 
