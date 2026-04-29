@@ -61,6 +61,10 @@ export class ConfiguracionAdminComponent {
         this.tiposSeleccionados.set(
           [...new Set((empresa.productos ?? []).map((item) => item.tipo_producto.id))]
         );
+        const fotos = (empresa.fotos ?? [])
+          .map((foto) => foto?.url)
+          .filter((url): url is string => Boolean(url));
+        this.galeriaUrls.set(fotos);
 
       },
     })

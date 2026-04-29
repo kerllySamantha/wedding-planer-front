@@ -1,18 +1,8 @@
 <section class="settings-shell">
     <header class="settings-header">
         <p class="settings-kicker">Perfil del proveedor</p>
-        <h1>Configuración de la empresa</h1>
-        <p class="settings-subtitle">Separamos el perfil en vista de consulta (show) y vista de edición completa (edit).</p>
-        <div class="actions-row">
-            @if (!modoEdicion()) {
-            <button class="btn btn-primary" type="button" (click)="activarEdicion()">Editar perfil completo</button>
-            } @else {
-            <button class="btn btn-outline-secondary" type="button" (click)="cancelarEdicion()">Cancelar edición</button>
-            <button class="btn btn-primary" type="button" (click)="guardarCambios()" [disabled]="saving()">
-                {{ saving() ? 'Guardando...' : 'Guardar cambios' }}
-            </button>
-            }
-        </div>
+        <h1 class="h1">Edita aqui la configuración de tu empresa</h1>
+
     </header>
 
     @if (empresa(); as data) {
@@ -21,24 +11,45 @@
         <article class="settings-card">
             <h2>Información general (show)</h2>
             <dl class="settings-list">
-                <div><dt>Empresa</dt><dd>{{ data.nombre_empresa }}</dd></div>
-                <div><dt>Servicio</dt><dd>{{ data.tipo_servicio }}</dd></div>
-                <div><dt>Teléfono</dt><dd>{{ data.telefono }}</dd></div>
-                <div><dt>Dirección</dt><dd>{{ data.direccion }}</dd></div>
+                <div>
+                    <dt>Empresa</dt>
+                    <dd>{{ data.nombre_empresa }}</dd>
+                </div>
+                <div>
+                    <dt>Servicio</dt>
+                    <dd>{{ data.tipo_servicio }}</dd>
+                </div>
+                <div>
+                    <dt>Teléfono</dt>
+                    <dd>{{ data.telefono }}</dd>
+                </div>
+                <div>
+                    <dt>Dirección</dt>
+                    <dd>{{ data.direccion }}</dd>
+                </div>
             </dl>
         </article>
         <article class="settings-card">
             <h2>Ubicación y descripción (show)</h2>
             <dl class="settings-list">
-                <div><dt>Población</dt><dd>{{ data.poblacion.nombre || 'Sin definir' }}</dd></div>
-                <div><dt>Provincia</dt><dd>{{ data.provincia.nombre || 'Sin definir' }}</dd></div>
-                <div><dt>Descripción</dt><dd>{{ data.descripcion || 'Sin descripción disponible.' }}</dd></div>
+                <div>
+                    <dt>Población</dt>
+                    <dd>{{ data.poblacion.nombre || 'Sin definir' }}</dd>
+                </div>
+                <div>
+                    <dt>Provincia</dt>
+                    <dd>{{ data.provincia.nombre || 'Sin definir' }}</dd>
+                </div>
+                <div>
+                    <dt>Descripción</dt>
+                    <dd>{{ data.descripcion || 'Sin descripción disponible.' }}</dd>
+                </div>
             </dl>
         </article>
     </div>
     } @else {
     <div class="settings-grid">
-        <article class="settings-card">
+        <article class="settings-card settings-card--full">
             <h2>Editar empresa (edit)</h2>
             <div class="form-grid">
                 <label>Nombre de empresa <input class="form-control" [(ngModel)]="formEmpresa.nombre_empresa"></label>
@@ -53,8 +64,9 @@
     </div>
 
     <article class="settings-card">
-        <h2>Categorías y tipos (edit completo)</h2>
-        <p class="settings-subtitle mb-3">Lista horizontal por categoría: primero categoría y luego sus tipos de producto (con checkbox solo en tipo).</p>
+        <h2>Categorías y tipos </h2>
+        <p class="settings-subtitle mb-3">Lista horizontal por categoría: primero categoría y luego sus tipos de
+            producto (con checkbox solo en tipo).</p>
         <div class="types-by-category">
             @for (categoria of categorias(); track categoria.id) {
             <div class="category-row">
@@ -78,13 +90,14 @@
     <article class="settings-card">
         <h2>Galería de fotos</h2>
         <p class="settings-subtitle mb-3">Esta sección está al final, con previsualización de fotos y enlaces.</p>
-        <input type="file" accept="image/*" (change)="onImageSelected($event)">
+        <input class="form-control" type="file" accept="image/*" (change)="onImageSelected($event)">
         @if (loadingUpload()) { <p class="mt-2">Subiendo imagen...</p> }
         <div class="gallery-preview mt-3">
             @for (url of galeriaUrls(); track url) {
             <a class="preview-item" [href]="url" target="_blank" rel="noopener">
                 <img [src]="url" alt="Vista previa de foto subida">
-                <small>{{ url }}</small>
+                <!-- <small>{{ url }}</small> -->
+                <span class="preview-overlay">Ver imagen</span>
             </a>
             } @empty {
             <p class="text-muted m-0">Sin imágenes nuevas en esta sesión.</p>
@@ -99,3 +112,14 @@
     </article>
     }
 </section>
+
+<div class="actions-row">
+    @if (!modoEdicion()) {
+    <button class="btn btn-primary" type="button" (click)="activarEdicion()">Editar perfil completo</button>
+    } @else {
+    <button class="btn btn-outline-secondary" type="button" (click)="cancelarEdicion()">Cancelar edición</button>
+    <button class="btn btn-primary" type="button" (click)="guardarCambios()" [disabled]="saving()">
+        {{ saving() ? 'Guardando...' : 'Guardar cambios' }}
+    </button>
+    }
+</div>
