@@ -51,10 +51,12 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
     rol: 'empresa',
     direccion: empresa.direccion,
     telefono: empresa.telefono,
-    // descripcion: empresa.descripcion,
+    descripcion: empresa.descripcion ?? '',
     nombre_empresa: empresa.nombre_empresa,
     tipo_servicio: empresa.tipo_servicio,
-    poblacion_id: empresa.poblacion_id
+    poblacion_id: empresa.poblacion_id,
+    logo: empresa.logo ?? '',
+    productos: empresa.productos ?? []
   };
 
   return this.http.post<Empresa>(`${this.apiUrl}/empresas`, postObject).pipe(
@@ -72,9 +74,12 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
       rol: 'empresa',
       direccion: empresa.direccion,
       telefono: empresa.telefono,
-      // descripcion: empresa.descripcion,
+      descripcion: empresa.descripcion ?? '',
       nombre_empresa: empresa.nombre_empresa,
-      // categoria_id: empresa.categoria_id
+      tipo_servicio: empresa.tipo_servicio,
+      poblacion_id: empresa.poblacion_id,
+      logo: empresa.logo ?? '',
+      productos: empresa.productos ?? []
     }
     return this.http.put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject)
   }

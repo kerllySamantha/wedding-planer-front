@@ -133,6 +133,7 @@ export class ConfiguracionAdminComponent {
     }
 
     const values = this.form.getRawValue();
+    const productosPayload = this.buildProductosPayload(values.tiposSeleccionados ?? []);
     const formEmpresa: CreateEmpresa = {
       nombre_empresa: values.nombre_empresa ?? '',
       tipo_servicio: values.tipo_servicio ?? '',
@@ -141,7 +142,10 @@ export class ConfiguracionAdminComponent {
       name: values.name ?? '',
       password: '',
       poblacion_id: empresa.poblacion?.id ?? 0,
-      direccion: values.direccion ?? ''
+      direccion: values.direccion ?? '',
+      descripcion: empresa.descripcion ?? '',
+      logo: empresa.logo ?? '',
+      productos: productosPayload
     };
 
     this.saving.set(true);
@@ -156,6 +160,40 @@ export class ConfiguracionAdminComponent {
         this.saving.set(false);
       }
     });
+  }
+
+  private buildProductosPayload(tiposSeleccionados: number[]): CreateEmpresa['productos'] {
+    const empresaActual = this.empresa();
+    const productosActuales = empresaActual?.productos ?? [];
+    const payload: NonNullable<CreateEmpresa['productos']> = [];
+
+    for (const tipoId of tiposSeleccionados) {
+      const tipoInfo = this.findTipoById(tipoId);
+      if (!tipoInfo) continue;
+
+      const productoExistente = productosActuales.find((p) => p.tipo_producto?.id === tipoId);
+      payload.push({
+        id: productoExistente?.id ?? null,
+        nombre: productoExistente?.nombre ?? tipoInfo.nombre,
+        descripcion: productoExistente?.descripcion ?? '',
+        precio: productoExistente?.precio_min ?? 0,
+        tipo_producto_nombre: tipoInfo.nombre,
+        categoria_nombre: tipoInfo.categoriaNombre
+      });
+    }
+
+    return payload;
+  }
+
+  private findTipoById(tipoId: number): { nombre: string; categoriaNombre: string } | null {
+    for (const categoria of this.categorias()) {
+      const tipo = categoria.tipos.find((item) => item.id === tipoId);
+      if (tipo) {
+        return { nombre: tipo.nombre, categoriaNombre: categoria.nombre };
+      }
+    }
+
+    return null;
   }
 
   private normalizeImageUrl(url?: string): string {

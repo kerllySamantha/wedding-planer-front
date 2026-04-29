@@ -51,10 +51,19 @@ export interface CreateEmpresa  {
   name: string,
   password: string,
   poblacion_id : number,
-  direccion: string
+  direccion: string,
+  descripcion?: string,
+  logo?: string,
+  productos?: {
+    id: number | null,
+    nombre: string,
+    descripcion?: string,
+    precio?: number,
+    tipo_producto_nombre: string,
+    categoria_nombre: string
+  }[]
 
 }
-
 
 
 
