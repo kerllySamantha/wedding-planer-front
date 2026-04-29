@@ -27,7 +27,6 @@ export class ConfiguracionAdminComponent {
   empresa = signal<Empresa | null>(null);
   categorias = signal<InfoCategoria[]>([]);
   productosSeleccionados = signal<number[]>([]);
-  nuevosProductosPorTipo = signal<Record<number, string[]>>({});
   galeriaUrls = signal<string[]>([]);
   loadingUpload = signal(false);
   saving = signal(false);
@@ -74,7 +73,6 @@ export class ConfiguracionAdminComponent {
         this.form.controls.productosSeleccionados.setValue(
           this.productosSeleccionados(),
         );
-        this.nuevosProductosPorTipo.set({});
         const fotos = (empresa.fotos ?? [])
           .map((foto) => this.normalizeImageUrl(foto?.url))
           .filter((url): url is string => Boolean(url));
@@ -116,31 +114,6 @@ export class ConfiguracionAdminComponent {
 
   productosPorTipo(tipoId: number) {
     return (this.empresa()?.productos ?? []).filter((p) => p.tipo_producto?.id === tipoId);
-  }
-
-  agregarCampoNuevoProducto(tipoId: number) {
-    this.nuevosProductosPorTipo.update((prev) => ({
-      ...prev,
-      [tipoId]: [...(prev[tipoId] ?? []), ''],
-    }));
-  }
-
-  onNuevoProductoInput(tipoId: number, idx: number, value: string) {
-    this.nuevosProductosPorTipo.update((prev) => {
-      const lista = [...(prev[tipoId] ?? [])];
-      if (idx < 0 || idx >= lista.length) return prev;
-      lista[idx] = value;
-      return { ...prev, [tipoId]: lista };
-    });
-  }
-
-  eliminarCampoNuevoProducto(tipoId: number, idx: number) {
-    this.nuevosProductosPorTipo.update((prev) => {
-      const lista = [...(prev[tipoId] ?? [])];
-      if (idx < 0 || idx >= lista.length) return prev;
-      lista.splice(idx, 1);
-      return { ...prev, [tipoId]: lista };
-    });
   }
 
   onImageSelected(event: Event) {
@@ -226,53 +199,28 @@ export class ConfiguracionAdminComponent {
     const empresaActual = this.empresa();
     const productosActuales = empresaActual?.productos ?? [];
     const payload: NonNullable<CreateEmpresa['productos']> = [];
+    let tipoPrincipal: string | null = null;
 
     for (const productoId of productosSeleccionados) {
       const productoExistente = productosActuales.find((p) => p.id === productoId);
       if (!productoExistente) continue;
+      const tipoProductoNombre = productoExistente.tipo_producto?.nombre ?? '';
+      if (!tipoPrincipal && tipoProductoNombre) tipoPrincipal = tipoProductoNombre;
+      if (tipoPrincipal && tipoProductoNombre && tipoProductoNombre !== tipoPrincipal) {
+        continue;
+      }
       payload.push({
-        id: productoExistente.id ?? null,
+        id: productoExistente.id,
         nombre: productoExistente.nombre ?? productoExistente.tipo_producto?.nombre ?? '',
         descripcion: productoExistente.descripcion ?? '',
         precio_max: productoExistente.precio_max ?? 0,
         precio_min: productoExistente.precio_min ?? 0,
-        tipo_producto_nombre: productoExistente.tipo_producto?.nombre ?? '',
+        tipo_producto_nombre: tipoProductoNombre,
         categoria_nombre: productoExistente.categoria?.nombre ?? '',
       });
     }
 
-    Object.entries(this.nuevosProductosPorTipo()).forEach(([tipoIdStr, nombres]) => {
-      const tipoInfo = this.findTipoById(Number(tipoIdStr));
-      if (!tipoInfo) return;
-      nombres.forEach((nombre) => {
-        const nombreLimpio = nombre.trim();
-        if (!nombreLimpio) return;
-        payload.push({
-          id: null,
-          nombre: nombreLimpio,
-          descripcion: '',
-          precio_max: 0,
-          precio_min: 0,
-          tipo_producto_nombre: tipoInfo.nombre,
-          categoria_nombre: tipoInfo.categoriaNombre,
-        });
-      });
-    });
-
     return payload;
-  }
-
-  private findTipoById(
-    tipoId: number,
-  ): { nombre: string; categoriaNombre: string } | null {
-    for (const categoria of this.categorias()) {
-      const tipo = categoria.tipos.find((item) => item.id === tipoId);
-      if (tipo) {
-        return { nombre: tipo.nombre, categoriaNombre: categoria.nombre };
-      }
-    }
-
-    return null;
   }
 
   private normalizeImageUrl(url?: string): string {
