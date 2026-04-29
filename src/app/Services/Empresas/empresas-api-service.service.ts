@@ -116,4 +116,17 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
       })
     );
   }
+
+  uploadImageBase64(imageBase64: string): Observable<{ data?: { url?: string }; url?: string } | null> {
+    return this.http.post<{ data?: { url?: string }; url?: string }>(
+      `${this.apiUrl}/imagenes/base64`,
+      { image: imageBase64 }
+    ).pipe(
+      map(response => response || null),
+      catchError((error: Error) => {
+        console.error('Error al subir imagen base64:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

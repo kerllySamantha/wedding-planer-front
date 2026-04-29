@@ -77,8 +77,36 @@
     line-height: 1.45;
 }
 
+.gallery-list {
+    margin: 0;
+    padding-left: 1rem;
+    max-height: 200px;
+    overflow: auto;
+}
+
+.selector-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.selector-title {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.check-item {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.55rem;
+}
+
 @media (max-width: 767.98px) {
     .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    .selector-grid {
         grid-template-columns: 1fr;
     }
 }

@@ -54,3 +54,53 @@
     </article>
     }
 </section>
+
+<section class="settings-shell mt-4">
+    <div class="settings-grid">
+        <article class="settings-card">
+            <h2>Galería de fotos</h2>
+            <p class="settings-subtitle mb-3">Sube imágenes y el servidor devolverá la URL transformada.</p>
+            <input type="file" accept="image/*" (change)="onImageSelected($event)">
+            @if (loadingUpload()) {
+            <p class="mt-2">Subiendo imagen...</p>
+            }
+            <ul class="gallery-list mt-3">
+                @for (url of galeriaUrls(); track url) {
+                <li>
+                    <a [href]="url" target="_blank" rel="noopener">{{ url }}</a>
+                </li>
+                }
+            </ul>
+        </article>
+
+        <article class="settings-card">
+            <h2>Tipos de productos y servicios</h2>
+            <p class="settings-subtitle mb-3">Selecciona qué categorías y tipos ofrece tu negocio.</p>
+            <div class="selector-grid">
+                <div>
+                    <h3 class="selector-title">Categorías</h3>
+                    @for (categoria of categorias(); track categoria.id) {
+                    <label class="check-item">
+                        <input type="checkbox" [checked]="categoriasSeleccionadas().includes(categoria.id)"
+                            (change)="onCategoriaToggle(categoria.id, $any($event.target).checked)">
+                        <span>{{ categoria.nombre }}</span>
+                    </label>
+                    }
+                </div>
+
+                <div>
+                    <h3 class="selector-title">Tipos</h3>
+                    @for (tipo of tiposVisibles(); track tipo.id) {
+                    <label class="check-item">
+                        <input type="checkbox" [checked]="tiposSeleccionados().includes(tipo.id)"
+                            (change)="onTipoToggle(tipo.id, $any($event.target).checked)">
+                        <span>{{ tipo.nombre }}</span>
+                    </label>
+                    } @empty {
+                    <p class="text-muted m-0">Selecciona una categoría para ver tipos.</p>
+                    }
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
