@@ -14,8 +14,7 @@ import { PerfilApiServiceService } from '../Services/Perfiles/perfil-api-service
 import { Perfil } from '../Interfaces/Perfil';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
 import { PedirPresupuestoInfo, PedirPresupuestoStore } from '../Interfaces/PedirPresupuesto';
-import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
-import { Producto, Productos } from '../Interfaces/Producto';
+import { ProductoEmpresa } from '../Interfaces/Producto';
 import { TipoSimple } from '../Interfaces/Tipos';
 
 
@@ -42,13 +41,12 @@ export class ModalDetallesPresupuestoComponent implements OnInit {
   authCtx = inject(AuthenticationService);
   perfilCtx = inject(PerfilApiServiceService);
   pedirPresupuestoCtx = inject(PedirPresupuestoService);
-  empresaCtx = inject(EmpresasApiServiceService);
 
   editar = signal<boolean>(false);
   enviando = signal<boolean>(false);
   errorSolicitud = signal<string | null>(null);
   empresa = signal<Empresa | null>(null);
-  productosEmpresa = signal<Producto[] | []>([])
+  productosEmpresa = signal<ProductoEmpresa[]>([])
   perfil = signal<Perfil | null>(null);
 
   boda = computed(() => this.bodaCtx.bodaEncontrada());
@@ -121,9 +119,9 @@ ngOnInit(): void {
   }
 
   if (empresaId) {
-    this.getProductos(empresaId); 
+    this.cargarProductosDeEmpresa();
   } else {
-    console.warn('getProductos no ejecutado: empresaId es', empresaId);
+    console.warn('No se pudieron cargar productos: empresaId es', empresaId);
   }
 
   if (!this.boda()) {
@@ -142,22 +140,14 @@ ngOnInit(): void {
     });
   }
 
-private getProductos(idEmpresa: number): void {
-  console.log(idEmpresa);
-  this.empresaCtx.getEmpresaProductos(idEmpresa).subscribe({
-    next: (info) => {
-      this.productosEmpresa.set((info?.data ?? []) as any);
-      const tipos = this.tiposEmpresa();
-      if (tipos.length === 1 && !this.form.controls.tipo_producto_id.value) {
-        this.form.controls.tipo_producto_id.patchValue(tipos[0].id, { emitEvent: false });
-      }
-      console.log('Productos:', this.productosEmpresa());
-    },
-    error: (error: Error) => {
-      this.productosEmpresa.set([]);
-      console.error(error);
-    },
-  });
+private cargarProductosDeEmpresa(): void {
+  const productos = this.empresa()?.productos ?? [];
+  this.productosEmpresa.set(productos);
+
+  const tipos = this.tiposEmpresa();
+  if (tipos.length === 1 && !this.form.controls.tipo_producto_id.value) {
+    this.form.controls.tipo_producto_id.patchValue(tipos[0].id, { emitEvent: false });
+  }
 }
 
   private rellenarFormularioDesdeContexto(): void {

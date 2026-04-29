@@ -118,32 +118,25 @@ export class ConfiguracionAdminComponent {
     return (this.empresa()?.productos ?? []).filter((p) => p.tipo_producto?.id === tipoId);
   }
 
-  tiposPermitidosPorEmpresa(): Array<{ categoriaId: number; categoriaNombre: string; tipoId: number; tipoNombre: string }> {
+
+  tiposEditablesEmpresa(): Array<{ categoriaNombre: string; tipoId: number; tipoNombre: string }> {
     const empresaActual = this.empresa();
     if (!empresaActual) return [];
 
-    const tipoIdsEmpresa = new Set(
-      (empresaActual.productos ?? [])
-        .map((p) => p.tipo_producto?.id)
-        .filter((id): id is number => typeof id === 'number')
-    );
-
-    if (tipoIdsEmpresa.size === 0) return [];
-
-    const permitidos: Array<{ categoriaId: number; categoriaNombre: string; tipoId: number; tipoNombre: string }> = [];
-    for (const categoria of this.categorias()) {
-      for (const tipo of categoria.tipos) {
-        if (tipoIdsEmpresa.has(tipo.id)) {
-          permitidos.push({
-            categoriaId: categoria.id,
-            categoriaNombre: categoria.nombre,
-            tipoId: tipo.id,
-            tipoNombre: tipo.nombre,
-          });
-        }
-      }
+    const map = new Map<number, { categoriaNombre: string; tipoId: number; tipoNombre: string }>();
+    for (const producto of empresaActual.productos ?? []) {
+      const tipo = producto.tipo_producto;
+      if (!tipo || map.has(tipo.id)) continue;
+      map.set(tipo.id, {
+        categoriaNombre: producto.categoria?.nombre ?? 'Sin categoría',
+        tipoId: tipo.id,
+        tipoNombre: tipo.nombre,
+      });
     }
-    return permitidos;
+
+    return Array.from(map.values()).sort((a, b) =>
+      a.categoriaNombre.localeCompare(b.categoriaNombre) || a.tipoNombre.localeCompare(b.tipoNombre),
+    );
   }
 
   agregarCampoNuevoProducto(tipoId: number) {
@@ -301,11 +294,9 @@ export class ConfiguracionAdminComponent {
   private findTipoById(
     tipoId: number,
   ): { nombre: string; categoriaNombre: string } | null {
-    for (const categoria of this.categorias()) {
-      const tipo = categoria.tipos.find((item) => item.id === tipoId);
-      if (tipo) {
-        return { nombre: tipo.nombre, categoriaNombre: categoria.nombre };
-      }
+    const tipoEmpresa = this.tiposEditablesEmpresa().find((item) => item.tipoId === tipoId);
+    if (tipoEmpresa) {
+      return { nombre: tipoEmpresa.tipoNombre, categoriaNombre: tipoEmpresa.categoriaNombre };
     }
 
     return null;
