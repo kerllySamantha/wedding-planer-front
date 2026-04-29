@@ -144,12 +144,18 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
 
   uploadImageBase64(
     imageBase64: string,
+    extension: string,
+    userId: number,
   ): Observable<{ data?: { url?: string }; url?: string } | null> {
     return this.http
       .post<{
         data?: { url?: string };
         url?: string;
-      }>(`${this.apiUrl}/imagenes`, { image: imageBase64 })
+      }>(`${this.apiUrl}/imagenes`, {
+        imagen: imageBase64,
+        extension,
+        user_id: userId,
+      })
       .pipe(
         map((response) => response || null),
         catchError((error: Error) => {
