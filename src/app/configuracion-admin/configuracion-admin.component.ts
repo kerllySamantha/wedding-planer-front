@@ -28,6 +28,7 @@ export class ConfiguracionAdminComponent {
   categorias = signal<InfoCategoria[]>([]);
   productosSeleccionados = signal<number[]>([]);
   nuevosProductosPorTipo = signal<Record<number, string>>({});
+  nuevosProductosActivosPorTipo = signal<Record<number, boolean>>({});
   galeriaUrls = signal<string[]>([]);
   loadingUpload = signal(false);
   saving = signal(false);
@@ -75,6 +76,7 @@ export class ConfiguracionAdminComponent {
           this.productosSeleccionados(),
         );
         this.nuevosProductosPorTipo.set({});
+        this.nuevosProductosActivosPorTipo.set({});
         const fotos = (empresa.fotos ?? [])
           .map((foto) => this.normalizeImageUrl(foto?.url))
           .filter((url): url is string => Boolean(url));
@@ -105,17 +107,43 @@ export class ConfiguracionAdminComponent {
     }));
   }
 
-  onProductoToggle(productoId: number, checked: boolean) {
+  onTipoToggle(tipoId: number, checked: boolean) {
     const current = new Set(this.productosSeleccionados());
-    checked ? current.add(productoId) : current.delete(productoId);
+    const productosTipo = this.productosPorTipo(tipoId);
+
+    productosTipo.forEach((producto) => {
+      if (checked) {
+        current.add(producto.id);
+      } else {
+        current.delete(producto.id);
+      }
+    });
+
     const seleccionados = Array.from(current);
     this.productosSeleccionados.set(seleccionados);
     this.form.controls.productosSeleccionados.setValue(seleccionados);
     this.form.controls.productosSeleccionados.markAsTouched();
   }
 
+  tipoSeleccionado(tipoId: number): boolean {
+    const seleccionados = new Set(this.productosSeleccionados());
+    return this.productosPorTipo(tipoId).some((p) => seleccionados.has(p.id));
+  }
+
   productosPorTipo(tipoId: number) {
     return (this.empresa()?.productos ?? []).filter((p) => p.tipo_producto?.id === tipoId);
+  }
+
+  activarNuevoProducto(tipoId: number) {
+    this.nuevosProductosActivosPorTipo.update((prev) => ({
+      ...prev,
+      [tipoId]: !prev[tipoId],
+    }));
+
+    const activo = this.nuevosProductosActivosPorTipo()[tipoId];
+    if (!activo) {
+      this.nuevosProductosPorTipo.update((prev) => ({ ...prev, [tipoId]: '' }));
+    }
   }
 
   onNuevoProductoInput(tipoId: number, value: string) {
