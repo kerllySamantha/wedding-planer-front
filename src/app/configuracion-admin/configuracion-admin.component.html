@@ -49,16 +49,19 @@
     </div>
     } @else {
     <div class="settings-grid">
-        <article class="settings-card settings-card--full">
+        <article class="settings-card settings-card--full" [formGroup]="form">
             <h2>Editar empresa (edit)</h2>
             <div class="form-grid">
-                <label>Nombre de empresa <input class="form-control" [(ngModel)]="formEmpresa.nombre_empresa"></label>
-                <label>Nombre de contacto <input class="form-control" [(ngModel)]="formEmpresa.name"></label>
-                <label>Email <input class="form-control" [(ngModel)]="formEmpresa.email"></label>
-                <label>Teléfono <input class="form-control" [(ngModel)]="formEmpresa.telefono"></label>
-                <label>Tipo de servicio <input class="form-control" [(ngModel)]="formEmpresa.tipo_servicio"></label>
-                <label>Dirección <input class="form-control" [(ngModel)]="formEmpresa.direccion"></label>
+                <label>Nombre de empresa <input class="form-control" formControlName="nombre_empresa"></label>
+                <label>Nombre de contacto <input class="form-control" formControlName="name"></label>
+                <label>Email <input class="form-control" formControlName="email"></label>
+                <label>Teléfono <input class="form-control" formControlName="telefono"></label>
+                <label>Tipo de servicio <input class="form-control" formControlName="tipo_servicio"></label>
+                <label>Dirección <input class="form-control" formControlName="direccion"></label>
             </div>
+            @if (form.errors?.['contactoRequerido']) {
+            <p class="text-danger mt-2 mb-0">Debes informar al menos email o teléfono de contacto.</p>
+            }
         </article>
 
     </div>
@@ -85,6 +88,9 @@
             </div>
             }
         </div>
+        @if (form.controls.tiposSeleccionados.touched && form.controls.tiposSeleccionados.errors?.['minSeleccionados']) {
+        <p class="text-danger mt-2 mb-0">Selecciona al menos un tipo de producto.</p>
+        }
     </article>
 
     <article class="settings-card">
