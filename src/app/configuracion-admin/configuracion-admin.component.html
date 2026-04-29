@@ -113,7 +113,7 @@
                             }
                         </div>
 
-                        @for (nuevo of (nuevosProductosPorTipo()[tipo.id] ); track $index; let idx = $index) {
+                        @for (nuevo of (nuevosProductosPorTipo()[tipo.id]); track $index; let idx = $index) {
                         <div class="type-editor-card__new-item">
                             <input class="form-control form-control-sm" placeholder="Nombre del producto extra"
                                 [value]="nuevo.nombre" (input)="onNuevoProductoInput(tipoPermitido.tipoId, idx, $any($event.target).value)">
