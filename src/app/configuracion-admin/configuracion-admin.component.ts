@@ -26,7 +26,8 @@ export class ConfiguracionAdminComponent {
   private fb = inject(FormBuilder);
   empresa = signal<Empresa | null>(null);
   categorias = signal<InfoCategoria[]>([]);
-  tiposSeleccionados = signal<number[]>([]);
+  productosSeleccionados = signal<number[]>([]);
+  nuevosProductosPorTipo = signal<Record<number, string>>({});
   galeriaUrls = signal<string[]>([]);
   loadingUpload = signal(false);
   saving = signal(false);
@@ -40,7 +41,7 @@ export class ConfiguracionAdminComponent {
       telefono: ['', [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(2)]],
       direccion: ['', [Validators.required, Validators.minLength(5)]],
-      tiposSeleccionados: this.fb.control<number[]>([], {
+      productosSeleccionados: this.fb.control<number[]>([], {
         nonNullable: true,
         validators: [this.minSeleccionados(1)],
       }),
@@ -67,14 +68,13 @@ export class ConfiguracionAdminComponent {
           name: empresa.usuario?.name ?? '',
           direccion: empresa.direccion ?? '',
         });
-        this.tiposSeleccionados.set([
-          ...new Set(
-            (empresa.productos ?? []).map((item) => item.tipo_producto.id),
-          ),
+        this.productosSeleccionados.set([
+          ...new Set((empresa.productos ?? []).map((item) => item.id)),
         ]);
-        this.form.controls.tiposSeleccionados.setValue(
-          this.tiposSeleccionados(),
+        this.form.controls.productosSeleccionados.setValue(
+          this.productosSeleccionados(),
         );
+        this.nuevosProductosPorTipo.set({});
         const fotos = (empresa.fotos ?? [])
           .map((foto) => this.normalizeImageUrl(foto?.url))
           .filter((url): url is string => Boolean(url));
@@ -105,13 +105,21 @@ export class ConfiguracionAdminComponent {
     }));
   }
 
-  onTipoToggle(tipoId: number, checked: boolean) {
-    const current = new Set(this.tiposSeleccionados());
-    checked ? current.add(tipoId) : current.delete(tipoId);
+  onProductoToggle(productoId: number, checked: boolean) {
+    const current = new Set(this.productosSeleccionados());
+    checked ? current.add(productoId) : current.delete(productoId);
     const seleccionados = Array.from(current);
-    this.tiposSeleccionados.set(seleccionados);
-    this.form.controls.tiposSeleccionados.setValue(seleccionados);
-    this.form.controls.tiposSeleccionados.markAsTouched();
+    this.productosSeleccionados.set(seleccionados);
+    this.form.controls.productosSeleccionados.setValue(seleccionados);
+    this.form.controls.productosSeleccionados.markAsTouched();
+  }
+
+  productosPorTipo(tipoId: number) {
+    return (this.empresa()?.productos ?? []).filter((p) => p.tipo_producto?.id === tipoId);
+  }
+
+  onNuevoProductoInput(tipoId: number, value: string) {
+    this.nuevosProductosPorTipo.update((prev) => ({ ...prev, [tipoId]: value }));
   }
 
   onImageSelected(event: Event) {
@@ -160,7 +168,7 @@ export class ConfiguracionAdminComponent {
 
     const values = this.form.getRawValue();
     const productosPayload = this.buildProductosPayload(
-      values.tiposSeleccionados ?? [],
+      values.productosSeleccionados ?? [],
     );
     const formEmpresa: CreateEmpresa = {
       nombre_empresa: values.nombre_empresa ?? '',
@@ -179,7 +187,7 @@ export class ConfiguracionAdminComponent {
     this.saving.set(true);
     this.empresaCtx.editEmpresa(String(empresa.id), formEmpresa).subscribe({
       next: (value) => {
-        console.log(value)
+        console.log(value);
         this.saving.set(false);
         this.modoEdicion.set(false);
         this.getEmpresa();
@@ -192,29 +200,41 @@ export class ConfiguracionAdminComponent {
   }
 
   private buildProductosPayload(
-    tiposSeleccionados: number[],
+    productosSeleccionados: number[],
   ): CreateEmpresa['productos'] {
     const empresaActual = this.empresa();
     const productosActuales = empresaActual?.productos ?? [];
     const payload: NonNullable<CreateEmpresa['productos']> = [];
 
-    for (const tipoId of tiposSeleccionados) {
-      const tipoInfo = this.findTipoById(tipoId);
-      if (!tipoInfo) continue;
-
-      const productoExistente = productosActuales.find(
-        (p) => p.tipo_producto?.id === tipoId,
-      );
+    for (const productoId of productosSeleccionados) {
+      const productoExistente = productosActuales.find((p) => p.id === productoId);
+      if (!productoExistente) continue;
       payload.push({
-        id: productoExistente?.id ?? null,
-        nombre: productoExistente?.nombre ?? tipoInfo.nombre,
-        descripcion: productoExistente?.descripcion ?? '',
-        precio_max: productoExistente?.precio_max ?? 0,
-        precio_min: productoExistente?.precio_min ?? 0,
+        id: productoExistente.id ?? null,
+        nombre: productoExistente.nombre ?? productoExistente.tipo_producto?.nombre ?? '',
+        descripcion: productoExistente.descripcion ?? '',
+        precio_max: productoExistente.precio_max ?? 0,
+        precio_min: productoExistente.precio_min ?? 0,
+        tipo_producto_nombre: productoExistente.tipo_producto?.nombre ?? '',
+        categoria_nombre: productoExistente.categoria?.nombre ?? '',
+      });
+    }
+
+    Object.entries(this.nuevosProductosPorTipo()).forEach(([tipoIdStr, nombre]) => {
+      const nombreLimpio = nombre.trim();
+      if (!nombreLimpio) return;
+      const tipoInfo = this.findTipoById(Number(tipoIdStr));
+      if (!tipoInfo) return;
+      payload.push({
+        id: null,
+        nombre: nombreLimpio,
+        descripcion: '',
+        precio_max: 0,
+        precio_min: 0,
         tipo_producto_nombre: tipoInfo.nombre,
         categoria_nombre: tipoInfo.categoriaNombre,
       });
-    }
+    });
 
     return payload;
   }
