@@ -177,12 +177,16 @@ export class ConfiguracionAdminComponent {
     const file = input.files?.[0];
     if (!file) return;
 
+    const extension = this.getImageExtension(file);
+    const userId = Number(this.idUser());
+    if (!extension || Number.isNaN(userId)) return;
+
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = String(reader.result ?? '');
       if (!base64) return;
       this.loadingUpload.set(true);
-      this.empresaCtx.uploadImageBase64(base64).subscribe({
+      this.empresaCtx.uploadImageBase64(base64, extension, userId).subscribe({
         next: (res) => {
           const url = this.normalizeImageUrl(res?.data?.url ?? res?.url);
           if (url) {
@@ -197,6 +201,22 @@ export class ConfiguracionAdminComponent {
       });
     };
     reader.readAsDataURL(file);
+  }
+
+  private getImageExtension(file: File): string | null {
+    const extensionFromName = file.name.split('.').pop()?.toLowerCase() ?? '';
+    const allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+    if (allowed.includes(extensionFromName)) {
+      return extensionFromName;
+    }
+
+    const extensionFromType = file.type.split('/').pop()?.toLowerCase() ?? '';
+    if (allowed.includes(extensionFromType)) {
+      return extensionFromType;
+    }
+
+    return null;
   }
 
   activarEdicion() {
@@ -231,6 +251,7 @@ export class ConfiguracionAdminComponent {
       direccion: values.direccion ?? '',
       descripcion: empresa.descripcion ?? '',
       logo: empresa.logo ?? '',
+      fotos: this.galeriaUrls(),
       productos: productosPayload,
     };
 

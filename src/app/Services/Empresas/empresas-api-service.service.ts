@@ -65,6 +65,7 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
     tipo_servicio: empresa.tipo_servicio,
     poblacion_id: empresa.poblacion_id,
     logo: empresa.logo ?? '',
+    fotos: empresa.fotos ?? [],
     productos: empresa.productos ?? []
   };
 
@@ -89,6 +90,7 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
       tipo_servicio: empresa.tipo_servicio,
       poblacion_id: empresa.poblacion_id,
       logo: empresa.logo ?? '',
+      fotos: empresa.fotos ?? [],
       productos: empresa.productos ?? []
     }
     return this.http.put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject)
@@ -144,12 +146,18 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
 
   uploadImageBase64(
     imageBase64: string,
+    extension: string,
+    userId: number,
   ): Observable<{ data?: { url?: string }; url?: string } | null> {
     return this.http
       .post<{
         data?: { url?: string };
         url?: string;
-      }>(`${this.apiUrl}/imagenes/base64`, { image: imageBase64 })
+      }>(`${this.apiUrl}/imagenes`, {
+        imagen: imageBase64,
+        extension,
+        user_id: userId,
+      })
       .pipe(
         map((response) => response || null),
         catchError((error: Error) => {
