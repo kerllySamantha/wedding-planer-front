@@ -76,7 +76,11 @@ export class ConfiguracionAdminComponent {
         );
         this.nuevosProductosPorTipo.set({});
         const fotos = (empresa.fotos ?? [])
-          .map((foto) => this.normalizeImageUrl(foto?.url))
+          .map((foto) =>
+            this.normalizeImageUrl(
+              typeof foto === 'string' ? foto : foto?.url,
+            ),
+          )
           .filter((url): url is string => Boolean(url));
         this.galeriaUrls.set(fotos);
       },
