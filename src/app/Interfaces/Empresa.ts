@@ -54,6 +54,7 @@ export interface CreateEmpresa  {
   direccion: string,
   descripcion?: string,
   logo?: string,
+  fotos?: string[],
   productos?: {
     id: number | null,
     nombre: string,

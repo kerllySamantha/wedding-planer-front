@@ -251,6 +251,7 @@ export class ConfiguracionAdminComponent {
       direccion: values.direccion ?? '',
       descripcion: empresa.descripcion ?? '',
       logo: empresa.logo ?? '',
+      fotos: this.galeriaUrls(),
       productos: productosPayload,
     };
 
