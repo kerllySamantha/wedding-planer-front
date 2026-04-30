@@ -160,6 +160,7 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
       })
       .pipe(
         map((response) => response || null),
+        tap((response)  =>  console.log(response.url)),
         catchError((error: Error) => {
           console.error('Error al subir imagen base64:', error);
           return throwError(() => error);
