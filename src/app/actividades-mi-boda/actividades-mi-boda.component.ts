@@ -48,6 +48,21 @@ export class ActividadesMiBodaComponent {
   fechaFormateada = computed(() => this.countdownService.fechaFormateada())
 
 
+  formatearNombrePareja(nombre: string | null | undefined): string {
+    if (!nombre) return 'Nuestra boda';
+
+    const enTitulo = nombre
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((palabra) => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+      .join(' ');
+
+    return enTitulo.length > 10 ? `${enTitulo.slice(0, 10)}...` : enTitulo;
+  }
+
+
   // ngOnInit() {
   //   this.cargarBodaDelUsuario();
   // }

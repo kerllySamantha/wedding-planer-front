@@ -478,3 +478,27 @@ h1 {
     width: 100%;
   }
 }
+
+
+.perfil-hero__name {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.1rem 0.55rem;
+  border-radius: 0.65rem;
+  background: rgba(247, 108, 111, 0.12);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.perfil-hero__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.perfil-hero__chips .chip {
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  background: #fff4f6;
+  line-height: 1.2;
+}
