@@ -5,20 +5,23 @@
   flex-direction: column;
 }
 
-.fondo > .d-flex {
+.contenedor-registro {
   flex: 1;
-  padding: 1rem 0 1.25rem;
 }
 
-.login-row {
-  width: 72%;
-  max-width: 980px;
-  min-height: 620px;
-  border: 1px solid #e8e8e8;
-  border-radius: 1.1rem;
-  overflow: hidden;
-  background-color: #ffffff;
-  box-shadow: 0 10px 30px rgba(20, 20, 43, 0.07);
+.submit-button {
+  background-color: #f76c6f;
+  color: white;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: 8px !important;
+  padding: 0.55rem !important;
+  transition: background 0.2s;
+  border: none;
+}
+.submit-button:hover {
+  background-color: rgb(245.1677419355, 74.3322580645, 78.0193548387);
+  color: white;
 }
 
 .image-fondo {
@@ -27,53 +30,63 @@
   background-size: cover;
   background-position: center;
   min-height: 100%;
-  position: relative;
-  background-color: #ddd;
+}
+
+.login-row {
+  width: 72%;
+  max-width: 1000px;
+  border: 1px solid #e8e8e8;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .column-login {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1.25rem 1.35rem !important;
-  background: white;
+  padding: 1.25rem 1.5rem;
 }
-
-.login-content {
-  width: 100%;
-  max-width: 410px;
+.column-login .login-content {
+  width: 90%;
+  max-width: 400px;
 }
 
 h2 {
   font-family: "Merriweather", serif;
-  font-size: 1.45rem;
-  line-height: 1.65rem;
-  color: #1f2333;
-  margin-bottom: 0.35rem;
+  font-size: 1.4rem;
+  line-height: 1.7rem;
+  color: #1a1a2e;
 }
 
 .subtitle-text {
   font-size: 0.82rem;
-  color: #7d8597;
+  color: #888;
 }
 .subtitle-text a {
   color: #f76c6f;
-  font-weight: 600;
+  font-weight: 500;
   text-decoration: none;
 }
 .subtitle-text a:hover {
   text-decoration: underline;
 }
 
-.campo {
-  margin-bottom: 0.7rem !important;
+.custom-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 0.32rem;
+  padding-left: 0.1rem;
 }
 
 .bloque-input {
   border: 1.5px solid #e8e8e8;
-  border-radius: 0.75rem;
-  padding: 2px 8px;
-  transition: all 0.2s ease;
+  border-radius: 8px;
+  padding: 2px 6px;
+  transition: 0.2s;
   background: #fafafa;
 }
 .bloque-input:focus-within {
@@ -92,8 +105,8 @@ h2 {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  padding: 0 0.35rem 0 0.15rem;
-  color: #b5b5b5;
+  padding: 0 0.4rem 0 0.2rem;
+  color: #bbb;
   display: flex;
   align-items: center;
 }
@@ -103,24 +116,19 @@ h2 {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  font-size: 0.84rem !important;
-  padding: 0.42rem 0.3rem !important;
-  color: #1f2333;
+  font-size: 0.83rem !important;
+  padding: 0.38rem 0.35rem !important;
 }
 .input-group input::-moz-placeholder, .form-control::-moz-placeholder {
-  color: #bfc4ce;
+  color: #c0c0c0;
 }
 .input-group input::placeholder,
 .form-control::placeholder {
-  color: #bfc4ce;
+  color: #c0c0c0;
 }
 
 .form-control:focus {
   box-shadow: none !important;
-}
-
-.row.gx-2 {
-  --bs-gutter-x: .65rem;
 }
 
 .novios-block {
@@ -129,9 +137,8 @@ h2 {
   gap: 0.75rem;
   background: #fafafa;
   border: 1.5px solid #e8e8e8;
-  border-radius: 0.75rem;
-  padding: 0.48rem 0.75rem;
-  margin-top: 0.15rem;
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
 }
 
 .novios-label {
@@ -139,7 +146,6 @@ h2 {
   font-weight: 600;
   color: #888;
   white-space: nowrap;
-  margin: 0;
 }
 
 .novios-options {
@@ -157,14 +163,14 @@ h2 {
 .novio-option .novio-btn {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.75rem;
+  gap: 0.3rem;
+  padding: 0.28rem 0.75rem;
   border: 1.5px solid #e8e8e8;
-  border-radius: 0.6rem;
+  border-radius: 6px;
   font-size: 0.8rem;
   color: #777;
   background: white;
-  transition: 0.2s ease;
+  transition: 0.2s;
   font-weight: 500;
 }
 .novio-option input[type=radio]:checked + .novio-btn {
@@ -177,99 +183,42 @@ h2 {
   color: #f76c6f;
 }
 
-.submit-button {
-  background-color: #f76c6f;
-  color: white;
-  font-weight: 600;
-  font-size: 0.88rem;
-  border: none;
-  border-radius: 0.75rem !important;
-  padding: 0.62rem !important;
-  transition: all 0.2s ease;
-  box-shadow: 0 8px 18px rgba(247, 108, 111, 0.18);
-}
-.submit-button:hover {
-  background-color: rgb(245.1677419355, 74.3322580645, 78.0193548387);
-  color: white;
-  transform: translateY(-1px);
-}
-
 .empresa-block {
-  border-top: 1px solid #f1f1f1;
-  padding-top: 0.7rem;
-  margin-top: 0.55rem;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 0.6rem;
+  margin-top: 0.4rem;
 }
 .empresa-block p {
   font-size: 0.8rem;
-  color: #9aa1ad;
+  color: #aaa;
 }
 
 .empresa-link {
   color: #f76c6f !important;
   font-size: 0.8rem;
-  font-weight: 600;
 }
 .empresa-link:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 991.98px) {
-  .login-row {
-    width: 88%;
-    min-height: auto;
-  }
-  .column-login {
-    padding: 1.15rem !important;
-  }
-  .login-content {
-    max-width: 100%;
-  }
-}
 @media (max-width: 768px) {
-  .fondo > .d-flex {
-    padding: 0.75rem 0 1rem;
-  }
   .login-row {
     width: 95%;
-    border-radius: 0.95rem;
   }
   .image-fondo {
     display: none;
   }
   .column-login {
-    padding: 1.1rem 0.95rem !important;
+    padding: 1.5rem 1.25rem;
   }
-  .login-content {
+  .column-login .login-content {
     width: 100%;
-  }
-  h2 {
-    font-size: 1.28rem;
-    line-height: 1.45rem;
   }
   .novios-block {
     flex-direction: column;
-    align-items: stretch;
-    gap: 0.55rem;
+    align-items: flex-start;
   }
   .novios-options {
     width: 100%;
-  }
-  .novio-option {
-    flex: 1;
-  }
-  .novio-option .novio-btn {
-    justify-content: center;
-    width: 100%;
-  }
-}
-@media (max-width: 576px) {
-  .row.gx-2 > [class*=col-] {
-    margin-bottom: 0.2rem;
-  }
-  .bloque-input {
-    border-radius: 0.65rem;
-  }
-  .submit-button {
-    padding: 0.7rem !important;
   }
 }/*# sourceMappingURL=registro-usuarios.component.css.map */
