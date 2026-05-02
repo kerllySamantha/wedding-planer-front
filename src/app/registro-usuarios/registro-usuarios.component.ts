@@ -11,10 +11,11 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { of, startWith, switchMap, tap } from 'rxjs';
 import { Provincia, Town } from '../Interfaces/CIudades';
-import { CreateUser, UserResponse } from '../Interfaces/User';
+import { UserResponse } from '../Interfaces/User';
+import { CreatePerfilUsuario } from '../Interfaces/Perfil';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { RegionsServer } from '../Services/Regiones/regiones-abstract.server';
-import { UsuariosServiceService } from '../Services/Users/usuarios-service.service';
+import { PerfilServiceServiceService } from '../Services/Perfiles/perfil-service-service.service';
 import { NavbarComponent } from '../navbar/navbar.component';
 
 type RegistroUsuarioForm = {
@@ -37,7 +38,7 @@ export class RegistroUsuariosComponent {
   private fb = inject(NonNullableFormBuilder);
   private router = inject(Router);
   private regionesServerctx = inject(RegionsServer);
-  private usuariosCtx = inject(UsuariosServiceService);
+  private perfilCtx = inject(PerfilServiceServiceService);
   private authServicectx = inject(AuthenticationService);
 
   submitted = false;
@@ -101,14 +102,18 @@ export class RegistroUsuariosComponent {
     }
 
     this.loading = true;
-    const payload: CreateUser = {
+    const payload: CreatePerfilUsuario = {
       name: this.form.controls.name.value,
       email: this.form.controls.email.value,
       password: this.form.controls.password.value,
       rol: 'usuario',
+      direccion: '',
+      telefono: this.form.controls.telefono.value,
+      poblacion_id: this.form.controls.poblacion.value?.id ?? 0,
+      fecha_boda: new Date(this.form.controls.weddingDate.value),
     };
 
-    this.usuariosCtx.postUsuario(payload).subscribe({
+    this.perfilCtx.postPerfil(payload).subscribe({
       next: () => {
         this.successMessage = 'Registro completado. Iniciando sesión...';
         this.authServicectx.login(payload.email, payload.password).subscribe({
