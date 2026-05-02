@@ -1,181 +1,90 @@
 <div class="fondo">
   <app-navbar></app-navbar>
 
-  <div class="contenedor-registro d-flex justify-content-center align-items-center py-3">
-    <div class="row login-row g-0">
-
-      <div class="col-md-5 image-fondo"></div>
+  <div class="contenedor-registro d-flex justify-content-center align-items-center py-3 px-2">
+    <div class="row login-row g-0 w-100">
+      <div class="col-md-5 image-fondo d-none d-md-block"></div>
 
       <div class="col-md-7 column-login">
         <div class="login-content">
-
           <h2 class="text-center mb-1">Crea tu cuenta</h2>
           <p class="text-center mb-3 subtitle-text">
             ¿Ya dispones de cuenta?
             <a [routerLink]="['/login']">Accede aquí</a>
           </p>
 
-          <form name="frmLogin" action="/com-Login.php" method="post">
-            <input type="hidden" id="urlR" name="urlR" value="">
-            <input type="hidden" name="isJsArchitectureEnabled" value="true">
+          @if (generalError) { <div class="alert alert-danger" role="alert">{{ generalError }}</div> }
+          @if (successMessage) { <div class="alert alert-success" role="alert">{{ successMessage }}</div> }
 
-            <!-- USUARIO -->
+          <form [formGroup]="form" (ngSubmit)="onSubmit($event)" novalidate>
             <div class="campo mb-2">
-              <label for="Login" class="custom-label">Usuario</label>
+              <label for="name" class="custom-label">Usuario</label>
               <div class="bloque-input">
                 <div class="input-group">
-                  <span class="input-group-text">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4"/>
-                    </svg>
-                  </span>
-                  <input type="text" class="form-control" placeholder="Introduce tu usuario" name="Login" id="Login" required>
+                  <span class="input-group-text">👤</span>
+                  <input id="name" type="text" class="form-control" formControlName="name" placeholder="Introduce tu usuario" [class.is-invalid]="isInvalid('name')">
                 </div>
               </div>
+              @if (isInvalid('name')) { <div class="invalid-feedback d-block">{{ getError('name') }}</div> }
             </div>
 
-            <!-- CORREO -->
             <div class="campo mb-2">
               <label for="email" class="custom-label">Correo electrónico</label>
-              <div class="bloque-input">
-                <div class="input-group">
-                  <span class="input-group-text">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
-                    </svg>
-                  </span>
-                  <input type="email" class="form-control" placeholder="Introduce tu correo" name="email" id="email" required>
-                </div>
-              </div>
+              <div class="bloque-input"><div class="input-group"><span class="input-group-text">✉️</span>
+                <input id="email" type="email" class="form-control" formControlName="email" placeholder="Introduce tu correo" [class.is-invalid]="isInvalid('email')"></div></div>
+              @if (isInvalid('email')) { <div class="invalid-feedback d-block">{{ getError('email') }}</div> }
             </div>
 
-            <!-- CONTRASEÑA -->
             <div class="campo mb-2">
-              <label for="Password" class="custom-label">Contraseña</label>
-              <div class="bloque-input">
-                <div class="input-group">
-                  <span class="input-group-text">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
-                    </svg>
-                  </span>
-                  <input type="password" id="Password" name="Password" class="form-control"
-                    placeholder="Introduce tu contraseña" autocomplete="off" required>
-                </div>
-              </div>
+              <label for="password" class="custom-label">Contraseña</label>
+              <div class="bloque-input"><div class="input-group"><span class="input-group-text">🔒</span>
+                <input id="password" type="password" class="form-control" formControlName="password" placeholder="Introduce tu contraseña" [class.is-invalid]="isInvalid('password')"></div></div>
+              @if (isInvalid('password')) { <div class="invalid-feedback d-block">{{ getError('password') }}</div> }
             </div>
 
-            <!-- POBLACIÓN + PAÍS -->
+            <div class="campo mb-2">
+              <label for="direccion" class="custom-label">Dirección domiciliaria</label>
+              <div class="bloque-input"><div class="input-group"><span class="input-group-text">🏠</span>
+                <input id="direccion" type="text" class="form-control" formControlName="direccion" placeholder="Calle, número, piso" [class.is-invalid]="isInvalid('direccion')"></div></div>
+              @if (isInvalid('direccion')) { <div class="invalid-feedback d-block">{{ getError('direccion') }}</div> }
+            </div>
+
             <div class="row gx-2 mb-2">
               <div class="col-6">
-                <div class="campo">
-                  <label for="poblacion" class="custom-label">Población</label>
-                  <div class="bloque-input">
-                    <div class="input-group">
-                      <span class="input-group-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                          <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/><path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                        </svg>
-                      </span>
-                      <input id="poblacion" name="poblacion" type="text" class="form-control"
-                        placeholder="Tu población" autocomplete="off" required>
-                    </div>
-                  </div>
-                </div>
+                <label for="provincia" class="custom-label">Provincia</label>
+                <select id="provincia" formControlName="provincia" class="form-select" [class.is-invalid]="isInvalid('provincia')">
+                  <option [ngValue]="null">Selecciona provincia</option>
+                  @for (provincia of provincias$ | async; track provincia.id) { <option [ngValue]="provincia">{{ provincia.nombre }}</option> }
+                </select>
+                @if (isInvalid('provincia')) { <div class="invalid-feedback d-block">{{ getError('provincia') }}</div> }
               </div>
-
               <div class="col-6">
-                <div class="campo">
-                  <label for="pais" class="custom-label">Provincia</label>
-                  <div class="bloque-input">
-                    <div class="input-group">
-                      <span class="input-group-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                          <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m7.5-6.923c-.67.204-1.335.82-1.887 1.855A8 8 0 0 0 5.145 4H7.5zM4.09 4a9.3 9.3 0 0 1 .64-1.539 7 7 0 0 1 .597-.933A7.03 7.03 0 0 0 2.255 4zm-.582 3.5c.03-.877.138-1.718.312-2.5H1.674a7 7 0 0 0-.656 2.5zM4.847 5a12.5 12.5 0 0 0-.338 2.5H7.5V5zM8.5 5v2.5h2.99a12.5 12.5 0 0 0-.337-2.5zM4.51 8.5a12.5 12.5 0 0 0 .337 2.5H7.5V8.5zm3.99 0V11h2.653c.187-.765.306-1.608.338-2.5zM5.145 12q.208.58.468 1.068c.552 1.035 1.218 1.65 1.887 1.855V12zm.182 2.472a7 7 0 0 1-.597-.933A9.3 9.3 0 0 1 4.09 12H2.255a7 7 0 0 0 3.072 2.472M3.82 11a13.7 13.7 0 0 1-.312-2.5h-2.49c.062.89.291 1.733.656 2.5zm6.853 3.472A7 7 0 0 0 13.745 12H11.91a9.3 9.3 0 0 1-.64 1.539 7 7 0 0 1-.597.933M8.5 12v2.923c.67-.204 1.335-.82 1.887-1.855q.26-.487.468-1.068zm3.68-1h2.146c.365-.767.594-1.61.656-2.5h-2.49a13.7 13.7 0 0 1-.312 2.5m2.802-3.5a7 7 0 0 0-.656-2.5H12.18c.174.782.282 1.623.312 2.5zM11.27 2.461c.247.464.462.98.64 1.539h1.835a7 7 0 0 0-3.072-2.472c.218.284.418.598.597.933M10.855 4a8 8 0 0 0-.468-1.068C9.835 1.897 9.17 1.282 8.5 1.077V4z"/>
-                        </svg>
-                      </span>
-                      <input id="pais" name="provincia" type="text" class="form-control"
-                        placeholder="Provincia" autocomplete="off" required>
-                    </div>
-                  </div>
-                </div>
+                <label for="poblacion" class="custom-label">Población</label>
+                <select id="poblacion" formControlName="poblacion" class="form-select" [class.is-invalid]="isInvalid('poblacion')">
+                  <option [ngValue]="null">{{ form.controls.provincia.value ? 'Selecciona población' : 'Selecciona primero provincia' }}</option>
+                  @for (poblacion of poblaciones$ | async; track poblacion.id) { <option [ngValue]="poblacion">{{ poblacion.nombre }}</option> }
+                </select>
+                @if (isInvalid('poblacion')) { <div class="invalid-feedback d-block">{{ getError('poblacion') }}</div> }
               </div>
             </div>
 
-            <!-- FECHA BODA + TELÉFONO -->
-            <div class="row gx-2 mb-2">
+            <div class="row gx-2 mb-3">
               <div class="col-6">
-                <div class="campo">
-                  <label for="boda" class="custom-label">Fecha de boda</label>
-                  <div class="bloque-input">
-                    <div class="input-group">
-                      <span class="input-group-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                          <path fill-rule="evenodd" d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM1 14V4h14v10a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1"/><path d="M8 7.5C5.5 5 3.5 6.5 3.5 8.5c0 2.5 3 4 4.5 5.5 1.5-1.5 4.5-3 4.5-5.5C12.5 6.5 10.5 5 8 7.5"/>
-                        </svg>
-                      </span>
-                      <input id="boda" name="boda" type="date" class="form-control" autocomplete="off" required>
-                    </div>
-                  </div>
-                </div>
+                <label for="weddingDate" class="custom-label">Fecha de boda</label>
+                <input id="weddingDate" type="date" class="form-control" formControlName="weddingDate" [class.is-invalid]="isInvalid('weddingDate')">
+                @if (isInvalid('weddingDate')) { <div class="invalid-feedback d-block">{{ getError('weddingDate') }}</div> }
               </div>
-
               <div class="col-6">
-                <div class="campo">
-                  <label for="telefono" class="custom-label">Teléfono</label>
-                  <div class="bloque-input">
-                    <div class="input-group">
-                      <span class="input-group-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-                          <path d="M3.654 1.328a.678.678 0 0 0-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.6 17.6 0 0 0 4.168 6.608 17.6 17.6 0 0 0 6.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 0 0-.063-1.015l-2.307-1.794a.68.68 0 0 0-.58-.122l-2.19.547a1.75 1.75 0 0 1-1.657-.459L5.482 8.062a1.75 1.75 0 0 1-.46-1.657l.548-2.19a.68.68 0 0 0-.122-.58z"/>
-                        </svg>
-                      </span>
-                      <input id="telefono" name="telefono" type="tel" class="form-control"
-                        placeholder="Tu teléfono" autocomplete="off" required>
-                    </div>
-                  </div>
-                </div>
+                <label for="telefono" class="custom-label">Teléfono</label>
+                <input id="telefono" type="tel" class="form-control" formControlName="telefono" placeholder="Tu teléfono" [class.is-invalid]="isInvalid('telefono')">
+                @if (isInvalid('telefono')) { <div class="invalid-feedback d-block">{{ getError('telefono') }}</div> }
               </div>
             </div>
-
-            <!-- YO SOY -->
-            <!-- <div class="novios-block mb-2">
-              <span class="novios-label">Yo soy</span>
-              <div class="novios-options">
-                <label class="novio-option">
-                  <input type="radio" name="rol" value="novio">
-                  <span class="novio-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4"/>
-                    </svg>
-                    Novio
-                  </span>
-                </label>
-
-                <label class="novio-option">
-                  <input type="radio" name="rol" value="novia">
-                  <span class="novio-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4"/>
-                    </svg>
-                    Novia
-                  </span>
-                </label>
-              </div>
-            </div> -->
 
             <div class="d-grid mb-2">
-              <button type="submit" class="btn submit-button">Registrarme</button>
-            </div>
-
-            <div class="empresa-block">
-              <p class="text-center mb-0">
-                ¿Eres profesional?
-                <a class="fw-bold empresa-link" [routerLink]="['/dashboard-empresas']">Acceso para empresas</a>
-              </p>
+              <button type="submit" class="btn submit-button" [disabled]="loading">{{ loading ? 'Registrando...' : 'Registrarme' }}</button>
             </div>
           </form>
-
         </div>
       </div>
     </div>
