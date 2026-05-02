@@ -49,17 +49,17 @@ export class ActividadesMiBodaComponent {
 
 
   formatearNombrePareja(nombre: string | null | undefined): string {
-    if (!nombre) return 'Nuestra boda';
+    if (!nombre) return 'Nuestra Boda';
 
-    const enTitulo = nombre
+    const palabras = nombre
       .trim()
       .toLowerCase()
       .split(/\s+/)
       .filter(Boolean)
-      .map((palabra) => palabra.charAt(0).toUpperCase() + palabra.slice(1))
-      .join(' ');
+      .map((palabra) => palabra.charAt(0).toUpperCase() + palabra.slice(1));
 
-    return enTitulo.length > 10 ? `${enTitulo.slice(0, 10)}...` : enTitulo;
+    const primerasDos = palabras.slice(0, 2).join(' ');
+    return primerasDos || 'Nuestra Boda';
   }
 
 
