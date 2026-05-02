@@ -1,11 +1,13 @@
+import { Router } from '@angular/router';
+import { Resenia } from '../Interfaces/Resenia';
 
-import { Component, computed, inject, resource, signal } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+
 import { NavbarComponent } from '../navbar/navbar.component';
-import { CardDashboardComponent } from "../card-dashboard/card-dashboard.component";
+
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
-import { firstValueFrom } from 'rxjs';
-import { Resenia, Resenias } from '../Interfaces/Resenia';
+
+
 import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
 import { Empresa } from '../Interfaces/Empresa';
 import { CardEmpresaComponent } from '../card-empresa/card-empresa.component';
@@ -31,7 +33,14 @@ export class DashboardComponent {
 
   resenias = signal<Resenia[]>([]);
   empresas = signal<Empresa[]>([]);
+  terminoProveedor = signal('');
   bodas = signal<Boda[]>([]);
+  empresasFiltradas = computed(() => {
+    const term = this.terminoProveedor().trim().toLowerCase();
+    if (!term) return this.empresas();
+    return this.empresas().filter((e) => e.nombre_empresa?.toLowerCase().includes(term));
+  });
+
   loading = signal(true);
   error = signal<string | null>(null);
   rol = signal<string | null>(localStorage.getItem('rol')!)
@@ -43,6 +52,10 @@ export class DashboardComponent {
   }
 
 
+
+  onBuscarProveedor(value: string): void {
+    this.terminoProveedor.set(value);
+  }
 
   ngOnInit(): void {
     this.cargarEmpresas();

@@ -15,8 +15,19 @@
 
     <h1 class="h1-tittle">Empresas</h1>
 
+    <div class="row mb-3">
+      <div class="col-12 col-md-8 col-lg-6">
+        <input
+          type="search"
+          class="form-control"
+          placeholder="Buscar proveedor por nombre"
+          [value]="terminoProveedor()"
+          (input)="onBuscarProveedor($any($event.target).value)">
+      </div>
+    </div>
+
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-        @for (empresa of empresas(); track empresa.id) {
+        @for (empresa of empresasFiltradas(); track empresa.id) {
         <div class="col">
             <app-card-empresa [empresa]="empresa"></app-card-empresa>
         </div>
