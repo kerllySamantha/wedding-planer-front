@@ -1,13 +1,13 @@
+import { Router } from '@angular/router';
+import { Resenia } from '../Interfaces/Resenia';
 
-import { Component, computed, inject, resource, signal } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+
 import { NavbarComponent } from '../navbar/navbar.component';
-import { CardDashboardComponent } from "../card-dashboard/card-dashboard.component";
+
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
-import { firstValueFrom } from 'rxjs';
-import { Resenia, Resenias } from '../Interfaces/Resenia';
-import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
-import { Empresa } from '../Interfaces/Empresa';
+
+
 import { CardEmpresaComponent } from '../card-empresa/card-empresa.component';
 import { Boda } from '../Interfaces/Boda';
 import { BodaServiceServiceService } from '../Services/Bodas/boda-service-service.service';
@@ -15,6 +15,7 @@ import { CardBodaComponent } from '../card-boda/card-boda.component';
 import { CardActividadesNoviaComponent } from "../card-actividades-novia/card-actividades-novia.component";
 import { BuscadorComponent } from "../buscador/buscador.component";
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
+import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,13 +26,14 @@ import { AuthenticationService } from '../Services/Autentication/authenticationS
 export class DashboardComponent {
 
   reseniasTotalService = inject(ReseniasServiceServiceService);
-  empresasTotalService = inject(EmpresasServiceServiceService);
   bodasTotalService = inject(BodaServiceServiceService);
   autServicectx = inject(AuthenticationService);
 
   resenias = signal<Resenia[]>([]);
-  empresas = signal<Empresa[]>([]);
+  filtradoTotalServicectx = inject(ServicioFiltrado);
+  empresas = computed(() => this.filtradoTotalServicectx.companiesTotalFiltered());
   bodas = signal<Boda[]>([]);
+
   loading = signal(true);
   error = signal<string | null>(null);
   rol = signal<string | null>(localStorage.getItem('rol')!)
@@ -43,9 +45,7 @@ export class DashboardComponent {
   }
 
 
-
   ngOnInit(): void {
-    this.cargarEmpresas();
     this.cargarResenias();
     this.cargarBodas();
 
@@ -70,22 +70,6 @@ export class DashboardComponent {
     });
   }
 
-
-  cargarEmpresas() {
-    this.loading.set(true);
-    this.error.set(null);
-    this.empresasTotalService.getEmpresas().subscribe({
-      next: (data) => {
-        this.empresas.set(data?.data ?? []);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set('No se pudieron cargar las reseñas');
-        this.loading.set(false);
-        console.error(err)
-      }
-    });
-  }
 
   cargarBodas() {
     this.loading.set(true);
