@@ -33,7 +33,7 @@ type RegistroUsuarioForm = {
   selector: 'app-registro-usuarios',
   imports: [RouterLink, NavbarComponent, ReactiveFormsModule, CommonModule],
   templateUrl: './registro-usuarios.component.html',
-  styleUrl: './registro-usuarios.component.scss'
+  styleUrl: './registro-usuarios.component.scss',
 })
 export class RegistroUsuariosComponent {
   private fb = inject(NonNullableFormBuilder);
@@ -48,14 +48,38 @@ export class RegistroUsuariosComponent {
   generalError = '';
 
   form = new FormGroup<RegistroUsuarioForm>({
-    name: this.fb.control('', [Validators.required, Validators.minLength(2), Validators.maxLength(80)]),
-    email: this.fb.control('', [Validators.required, Validators.email, Validators.maxLength(255)]),
-    password: this.fb.control('', [Validators.required, Validators.minLength(8), Validators.maxLength(48)]),
-    provincia: new FormControl<Provincia | null>(null, { validators: [Validators.required] }),
-    poblacion: new FormControl<Town | null>({ value: null, disabled: true }, { validators: [Validators.required] }),
+    name: this.fb.control('', [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(80),
+    ]),
+    email: this.fb.control('', [
+      Validators.required,
+      Validators.email,
+      Validators.maxLength(255),
+    ]),
+    password: this.fb.control('', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.maxLength(48),
+    ]),
+    provincia: new FormControl<Provincia | null>(null, {
+      validators: [Validators.required],
+    }),
+    poblacion: new FormControl<Town | null>(
+      { value: null, disabled: true },
+      { validators: [Validators.required] },
+    ),
     weddingDate: this.fb.control('', [Validators.required]),
-    telefono: this.fb.control('', [Validators.required, Validators.pattern(/^[+]?\d[\d\s-]{6,14}$/)]),
-    direccion: this.fb.control('', [Validators.required, Validators.minLength(5), Validators.maxLength(255)]),
+    telefono: this.fb.control('', [
+      Validators.required,
+      Validators.pattern(/^[+]?\d[\d\s-]{6,14}$/),
+    ]),
+    direccion: this.fb.control('', [
+      Validators.required,
+      Validators.minLength(5),
+      Validators.maxLength(255),
+    ]),
   });
 
   provincias$ = this.regionesServerctx.getProvincias();
@@ -65,9 +89,19 @@ export class RegistroUsuariosComponent {
       this.form.controls.poblacion.reset(null, { emitEvent: false });
       this.form.controls.poblacion.disable({ emitEvent: false });
     }),
-    switchMap((provincia) => provincia ? this.regionesServerctx.getTowns(provincia.id).pipe(
-      tap((items) => items.length ? this.form.controls.poblacion.enable({ emitEvent: false }) : this.form.controls.poblacion.disable({ emitEvent: false }))
-    ) : of([]))
+    switchMap((provincia) =>
+      provincia
+        ? this.regionesServerctx
+            .getTowns(provincia.id)
+            .pipe(
+              tap((items) =>
+                items.length
+                  ? this.form.controls.poblacion.enable({ emitEvent: false })
+                  : this.form.controls.poblacion.disable({ emitEvent: false }),
+              ),
+            )
+        : of([]),
+    ),
   );
 
   isInvalid<K extends keyof RegistroUsuarioForm>(field: K): boolean {
@@ -79,14 +113,33 @@ export class RegistroUsuariosComponent {
     const c = this.form.controls[field];
     if (!c.errors) return '';
     const messages: Record<string, Record<string, string>> = {
-      name: { required: 'El nombre es obligatorio.', minlength: 'Mínimo 2 caracteres.', maxlength: 'Máximo 80 caracteres.' },
-      email: { required: 'El correo es obligatorio.', email: 'Introduce un correo válido.', maxlength: 'Máximo 255 caracteres.' },
-      password: { required: 'La contraseña es obligatoria.', minlength: 'Mínimo 8 caracteres.', maxlength: 'Máximo 48 caracteres.' },
+      name: {
+        required: 'El nombre es obligatorio.',
+        minlength: 'Mínimo 2 caracteres.',
+        maxlength: 'Máximo 80 caracteres.',
+      },
+      email: {
+        required: 'El correo es obligatorio.',
+        email: 'Introduce un correo válido.',
+        maxlength: 'Máximo 255 caracteres.',
+      },
+      password: {
+        required: 'La contraseña es obligatoria.',
+        minlength: 'Mínimo 8 caracteres.',
+        maxlength: 'Máximo 48 caracteres.',
+      },
       provincia: { required: 'La provincia es obligatoria.' },
       poblacion: { required: 'La población es obligatoria.' },
       weddingDate: { required: 'La fecha de boda es obligatoria.' },
-      telefono: { required: 'El teléfono es obligatorio.', pattern: 'Introduce un teléfono válido (7–15 dígitos).' },
-      direccion: { required: 'La dirección es obligatoria.', minlength: 'Mínimo 5 caracteres.', maxlength: 'Máximo 255 caracteres.' },
+      telefono: {
+        required: 'El teléfono es obligatorio.',
+        pattern: 'Introduce un teléfono válido (7–15 dígitos).',
+      },
+      direccion: {
+        required: 'La dirección es obligatoria.',
+        minlength: 'Mínimo 5 caracteres.',
+        maxlength: 'Máximo 255 caracteres.',
+      },
     };
     const map = messages[field] ?? {};
     const key = Object.keys(c.errors)[0];
@@ -112,8 +165,8 @@ export class RegistroUsuariosComponent {
       rol: 'usuario',
       direccion: this.form.controls.direccion.value,
       telefono: this.form.controls.telefono.value,
-      poblacion_id: this.form.controls.poblacion.value?.id ?? 0,
-      fecha_boda: new Date(this.form.controls.weddingDate.value),
+      poblacion_id: Number(this.form.controls.poblacion.value?.id) ?? 0,
+     fecha_boda: new Date(this.form.controls.weddingDate.value).toISOString().split('T')[0],
     };
 
     this.perfilCtx.postPerfil(payload).subscribe({
@@ -132,14 +185,17 @@ export class RegistroUsuariosComponent {
           },
           error: () => {
             this.loading = false;
-            this.generalError = 'Usuario creado, pero no se pudo iniciar sesión automáticamente.';
-          }
+            this.generalError =
+              'Usuario creado, pero no se pudo iniciar sesión automáticamente.';
+          },
         });
       },
       error: (err: HttpErrorResponse) => {
         this.loading = false;
-        this.generalError = err.error?.message ?? 'No se pudo completar el registro.';
-      }
+        console.log(this.generalError);
+        this.generalError =
+          err.error?.message ?? 'No se pudo completar el registro.';
+      },
     });
   }
 }

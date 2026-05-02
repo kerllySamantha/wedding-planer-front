@@ -23,5 +23,5 @@ export interface CreatePerfilUsuario extends CreateUser {
     direccion: string;
     telefono: string;
     poblacion_id: number,
-    fecha_boda: Date
+    fecha_boda: string
 }

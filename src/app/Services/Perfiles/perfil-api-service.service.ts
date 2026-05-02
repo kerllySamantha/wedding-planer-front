@@ -7,7 +7,7 @@ import {
   Perfiles,
   PerfilResponse,
 } from '../../Interfaces/Perfil';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +64,7 @@ export class PerfilApiServiceService extends PerfilServiceServiceService {
     return this.http.post<CreatePerfilUsuario>(
       `${this.apiUrl}/perfiles`,
       postObject,
-    );
+    ).pipe(tap(value => {console.log(value); console.log('poblacion_id enviado:', perfil.poblacion_id);}));
   }
 
   override editarPerfil(
