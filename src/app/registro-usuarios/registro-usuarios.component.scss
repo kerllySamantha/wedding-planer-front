@@ -1,5 +1,5 @@
-$rosa: #2f6fed;
-$rosa-hover: #2559bf;
+$rosa: #f76c6f;
+$rosa-hover: #e55558;
 $texto: #1a1a2e;
 $borde: #e8e8e8;
 $fondo-input: #fafafa;
@@ -14,11 +14,12 @@ $label-float: #9a9a9a;
 
 * {
   box-sizing: border-box;
+  background-color: #f0f0f0;
 }
 
 .fondo {
   height: 100vh;
-  background: #f3f5f9;
+  background: red;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -41,7 +42,7 @@ $label-float: #9a9a9a;
   display: flex;
   overflow: hidden;
   border-radius: 22px;
-  background: #fff;
+  background: #f0f0f0;
   box-shadow: 0 12px 38px rgba(0, 0, 0, 0.11);
   animation: fadeInUp 0.35s ease both;
 }
@@ -63,6 +64,19 @@ $label-float: #9a9a9a;
   justify-content: center;
   padding: 1rem 1.1rem;
   overflow: hidden;
+  // FIX: panel blanco, no gris
+  background-color: #ffffff !important;
+
+  // Neutraliza el * { background-color: #f0f0f0 } solo aquí dentro
+  * { background-color: transparent; }
+
+  // Restaura los que necesitan su propio fondo
+  .input-box              { background-color: $fondo-input !important; }
+  .input-box:focus-within { background-color: #fff !important; }
+  .submit-button          { background-color: $rosa !important; }
+  .submit-button:hover:not(:disabled) { background-color: $rosa-hover !important; }
+  .alert-danger           { background-color: #f8d7da !important; }
+  .alert-success          { background-color: #d1e7dd !important; }
 }
 
 .login-content {
@@ -72,7 +86,11 @@ $label-float: #9a9a9a;
 }
 
 .form-header {
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 h2 {
@@ -93,10 +111,7 @@ h2 {
     color: $rosa;
     font-weight: 700;
     text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
+    &:hover { text-decoration: underline; }
   }
 }
 
@@ -113,13 +128,17 @@ h2 {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: $gris-label;
-  margin: 0.35rem 0 0.28rem;
+  // FIX: más aire encima del título de sección
+  margin: 0.8rem 0 0.5rem;
   padding-bottom: 0.16rem;
   border-bottom: 1px solid #eee;
+
+  &:first-of-type { margin-top: 0.2rem; }
 }
 
+// FIX: más separación vertical entre campos
 .campo {
-  margin-bottom: 0.36rem;
+  margin-bottom: 0.65rem;
 }
 
 .field-label {
@@ -133,12 +152,12 @@ h2 {
 
 .input-box {
   width: 100%;
-  height: 44px;
+  height: 48px;
   display: flex;
-  align-items: center;
-  border: 1.4px solid #d7dde8;
-  border-radius: 8px;
-  background: #fff;
+  align-items: stretch;
+  border: 1.4px solid $borde;
+  border-radius: 10px;
+  background: $fondo-input;
   overflow: hidden;
   transition:
     border-color 0.16s ease,
@@ -148,144 +167,10 @@ h2 {
   &:focus-within {
     border-color: $rosa;
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.14);
-  }
-
-  &.is-invalid {
-    border-color: #dc3545;
-  }
-}
-
-.input-icon {
-  width: 42px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #64748b;
-  border-right: 1px solid $borde;
-  flex-shrink: 0;
-
-  i {
-    font-size: 0.85rem;
-  }
-}
-
-.phone-prefix {
-  width: 54px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #888;
-  font-size: 0.86rem;
-  border-right: 1px solid $borde;
-  flex-shrink: 0;
-}
-
-.input-control {
-  flex: 1;
-  width: 100%;
-  min-width: 0;
-  height: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  padding: 0 0.75rem;
-  font-size: 0.87rem;
-  color: $texto;
-
-  &::placeholder {
-    color: $label-float;
-  }
-}
-
-select.input-control {
-  appearance: none;
-  cursor: pointer;
-  color: $label-float;
-
-  &:valid {
-    color: $texto;
-  }
-}
-
-.invalid-feedback {
-  font-size: 0.64rem;
-  color: #dc3545;
-  margin-top: 0.16rem;
-  line-height: 1.1;
-}
-
-.submit-button {
-  width: 100%;
-  background: $rosa;
-  color: #fff;
-  font-weight: 700;
-  border-radius: 8px;
-  padding: 0.7rem;
-  margin-top: 0.25rem;
-  border: none;
-  font-size: 0.86rem;
-  transition:
-    background-color 0.16s ease,
-    box-shadow 0.16s ease,
-    transform 0.16s ease;
-
-  &:hover:not(:disabled) {
-    background: $rosa-hover;
-    box-shadow: 0 5px 14px rgba(247, 108, 111, 0.3);
-    transform: translateY(-1px);
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-}
-
-.password-toggle {
-  height: 100%;
-  width: 42px;
-  border: 0;
-  border-left: 1px solid #d7dde8;
-  background: transparent;
-  color: #64748b;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-.input-box {
-  width: 100%;
-  height: 48px;
-  display: flex;
-  align-items: stretch;
-  border: 1.4px solid $borde;
-  border-radius: 10px;
-  background: $fondo-input;
-  overflow: hidden;
-  transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
-
-  &:focus-within {
-    border-color: $rosa;
-    background: #fff;
     box-shadow: 0 0 0 3px rgba(247, 108, 111, 0.1);
   }
 
-  &.is-invalid {
-    border-color: #dc3545;
-  }
+  &.is-invalid { border-color: #dc3545; }
 }
 
 .input-icon {
@@ -298,9 +183,7 @@ select.input-control {
   border-right: 1px solid $borde;
   flex-shrink: 0;
 
-  i {
-    font-size: 0.85rem;
-  }
+  i { font-size: 0.85rem; }
 }
 
 .phone-prefix {
@@ -332,9 +215,7 @@ select.input-control {
   font-size: 0.84rem;
   color: $texto;
 
-  &::placeholder {
-    color: transparent;
-  }
+  &::placeholder { color: transparent; }
 }
 
 .floating-label {
@@ -361,24 +242,64 @@ select.input-control {
   color: $rosa;
 }
 
+select.input-control {
+  appearance: none;
+  cursor: pointer;
+  color: $label-float;
+  &:valid { color: $texto; }
+}
+
+.invalid-feedback {
+  font-size: 0.64rem;
+  color: #dc3545;
+  margin-top: 0.16rem;
+  line-height: 1.1;
+}
+
+.submit-button {
+  width: 40%;
+  background: $rosa;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.7rem;
+  margin-top: 0.9rem;
+  border: none;
+  font-size: 0.86rem;
+  transition:
+    background-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+
+  &:hover:not(:disabled) {
+    background: $rosa-hover;
+    box-shadow: 0 5px 14px rgba(247, 108, 111, 0.3);
+    transform: translateY(-1px);
+  }
+
+  &:disabled { opacity: 0.7; cursor: not-allowed; }
+}
+
+.password-toggle {
+  height: 100%;
+  width: 42px;
+  border: 0;
+  border-left: 1px solid #d7dde8;
+  background: transparent;
+  color: #64748b;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 767.98px) {
-  :host {
-    height: auto;
-    min-height: 100vh;
-    overflow: auto;
-  }
+  :host { height: auto; min-height: 100vh; overflow: auto; }
 
-  .fondo {
-    height: auto;
-    min-height: 100vh;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
+  .fondo { height: auto; min-height: 100vh; overflow-x: hidden; overflow-y: auto; }
 
-  .contenedor-registro {
-    padding: 1rem;
-    overflow: visible;
-  }
+  .contenedor-registro { padding: 1rem; overflow: visible; }
 
   .login-row {
     width: 100%;
@@ -388,12 +309,7 @@ select.input-control {
     border-radius: 18px;
   }
 
-  .column-login {
-    padding: 1.1rem;
-    overflow: visible;
-  }
+  .column-login { padding: 1.1rem; overflow: visible; }
 
-  .login-content {
-    max-width: 100%;
-  }
+  .login-content { max-width: 100%; }
 }

@@ -18,21 +18,24 @@
           @if (generalError) {
             <div class="alert alert-danger" role="alert">{{ generalError }}</div>
           }
-
           @if (successMessage) {
             <div class="alert alert-success" role="alert">{{ successMessage }}</div>
           }
 
           <form [formGroup]="form" (ngSubmit)="onSubmit($event)" novalidate>
-            <p class="section-label">Acceso</p>
 
-            <div class="row gx-2">
+            <!-- ACCESO -->
+            <p class="section-label pt-3">Acceso</p>
+
+            <div class="row gx-3 pt-2">
               <div class="col-12 col-md-6">
                 <div class="campo">
-                  <label for="name" class="field-label">Usuario</label>
                   <div class="input-box" [class.is-invalid]="isInvalid('name')">
                     <span class="input-icon"><i class="bi bi-person"></i></span>
-                    <input id="name" type="text" class="input-control" formControlName="name" placeholder="Usuario">
+                    <div class="input-area">
+                      <input id="name" type="text" class="input-control" formControlName="name" placeholder=" ">
+                      <label for="name" class="floating-label">Usuario</label>
+                    </div>
                   </div>
                   @if (isInvalid('name')) {
                     <div class="invalid-feedback d-block">{{ getError('name') }}</div>
@@ -42,10 +45,12 @@
 
               <div class="col-12 col-md-6">
                 <div class="campo">
-                  <label for="email" class="field-label">Correo</label>
                   <div class="input-box" [class.is-invalid]="isInvalid('email')">
                     <span class="input-icon"><i class="bi bi-envelope"></i></span>
-                    <input id="email" type="email" class="input-control" formControlName="email" placeholder="Correo">
+                    <div class="input-area">
+                      <input id="email" type="email" class="input-control" formControlName="email" placeholder=" ">
+                      <label for="email" class="floating-label">Correo</label>
+                    </div>
                   </div>
                   @if (isInvalid('email')) {
                     <div class="invalid-feedback d-block">{{ getError('email') }}</div>
@@ -54,18 +59,20 @@
               </div>
             </div>
 
-            <div class="row gx-2">
+            <div class="row gx-3">
               <div class="col-12 col-md-6">
                 <div class="campo">
-                  <label for="password" class="field-label">Contraseña</label>
                   <div class="input-box" [class.is-invalid]="isInvalid('password')">
                     <span class="input-icon"><i class="bi bi-lock"></i></span>
-                    <input
-                      id="password"
-                      [type]="showPassword ? 'text' : 'password'"
-                      class="input-control"
-                      formControlName="password"
-                      placeholder="Contraseña">
+                    <div class="input-area">
+                      <input
+                        id="password"
+                        [type]="showPassword ? 'text' : 'password'"
+                        class="input-control"
+                        formControlName="password"
+                        placeholder=" ">
+                      <label for="password" class="floating-label">Contraseña</label>
+                    </div>
                     <button
                       type="button"
                       class="password-toggle"
@@ -82,11 +89,13 @@
 
               <div class="col-12 col-md-6">
                 <div class="campo">
-                  <label for="telefono" class="field-label">Teléfono</label>
                   <div class="input-box" [class.is-invalid]="isInvalid('telefono')">
                     <span class="input-icon"><i class="bi bi-telephone"></i></span>
                     <span class="phone-prefix">+34</span>
-                    <input id="telefono" type="tel" class="input-control" formControlName="telefono" placeholder="Teléfono">
+                    <div class="input-area">
+                      <input id="telefono" type="tel" class="input-control" formControlName="telefono" placeholder=" ">
+                      <label for="telefono" class="floating-label">Teléfono</label>
+                    </div>
                   </div>
                   @if (isInvalid('telefono')) {
                     <div class="invalid-feedback d-block">{{ getError('telefono') }}</div>
@@ -95,31 +104,52 @@
               </div>
             </div>
 
-            <p class="section-label">Datos personales</p>
+            <!-- DATOS PERSONALES -->
+            <p class="section-label pt-3">Datos personales</p>
 
-            <div class="campo">
-              <label for="direccion" class="field-label">Dirección domiciliaria</label>
+            <div class="campo pt-2">
               <div class="input-box" [class.is-invalid]="isInvalid('direccion')">
                 <span class="input-icon"><i class="bi bi-house"></i></span>
-                <input id="direccion" type="text" class="input-control" formControlName="direccion" placeholder="Dirección domiciliaria">
+                <div class="input-area">
+                  <input id="direccion" type="text" class="input-control" formControlName="direccion" placeholder=" ">
+                  <label for="direccion" class="floating-label">Dirección domiciliaria</label>
+                </div>
               </div>
               @if (isInvalid('direccion')) {
                 <div class="invalid-feedback d-block">{{ getError('direccion') }}</div>
               }
             </div>
 
-            <div class="row gx-2">
+            <!-- TU BODA -->
+            <p class="section-label pt-3">Tu boda</p>
+
+            <div class="campo pt-2">
+              <div class="input-box" [class.is-invalid]="isInvalid('weddingDate')">
+                <span class="input-icon"><i class="bi bi-calendar-heart"></i></span>
+                <div class="input-area">
+                  <input id="weddingDate" type="date" class="input-control" formControlName="weddingDate" placeholder=" ">
+                  <label for="weddingDate" class="floating-label">Fecha de boda</label>
+                </div>
+              </div>
+              @if (isInvalid('weddingDate')) {
+                <div class="invalid-feedback d-block">{{ getError('weddingDate') }}</div>
+              }
+            </div>
+
+            <div class="row gx-3">
               <div class="col-12 col-md-6">
                 <div class="campo">
-                  <label for="provincia" class="field-label">Provincia</label>
                   <div class="input-box" [class.is-invalid]="isInvalid('provincia')">
                     <span class="input-icon"><i class="bi bi-map"></i></span>
-                    <select id="provincia" formControlName="provincia" class="input-control">
-                      <option [ngValue]="null">Provincia</option>
-                      @for (provincia of provincias$ | async; track provincia.id) {
-                        <option [ngValue]="provincia">{{ provincia.nombre }}</option>
-                      }
-                    </select>
+                    <div class="input-area">
+                      <select id="provincia" formControlName="provincia" class="input-control">
+                        <option value="" disabled selected></option>
+                        @for (provincia of provincias$ | async; track provincia.id) {
+                          <option [ngValue]="provincia">{{ provincia.nombre }}</option>
+                        }
+                      </select>
+                      <label for="provincia" class="floating-label">Provincia</label>
+                    </div>
                   </div>
                   @if (isInvalid('provincia')) {
                     <div class="invalid-feedback d-block">{{ getError('provincia') }}</div>
@@ -129,15 +159,17 @@
 
               <div class="col-12 col-md-6">
                 <div class="campo">
-                  <label for="poblacion" class="field-label">Población</label>
                   <div class="input-box" [class.is-invalid]="isInvalid('poblacion')">
                     <span class="input-icon"><i class="bi bi-geo-alt"></i></span>
-                    <select id="poblacion" formControlName="poblacion" class="input-control">
-                      <option [ngValue]="null">Población</option>
-                      @for (poblacion of poblaciones$ | async; track poblacion.id) {
-                        <option [ngValue]="poblacion">{{ poblacion.nombre }}</option>
-                      }
-                    </select>
+                    <div class="input-area">
+                      <select id="poblacion" formControlName="poblacion" class="input-control">
+                        <option value="" disabled selected></option>
+                        @for (poblacion of poblaciones$ | async; track poblacion.id) {
+                          <option [ngValue]="poblacion">{{ poblacion.nombre }}</option>
+                        }
+                      </select>
+                      <label for="poblacion" class="floating-label">Población</label>
+                    </div>
                   </div>
                   @if (isInvalid('poblacion')) {
                     <div class="invalid-feedback d-block">{{ getError('poblacion') }}</div>
@@ -146,24 +178,12 @@
               </div>
             </div>
 
-            <p class="section-label">Tu boda</p>
-
-            <div class="campo">
-              <label for="weddingDate" class="field-label">Fecha de boda</label>
-              <div class="input-box" [class.is-invalid]="isInvalid('weddingDate')">
-                <span class="input-icon"><i class="bi bi-calendar-heart"></i></span>
-                <input id="weddingDate" type="date" class="input-control" formControlName="weddingDate">
-              </div>
-              @if (isInvalid('weddingDate')) {
-                <div class="invalid-feedback d-block">{{ getError('weddingDate') }}</div>
-              }
-            </div>
-
-            <div class="d-grid">
+            <div class="text-center">
               <button type="submit" class="btn submit-button" [disabled]="loading">
                 {{ loading ? 'Registrando...' : 'Registrarme' }}
               </button>
             </div>
+
           </form>
         </div>
       </section>
