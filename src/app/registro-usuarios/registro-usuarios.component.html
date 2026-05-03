@@ -60,7 +60,19 @@
                   <label for="password" class="field-label">Contraseña</label>
                   <div class="input-box" [class.is-invalid]="isInvalid('password')">
                     <span class="input-icon"><i class="bi bi-lock"></i></span>
-                    <input id="password" type="password" class="input-control" formControlName="password" placeholder="Contraseña">
+                    <input
+                      id="password"
+                      [type]="showPassword ? 'text' : 'password'"
+                      class="input-control"
+                      formControlName="password"
+                      placeholder="Contraseña">
+                    <button
+                      type="button"
+                      class="password-toggle"
+                      (click)="togglePasswordVisibility()"
+                      [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+                      <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                    </button>
                   </div>
                   @if (isInvalid('password')) {
                     <div class="invalid-feedback d-block">{{ getError('password') }}</div>
