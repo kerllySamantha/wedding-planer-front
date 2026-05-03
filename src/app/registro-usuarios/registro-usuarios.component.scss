@@ -1,79 +1,97 @@
-@use 'sass:color';
+$rosa: #f76c6f;
+$rosa-hover: #e55558;
+$texto: #1a1a2e;
+$borde: #e8e8e8;
+$fondo-input: #fafafa;
+$gris-label: #aaa;
+$label-float: #9a9a9a;
 
-$primary-color: #f76c6f;
-$border-color: #e8e8e8;
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
 
 .fondo {
-  background-color: #f0f0f0;
-  min-height: 100vh;
+  height: 100vh;
+  background: #f0efed;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .contenedor-registro {
   flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 1.4rem;
+  overflow: hidden;
 }
 
-.submit-button {
-  background-color: $primary-color;
-  color: white;
-  font-weight: 600;
-  font-size: .88rem;
-  border-radius: 8px !important;
-  padding: .55rem !important;
-  transition: background .2s;
-  border: none;
-
-  &:hover {
-    background-color: color.scale($primary-color, $lightness: -10%);
-    color: white;
-  }
+.login-row {
+  width: min(1180px, calc(100% - 2rem));
+  height: min(610px, calc(100vh - 115px));
+  display: flex;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.11);
+  animation: fadeInUp 0.35s ease both;
 }
 
 .image-fondo {
+  width: 42%;
+  flex: 0 0 42%;
   background-image: url("../../assets/images/loginuser.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  min-height: 100%;
-}
-
-.login-row {
-  width: 72%;
-  max-width: 1000px;
-  border: 1px solid $border-color;
-  border-radius: 1.25rem;
-  overflow: hidden;
-  background-color: white;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .column-login {
+  flex: 1;
+  min-width: 0;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 1.25rem 1.5rem;
+  justify-content: center;
+  padding: 1rem 1.7rem;
+  overflow: hidden;
+}
 
-  .login-content {
-    width: 100%;
-    max-width: none;
-  }
+.login-content {
+  width: 100%;
+  max-width: 620px;
+  margin: auto;
+}
+
+.form-header {
+  margin-bottom: 0.45rem;
 }
 
 h2 {
   font-family: "Merriweather", serif;
   font-size: 1.4rem;
-  line-height: 1.7rem;
-  color: #1a1a2e;
+  font-weight: 700;
+  color: $texto;
+  margin: 0 0 0.1rem;
+  line-height: 1.1;
 }
 
 .subtitle-text {
-  font-size: .82rem;
+  font-size: 0.78rem;
   color: #888;
+  margin: 0;
 
   a {
-    color: $primary-color;
-    font-weight: 500;
+    color: $rosa;
+    font-weight: 700;
     text-decoration: none;
 
     &:hover {
@@ -82,161 +100,291 @@ h2 {
   }
 }
 
-.custom-label {
-  display: block;
-  font-size: .78rem;
-  font-weight: 600;
-  color: #666;
-  margin-bottom: .32rem;
-  padding-left: .1rem;
+.alert {
+  font-size: 0.72rem;
+  border-radius: 8px;
+  padding: 0.35rem 0.55rem;
+  margin-bottom: 0.35rem;
 }
 
-.bloque-input {
-  border: 1.5px solid $border-color;
-  border-radius: 8px;
-  padding: 2px 6px;
-  transition: .2s;
-  background: #fafafa;
+.section-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gris-label;
+  margin: 0.35rem 0 0.28rem;
+  padding-bottom: 0.16rem;
+  border-bottom: 1px solid #eee;
+}
+
+.campo {
+  margin-bottom: 0.36rem;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: $rosa;
+  margin-bottom: 0.18rem;
+  line-height: 1;
+}
+
+.input-box {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  border: 1.4px solid $borde;
+  border-radius: 10px;
+  background: $fondo-input;
+  overflow: hidden;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
 
   &:focus-within {
-    border-color: $primary-color;
-    background: white;
-    box-shadow: 0 0 0 3px rgba($primary-color, .1);
+    border-color: $rosa;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(247, 108, 111, 0.1);
+  }
+
+  &.is-invalid {
+    border-color: #dc3545;
   }
 }
 
-.input-group {
+.input-icon {
+  width: 42px;
+  height: 100%;
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  justify-content: center;
+  color: $rosa;
+  border-right: 1px solid $borde;
+  flex-shrink: 0;
+
+  i {
+    font-size: 0.85rem;
+  }
 }
 
-.input-group-text {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 .4rem 0 .2rem;
-  color: #bbb;
+.phone-prefix {
+  width: 54px;
+  height: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 0.86rem;
+  border-right: 1px solid $borde;
+  flex-shrink: 0;
 }
 
-.input-group input,
-.form-control {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  font-size: .83rem !important;
-  padding: .38rem .35rem !important;
+.input-control {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0 0.75rem;
+  font-size: 0.82rem;
+  color: $texto;
 
   &::placeholder {
-    color: #c0c0c0;
+    color: $label-float;
   }
 }
 
-.form-control:focus {
-  box-shadow: none !important;
+select.input-control {
+  appearance: none;
+  cursor: pointer;
+  color: $label-float;
+
+  &:valid {
+    color: $texto;
+  }
 }
 
-.novios-block {
+.invalid-feedback {
+  font-size: 0.64rem;
+  color: #dc3545;
+  margin-top: 0.16rem;
+  line-height: 1.1;
+}
+
+.submit-button {
+  width: 100%;
+  background: $rosa;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 11px;
+  padding: 0.58rem;
+  margin-top: 0.25rem;
+  border: none;
+  font-size: 0.86rem;
+  transition:
+    background-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+
+  &:hover:not(:disabled) {
+    background: $rosa-hover;
+    box-shadow: 0 5px 14px rgba(247, 108, 111, 0.3);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.input-box {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: stretch;
+  border: 1.4px solid $borde;
+  border-radius: 10px;
+  background: $fondo-input;
+  overflow: hidden;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+
+  &:focus-within {
+    border-color: $rosa;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(247, 108, 111, 0.1);
+  }
+
+  &.is-invalid {
+    border-color: #dc3545;
+  }
+}
+
+.input-icon {
+  width: 42px;
+  height: 100%;
   display: flex;
   align-items: center;
-  gap: .75rem;
-  background: #fafafa;
-  border: 1.5px solid $border-color;
-  border-radius: 8px;
-  padding: .4rem .75rem;
+  justify-content: center;
+  color: $rosa;
+  border-right: 1px solid $borde;
+  flex-shrink: 0;
+
+  i {
+    font-size: 0.85rem;
+  }
 }
 
-.novios-label {
-  font-size: .78rem;
-  font-weight: 600;
-  color: #888;
-  white-space: nowrap;
-}
-
-.novios-options {
+.phone-prefix {
+  width: 54px;
+  height: 100%;
   display: flex;
-  gap: .5rem;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 0.86rem;
+  border-right: 1px solid $borde;
+  flex-shrink: 0;
 }
 
-.novio-option {
-  cursor: pointer;
+.input-area {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
 
-  input[type="radio"] {
-    display: none;
-  }
+.input-control {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 1.15rem 0.75rem 0.32rem;
+  font-size: 0.84rem;
+  color: $texto;
 
-  .novio-btn {
-    display: flex;
-    align-items: center;
-    gap: .3rem;
-    padding: .28rem .75rem;
-    border: 1.5px solid $border-color;
-    border-radius: 6px;
-    font-size: .8rem;
-    color: #777;
-    background: white;
-    transition: .2s;
-    font-weight: 500;
-  }
-
-  input[type="radio"]:checked + .novio-btn {
-    border-color: $primary-color;
-    color: $primary-color;
-    background: rgba($primary-color, .06);
-  }
-
-  &:hover .novio-btn {
-    border-color: $primary-color;
-    color: $primary-color;
+  &::placeholder {
+    color: transparent;
   }
 }
 
-.empresa-block {
-  border-top: 1px solid #f0f0f0;
-  padding-top: .6rem;
-  margin-top: .4rem;
-
-  p {
-    font-size: .8rem;
-    color: #aaa;
-  }
+.floating-label {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.82rem;
+  color: $label-float;
+  pointer-events: none;
+  transition:
+    top 0.16s ease,
+    transform 0.16s ease,
+    font-size 0.16s ease,
+    color 0.16s ease;
 }
 
-.empresa-link {
-  color: $primary-color !important;
-  font-size: .8rem;
-
-  &:hover {
-    text-decoration: underline;
-  }
+.input-control:focus + .floating-label,
+.input-control:not(:placeholder-shown) + .floating-label,
+.input-control.has-value + .floating-label {
+  top: 0.35rem;
+  transform: none;
+  font-size: 0.62rem;
+  color: $rosa;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
+  :host {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  .fondo {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .contenedor-registro {
+    padding: 1rem;
+    overflow: visible;
+  }
+
   .login-row {
-    width: 95%;
-  }
-
-  .image-fondo {
-    display: none;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    display: block;
+    border-radius: 18px;
   }
 
   .column-login {
-    padding: 1.5rem 1.25rem;
-
-    .login-content {
-      width: 100%;
-    }
+    padding: 1.1rem;
+    overflow: visible;
   }
 
-  .novios-block {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .novios-options {
-    width: 100%;
+  .login-content {
+    max-width: 100%;
   }
 }
