@@ -1,5 +1,5 @@
-$rosa: #f76c6f;
-$rosa-hover: #e55558;
+$rosa: #2f6fed;
+$rosa-hover: #2559bf;
 $texto: #1a1a2e;
 $borde: #e8e8e8;
 $fondo-input: #fafafa;
@@ -18,7 +18,7 @@ $label-float: #9a9a9a;
 
 .fondo {
   height: 100vh;
-  background: #f0efed;
+  background: #f3f5f9;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -61,13 +61,13 @@ $label-float: #9a9a9a;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 1.7rem;
+  padding: 1rem 1.1rem;
   overflow: hidden;
 }
 
 .login-content {
   width: 100%;
-  max-width: 620px;
+  max-width: 100%;
   margin: auto;
 }
 
@@ -126,7 +126,7 @@ h2 {
   display: block;
   font-size: 0.68rem;
   font-weight: 700;
-  color: $rosa;
+  color: #374151;
   margin-bottom: 0.18rem;
   line-height: 1;
 }
@@ -136,9 +136,9 @@ h2 {
   height: 44px;
   display: flex;
   align-items: center;
-  border: 1.4px solid $borde;
-  border-radius: 10px;
-  background: $fondo-input;
+  border: 1.4px solid #d7dde8;
+  border-radius: 8px;
+  background: #fff;
   overflow: hidden;
   transition:
     border-color 0.16s ease,
@@ -148,7 +148,7 @@ h2 {
   &:focus-within {
     border-color: $rosa;
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(247, 108, 111, 0.1);
+    box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.14);
   }
 
   &.is-invalid {
@@ -162,7 +162,7 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $rosa;
+  color: #64748b;
   border-right: 1px solid $borde;
   flex-shrink: 0;
 
@@ -192,7 +192,7 @@ h2 {
   outline: none;
   background: transparent;
   padding: 0 0.75rem;
-  font-size: 0.82rem;
+  font-size: 0.87rem;
   color: $texto;
 
   &::placeholder {
@@ -222,8 +222,8 @@ select.input-control {
   background: $rosa;
   color: #fff;
   font-weight: 700;
-  border-radius: 11px;
-  padding: 0.58rem;
+  border-radius: 8px;
+  padding: 0.7rem;
   margin-top: 0.25rem;
   border: none;
   font-size: 0.86rem;
@@ -242,6 +242,15 @@ select.input-control {
     opacity: 0.7;
     cursor: not-allowed;
   }
+}
+
+.password-toggle {
+  height: 100%;
+  width: 42px;
+  border: 0;
+  border-left: 1px solid #d7dde8;
+  background: transparent;
+  color: #64748b;
 }
 
 @keyframes fadeInUp {

@@ -46,6 +46,7 @@ export class RegistroUsuariosComponent {
   loading = false;
   successMessage = '';
   generalError = '';
+  showPassword = false;
 
   form = new FormGroup<RegistroUsuarioForm>({
     name: this.fb.control('', [
@@ -197,5 +198,9 @@ export class RegistroUsuariosComponent {
           err.error?.message ?? 'No se pudo completar el registro.';
       },
     });
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 }
