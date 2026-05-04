@@ -40,12 +40,6 @@ h1 {
   font-family: $tipografia_2;
 }
 
-.info-card {
-  border: 1px solid #ececec;
-  border-radius: 1rem;
-  padding: 1.2rem;
-  background: #fff;
-}
 
 .detalle-linea {
   display: flex;
@@ -76,13 +70,23 @@ svg {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   .container-personal {
+    max-width: 100%;
+    padding: 0;
+
+    .galeria-grid {
+      --bs-gutter-x: 0;
+      --bs-gutter-y: 0;
+    }
+
     .img-grande-izq,
     .img-pequena,
     .img-derecha-bottom {
-      min-height: 180px;
-      height: 180px;
+      width: 100%;
+      border-radius: 0;
+      min-height: 35vh;
+      height: 35vh;
     }
   }
 }

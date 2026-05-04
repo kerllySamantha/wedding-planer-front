@@ -5,7 +5,7 @@
     <div class="row g-4 align-items-start">
         <div class="col-12 col-lg-8">
             <div class="container-imagenes">
-                <div class="row gx-2 gy-2">
+                <div class="row gx-2 gy-2 galeria-grid">
                     <div class="col-12 col-md-5">
                         @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
                         @if (idx === 0) {
@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="col-12 col-md-7">
-                        <div class="row gx-2 gy-2">
+                        <div class="row gx-2 gy-2 galeria-grid">
                             <div class="col-6">
                                 @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
                                 @if (idx === 1) {
@@ -44,7 +44,7 @@
         </div>
 
         <div class="col-12 col-lg-4">
-            <div class="sticky-container info-card">
+            <div class="sticky-container">
                 <h1 class="h2 mb-2">{{empresa()?.nombre_empresa}}</h1>
 
                 <div class="detalle-linea">
