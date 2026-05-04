@@ -48,6 +48,34 @@ h1 {
 }
 
 .searcher__submit {
+
+@media (max-width: 991px) {
+    .container-personal {
+        .container-imagenes {
+            margin-top: 1rem;
+        }
+
+        .img-grande-izq {
+            min-height: 320px;
+            border-top-right-radius: 1.5rem;
+            border-bottom-left-radius: 0;
+        }
+
+        .img-derecha-bottom {
+            border-bottom-left-radius: 0.625rem;
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .container-personal {
+        .img-grande-izq,
+        .img-pequeña,
+        .img-derecha-bottom {
+            height: 220px;
+        }
+    }
+}
   color: #fff;
   background-color: #f76c6f;
   transition: background-color 0.3s ease, transform 0.2s ease;
