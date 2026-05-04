@@ -94,6 +94,9 @@
           <li class="mb-2">🏙️ Provincia: {{ boda()?.provincia?.nombre || 'Sin definir' }}</li>
           <li>📌 Población: {{ boda()?.poblacion?.nombre || 'Sin definir' }}</li>
         </ul>
+        <button type="button" class="btn btn-primary btn-sm mt-3 w-100" (click)="irAPublicarBoda()">
+          Publicar / Editar mi boda
+        </button>
       </div>
     </div>
   </div>

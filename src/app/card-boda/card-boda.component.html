@@ -5,7 +5,7 @@
         @for (foto of boda()?.fotos; track foto.path; let idx = $index) {
         @if (idx === 0) {
         <div class="position-relative overflow-hidden rounded-top-3">
-            <img [src]="foto?.url" class="card-img-top img-fluid" [alt]="boda()?.nombre_pareja"
+            <img [src]="resolveFotoUrl(foto?.url, foto?.path)" class="card-img-top img-fluid" [alt]="boda()?.nombre_pareja"
                 style="object-fit: cover; height: 220px;">
         </div>
         }
@@ -14,7 +14,7 @@
         <!-- Miniaturas horizontales -->
         <div class="d-flex justify-content-center gap-2 mt-3 px-2 flex-wrap">
             @for (foto of boda()?.fotos; track foto.path; let idx = $index; let count = $count) {
-            @if (idx !== 0 && idx <= 3 ) { <img [src]="foto.url" class="rounded " [alt]="'miniatura'+idx" width="75"
+            @if (idx !== 0 && idx <= 3 ) { <img [src]="resolveFotoUrl(foto?.url, foto?.path)" class="rounded " [alt]="'miniatura'+idx" width="75"
                 height="60" style="object-fit: cover;">
                 }
                 }
