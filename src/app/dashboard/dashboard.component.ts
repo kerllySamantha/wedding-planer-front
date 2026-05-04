@@ -81,6 +81,7 @@ export class DashboardComponent {
       next: (data) => {
         const bodasPublicables = (data?.data ?? []).filter((boda) => this.esBodaPublicable(boda));
         this.bodas.set(bodasPublicables);
+        console.log(data?.data)
         this.loading.set(false);
       },
       error: (err: Error) => {
@@ -93,7 +94,7 @@ export class DashboardComponent {
 
   private esBodaPublicable(boda: Boda): boolean {
     const tieneFotos = (boda.fotos?.length ?? 0) > 0;
-    const tienePresupuestoAceptadoYPagado = (boda.presupuestos ?? []).some((presupuesto) => presupuesto.estado === 'aceptado_usuario' && (presupuesto.monto_pagado ?? 0) > 0);
-    return tieneFotos && tienePresupuestoAceptadoYPagado;
+    // const tienePresupuestoAceptadoYPagado = (boda.presupuestos ?? []).some((presupuesto) => presupuesto.estado === 'aceptado_usuario' && (presupuesto.monto_pagado ?? 0) > 0);
+    return tieneFotos ;
   }
 }
