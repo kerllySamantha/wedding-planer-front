@@ -91,7 +91,10 @@ export class DashboardComponent {
     this.error.set(null);
     this.bodasTotalService.getBodas().subscribe({
       next: (data) => {
-        this.bodas.set(data?.data ?? []);
+        const bodasPublicables = (data?.data ?? []).filter((boda) =>
+          this.esBodaPublicable(boda),
+        );
+        this.bodas.set(bodasPublicables);
         this.loading.set(false);
       },
       error: (err: Error) => {
@@ -99,5 +102,16 @@ export class DashboardComponent {
         this.loading.set(false);
       }
     })
+  }
+
+  private esBodaPublicable(boda: Boda): boolean {
+    const tieneFotos = (boda.fotos?.length ?? 0) > 0;
+    const tienePresupuestoAceptadoYPagado = (boda.presupuestos ?? []).some(
+      (presupuesto) =>
+        presupuesto.estado === 'aceptado_usuario' &&
+        (presupuesto.monto_pagado ?? 0) > 0,
+    );
+
+    return tieneFotos && tienePresupuestoAceptadoYPagado;
   }
 }
