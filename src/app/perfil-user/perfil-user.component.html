@@ -102,6 +102,47 @@
   </div>
 </div>
 
+
+<div class="container mt-4">
+  <div class="card card-margin shadow-sm rounded-4 p-4">
+    <div class="d-flex gap-2 mb-4">
+      <button class="btn btn-sm" [class.btn-primary]="pestanaActiva() === 'planificacion'" [class.btn-outline-primary]="pestanaActiva() !== 'planificacion'" (click)="seleccionarPestana('planificacion')">Planificación</button>
+      <button class="btn btn-sm" [class.btn-primary]="pestanaActiva() === 'resultado'" [class.btn-outline-primary]="pestanaActiva() !== 'resultado'" (click)="seleccionarPestana('resultado')">Así quedó la boda</button>
+    </div>
+
+    @if (pestanaActiva() === 'planificacion') {
+    <div class="resumen-grid">
+      <article class="resumen-card">
+        <span>Presupuesto total</span>
+        <strong>{{ presupuestoTotal() | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
+      </article>
+      <article class="resumen-card resumen-card--ok">
+        <span>Pagado</span>
+        <strong>{{ presupuestoPagado() | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
+      </article>
+      <article class="resumen-card resumen-card--warn">
+        <span>Pendiente</span>
+        <strong>{{ presupuestoPendiente() | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
+      </article>
+    </div>
+    <p class="small text-muted mt-3 mb-0">Proveedores vinculados: {{ (boda()?.planificacion?.proveedores ?? boda()?.proveedores ?? []).length }}</p>
+    }
+
+    @if (pestanaActiva() === 'resultado') {
+    <div class="row g-2">
+      @for (foto of fotosResultado(); track foto.path ?? foto.url ?? $index) {
+      <div class="col-6 col-md-4 col-lg-3">
+        <img [src]="foto.url || foto.path" class="img-fluid rounded-3 w-100" style="height: 140px; object-fit: cover;" alt="Foto final boda">
+      </div>
+      }
+      @if (!fotosResultado().length) {
+      <p class="text-muted small mb-0">Aún no hay fotos publicadas del resultado del evento.</p>
+      }
+    </div>
+    }
+  </div>
+</div>
+
 <div class="container mt-4 mb-5">
   <div class="card card-margin shadow-sm rounded-4 border-0 perfil-notif-card">
     <div class="perfil-notif-header">

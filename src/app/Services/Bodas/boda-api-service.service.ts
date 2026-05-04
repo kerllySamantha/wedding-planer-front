@@ -10,6 +10,43 @@ import { BodaServiceServiceService } from './boda-service-service.service';
 })
 export class BodaApiServiceService extends BodaServiceServiceService{
 
+  private normalizarFotos(fotos: Array<{ path?: string | null; url?: string | null } | string> | null | undefined) {
+    return (fotos ?? []).map((foto) => {
+      if (typeof foto === 'string') {
+        const value = foto.trim();
+        return { path: value, url: value };
+      }
+      const path = (foto?.path ?? '').trim();
+      const url = (foto?.url ?? '').trim();
+      return { path: path || url, url: url || path };
+    }).filter((foto) => !!foto.path || !!foto.url);
+  }
+
+  private normalizarBoda(boda: Boda): Boda {
+    const presupuestos = boda.planificacion?.presupuestos ?? boda.presupuestos ?? [];
+    const resumen = boda.planificacion?.resumen_presupuesto ?? boda.resumen_presupuesto;
+    const proveedores = boda.planificacion?.proveedores ?? boda.proveedores ?? [];
+    const fotos = this.normalizarFotos(boda.resultado_evento?.fotos ?? boda.fotos ?? []);
+
+    return {
+      ...boda,
+      presupuestos,
+      resumen_presupuesto: resumen,
+      proveedores,
+      fotos,
+      planificacion: {
+        ...(boda.planificacion ?? {}),
+        presupuestos,
+        resumen_presupuesto: resumen,
+        proveedores,
+      },
+      resultado_evento: {
+        ...(boda.resultado_evento ?? {}),
+        fotos,
+      },
+    };
+  }
+
   constructor(protected http: HttpClient, @Inject(API_URL) public apiUrl: string) {
     super();
   }
@@ -18,7 +55,10 @@ export class BodaApiServiceService extends BodaServiceServiceService{
     return this.http.get<Bodas>(`${this.apiUrl}/bodas`).pipe(
       map(response => {
         if (response) {
-          return response;
+          return {
+            ...response,
+            data: (response.data ?? []).map((boda) => this.normalizarBoda(boda)),
+          };
         }
         return null;
       })
@@ -71,7 +111,10 @@ export class BodaApiServiceService extends BodaServiceServiceService{
     return this.http.get<InfoBoda>(`${this.apiUrl}/bodas/usuario/${usuarioId}`).pipe(
       map(response => {
         if (response) {
-          return response;
+          return {
+            ...response,
+            data: this.normalizarBoda(response.data),
+          };
         }
         return null;
       }),
