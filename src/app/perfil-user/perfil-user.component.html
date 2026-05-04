@@ -14,23 +14,23 @@
 
           <div class="perfil-hero__info">
             <h2 class="mb-1 perfil-hero__name">{{ perfil()?.data?.usuario?.name }}</h2>
-            <p class="mb-2 text-muted">
+            <!-- <p class="mb-2 text-muted">
               <i class="bi bi-envelope me-1"></i>{{ perfil()?.data?.usuario?.email }}
-            </p>
+            </p> -->
 
             <div class="perfil-hero__chips">
               <span class="chip">
                 <i class="bi bi-heart-fill chip__icon"></i>
                 {{ boda()?.nombre_pareja || 'Nuestra boda' }}
               </span>
-              <span class="chip">
+              <!-- <span class="chip">
                 <i class="bi bi-geo-alt-fill chip__icon"></i>
                 {{ boda()?.ubicacion || 'Ubicación por definir' }}
-              </span>
-              <span class="chip">
+              </span> -->
+              <!-- <span class="chip">
                 <i class="bi bi-calendar-event-fill chip__icon"></i>
                 {{ fechaFormateada() }}
-              </span>
+              </span> -->
             </div>
           </div>
         </div>
@@ -41,8 +41,8 @@
             <strong>Teléfono:</strong> {{ perfil()?.data?.telefono || 'Sin registrar' }}
           </div>
           <div>
-            <i class="bi bi-house me-1 text-muted"></i>
-            <strong>Dirección:</strong> {{ perfil()?.data?.direccion || 'Sin registrar' }}
+            <i class="bi bi-envelope me-1 text-muted"></i>
+            <strong>Email:</strong> {{ perfil()?.data?.usuario?.email || 'Sin correo' }}
           </div>
         </div>
       </section>
@@ -123,12 +123,12 @@
 
       <div class="card shadow-sm rounded-4 p-3">
         <h3 class="h6 mb-2">Tu evento</h3>
-        <p class="text-muted mb-3">Un perfil más completo como red social: datos personales, boda y actividad.</p>
+        <!-- <p class="text-muted mb-3">Un perfil más completo como red social: datos personales, boda y actividad.</p> -->
         <ul class="list-unstyled mb-0 small perfil-evento-list">
-          <li>
+          <!-- <li>
             <i class="bi bi-people-fill perfil-evento-list__icon"></i>
             <span><strong>Pareja:</strong> {{ boda()?.nombre_pareja || 'Por confirmar' }}</span>
-          </li>
+          </li> -->
           <li>
             <i class="bi bi-buildings perfil-evento-list__icon"></i>
             <span><strong>Provincia:</strong> {{ boda()?.provincia?.nombre || 'Sin definir' }}</span>
