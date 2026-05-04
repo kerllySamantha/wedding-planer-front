@@ -59,6 +59,7 @@ export class DashboardComponent {
       this.router.navigate(['/proveedor-dashboard']);
     }
   }
+
   activarBodasReales(): void {
     if (!this.mostrarBodasRealesUsuario()) {
       this.mostrarBodasRealesUsuario.set(true);
@@ -67,7 +68,6 @@ export class DashboardComponent {
       }
     }
   }
-
 
   cargarResenias(): void {
     this.loading.set(true);
