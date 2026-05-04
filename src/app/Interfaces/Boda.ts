@@ -3,7 +3,7 @@
     import { Foto } from "./Resenia";
     import { User } from "./User";
 
-    export interface Boda {
+export interface Boda {
         id: number
         nombre_pareja: string,
         fecha_boda: Date,
@@ -15,6 +15,16 @@
         poblacion: Poblacion,
         provincia: Provincia
         presupuestos: Presupuesto[],
+        proveedores?: unknown[],
+        resumen_presupuesto?: unknown,
+        planificacion?: {
+            presupuestos?: Presupuesto[] | null,
+            resumen_presupuesto?: unknown,
+            proveedores?: unknown[] | null,
+        } | null,
+        resultado_evento?: {
+            fotos?: Array<Foto | string> | null,
+        } | null,
         
     }
 

@@ -38,6 +38,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly boda = this.bodaCtx.bodaEncontrada;
   readonly countdown = this.bodaCtx.countdownValue;
   readonly fechaFormateada = this.bodaCtx.fechaFormateada;
+  readonly pestanaActiva = signal<'planificacion' | 'resultado'>('planificacion');
 
   readonly notificaciones = signal<Notificacion[]>([]);
   readonly notificacionesLoading = signal<boolean>(false);
@@ -88,6 +89,13 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly presupuestoPendiente = computed(() =>
     Math.max(0, this.presupuestoTotal() - this.presupuestoPagado()),
   );
+  readonly fotosResultado = computed(() => {
+    const fotos = this.boda()?.resultado_evento?.fotos ?? this.boda()?.fotos ?? [];
+    return (fotos as Array<{ path?: string; url?: string } | string>).map((foto) => {
+      if (typeof foto === 'string') return { path: foto, url: foto };
+      return { path: foto.path ?? foto.url ?? '', url: foto.url ?? foto.path ?? '' };
+    });
+  });
 
   private readonly aceptandoIds = signal<Set<string>>(new Set());
   private readonly aceptadosIds = signal<Set<string>>(new Set());
@@ -134,6 +142,10 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     const boda = this.boda();
     if (!boda?.presupuestos) return 0;
     return boda.presupuestos.reduce((total, p) => total + p.monto_total, 0);
+  }
+
+  seleccionarPestana(tab: 'planificacion' | 'resultado'): void {
+    this.pestanaActiva.set(tab);
   }
 
   cargarNotificaciones(page = 1): void {
