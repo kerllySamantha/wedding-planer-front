@@ -95,10 +95,30 @@
                         </svg>
                     </div>
                     <span class="col-9 ps-0">{{empresa()?.direccion}}</span>
+                    <div class="detalle-linea">
+                        <strong>Servicio:</strong>
+                        <span>{{empresa()?.tipo_servicio}}</span>
+                    </div>
+
+                    <div class="detalle-linea">
+                        <strong>Ciudad:</strong>
+                        <span>{{empresa()?.poblacion?.nombre}}, {{empresa()?.provincia?.nombre}}</span>
+                    </div>
+
+                    <div class="detalle-linea">
+                        <strong>Teléfono:</strong>
+                        <span>{{empresa()?.telefono}}</span>
+                    </div>
+                    @if(empresa()?.usuario?.email){
+                    <div class="detalle-linea">
+                        <strong>Email:</strong>
+                        <span>{{empresa()?.usuario?.email}}</span>
+                    </div>
+                    }
                 </div>
                 <div class="row d-flex justify-content-center mt-4">
-                    <button class="btn searcher__submit col-9 text-center justify-content-center"
-                        type="button" (click)="abrirModal()">Presupuesto
+                    <button class="btn searcher__submit col-9 text-center justify-content-center" type="button"
+                        (click)="abrirModal()">Presupuesto
                     </button>
                 </div>
             </div>
@@ -122,7 +142,8 @@
                         <h4 class="h4">{{ producto.categoria.nombre }}</h4>
                         }
 
-                        @if(idx === 0 || producto.tipo_producto.nombre !== productos()[idx - 1]?.tipo_producto?.nombre) {
+                        @if(idx === 0 || producto.tipo_producto.nombre !== productos()[idx - 1]?.tipo_producto?.nombre)
+                        {
 
                         <div>
                             {{ producto.tipo_producto.nombre }}
