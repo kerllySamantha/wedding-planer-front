@@ -18,6 +18,7 @@ import { Notificacion, NotificacionResponse } from '../Interfaces/Notificacion';
 import { PerfilResponse } from '../Interfaces/Perfil';
 import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { APP_PATHS } from '../app.paths';
 
 @Component({
   selector: 'app-perfil-user',
@@ -258,6 +259,10 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   mostrarDetalleAceptada(notif: Notificacion): boolean {
     const estado = this.resolverEstadoPresupuesto(notif);
     return estado === 'aceptado_usuario' || this.estadoReservaSolicitud(notif) != null;
+  }
+
+  irAPublicarBoda(): void {
+    this.router.navigate([`/${APP_PATHS.userWedding}`]);
   }
 
   productoServicioTexto(notif: Notificacion): string {

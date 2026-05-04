@@ -40,9 +40,6 @@ export class DashboardComponent {
 
   rolAuth = computed(() => !!this.autServicectx.rol());
   usuarioAutenticado = computed(() => this.autServicectx.auth() && this.autServicectx.rol() === 'usuario');
-  bodasPublicadasPorUsuario = signal<number[]>(this.obtenerBodasPublicadas());
-  puedePublicarSuBoda = signal(false);
-  bodaPropiaId = signal<number | null>(null);
 
   constructor(private router: Router) {
 
@@ -53,59 +50,12 @@ export class DashboardComponent {
     this.cargarResenias();
 
     this.cargarBodas();
-    this.evaluarPublicacionManual();
 
     if (this.rol() == 'empresa') {
       this.router.navigate(['/proveedor-dashboard']);
     }
   }
 
-
-
-
-  private obtenerBodasPublicadas(): number[] {
-    const raw = localStorage.getItem('bodas_publicadas_usuario');
-    if (!raw) return [];
-
-    try {
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed.filter((id) => Number.isInteger(id)) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  private guardarBodasPublicadas(ids: number[]): void {
-    this.bodasPublicadasPorUsuario.set(ids);
-    localStorage.setItem('bodas_publicadas_usuario', JSON.stringify(ids));
-  }
-
-  publicarMiBoda(): void {
-    const bodaId = this.bodaPropiaId();
-    if (!bodaId) return;
-    const ids = this.bodasPublicadasPorUsuario();
-    if (!ids.includes(bodaId)) {
-      this.guardarBodasPublicadas([...ids, bodaId]);
-      this.cargarBodas();
-    }
-    this.puedePublicarSuBoda.set(false);
-  }
-
-  private evaluarPublicacionManual(): void {
-    const usuarioId = this.autServicectx.auth()?.id;
-    if (!usuarioId || !this.usuarioAutenticado()) return;
-
-    this.bodasTotalService.getBodaByUserId(usuarioId).subscribe({
-      next: (res) => {
-        const boda = res?.data;
-        if (!boda) return;
-        this.bodaPropiaId.set(boda.id);
-        const yaPublicada = this.bodasPublicadasPorUsuario().includes(boda.id);
-        this.puedePublicarSuBoda.set(!this.esBodaPublicable(boda) && !yaPublicada);
-      },
-      error: () => this.puedePublicarSuBoda.set(false),
-    });
-  }
 
   cargarResenias(): void {
     this.loading.set(true);
@@ -129,7 +79,7 @@ export class DashboardComponent {
     this.error.set(null);
     this.bodasTotalService.getBodas().subscribe({
       next: (data) => {
-        const bodasPublicables = (data?.data ?? []).filter((boda) => this.esBodaPublicable(boda) || this.bodasPublicadasPorUsuario().includes(boda.id));
+        const bodasPublicables = (data?.data ?? []).filter((boda) => this.esBodaPublicable(boda));
         this.bodas.set(bodasPublicables);
         this.loading.set(false);
       },
