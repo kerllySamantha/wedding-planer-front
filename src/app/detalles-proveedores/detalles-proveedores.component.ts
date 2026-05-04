@@ -1,21 +1,20 @@
 import { Component, computed, effect, inject, Signal, signal } from '@angular/core';
 import { NavbarComponent } from "../navbar/navbar.component";
-import { ActivatedRoute, Route } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map, Observable, tap } from 'rxjs';
+import { map } from 'rxjs';
 import { Empresa } from '../Interfaces/Empresa';
 import { Foto } from '../Interfaces/Resenia';
-import { AsyncPipe } from '@angular/common';
 import { ProductoEmpresa } from '../Interfaces/Producto';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDetallesPresupuestoComponent } from '../modal-detalles-presupuesto/modal-detalles-presupuesto.component';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-detalles-proveedores',
-  imports: [NavbarComponent, MatGridListModule],
+  imports: [NavbarComponent, CommonModule],
   templateUrl: './detalles-proveedores.component.html',
   standalone: true,
   styleUrl: './detalles-proveedores.component.scss'

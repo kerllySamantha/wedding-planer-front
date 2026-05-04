@@ -1,73 +1,88 @@
 $tipografia_1: 'ProximaNova';
 $tipografia_2: 'AmaticSCBold';
 
-
 .container-personal {
-    padding: 0 1rem;
-    max-width: 1200px;
-    margin: 0 auto;
+  padding: 0 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
 
-    .container-imagenes {
-        display: flex;
-        margin-top: 2rem;
-    }
+  .container-imagenes {
+    display: flex;
+  }
 
-    img {
-        display: block;
-        object-fit: cover;
-    }
+  img {
+    display: block;
+    object-fit: cover;
+  }
 
-    .img-grande-izq {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-top-left-radius: 1.5rem;
-        border-bottom-left-radius: 1.5rem;
-    }
+  .img-grande-izq,
+  .img-pequena,
+  .img-derecha-bottom {
+    border-radius: 0.75rem;
+    min-height: 180px;
+  }
 
-    .img-pequeña {
-        width: 100%;
-        height: 15em;
-        object-fit: cover;
+  .img-grande-izq {
+    height: 100%;
+    min-height: 360px;
+  }
 
-    }
+  .img-pequena {
+    height: 170px;
+  }
 
-    .img-end {
-        border-top-right-radius: 1.5rem;
-    }
-
-    .img-derecha-bottom {
-        width: 100%;
-        height: calc(20em - 0.1em);
-        object-fit: cover;
-        border-bottom-right-radius: 0.625rem;
-    }
+  .img-derecha-bottom {
+    height: 220px;
+  }
 }
 
-h1{
-    font-family: $tipografia_2;
+h1 {
+  font-family: $tipografia_2;
+}
+
+.info-card {
+  border: 1px solid #ececec;
+  border-radius: 1rem;
+  padding: 1.2rem;
+  background: #fff;
+}
+
+.detalle-linea {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.65rem;
 }
 
 .searcher__submit {
-    color: #fff;
-    background-color: #f76c6f;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    cursor: pointer;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    margin: 2em 0;
-    font-size: 1rem;
-    border: none;
+  color: #fff;
+  background-color: #f76c6f;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  margin: 1em 0 0;
+  font-size: 1rem;
+  border: none;
 }
 
-svg{
-    color: rgb(5, 91, 47);
+svg {
+  color: rgb(5, 91, 47);
 }
+
 @media (min-width: 992px) {
-    .sticky-container {
-        position: sticky;
-        top: 3em; 
-    }
+  .sticky-container {
+    position: sticky;
+    top: 3em;
+  }
 }
 
-
+@media (max-width: 767px) {
+  .container-personal {
+    .img-grande-izq,
+    .img-pequena,
+    .img-derecha-bottom {
+      min-height: 180px;
+      height: 180px;
+    }
+  }
+}
