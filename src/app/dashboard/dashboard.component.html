@@ -22,11 +22,11 @@
         }
     </div>
 
-    @if (usuarioAutenticado()) {
+    @if (usuarioAutenticado() && puedePublicarSuBoda()) {
     <div class="alert alert-info d-flex justify-content-between align-items-center flex-wrap gap-2 mt-4" role="alert">
-        <span>Activa u oculta el bloque de bodas reales cuando quieras.</span>
-        <button type="button" class="btn btn-sm btn-outline-primary" (click)="alternarBodasReales()">
-            {{ mostrarBodasReales() ? 'Ocultar bodas reales' : 'Ver bodas reales' }}
+        <span>Tu boda aún no cumple todos los criterios automáticos. Puedes publicarla manualmente.</span>
+        <button type="button" class="btn btn-sm btn-primary" (click)="publicarMiBoda()">
+            Publicar mi boda
         </button>
     </div>
     }
