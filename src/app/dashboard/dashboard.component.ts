@@ -81,7 +81,6 @@ export class DashboardComponent {
       next: (data) => {
         const bodasPublicables = (data?.data ?? []).filter((boda) => this.esBodaPublicable(boda));
         this.bodas.set(bodasPublicables);
-        console.log(data?.data)
         this.loading.set(false);
       },
       error: (err: Error) => {

@@ -150,26 +150,29 @@
 <div class="container mt-4">
   <div class="card card-margin shadow-sm rounded-4 p-4">
     <div class="d-flex gap-2 mb-4">
-      <button class="btn btn-sm" [class.btn-primary]="pestanaActiva() === 'planificacion'" [class.btn-outline-primary]="pestanaActiva() !== 'planificacion'" (click)="seleccionarPestana('planificacion')">Planificación</button>
+      <button class="btn btn-sm" [class.btn-primary]="pestanaActiva() === 'planificacion'" [class.btn-outline-primary]="pestanaActiva() !== 'planificacion'" (click)="seleccionarPestana('planificacion')">Información de la boda</button>
       <button class="btn btn-sm" [class.btn-primary]="pestanaActiva() === 'resultado'" [class.btn-outline-primary]="pestanaActiva() !== 'resultado'" (click)="seleccionarPestana('resultado')">Así quedó la boda</button>
     </div>
 
     @if (pestanaActiva() === 'planificacion') {
-    <div class="resumen-grid">
-      <article class="resumen-card">
-        <span>Presupuesto total</span>
-        <strong>{{ presupuestoTotal() | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
-      </article>
-      <article class="resumen-card resumen-card--ok">
-        <span>Pagado</span>
-        <strong>{{ presupuestoPagado() | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
-      </article>
-      <article class="resumen-card resumen-card--warn">
-        <span>Pendiente</span>
-        <strong>{{ presupuestoPendiente() | currency:'EUR':'symbol':'1.0-0':'es' }}</strong>
-      </article>
-    </div>
-    <p class="small text-muted mt-3 mb-0">Proveedores vinculados: {{ (boda()?.planificacion?.proveedores ?? boda()?.proveedores ?? []).length }}</p>
+    <ul class="list-unstyled mb-0 small perfil-evento-list">
+      <li>
+        <i class="bi bi-calendar-event-fill perfil-evento-list__icon"></i>
+        <span><strong>Fecha:</strong> {{ fechaFormateada() }}</span>
+      </li>
+      <li>
+        <i class="bi bi-geo-alt-fill perfil-evento-list__icon"></i>
+        <span><strong>Ubicación:</strong> {{ boda()?.ubicacion || 'Sin definir' }}</span>
+      </li>
+      <li>
+        <i class="bi bi-people-fill perfil-evento-list__icon"></i>
+        <span><strong>Pareja:</strong> {{ boda()?.nombre_pareja || 'Por confirmar' }}</span>
+      </li>
+      <li>
+        <i class="bi bi-building-fill-check perfil-evento-list__icon"></i>
+        <span><strong>Publicada:</strong> {{ (boda()?.fotos?.length ?? 0) > 0 ? 'Sí' : 'No' }}</span>
+      </li>
+    </ul>
     }
 
     @if (pestanaActiva() === 'resultado') {
