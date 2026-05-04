@@ -39,9 +39,10 @@ export class DashboardComponent {
   rol = signal<string | null>(localStorage.getItem('rol')!)
 
   rolAuth = computed(() => !!this.autServicectx.rol());
-  mostrarBodasRealesUsuario = signal(false);
   usuarioAutenticado = computed(() => this.autServicectx.auth() && this.autServicectx.rol() === 'usuario');
-  mostrarBodasReales = computed(() => !this.usuarioAutenticado() || this.mostrarBodasRealesUsuario());
+  ocultarBodasRealesNuevoUsuario = signal(localStorage.getItem('ocultar_bodas_reales_nuevo_usuario') === 'true');
+  mostrarBodasRealesUsuario = signal(!this.ocultarBodasRealesNuevoUsuario());
+  mostrarBodasReales = computed(() => this.mostrarBodasRealesUsuario());
 
   constructor(private router: Router) {
 
@@ -60,11 +61,20 @@ export class DashboardComponent {
     }
   }
 
-  activarBodasReales(): void {
-    if (!this.mostrarBodasRealesUsuario()) {
-      this.mostrarBodasRealesUsuario.set(true);
-      if (!this.bodas().length) {
-        this.cargarBodas();
+  alternarBodasReales(): void {
+    const visible = !this.mostrarBodasRealesUsuario();
+    this.mostrarBodasRealesUsuario.set(visible);
+
+    if (visible && !this.bodas().length) {
+      this.cargarBodas();
+    }
+
+    if (this.usuarioAutenticado()) {
+      if (visible) {
+        this.ocultarBodasRealesNuevoUsuario.set(false);
+        localStorage.removeItem('ocultar_bodas_reales_nuevo_usuario');
+      } else {
+        localStorage.setItem('ocultar_bodas_reales_nuevo_usuario', 'true');
       }
     }
   }
