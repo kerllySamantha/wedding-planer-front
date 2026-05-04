@@ -147,6 +147,14 @@ export class RegistroUsuariosComponent {
     return map[key] ?? 'Campo inválido.';
   }
 
+  private toTitleCase(value: string): string {
+    return value
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .replace(/\b\p{L}/gu, (letter) => letter.toUpperCase());
+  }
+
   onSubmit(event: Event): void {
     event.preventDefault();
     this.submitted = true;
@@ -159,8 +167,10 @@ export class RegistroUsuariosComponent {
     }
 
     this.loading = true;
+    const normalizedName = this.toTitleCase(this.form.controls.name.value);
+    this.form.controls.name.setValue(normalizedName, { emitEvent: false });
     const payload: CreatePerfilUsuario = {
-      name: this.form.controls.name.value,
+      name: normalizedName,
       email: this.form.controls.email.value,
       password: this.form.controls.password.value,
       rol: 'usuario',
