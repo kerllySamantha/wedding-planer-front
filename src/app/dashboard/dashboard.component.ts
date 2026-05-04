@@ -40,9 +40,9 @@ export class DashboardComponent {
 
   rolAuth = computed(() => !!this.autServicectx.rol());
   usuarioAutenticado = computed(() => this.autServicectx.auth() && this.autServicectx.rol() === 'usuario');
-  ocultarBodasRealesNuevoUsuario = signal(localStorage.getItem('ocultar_bodas_reales_nuevo_usuario') === 'true');
-  mostrarBodasRealesUsuario = signal(!this.ocultarBodasRealesNuevoUsuario());
-  mostrarBodasReales = computed(() => this.mostrarBodasRealesUsuario());
+  bodasPublicadasPorUsuario = signal<number[]>(this.obtenerBodasPublicadas());
+  puedePublicarSuBoda = signal(false);
+  bodaPropiaId = signal<number | null>(null);
 
   constructor(private router: Router) {
 
@@ -52,31 +52,59 @@ export class DashboardComponent {
   ngOnInit(): void {
     this.cargarResenias();
 
-    if (this.mostrarBodasReales()) {
-      this.cargarBodas();
-    }
+    this.cargarBodas();
+    this.evaluarPublicacionManual();
 
     if (this.rol() == 'empresa') {
       this.router.navigate(['/proveedor-dashboard']);
     }
   }
 
-  alternarBodasReales(): void {
-    const visible = !this.mostrarBodasRealesUsuario();
-    this.mostrarBodasRealesUsuario.set(visible);
 
-    if (visible && !this.bodas().length) {
+
+
+  private obtenerBodasPublicadas(): number[] {
+    const raw = localStorage.getItem('bodas_publicadas_usuario');
+    if (!raw) return [];
+
+    try {
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter((id) => Number.isInteger(id)) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  private guardarBodasPublicadas(ids: number[]): void {
+    this.bodasPublicadasPorUsuario.set(ids);
+    localStorage.setItem('bodas_publicadas_usuario', JSON.stringify(ids));
+  }
+
+  publicarMiBoda(): void {
+    const bodaId = this.bodaPropiaId();
+    if (!bodaId) return;
+    const ids = this.bodasPublicadasPorUsuario();
+    if (!ids.includes(bodaId)) {
+      this.guardarBodasPublicadas([...ids, bodaId]);
       this.cargarBodas();
     }
+    this.puedePublicarSuBoda.set(false);
+  }
 
-    if (this.usuarioAutenticado()) {
-      if (visible) {
-        this.ocultarBodasRealesNuevoUsuario.set(false);
-        localStorage.removeItem('ocultar_bodas_reales_nuevo_usuario');
-      } else {
-        localStorage.setItem('ocultar_bodas_reales_nuevo_usuario', 'true');
-      }
-    }
+  private evaluarPublicacionManual(): void {
+    const usuarioId = this.autServicectx.auth()?.id;
+    if (!usuarioId || !this.usuarioAutenticado()) return;
+
+    this.bodasTotalService.getBodaByUserId(usuarioId).subscribe({
+      next: (res) => {
+        const boda = res?.data;
+        if (!boda) return;
+        this.bodaPropiaId.set(boda.id);
+        const yaPublicada = this.bodasPublicadasPorUsuario().includes(boda.id);
+        this.puedePublicarSuBoda.set(!this.esBodaPublicable(boda) && !yaPublicada);
+      },
+      error: () => this.puedePublicarSuBoda.set(false),
+    });
   }
 
   cargarResenias(): void {
@@ -101,9 +129,7 @@ export class DashboardComponent {
     this.error.set(null);
     this.bodasTotalService.getBodas().subscribe({
       next: (data) => {
-        const bodasPublicables = (data?.data ?? []).filter((boda) =>
-          this.esBodaPublicable(boda),
-        );
+        const bodasPublicables = (data?.data ?? []).filter((boda) => this.esBodaPublicable(boda) || this.bodasPublicadasPorUsuario().includes(boda.id));
         this.bodas.set(bodasPublicables);
         this.loading.set(false);
       },
@@ -114,14 +140,10 @@ export class DashboardComponent {
     })
   }
 
+
   private esBodaPublicable(boda: Boda): boolean {
     const tieneFotos = (boda.fotos?.length ?? 0) > 0;
-    const tienePresupuestoAceptadoYPagado = (boda.presupuestos ?? []).some(
-      (presupuesto) =>
-        presupuesto.estado === 'aceptado_usuario' &&
-        (presupuesto.monto_pagado ?? 0) > 0,
-    );
-
+    const tienePresupuestoAceptadoYPagado = (boda.presupuestos ?? []).some((presupuesto) => presupuesto.estado === 'aceptado_usuario' && (presupuesto.monto_pagado ?? 0) > 0);
     return tieneFotos && tienePresupuestoAceptadoYPagado;
   }
 }
