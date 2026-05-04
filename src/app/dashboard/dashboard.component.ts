@@ -39,6 +39,9 @@ export class DashboardComponent {
   rol = signal<string | null>(localStorage.getItem('rol')!)
 
   rolAuth = computed(() => !!this.autServicectx.rol());
+  mostrarBodasRealesUsuario = signal(false);
+  usuarioAutenticado = computed(() => this.autServicectx.auth() && this.autServicectx.rol() === 'usuario');
+  mostrarBodasReales = computed(() => !this.usuarioAutenticado() || this.mostrarBodasRealesUsuario());
 
   constructor(private router: Router) {
 
@@ -47,12 +50,24 @@ export class DashboardComponent {
 
   ngOnInit(): void {
     this.cargarResenias();
-    this.cargarBodas();
+
+    if (this.mostrarBodasReales()) {
+      this.cargarBodas();
+    }
 
     if (this.rol() == 'empresa') {
       this.router.navigate(['/proveedor-dashboard']);
     }
   }
+  activarBodasReales(): void {
+    if (!this.mostrarBodasRealesUsuario()) {
+      this.mostrarBodasRealesUsuario.set(true);
+      if (!this.bodas().length) {
+        this.cargarBodas();
+      }
+    }
+  }
+
 
   cargarResenias(): void {
     this.loading.set(true);
