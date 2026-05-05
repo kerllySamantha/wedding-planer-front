@@ -63,4 +63,83 @@ svg {
     position: sticky;
     top: 3em;
   }
+}
+.detalles-empresa {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.detalle-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.detalle-divider {
+  margin: 4px 0;
+  opacity: 0.15;
+}
+
+.detalle-bloque {
+  display: flex;
+  flex-direction: column;
+}
+
+.detalle-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.detalle-valor {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.detalle-empresa {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 1rem;
+}
+
+.detalle-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.detalle-divider {
+  margin: 4px 0;
+  opacity: 0.15;
+}
+
+.detalle-bloque {
+  display: flex;
+  flex-direction: column;
+}
+
+.detalle-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.detalle-valor {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+@media (min-width: 992px) {
+  .sticky-container {
+    padding-left: 1.5rem;
+  }
 }/*# sourceMappingURL=detalles-proveedores.component.css.map */
