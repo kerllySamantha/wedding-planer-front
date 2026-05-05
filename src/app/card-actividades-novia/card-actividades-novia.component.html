@@ -36,25 +36,25 @@
     <!-- Cuadrado 1 (acompaña al rectángulo en md) -->
     <div class=" col-xl-2  col-lg-4 col-md-4 col-lg-2 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-2">
         <img class="img-see mb-2" src="assets/images/agenda.png" alt="Agenda" />
-        <span class="service-text">0 Servicios<br>Contratados</span>
+        <span class="service-text">{{ serviciosContratados() }} Servicios<br>Contratados</span>
     </div>
 
     <!-- Cuadrado 2 -->
     <div class="col-xl-2 col-lg-4 col-md-4 col-lg-2 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-3">
         <img class="img-see mb-2" src="assets/images/tareas2.jpg" alt="Icono" />
-        <span class="service-text">Tareas<br>completadas</span>
+        <span class="service-text">{{ tareasCompletadas() }} Tareas<br>completadas</span>
     </div>
 
     <!-- Cuadrado 3 -->
     <div class=" col-xl-2 col-lg-4 col-md-4 col-sm-6 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-4">
         <img class="img-see mb-2" src="assets/images/persona3.png" alt="Icono" />
-        <span class="service-text">Invitados<br>confirmados</span>
+        <span class="service-text">- Invitados<br>confirmados</span>
     </div>
 
     <!-- Cuadrado 4 -->
     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-5">
         <img class="img-see mb-2" src="assets/images/calculadora4.png" alt="Icono" />
-        <span class="service-text">Presupuesto<br>Gastado</span>
+        <span class="service-text">{{ formatearMoneda(presupuestoGastado()) }}<br>Gastado</span>
     </div>
 
 </div>
