@@ -119,9 +119,13 @@ export class CalendarProveedoresComponent implements OnInit {
 
     this.reservasctx.getCalendarioEmpresa(this.idEmpresa()).subscribe({
       next: (data) => {
-        const eventos = (data || []).map((ev: any) =>
-          this.normalizarEventoCalendario(ev),
-        );
+        const eventos = (data || [])
+          .filter((ev: any) =>
+            ['bloqueada', 'confirmada'].includes(
+              ev?.extendedProps?.estado ?? ev?.estado,
+            ),
+          )
+          .map((ev: any) => this.normalizarEventoCalendario(ev));
 
         this.events.set(eventos);
         this.loading.set(false);
