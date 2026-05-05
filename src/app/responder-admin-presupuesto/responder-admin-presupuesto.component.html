@@ -144,11 +144,11 @@
       <div class="row g-3 mt-2">
         <div class="col-md-4">
           <label class="form-label small fw-bold text-uppercase text-muted">Inicio (fecha y hora)</label>
-          <input type="datetime-local" class="form-control" formControlName="fecha_inicio">
+          <input type="datetime-local" class="form-control" formControlName="fecha_inicio" [attr.min]="today + 'T00:00'">
         </div>
         <div class="col-md-4">
           <label class="form-label small fw-bold text-uppercase text-muted">Fin (fecha y hora)</label>
-          <input type="datetime-local" class="form-control" formControlName="fecha_fin">
+          <input type="datetime-local" class="form-control" formControlName="fecha_fin" [attr.min]="today + 'T00:00'">
         </div>
       </div>
       }
@@ -157,11 +157,11 @@
       <div class="row g-3 mt-2">
         <div class="col-md-4">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha inicio</label>
-          <input type="date" class="form-control" formControlName="fecha_inicio">
+          <input type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today">
         </div>
         <div class="col-md-4">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha fin</label>
-          <input type="date" class="form-control" formControlName="fecha_fin">
+          <input type="date" class="form-control" formControlName="fecha_fin" [attr.min]="today">
         </div>
       </div>
       }

@@ -65,6 +65,7 @@ export class ModalCalendarFormComponent {
 
   productosEmpresa = signal<Producto[] | []>([]);
   tipoReservaActual = signal<string | null>(null);
+  readonly today = new Date().toISOString().split('T')[0];
 
   form = new FormGroup(
     {
@@ -86,7 +87,11 @@ export class ModalCalendarFormComponent {
       notas: new FormControl<string>(''),
     },
     {
-      validators: [this.fechasValidator(), this.estadoNotasValidator()],
+      validators: [
+        this.fechasValidator(),
+        this.estadoNotasValidator(),
+        this.fechasDesdeHoyValidator(),
+      ],
     },
   );
 
@@ -392,6 +397,23 @@ export class ModalCalendarFormComponent {
 
       if (estado === 'cancelada' && (!notas || notas.trim().length < 10)) {
         return { notasCancelacionInvalidas: true };
+      }
+
+      return null;
+    };
+  }
+
+  fechasDesdeHoyValidator(): ValidatorFn {
+    return (control: AbstractControl) => {
+      const tipoReserva = control.get('tipo_reserva')?.value;
+      const inicio = control.get('fecha.start')?.value?.trim?.() ?? '';
+      const fin = control.get('fecha.end')?.value?.trim?.() ?? '';
+      const hoy = this.today;
+
+      if (inicio && inicio < hoy) return { fechaInicioPasada: true };
+
+      if ((tipoReserva === 'producto' || tipoReserva === 'bloqueo') && fin && fin < hoy) {
+        return { fechaFinPasada: true };
       }
 
       return null;
