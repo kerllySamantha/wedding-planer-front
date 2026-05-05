@@ -420,6 +420,15 @@ export class ModalCalendarFormComponent {
     };
   }
 
+
+  private puedeCrearReservaSinUsuario(): boolean {
+    return this.mode() === 'create';
+  }
+
+  requiereUsuarioAsignado(): boolean {
+    return this.puedeCrearReservaSinUsuario();
+  }
+
   private getProductos(idEmpresa: number): void {
     this.empresaCtx.getEmpresaProductos(idEmpresa).subscribe({
       next: (info) => {
@@ -439,6 +448,16 @@ export class ModalCalendarFormComponent {
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      return;
+    }
+
+    if (this.requiereUsuarioAsignado() && this.form.get('tipo_reserva')?.value !== 'bloqueo') {
+      Swal.fire({
+        icon: 'info',
+        title: 'Reserva sin usuario asignado',
+        text: 'Cuando el proveedor crea una reserva manualmente en el calendario, debe ser de tipo bloqueo. Las reservas de producto o servicio se crean desde una solicitud/presupuesto con usuario asignado.',
+        confirmButtonText: 'Entendido',
+      });
       return;
     }
 

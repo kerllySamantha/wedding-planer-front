@@ -57,12 +57,12 @@
                   formControlName="tipo_reserva"
                   value="producto"
                   id="tipoProd"
-                  [attr.disabled]="sinProductosModalidad('producto') ? '' : null"
+                  [attr.disabled]="sinProductosModalidad('producto') || requiereUsuarioAsignado() ? '' : null"
                 >
                 <label
                   class="btn btn-outline-primary"
                   for="tipoProd"
-                  [class.opacity-50]="sinProductosModalidad('producto')">
+                  [class.opacity-50]="sinProductosModalidad('producto') || requiereUsuarioAsignado()">
                   Producto
                 </label>
 
@@ -72,12 +72,12 @@
                   formControlName="tipo_reserva"
                   value="servicio"
                   id="tipoServ"
-                  [attr.disabled]="sinProductosModalidad('servicio') ? '' : null"
+                  [attr.disabled]="sinProductosModalidad('servicio') || requiereUsuarioAsignado() ? '' : null"
                 >
                 <label
                   class="btn btn-outline-primary"
                   for="tipoServ"
-                  [class.opacity-50]="sinProductosModalidad('servicio')">
+                  [class.opacity-50]="sinProductosModalidad('servicio') || requiereUsuarioAsignado()">
                   Servicio
                 </label>
 
@@ -90,6 +90,13 @@
                 >
                 <label class="btn btn-outline-primary" for="tipoBloq">Bloqueo</label>
               </div>
+
+
+              @if(requiereUsuarioAsignado()) {
+                <div class="text-muted small mt-2">
+                  Para evitar reservas sin usuario asignado, en creación manual solo se permite <strong>Bloqueo</strong>.
+                </div>
+              }
 
               @if(controlError('tipo_reserva', 'required')) {
                 <div class="text-danger small mt-2">
