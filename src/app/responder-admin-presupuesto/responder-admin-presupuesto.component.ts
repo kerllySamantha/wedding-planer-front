@@ -174,6 +174,7 @@ export class ResponderAdminPresupuestoComponent {
         const productosDesdeEndpoint = Array.isArray((res as { data?: ProductoEmpresa[] } | null)?.data)
           ? ((res as { data?: ProductoEmpresa[] }).data ?? [])
           : (Array.isArray(res) ? (res as ProductoEmpresa[]) : []);
+          console.log(res);
 
         if (productosDesdeEndpoint.length) {
           this.productosEmpresa.set(productosDesdeEndpoint);
