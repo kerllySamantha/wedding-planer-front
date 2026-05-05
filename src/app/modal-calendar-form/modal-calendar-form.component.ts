@@ -193,7 +193,7 @@ export class ModalCalendarFormComponent {
       this.form.patchValue(
         {
           titulo: '',
-          tipo_reserva: null,
+          tipo_reserva: this.requiereUsuarioAsignado() ? 'bloqueo' : null,
           fecha: {
             start: fInicio,
             end: fFin,
@@ -207,8 +207,10 @@ export class ModalCalendarFormComponent {
         { emitEvent: false },
       );
 
-      this.reservaAnterior = null;
-      this.tipoReservaActual.set(null);
+      const tipoInicial = this.requiereUsuarioAsignado() ? 'bloqueo' : null;
+      this.reservaAnterior = tipoInicial;
+      this.tipoReservaActual.set(tipoInicial);
+      this.aplicarReglasModalidad(tipoInicial);
       this.ignorarCambioModalidad = false;
       this.inicializadoCreate = true;
     });
