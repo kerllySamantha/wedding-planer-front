@@ -100,7 +100,9 @@ export class ResponderAdminPresupuestoComponent {
       producto_id:        new FormControl<number | null>(null, Validators.required),
       modalidad:          new FormControl<'servicio' | 'producto' | 'dia'>('servicio', Validators.required),
       fecha_inicio:       new FormControl<string>('',          Validators.required),
+      hora_inicio:        new FormControl<string>(''),
       fecha_fin:          new FormControl<string>(''),
+      hora_fin:           new FormControl<string>(''),
       importe_ofertado:   new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
       comentario_empresa: new FormControl<string>(''),
     },
@@ -152,7 +154,7 @@ export class ResponderAdminPresupuestoComponent {
     this.respuestaForm.get('producto_id')?.valueChanges.subscribe((productoId) => {
       const modalidad = this.modalidadDelProducto(productoId) ?? 'servicio';
       this.respuestaForm.patchValue(
-        { modalidad, fecha_inicio: '', fecha_fin: '' },
+        { modalidad, fecha_inicio: '', hora_inicio: '', fecha_fin: '', hora_fin: '' },
         { emitEvent: false }
       );
     });
@@ -230,8 +232,12 @@ export class ResponderAdminPresupuestoComponent {
   private fechasValidator(): ValidatorFn {
     return (control: AbstractControl) => {
       const modalidad    = control.get('modalidad')?.value as 'servicio' | 'producto' | 'dia' | null;
-      const inicioRaw    = control.get('fecha_inicio')?.value?.trim() ?? '';
-      const finRaw       = control.get('fecha_fin')?.value?.trim()    ?? '';
+      const fechaInicio  = control.get('fecha_inicio')?.value?.trim() ?? '';
+      const horaInicio    = control.get('hora_inicio')?.value?.trim() ?? '';
+      const fechaFin      = control.get('fecha_fin')?.value?.trim() ?? '';
+      const horaFin       = control.get('hora_fin')?.value?.trim() ?? '';
+      const inicioRaw     = modalidad === 'servicio' ? `${fechaInicio} ${horaInicio}`.trim() : fechaInicio;
+      const finRaw        = modalidad === 'servicio' ? `${fechaFin} ${horaFin}`.trim() : fechaFin;
 
       if (!modalidad || !inicioRaw) return null;
 
@@ -316,8 +322,12 @@ export class ResponderAdminPresupuestoComponent {
       return;
     }
 
-    const inicioRaw = this.respuestaForm.get('fecha_inicio')?.value?.trim() ?? '';
-    const finRaw    = this.respuestaForm.get('fecha_fin')?.value?.trim()    ?? '';
+    const fechaInicio = this.respuestaForm.get('fecha_inicio')?.value?.trim() ?? '';
+    const horaInicio = this.respuestaForm.get('hora_inicio')?.value?.trim() ?? '';
+    const fechaFin = this.respuestaForm.get('fecha_fin')?.value?.trim() ?? '';
+    const horaFin = this.respuestaForm.get('hora_fin')?.value?.trim() ?? '';
+    const inicioRaw = modalidad === 'servicio' ? `${fechaInicio} ${horaInicio}`.trim() : fechaInicio;
+    const finRaw = modalidad === 'servicio' ? `${fechaFin} ${horaFin}`.trim() : fechaFin;
 
     const fechas = modalidad === 'servicio'
       ? this.normalizarFechaServicio(inicioRaw, finRaw)

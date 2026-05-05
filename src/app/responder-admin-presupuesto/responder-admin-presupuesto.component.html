@@ -78,7 +78,7 @@
           <select class="form-select" formControlName="producto_id">
             <option [ngValue]="null" disabled>Selecciona un producto</option>
             @for (p of productosFiltrados(); track p.id) {
-            <option [ngValue]="p.id">{{ p.nombre }} · {{ p.tipo_producto.nombre }} ({{ p.tipo_producto.modalidad }}) · {{ p.categoria.nombre }}</option>
+            <option [ngValue]="p.id">{{ p.nombre }} · {{ p.tipo_producto?.nombre || 'Sin tipo' }} ({{ p.tipo_producto?.modalidad || 'sin modalidad' }}) · {{ p.categoria?.nombre || 'Sin categoría' }}</option>
             }
           </select>
           @if (!productosFiltrados().length) {
@@ -101,13 +101,21 @@
 
       @if (modalidadSeleccionada === 'servicio') {
       <div class="row g-3 mt-2">
-        <div class="col-md-4">
-          <label class="form-label small fw-bold text-uppercase text-muted">Inicio (fecha y hora)</label>
-          <input type="datetime-local" class="form-control" formControlName="fecha_inicio" [attr.min]="today + 'T00:00'">
+        <div class="col-md-3">
+          <label class="form-label small fw-bold text-uppercase text-muted">Fecha inicio</label>
+          <input type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today">
         </div>
-        <div class="col-md-4">
-          <label class="form-label small fw-bold text-uppercase text-muted">Fin (fecha y hora)</label>
-          <input type="datetime-local" class="form-control" formControlName="fecha_fin" [attr.min]="today + 'T00:00'">
+        <div class="col-md-2">
+          <label class="form-label small fw-bold text-uppercase text-muted">Hora inicio</label>
+          <input type="time" class="form-control" formControlName="hora_inicio">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-bold text-uppercase text-muted">Fecha fin</label>
+          <input type="date" class="form-control" formControlName="fecha_fin" [attr.min]="today">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small fw-bold text-uppercase text-muted">Hora fin</label>
+          <input type="time" class="form-control" formControlName="hora_fin">
         </div>
       </div>
       }
