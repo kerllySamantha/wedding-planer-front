@@ -176,8 +176,7 @@ export class ResponderAdminPresupuestoComponent {
           : (Array.isArray(res) ? (res as ProductoEmpresa[]) : []);
 
         if (productosDesdeEndpoint.length) {
-          this.productosEmpresa.set(productosDesdeEndpoint);
-          this.autoseleccionarProductoSegunSolicitud();
+          this.enriquecerProductosConCatalogoEmpresa(productosDesdeEndpoint, empresaId);
           return;
         }
 
@@ -187,6 +186,37 @@ export class ResponderAdminPresupuestoComponent {
     });
   }
 
+
+
+  private enriquecerProductosConCatalogoEmpresa(productos: ProductoEmpresa[], empresaId: number): void {
+    this.empresasCtx.getEmpresa(BigInt(empresaId)).subscribe({
+      next: (empresa) => {
+        const catalogo = (empresa?.productos ?? []) as ProductoEmpresa[];
+        if (!catalogo.length) {
+          this.productosEmpresa.set(productos);
+          this.autoseleccionarProductoSegunSolicitud();
+          return;
+        }
+
+        const porId = new Map(catalogo.map(p => [Number(p.id), p]));
+        const enriquecidos = productos.map((p) => {
+          const completo = porId.get(Number(p.id));
+          return {
+            ...p,
+            categoria: p.categoria ?? completo?.categoria,
+            tipo_producto: p.tipo_producto ?? completo?.tipo_producto,
+          } as ProductoEmpresa;
+        });
+
+        this.productosEmpresa.set(enriquecidos);
+        this.autoseleccionarProductoSegunSolicitud();
+      },
+      error: () => {
+        this.productosEmpresa.set(productos);
+        this.autoseleccionarProductoSegunSolicitud();
+      },
+    });
+  }
 
   private cargarProductosDesdeEmpresa(empresaId: number): void {
     this.empresasCtx.getEmpresa(BigInt(empresaId)).subscribe({

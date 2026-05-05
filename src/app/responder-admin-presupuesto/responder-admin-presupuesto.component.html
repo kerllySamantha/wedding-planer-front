@@ -78,7 +78,7 @@
           <select class="form-select" formControlName="producto_id">
             <option [ngValue]="null" disabled>Selecciona un producto</option>
             @for (p of productosFiltrados(); track p.id) {
-            <option [ngValue]="p.id">{{ p.nombre }} · {{ p.tipo_producto?.nombre || 'Sin tipo' }} ({{ p.tipo_producto?.modalidad || 'sin modalidad' }})</option>
+            <option [ngValue]="p.id">{{ p.nombre }} · {{ p.tipo_producto?.nombre || 'Tipo' }} ({{ p.tipo_producto?.modalidad || 'modalidad' }}) @if (p.categoria?.nombre) { · {{ p.categoria?.nombre }} }</option>
             }
           </select>
           @if (!productosFiltrados().length) {
