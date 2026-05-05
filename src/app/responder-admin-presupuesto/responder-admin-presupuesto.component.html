@@ -79,7 +79,7 @@
             <option [ngValue]="null" disabled>Selecciona un producto</option>
             @for (p of productosFiltrados(); track p.id) {
 
-            <option [ngValue]="p.id">{{ p.nombre }} · {{ p.tipo_producto.nombre }} ({{ p.tipo_producto.modalidad }}) · {{ p.categoria || 'Sin categoría' }}</option>
+            <option [ngValue]="p.id">{{ p.nombre }} · {{ p.tipo_producto.nombre }} ({{ p.tipo_producto.modalidad }}) · {{ p.categoria.nombre }}</option>
             }
           </select>
           @if (!productosFiltrados().length) {
