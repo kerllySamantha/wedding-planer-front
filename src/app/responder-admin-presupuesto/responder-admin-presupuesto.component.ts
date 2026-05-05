@@ -15,7 +15,6 @@ import { PedirPresupuestoInfo, ResponderPresupuestoPayload } from '../Interfaces
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { ProductoEmpresa } from '../Interfaces/Producto';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
-import { CreateEmpresa, Empresa } from '../Interfaces/Empresa';
 
 /**
  * Panel del proveedor para gestionar una solicitud de presupuesto.
@@ -75,7 +74,6 @@ export class ResponderAdminPresupuestoComponent {
   // ── Estado UI ────────────────────────────────────────────────────────
   protected enviandoRespuesta = signal(false);
   protected enviandoRechazo   = signal(false);
-  protected creandoProducto   = signal(false);
   protected respuestaError    = signal<string | null>(null);
   protected respuestaOk       = signal<string | null>(null);
 
@@ -93,16 +91,13 @@ export class ResponderAdminPresupuestoComponent {
     const fechaFin    = this.respuestaForm.get('fecha_fin')?.value?.trim()    ?? '';
     const importe     = this.respuestaForm.get('importe_ofertado')?.value     ?? null;
 
-    const nombrePersonalizado = this.respuestaForm.get('producto_personalizado_nombre')?.value?.trim();
-    return { productoNombre: nombrePersonalizado || producto?.nombre || 'Producto', modalidad, fechaInicio, fechaFin, importe };
+    return { productoNombre: producto?.nombre || 'Producto', modalidad, fechaInicio, fechaFin, importe };
   });
 
   // ── Formulario de propuesta ──────────────────────────────────────────
   respuestaForm = new FormGroup(
     {
-      tipo_producto_respuesta: new FormControl<'catalogo' | 'personalizado'>('catalogo', Validators.required),
-      producto_id:        new FormControl<number | null>(null),
-      producto_personalizado_nombre: new FormControl<string>(''),
+      producto_id:        new FormControl<number | null>(null, Validators.required),
       modalidad:          new FormControl<'servicio' | 'producto' | 'dia'>('servicio', Validators.required),
       fecha_inicio:       new FormControl<string>('',          Validators.required),
       fecha_fin:          new FormControl<string>(''),
@@ -123,14 +118,8 @@ export class ResponderAdminPresupuestoComponent {
     ]),
   });
 
-  nuevoProductoForm = new FormGroup({
-    nombre: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
-    modalidad: new FormControl<'producto' | 'servicio'>('servicio', Validators.required),
-    tipo_producto_nombre: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
-    categoria_nombre: new FormControl<string>('', [Validators.required, Validators.minLength(2)]),
-  });
-
   mostrarFormRechazo = signal(false);
+
 
   // ── Resolver ─────────────────────────────────────────────────────────
   private pedirPresupuestoRoute = toSignal(
@@ -155,15 +144,15 @@ export class ResponderAdminPresupuestoComponent {
       if (data) {
         this.solicitud.set(data);
         this.cargarProductosEmpresa();
-        this.autocompletarTipoYCategoria();
       }
     });
 
     // Al cambiar el producto seleccionado, limpiar fechas para forzar
     // al proveedor a introducir fechas coherentes con el nuevo producto.
-    this.respuestaForm.get('producto_id')?.valueChanges.subscribe(() => {
+    this.respuestaForm.get('producto_id')?.valueChanges.subscribe((productoId) => {
+      const modalidad = this.modalidadDelProducto(productoId) ?? 'servicio';
       this.respuestaForm.patchValue(
-        { fecha_inicio: '', fecha_fin: '' },
+        { modalidad, fecha_inicio: '', fecha_fin: '' },
         { emitEvent: false }
       );
     });
@@ -180,121 +169,44 @@ export class ResponderAdminPresupuestoComponent {
 
     this.empresasCtx.getEmpresaProductos(empresaId).subscribe({
       next:  res => {
-        this.productosEmpresa.set((res?.data ?? []) as ProductoEmpresa[]);
-        this.autocompletarTipoYCategoria();
-      },
-      error: ()  => this.productosEmpresa.set([]),
-    });
-  }
+        const productosDesdeEndpoint = Array.isArray((res as { data?: ProductoEmpresa[] } | null)?.data)
+          ? ((res as { data?: ProductoEmpresa[] }).data ?? [])
+          : (Array.isArray(res) ? (res as ProductoEmpresa[]) : []);
 
-  private autocompletarTipoYCategoria(): void {
-    const tipoId = this.solicitud()?.tipo_producto_id;
-    if (!tipoId) return;
-    const productoTipo = this.productosEmpresa().find(p => Number(p.tipo_producto?.id) === Number(tipoId));
-    if (!productoTipo) return;
-    this.nuevoProductoForm.patchValue({
-      tipo_producto_nombre: productoTipo.tipo_producto.nombre,
-      categoria_nombre: productoTipo.categoria?.nombre ?? '',
-      modalidad: productoTipo.tipo_producto.modalidad,
-    }, { emitEvent: false });
-  }
-
-  crearProductoServicio(): void {
-    this.respuestaError.set(null);
-    this.respuestaOk.set(null);
-    if (this.nuevoProductoForm.invalid) {
-      this.nuevoProductoForm.markAllAsTouched();
-      return;
-    }
-
-    const empresaId = Number(this.solicitud()?.empresa_id) || Number(localStorage.getItem('idEmpresa'));
-    if (!empresaId) { this.respuestaError.set('No se encontró la empresa.'); return; }
-    const raw = this.nuevoProductoForm.getRawValue();
-    const nombreNuevo = raw.nombre?.trim() ?? '';
-    const tipoNombre = raw.tipo_producto_nombre?.trim() ?? '';
-    const categoriaNombre = raw.categoria_nombre?.trim() ?? '';
-    const modalidad = raw.modalidad ?? 'servicio';
-
-    if (!nombreNuevo || !tipoNombre || !categoriaNombre) {
-      this.respuestaError.set('Completa nombre, tipo y categoría del producto/servicio.');
-      return;
-    }
-
-    this.creandoProducto.set(true);
-    this.empresasCtx.getEmpresa(BigInt(empresaId)).subscribe({
-      next: (empresaInfo) => {
-        if (!empresaInfo?.id) {
-          this.creandoProducto.set(false);
-          this.respuestaError.set('No se pudo cargar la empresa para guardar el producto.');
+        if (productosDesdeEndpoint.length) {
+          this.productosEmpresa.set(productosDesdeEndpoint);
+          this.autoseleccionarProductoSegunSolicitud();
           return;
         }
-        const payload = this.buildEmpresaPayloadConProducto(empresaInfo, {
-          nombre: nombreNuevo,
-          tipo_producto_nombre: tipoNombre,
-          categoria_nombre: categoriaNombre,
-        });
 
-        this.empresasCtx.editEmpresa(String(empresaId), payload).subscribe({
-          next: () => {
-            this.creandoProducto.set(false);
-            this.respuestaOk.set(`"${nombreNuevo}" añadido como ${modalidad}. Ya puedes seleccionarlo en la propuesta.`);
-            this.nuevoProductoForm.patchValue({ nombre: '' });
-            this.cargarProductosEmpresa();
-          },
-          error: (err) => {
-            this.creandoProducto.set(false);
-            this.respuestaError.set(err?.error?.message ?? 'No se pudo añadir el producto/servicio.');
-          },
-        });
+        this.cargarProductosDesdeEmpresa(empresaId);
       },
-      error: () => {
-        this.creandoProducto.set(false);
-        this.respuestaError.set('No se pudo cargar la empresa para guardar el producto.');
-      },
+      error: ()  => this.cargarProductosDesdeEmpresa(empresaId),
     });
   }
 
-  private buildEmpresaPayloadConProducto(empresa: Empresa, nuevo: { nombre: string; tipo_producto_nombre: string; categoria_nombre: string; }): CreateEmpresa {
-    const existentes: NonNullable<CreateEmpresa['productos']> = (empresa.productos ?? []).map(p => ({
-      id: p.id ?? null,
-      nombre: p.nombre,
-      descripcion: p.descripcion ?? '',
-      precio_max: p.precio_max ?? 0,
-      precio_min: p.precio_min ?? 0,
-      tipo_producto_nombre: p.tipo_producto?.nombre ?? '',
-      categoria_nombre: p.categoria?.nombre ?? '',
-    }));
 
-    const yaExiste = existentes.some(p =>
-      p.nombre.toLowerCase() === nuevo.nombre.toLowerCase() &&
-      p.tipo_producto_nombre.toLowerCase() === nuevo.tipo_producto_nombre.toLowerCase() &&
-      p.categoria_nombre.toLowerCase() === nuevo.categoria_nombre.toLowerCase()
-    );
-    if (!yaExiste) {
-      existentes.push({
-        id: null,
-        nombre: nuevo.nombre,
-        descripcion: '',
-        precio_max: 0,
-        precio_min: 0,
-        tipo_producto_nombre: nuevo.tipo_producto_nombre,
-        categoria_nombre: nuevo.categoria_nombre,
-      });
-    }
+  private cargarProductosDesdeEmpresa(empresaId: number): void {
+    this.empresasCtx.getEmpresa(BigInt(empresaId)).subscribe({
+      next: (empresa) => {
+        this.productosEmpresa.set((empresa?.productos ?? []) as ProductoEmpresa[]);
+        this.autoseleccionarProductoSegunSolicitud();
+      },
+      error: () => this.productosEmpresa.set([]),
+    });
+  }
 
-    return {
-      nombre_empresa: empresa.nombre_empresa ?? '',
-      tipo_servicio: empresa.tipo_servicio ?? '',
-      email: empresa.usuario?.email ?? '',
-      telefono: empresa.telefono ?? '',
-      name: empresa.usuario?.name ?? '',
-      password: '',
-      poblacion_id: empresa.poblacion?.id ?? 0,
-      direccion: empresa.direccion ?? '',
-      descripcion: empresa.descripcion ?? '',
-      logo: empresa.logo ?? '',
-      productos: existentes,
-    };
+  private autoseleccionarProductoSegunSolicitud(): void {
+    const productos = this.productosFiltrados();
+    if (!productos.length) return;
+    const productoYaSeleccionado = this.respuestaForm.get('producto_id')?.value;
+    if (productoYaSeleccionado) return;
+
+    const primerProducto = productos[0];
+    this.respuestaForm.patchValue({
+      producto_id: primerProducto.id,
+      modalidad: primerProducto.tipo_producto?.modalidad ?? 'servicio',
+    }, { emitEvent: false });
   }
 
   /** Devuelve la modalidad del producto con el id dado. */
@@ -398,15 +310,9 @@ export class ResponderAdminPresupuestoComponent {
       return;
     }
 
-    const tipoRespuesta = this.respuestaForm.get('tipo_producto_respuesta')?.value;
     const productoId = this.respuestaForm.get('producto_id')?.value;
-    const productoPersonalizadoNombre = this.respuestaForm.get('producto_personalizado_nombre')?.value?.trim();
-    if (tipoRespuesta === 'catalogo' && !productoId) {
-      this.respuestaError.set('Debes indicar un producto del sistema o un nombre de producto personalizado.');
-      return;
-    }
-    if (tipoRespuesta === 'personalizado' && !productoPersonalizadoNombre) {
-      this.respuestaError.set('Debes indicar un producto del sistema o un nombre de producto personalizado.');
+    if (!productoId) {
+      this.respuestaError.set('Debes seleccionar un producto o servicio de tu catálogo.');
       return;
     }
 
@@ -427,8 +333,7 @@ export class ResponderAdminPresupuestoComponent {
     }
 
     const payload: ResponderPresupuestoPayload = {
-      producto_id:        tipoRespuesta === 'catalogo' ? Number(productoId) : undefined,
-      producto_personalizado_nombre: tipoRespuesta === 'personalizado' ? productoPersonalizadoNombre : undefined,
+      producto_id:        Number(productoId),
       modalidad,
       fecha_inicio:       fechas.inicio,
       fecha_fin:          fechas.fin || undefined,
