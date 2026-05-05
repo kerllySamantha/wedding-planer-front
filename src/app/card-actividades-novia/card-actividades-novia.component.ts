@@ -21,6 +21,19 @@ export class CardActividadesNoviaComponent {
   bodaEncontrada = computed(() => this.countdownService.bodaEncontrada());
   fechaCountdown = computed(() => this.countdownService.countdownValue());
   fechaFormateada = computed(() => this.countdownService.fechaFormateada());
+  serviciosContratados = computed(() => {
+    const presupuestos = this.bodaEncontrada()?.presupuestos ?? [];
+    return presupuestos.filter((p) => p.estado === 'aceptado_usuario' || p.estado === 'aceptado_empresa').length;
+  });
+  tareasCompletadas = computed(() => {
+    const presupuestos = this.bodaEncontrada()?.presupuestos ?? [];
+    return presupuestos.filter((p) => (p.monto_restante ?? (p.monto_total - (p.monto_pagado ?? 0))) <= 0).length;
+  });
+  presupuestoGastado = computed(() => this.countdownService.totalPagado());
+
+  formatearMoneda(valor: number): string {
+    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(valor || 0);
+  }
 
   formatearNombrePareja(nombre: string | null | undefined): string {
     if (!nombre) return 'Nuestra Boda';

@@ -38,25 +38,25 @@
 
           <div class="col-6 col-md-3">
             <div class="boda-style card p-2 text-center">
-              <span class="service-text">Servicios Contratados</span>
+              <span class="service-text">{{ serviciosContratados() }} Servicios Contratados</span>
             </div>
           </div>
 
           <div class="col-6 col-md-3">
             <div class="boda-style card p-2 text-center">
-              <span class="service-text">Tareas completadas</span>
+              <span class="service-text">{{ tareasCompletadas() }} Tareas completadas</span>
             </div>
           </div>
 
           <div class="col-6 col-md-3">
             <div class="boda-style card p-2 text-center">
-              <span class="service-text">Invitados confirmados</span>
+              <span class="service-text">- Invitados confirmados</span>
             </div>
           </div>
 
           <div class="col-6 col-md-3">
             <div class="boda-style card p-2 text-center">
-              <span class="service-text">Presupuesto Gastado</span>
+              <span class="service-text">{{ formatearMoneda(presupuestoGastado()) }} Gastado</span>
             </div>
           </div>
 
