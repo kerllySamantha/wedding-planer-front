@@ -35,6 +35,7 @@ import { CreateEmpresa, Empresa } from '../Interfaces/Empresa';
   styleUrl: './responder-admin-presupuesto.component.scss',
 })
 export class ResponderAdminPresupuestoComponent {
+  protected readonly today = new Date().toISOString().split('T')[0];
 
   private route           = inject(ActivatedRoute);
   private empresasCtx     = inject(EmpresasApiServiceService);
@@ -330,12 +331,17 @@ export class ResponderAdminPresupuestoComponent {
         if (!finRaw)              return { horaFinRequerida: true };
         if (isNaN(fin))           return { fechaFinInvalida: true };
         if (fin <= inicio)        return { horaFinAnterior: true };
+        if (inicioRaw.slice(0, 10) < this.today || finRaw.slice(0, 10) < this.today) {
+          return { fechaPasada: true };
+        }
       }
 
       if (modalidad === 'producto' || modalidad === 'dia') {
         // Para productos se esperan fechas "YYYY-MM-DD"
         if (!/^\d{4}-\d{2}-\d{2}$/.test(inicioRaw)) return { fechaInicioInvalida: true };
         if (finRaw && !/^\d{4}-\d{2}-\d{2}$/.test(finRaw)) return { fechaFinInvalida: true };
+        if (inicioRaw < this.today) return { fechaPasada: true };
+        if (finRaw && finRaw < this.today) return { fechaPasada: true };
         if (finRaw && finRaw < inicioRaw) return { fechaFinAnterior: true };
       }
 
