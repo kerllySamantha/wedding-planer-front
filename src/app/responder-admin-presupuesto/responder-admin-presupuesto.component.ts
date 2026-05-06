@@ -11,7 +11,10 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { PedirPresupuestoInfo, ResponderPresupuestoPayload } from '../Interfaces/PedirPresupuesto';
+import {
+  PedirPresupuestoInfo,
+  ResponderPresupuestoPayload,
+} from '../Interfaces/PedirPresupuesto';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { ProductoEmpresa } from '../Interfaces/Producto';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
@@ -29,19 +32,25 @@ import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-pre
  */
 @Component({
   selector: 'app-responder-admin-presupuesto',
-  imports: [CommonModule, CurrencyPipe, DatePipe, RouterLink, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    CurrencyPipe,
+    DatePipe,
+    RouterLink,
+    ReactiveFormsModule,
+  ],
   templateUrl: './responder-admin-presupuesto.component.html',
   styleUrl: './responder-admin-presupuesto.component.scss',
 })
 export class ResponderAdminPresupuestoComponent {
   protected readonly today = new Date().toISOString().split('T')[0];
 
-  private route           = inject(ActivatedRoute);
-  private empresasCtx     = inject(EmpresasApiServiceService);
+  private route = inject(ActivatedRoute);
+  private empresasCtx = inject(EmpresasApiServiceService);
   private pedirPresupuestoCtx = inject(PedirPresupuestoService);
 
   // ── Datos ────────────────────────────────────────────────────────────
-  protected solicitud        = signal<PedirPresupuestoInfo | null>(null);
+  protected solicitud = signal<PedirPresupuestoInfo | null>(null);
   protected productosEmpresa = signal<ProductoEmpresa[]>([]);
 
   /**
@@ -51,7 +60,9 @@ export class ResponderAdminPresupuestoComponent {
   protected productosFiltrados = computed(() => {
     const tipoId = this.solicitud()?.tipo_producto_id;
     if (!tipoId) return this.productosEmpresa();
-        const filtrados = this.productosEmpresa().filter(p => Number(p.tipo_producto?.id) === Number(tipoId));
+    const filtrados = this.productosEmpresa().filter(
+      (p) => Number(p.tipo_producto?.id) === Number(tipoId),
+    );
     return filtrados.length ? filtrados : this.productosEmpresa();
   });
 
@@ -59,23 +70,36 @@ export class ResponderAdminPresupuestoComponent {
   protected tipoSolicitado = computed(() => {
     const tipoId = this.solicitud()?.tipo_producto_id;
     if (!tipoId) return null;
-    const tipo = this.productosEmpresa().map(p => p.tipo_producto).find(t => t?.id === tipoId);
-    return tipo ? { nombre: tipo.nombre, modalidad: tipo.modalidad }
-                : { nombre: `Tipo #${tipoId}`, modalidad: null };
+    const tipo = this.productosEmpresa()
+      .map((p) => p.tipo_producto)
+      .find((t) => t?.id === tipoId);
+    return tipo
+      ? { nombre: tipo.nombre, modalidad: tipo.modalidad }
+      : { nombre: `Tipo #${tipoId}`, modalidad: null };
   });
 
   /** True si el tipo solicitado ya no existe en el catálogo del proveedor. */
   protected tipoNoDisponible = computed(() => {
     const tipoId = this.solicitud()?.tipo_producto_id;
     if (!tipoId) return false;
-    return this.productosEmpresa().every(p => p.tipo_producto?.id !== tipoId);
+    return this.productosEmpresa().every((p) => p.tipo_producto?.id !== tipoId);
   });
 
   // ── Estado UI ────────────────────────────────────────────────────────
   protected enviandoRespuesta = signal(false);
-  protected enviandoRechazo   = signal(false);
-  protected respuestaError    = signal<string | null>(null);
-  protected respuestaOk       = signal<string | null>(null);
+  protected enviandoRechazo = signal(false);
+  protected respuestaError = signal<string | null>(null);
+  protected respuestaOk = signal<string | null>(null);
+  protected intentoEnviarRespuesta = signal(false);
+
+
+  protected estadoSolicitudNormalizado = computed(() =>
+    this.normalizarEstado(this.solicitud()?.estado),
+  );
+
+  protected puedeResponderSolicitud = computed(() =>
+    this.estadoSolicitudNormalizado() === 'pendiente',
+  );
 
   /**
    * Resumen de la propuesta en curso, actualizado reactivamente
@@ -83,30 +107,47 @@ export class ResponderAdminPresupuestoComponent {
    */
   protected resumenPropuesta = computed(() => {
     const productoId = this.respuestaForm.get('producto_id')?.value;
-    const modalidad  = this.respuestaForm.get('modalidad')?.value;
+    const modalidad = this.respuestaForm.get('modalidad')?.value;
     if (!modalidad) return null;
 
-    const producto    = this.productosEmpresa().find(p => p.id === productoId);
-    const fechaInicio = this.respuestaForm.get('fecha_inicio')?.value?.trim() ?? '';
-    const fechaFin    = this.respuestaForm.get('fecha_fin')?.value?.trim()    ?? '';
-    const importe     = this.respuestaForm.get('importe_ofertado')?.value     ?? null;
+    const producto = this.productosEmpresa().find((p) => p.id === productoId);
+    const fechaInicio =
+      this.respuestaForm.get('fecha_inicio')?.value?.trim() ?? '';
+    const fechaFin = this.respuestaForm.get('fecha_fin')?.value?.trim() ?? '';
+    const importe = this.respuestaForm.get('importe_ofertado')?.value ?? null;
 
-    return { productoNombre: producto?.nombre || 'Producto', modalidad, fechaInicio, fechaFin, importe };
+    return {
+      productoNombre: producto?.nombre || 'Producto',
+      modalidad,
+      fechaInicio,
+      fechaFin,
+      importe,
+    };
   });
 
   // ── Formulario de propuesta ──────────────────────────────────────────
   respuestaForm = new FormGroup(
     {
-      producto_id:        new FormControl<number | null>(null, Validators.required),
-      modalidad:          new FormControl<'servicio' | 'producto' | 'dia'>('servicio', Validators.required),
-      fecha_inicio:       new FormControl<string>('',          Validators.required),
-      hora_inicio:        new FormControl<string>(''),
-      fecha_fin:          new FormControl<string>(''),
-      hora_fin:           new FormControl<string>(''),
-      importe_ofertado:   new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
-      comentario_empresa: new FormControl<string>(''),
+      producto_id: new FormControl<number | null>(null, Validators.required),
+      modalidad: new FormControl<'servicio' | 'producto' | 'dia'>(
+        'servicio',
+        Validators.required,
+      ),
+      fecha_inicio: new FormControl<string>('', Validators.required),
+      hora_inicio: new FormControl<string>(''),
+      fecha_fin: new FormControl<string>(''),
+      hora_fin: new FormControl<string>(''),
+      importe_ofertado: new FormControl<number | null>(null, [
+        Validators.required,
+        Validators.min(0),
+      ]),
+      comentario_empresa: new FormControl<string>('', [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(500),
+      ]),
     },
-    { validators: [this.fechasValidator(), this.importeValidator()] }
+    { validators: [this.fechasValidator(), this.importeValidator()] },
   );
 
   // ── Formulario de rechazo ────────────────────────────────────────────
@@ -122,22 +163,23 @@ export class ResponderAdminPresupuestoComponent {
 
   mostrarFormRechazo = signal(false);
 
-
   // ── Resolver ─────────────────────────────────────────────────────────
   private pedirPresupuestoRoute = toSignal(
     this.route.data.pipe(
-      map(data => {
+      map((data) => {
         const solicitud = data['solicitud'] as
           | PedirPresupuestoInfo
           | { data?: PedirPresupuestoInfo }
           | null
           | undefined;
-        return (solicitud as { data?: PedirPresupuestoInfo } | null)?.data
-          ?? (solicitud as PedirPresupuestoInfo | null)
-          ?? null;
-      })
+        return (
+          (solicitud as { data?: PedirPresupuestoInfo } | null)?.data ??
+          (solicitud as PedirPresupuestoInfo | null) ??
+          null
+        );
+      }),
     ),
-    { initialValue: null }
+    { initialValue: null },
   );
 
   constructor() {
@@ -151,13 +193,21 @@ export class ResponderAdminPresupuestoComponent {
 
     // Al cambiar el producto seleccionado, limpiar fechas para forzar
     // al proveedor a introducir fechas coherentes con el nuevo producto.
-    this.respuestaForm.get('producto_id')?.valueChanges.subscribe((productoId) => {
-      const modalidad = this.modalidadDelProducto(productoId) ?? 'servicio';
-      this.respuestaForm.patchValue(
-        { modalidad, fecha_inicio: '', hora_inicio: '', fecha_fin: '', hora_fin: '' },
-        { emitEvent: false }
-      );
-    });
+    this.respuestaForm
+      .get('producto_id')
+      ?.valueChanges.subscribe((productoId) => {
+        const modalidad = this.modalidadDelProducto(productoId) ?? 'servicio';
+        this.respuestaForm.patchValue(
+          {
+            modalidad,
+            fecha_inicio: '',
+            hora_inicio: '',
+            fecha_fin: '',
+            hora_fin: '',
+          },
+          { emitEvent: false },
+        );
+      });
   }
 
   // ── Helpers privados ─────────────────────────────────────────────────
@@ -167,28 +217,39 @@ export class ResponderAdminPresupuestoComponent {
       Number(this.solicitud()?.empresa_id) ||
       Number(localStorage.getItem('idEmpresa'));
 
-    if (!empresaId) { this.productosEmpresa.set([]); return; }
+    if (!empresaId) {
+      this.productosEmpresa.set([]);
+      return;
+    }
 
     this.empresasCtx.getEmpresaProductos(empresaId).subscribe({
-      next:  res => {
-        const productosDesdeEndpoint = Array.isArray((res as { data?: ProductoEmpresa[] } | null)?.data)
+      next: (res) => {
+        const productosDesdeEndpoint = Array.isArray(
+          (res as { data?: ProductoEmpresa[] } | null)?.data,
+        )
           ? ((res as { data?: ProductoEmpresa[] }).data ?? [])
-          : (Array.isArray(res) ? (res as ProductoEmpresa[]) : []);
+          : Array.isArray(res)
+            ? (res as ProductoEmpresa[])
+            : [];
 
         if (productosDesdeEndpoint.length) {
-          this.enriquecerProductosConCatalogoEmpresa(productosDesdeEndpoint, empresaId);
+          this.enriquecerProductosConCatalogoEmpresa(
+            productosDesdeEndpoint,
+            empresaId,
+          );
           return;
         }
 
         this.cargarProductosDesdeEmpresa(empresaId);
       },
-      error: ()  => this.cargarProductosDesdeEmpresa(empresaId),
+      error: () => this.cargarProductosDesdeEmpresa(empresaId),
     });
   }
 
-
-
-  private enriquecerProductosConCatalogoEmpresa(productos: ProductoEmpresa[], empresaId: number): void {
+  private enriquecerProductosConCatalogoEmpresa(
+    productos: ProductoEmpresa[],
+    empresaId: number,
+  ): void {
     this.empresasCtx.getEmpresa(BigInt(empresaId)).subscribe({
       next: (empresa) => {
         const catalogo = (empresa?.productos ?? []) as ProductoEmpresa[];
@@ -198,7 +259,7 @@ export class ResponderAdminPresupuestoComponent {
           return;
         }
 
-        const porId = new Map(catalogo.map(p => [Number(p.id), p]));
+        const porId = new Map(catalogo.map((p) => [Number(p.id), p]));
         const enriquecidos = productos.map((p) => {
           const completo = porId.get(Number(p.id));
           return {
@@ -221,7 +282,9 @@ export class ResponderAdminPresupuestoComponent {
   private cargarProductosDesdeEmpresa(empresaId: number): void {
     this.empresasCtx.getEmpresa(BigInt(empresaId)).subscribe({
       next: (empresa) => {
-        this.productosEmpresa.set((empresa?.productos ?? []) as ProductoEmpresa[]);
+        this.productosEmpresa.set(
+          (empresa?.productos ?? []) as ProductoEmpresa[],
+        );
         this.autoseleccionarProductoSegunSolicitud();
       },
       error: () => this.productosEmpresa.set([]),
@@ -235,26 +298,37 @@ export class ResponderAdminPresupuestoComponent {
     if (productoYaSeleccionado) return;
 
     const primerProducto = productos[0];
-    this.respuestaForm.patchValue({
-      producto_id: primerProducto.id,
-      modalidad: primerProducto.tipo_producto?.modalidad ?? 'servicio',
-    }, { emitEvent: false });
+    this.respuestaForm.patchValue(
+      {
+        producto_id: primerProducto.id,
+        modalidad: primerProducto.tipo_producto?.modalidad ?? 'servicio',
+      },
+      { emitEvent: false },
+    );
   }
 
-
-  etiquetaProducto(producto: Partial<ProductoEmpresa> | null | undefined): string {
+  etiquetaProducto(
+    producto: Partial<ProductoEmpresa> | null | undefined,
+  ): string {
     if (!producto) return 'Producto sin datos';
     const nombre = producto.nombre ?? 'Producto';
     const tipo = producto.tipo_producto?.nombre ?? 'Tipo sin nombre';
     const modalidad = producto.tipo_producto?.modalidad ?? 'sin modalidad';
-    const categoria = producto.categoria?.nombre ? ` · ${producto.categoria.nombre}` : '';
+    const categoria = producto.categoria?.nombre
+      ? ` · ${producto.categoria.nombre}`
+      : '';
     return `${nombre} · ${tipo} (${modalidad})${categoria}`;
   }
 
   /** Devuelve la modalidad del producto con el id dado. */
-  modalidadDelProducto(productoId: number | null | undefined): 'producto' | 'servicio' | null {
+  modalidadDelProducto(
+    productoId: number | null | undefined,
+  ): 'producto' | 'servicio' | null {
     if (!productoId) return null;
-    return this.productosEmpresa().find(p => p.id === productoId)?.tipo_producto?.modalidad ?? null;
+    return (
+      this.productosEmpresa().find((p) => p.id === productoId)?.tipo_producto
+        ?.modalidad ?? null
+    );
   }
 
   /** Modalidad del producto actualmente seleccionado en el formulario. */
@@ -270,6 +344,22 @@ export class ResponderAdminPresupuestoComponent {
   formError(errorKey: string): boolean {
     const form = this.respuestaForm;
     return !!(form.errors?.[errorKey] && (form.touched || form.dirty));
+    return (
+      !!control &&
+      control.invalid &&
+      (control.touched || control.dirty || this.intentoEnviarRespuesta())
+    );
+  }
+
+  mostrarErrorFormulario(errorKey: string): boolean {
+    return (
+      !!this.respuestaForm.errors?.[errorKey] &&
+      (
+        this.respuestaForm.touched ||
+        this.respuestaForm.dirty ||
+        this.intentoEnviarRespuesta()
+      )
+    );
   }
 
   // ── Validadores ──────────────────────────────────────────────────────
@@ -281,40 +371,110 @@ export class ResponderAdminPresupuestoComponent {
    */
   private fechasValidator(): ValidatorFn {
     return (control: AbstractControl) => {
-      const modalidad    = control.get('modalidad')?.value as 'servicio' | 'producto' | 'dia' | null;
-      const fechaInicio  = control.get('fecha_inicio')?.value?.trim() ?? '';
-      const horaInicio    = control.get('hora_inicio')?.value?.trim() ?? '';
-      const fechaFin      = control.get('fecha_fin')?.value?.trim() ?? '';
-      const horaFin       = control.get('hora_fin')?.value?.trim() ?? '';
-      const inicioRaw     = modalidad === 'servicio' ? `${fechaInicio} ${horaInicio}`.trim() : fechaInicio;
-      const finRaw        = modalidad === 'servicio' ? `${fechaFin} ${horaFin}`.trim() : fechaFin;
+      const errors: any = {};
 
-      if (!modalidad || !inicioRaw) return null;
+      const modalidad = control.get('modalidad')?.value;
+      const fechaInicio = control.get('fecha_inicio')?.value?.trim() ?? '';
+      const horaInicio = control.get('hora_inicio')?.value?.trim() ?? '';
+      const fechaFin = control.get('fecha_fin')?.value?.trim() ?? '';
+      const horaFin = control.get('hora_fin')?.value?.trim() ?? '';
+
+      if (!modalidad) return null;
+
+      if (!fechaInicio) {
+        errors.fechaInicioInvalida = true;
+      }
+
+      if (fechaInicio && fechaInicio < this.today) {
+        errors.fechaPasada = true;
+      }
 
       if (modalidad === 'servicio') {
-        // Para servicios se espera "YYYY-MM-DD HH:mm" o "YYYY-MM-DDTHH:mm"
-        const inicio = Date.parse(inicioRaw);
-        const fin    = finRaw ? Date.parse(finRaw) : NaN;
-        if (isNaN(inicio))        return { fechaInicioInvalida: true };
-        if (!finRaw)              return { horaFinRequerida: true };
-        if (isNaN(fin))           return { fechaFinInvalida: true };
-        if (fin <= inicio)        return { horaFinAnterior: true };
-        if (inicioRaw.slice(0, 10) < this.today || finRaw.slice(0, 10) < this.today) {
-          return { fechaPasada: true };
+        if (!horaInicio) {
+          errors.horaInicioRequerida = true;
+        }
+
+        if (!fechaFin) {
+          errors.fechaFinInvalida = true;
+        }
+
+        if (!horaFin) {
+          errors.horaFinRequerida = true;
+        }
+
+        if (fechaFin && fechaFin < this.today) {
+          errors.fechaPasada = true;
+        }
+
+        if (fechaInicio && horaInicio && fechaFin && horaFin) {
+          const inicio = new Date(`${fechaInicio}T${horaInicio}`);
+          const fin = new Date(`${fechaFin}T${horaFin}`);
+
+          if (isNaN(inicio.getTime())) {
+            errors.fechaInicioInvalida = true;
+          }
+
+          if (isNaN(fin.getTime())) {
+            errors.fechaFinInvalida = true;
+          }
+
+          if (
+            !isNaN(inicio.getTime()) &&
+            !isNaN(fin.getTime()) &&
+            fin <= inicio
+          ) {
+            errors.horaFinAnterior = true;
+          }
         }
       }
 
       if (modalidad === 'producto' || modalidad === 'dia') {
-        // Para productos se esperan fechas "YYYY-MM-DD"
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(inicioRaw)) return { fechaInicioInvalida: true };
-        if (finRaw && !/^\d{4}-\d{2}-\d{2}$/.test(finRaw)) return { fechaFinInvalida: true };
-        if (inicioRaw < this.today) return { fechaPasada: true };
-        if (finRaw && finRaw < this.today) return { fechaPasada: true };
-        if (finRaw && finRaw < inicioRaw) return { fechaFinAnterior: true };
+        if (fechaInicio && !/^\d{4}-\d{2}-\d{2}$/.test(fechaInicio)) {
+          errors.fechaInicioInvalida = true;
+        }
+
+        if (!fechaFin) {
+          errors.fechaFinInvalida = true;
+        }
+
+        if (fechaFin && !/^\d{4}-\d{2}-\d{2}$/.test(fechaFin)) {
+          errors.fechaFinInvalida = true;
+        }
+
+        if (fechaFin && fechaFin < this.today) {
+          errors.fechaPasada = true;
+        }
+
+        if (fechaInicio && fechaFin && fechaFin < fechaInicio) {
+          errors.fechaFinAnterior = true;
+        }
       }
 
-      return null;
+      return Object.keys(errors).length ? errors : null;
     };
+  }
+
+
+  private normalizarEstado(estado: unknown): string {
+    if (!estado) return 'pendiente';
+
+    if (typeof estado === 'string') {
+      return estado.toLowerCase().trim();
+    }
+
+    if (typeof estado === 'object') {
+      const estadoObj = estado as Record<string, unknown>;
+      const valor =
+        estadoObj['pendiente'] ??
+        estadoObj['pendiente_usuario'] ??
+        estadoObj['aceptado_empresa'] ??
+        estadoObj['rechazado_empresa'];
+      if (typeof valor === 'string' && valor.trim()) {
+        return valor.toLowerCase().trim();
+      }
+    }
+
+    return 'pendiente';
   }
 
   /** El importe no puede ser negativo. */
@@ -328,13 +488,25 @@ export class ResponderAdminPresupuestoComponent {
 
   // ── Normalización de fechas para el backend ──────────────────────────
 
-  private normalizarFechaProducto(inicio: string, fin: string): { inicio: string; fin: string } | null {
+  private normalizarFechaProducto(
+    inicio: string,
+    fin: string,
+  ): { inicio: string; fin: string } | null {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(inicio)) return null;
-    const finNorm = /^\d{4}-\d{2}-\d{2}$/.test(fin) ? fin : '';
-    return { inicio, fin: finNorm };
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fin)) return null;
+
+    if (fin < inicio) return null;
+
+    return {
+      inicio: `${inicio} 00:00:00`,
+      fin: `${fin} 00:00:00`,
+    };
   }
 
-  private normalizarFechaServicio(inicio: string, fin: string): { inicio: string; fin: string } | null {
+  private normalizarFechaServicio(
+    inicio: string,
+    fin: string,
+  ): { inicio: string; fin: string } | null {
     const norm = (v: string): string | null => {
       const m = /^(\d{4}-\d{2}-\d{2})[T ](\d{2}:\d{2})(?::\d{2})?$/.exec(v);
       return m ? `${m[1]} ${m[2]}:00` : null;
@@ -348,11 +520,22 @@ export class ResponderAdminPresupuestoComponent {
   // ── Acciones ─────────────────────────────────────────────────────────
 
   enviarRespuesta(): void {
+    this.intentoEnviarRespuesta.set(true);
     this.respuestaError.set(null);
     this.respuestaOk.set(null);
 
     const solicitudId = this.solicitud()?.id;
-    if (!solicitudId) { this.respuestaError.set('No se encontró la solicitud.'); return; }
+    if (!solicitudId) {
+      this.respuestaError.set('No se encontró la solicitud.');
+      return;
+    }
+
+    if (!this.puedeResponderSolicitud()) {
+      this.respuestaError.set(
+        'Esta solicitud ya fue respondida. Solo puedes enviar una propuesta por solicitud.',
+      );
+      return;
+    }
 
     if (this.respuestaForm.invalid) {
       this.respuestaForm.markAllAsTouched();
@@ -368,50 +551,69 @@ export class ResponderAdminPresupuestoComponent {
 
     const productoId = this.respuestaForm.get('producto_id')?.value;
     if (!productoId) {
-      this.respuestaError.set('Debes seleccionar un producto o servicio de tu catálogo.');
+      this.respuestaError.set(
+        'Debes seleccionar un producto o servicio de tu catálogo.',
+      );
       return;
     }
 
-    const fechaInicio = this.respuestaForm.get('fecha_inicio')?.value?.trim() ?? '';
-    const horaInicio = this.respuestaForm.get('hora_inicio')?.value?.trim() ?? '';
+    const fechaInicio =
+      this.respuestaForm.get('fecha_inicio')?.value?.trim() ?? '';
+    const horaInicio =
+      this.respuestaForm.get('hora_inicio')?.value?.trim() ?? '';
     const fechaFin = this.respuestaForm.get('fecha_fin')?.value?.trim() ?? '';
     const horaFin = this.respuestaForm.get('hora_fin')?.value?.trim() ?? '';
-    const inicioRaw = modalidad === 'servicio' ? `${fechaInicio} ${horaInicio}`.trim() : fechaInicio;
-    const finRaw = modalidad === 'servicio' ? `${fechaFin} ${horaFin}`.trim() : fechaFin;
+    const inicioRaw =
+      modalidad === 'servicio'
+        ? `${fechaInicio} ${horaInicio}`.trim()
+        : fechaInicio;
+    const finRaw =
+      modalidad === 'servicio' ? `${fechaFin} ${horaFin}`.trim() : fechaFin;
 
-    const fechas = modalidad === 'servicio'
-      ? this.normalizarFechaServicio(inicioRaw, finRaw)
-      : this.normalizarFechaProducto(inicioRaw, finRaw);
+    const fechas =
+      modalidad === 'servicio'
+        ? this.normalizarFechaServicio(inicioRaw, finRaw)
+        : this.normalizarFechaProducto(inicioRaw, finRaw);
 
     if (!fechas) {
       this.respuestaError.set(
         modalidad === 'servicio'
           ? 'Introduce fecha y hora de inicio y fin con formato válido.'
-          : 'Introduce la fecha con formato válido (YYYY-MM-DD).'
+          : 'Introduce la fecha con formato válido (YYYY-MM-DD).',
       );
       return;
     }
 
     const payload: ResponderPresupuestoPayload = {
-      producto_id:        Number(productoId),
+      producto_id: Number(productoId),
       modalidad,
-      fecha_inicio:       fechas.inicio,
-      fecha_fin:          fechas.fin || undefined,
-      importe_ofertado:   Number(this.respuestaForm.get('importe_ofertado')?.value),
-      comentario_empresa: this.respuestaForm.get('comentario_empresa')?.value?.trim() || undefined,
+      fecha_inicio: fechas.inicio,
+      fecha_fin: fechas.fin || undefined,
+      importe_ofertado: Number(
+        this.respuestaForm.get('importe_ofertado')?.value,
+      ),
+      comentario_empresa:
+        this.respuestaForm.get('comentario_empresa')?.value?.trim() ||
+        undefined,
     };
 
     this.enviandoRespuesta.set(true);
-    this.pedirPresupuestoCtx.responderPresupuesto(solicitudId, payload).subscribe({
-      next: () => {
-        this.enviandoRespuesta.set(false);
-        this.respuestaOk.set('Propuesta enviada. El cliente recibirá una notificación.');
-      },
-      error: err => {
-        this.enviandoRespuesta.set(false);
-        this.respuestaError.set(err?.error?.message ?? 'No se pudo enviar la propuesta.');
-      },
-    });
+    this.pedirPresupuestoCtx
+      .responderPresupuesto(solicitudId, payload)
+      .subscribe({
+        next: () => {
+          this.enviandoRespuesta.set(false);
+          this.respuestaOk.set(
+            'Propuesta enviada. El cliente recibirá una notificación.',
+          );
+        },
+        error: (err) => {
+          this.enviandoRespuesta.set(false);
+          this.respuestaError.set(
+            err?.error?.message ?? 'No se pudo enviar la propuesta.',
+          );
+        },
+      });
   }
 
   /**
@@ -428,7 +630,17 @@ export class ResponderAdminPresupuestoComponent {
     }
 
     const solicitudId = this.solicitud()?.id;
-    if (!solicitudId) { this.respuestaError.set('No se encontró la solicitud.'); return; }
+    if (!solicitudId) {
+      this.respuestaError.set('No se encontró la solicitud.');
+      return;
+    }
+
+    if (!this.puedeResponderSolicitud()) {
+      this.respuestaError.set(
+        'Esta solicitud ya fue respondida. Solo puedes enviar una propuesta por solicitud.',
+      );
+      return;
+    }
 
     const motivo = this.rechazoForm.get('motivo_rechazo')?.value?.trim() ?? '';
 
@@ -436,18 +648,22 @@ export class ResponderAdminPresupuestoComponent {
     this.pedirPresupuestoCtx.rechazarPresupuesto(solicitudId).subscribe({
       next: () => {
         this.enviandoRechazo.set(false);
-        this.respuestaOk.set('Solicitud rechazada. El cliente ha sido notificado.');
+        this.respuestaOk.set(
+          'Solicitud rechazada. El cliente ha sido notificado.',
+        );
         this.mostrarFormRechazo.set(false);
       },
-      error: err => {
+      error: (err) => {
         this.enviandoRechazo.set(false);
-        this.respuestaError.set(err?.error?.message ?? 'No se pudo rechazar la solicitud.');
+        this.respuestaError.set(
+          err?.error?.message ?? 'No se pudo rechazar la solicitud.',
+        );
       },
     });
   }
 
   toggleFormRechazo(): void {
-    this.mostrarFormRechazo.update(v => !v);
+    this.mostrarFormRechazo.update((v) => !v);
     this.rechazoForm.reset();
     this.respuestaError.set(null);
   }
