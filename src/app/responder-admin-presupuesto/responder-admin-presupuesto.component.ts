@@ -262,6 +262,16 @@ export class ResponderAdminPresupuestoComponent {
     return this.respuestaForm.get('modalidad')?.value ?? null;
   }
 
+  controlInvalido(controlName: string): boolean {
+    const control = this.respuestaForm.get(controlName);
+    return !!(control && control.invalid && (control.touched || control.dirty));
+  }
+
+  formError(errorKey: string): boolean {
+    const form = this.respuestaForm;
+    return !!(form.errors?.[errorKey] && (form.touched || form.dirty));
+  }
+
   // ── Validadores ──────────────────────────────────────────────────────
 
   /**

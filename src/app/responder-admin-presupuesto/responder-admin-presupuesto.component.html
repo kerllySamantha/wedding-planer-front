@@ -75,7 +75,7 @@
       <div class="row g-3 mt-1">
         <div class="col-md-6">
           <label class="form-label small fw-bold text-uppercase text-muted">Producto o servicio</label>
-          <select class="form-select" formControlName="producto_id">
+          <select class="form-select" formControlName="producto_id" [class.is-invalid]="controlInvalido('producto_id')">
             <option [ngValue]="null" disabled>Selecciona un producto</option>
             @for (p of productosFiltrados(); track p.id) {
             <option [ngValue]="p.id">{{ etiquetaProducto(p) }}</option>
@@ -88,7 +88,11 @@
 
         <div class="col-md-3">
           <label class="form-label small fw-bold text-uppercase text-muted">Importe ofertado</label>
-          <input type="number" class="form-control" formControlName="importe_ofertado" min="0">
+          <input type="number" class="form-control" formControlName="importe_ofertado" min="0" [class.is-invalid]="controlInvalido('importe_ofertado')">
+          <div class="invalid-feedback d-block">
+            @if (controlInvalido('importe_ofertado') && respuestaForm.get('importe_ofertado')?.errors?.['required']) {El importe es obligatorio.}
+            @if (controlInvalido('importe_ofertado') && respuestaForm.get('importe_ofertado')?.errors?.['min']) {El importe no puede ser negativo.}
+          </div>
         </div>
       </div>
 
@@ -103,19 +107,27 @@
       <div class="row g-3 mt-2">
         <div class="col-md-3">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha inicio</label>
-          <input type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today">
+          <input type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today" [class.is-invalid]="controlInvalido('fecha_inicio') || formError('fechaInicioInvalida') || formError('fechaPasada')">
         </div>
         <div class="col-md-2">
           <label class="form-label small fw-bold text-uppercase text-muted">Hora inicio</label>
-          <input type="time" class="form-control" formControlName="hora_inicio">
+          <input type="time" class="form-control" formControlName="hora_inicio" [class.is-invalid]="formError('fechaInicioInvalida')">
         </div>
         <div class="col-md-3">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha fin</label>
-          <input type="date" class="form-control" formControlName="fecha_fin" [attr.min]="today">
+          <input type="date" class="form-control" formControlName="fecha_fin" [attr.min]="today" [class.is-invalid]="formError('fechaFinInvalida') || formError('fechaPasada') || formError('horaFinAnterior')">
         </div>
         <div class="col-md-2">
           <label class="form-label small fw-bold text-uppercase text-muted">Hora fin</label>
-          <input type="time" class="form-control" formControlName="hora_fin">
+          <input type="time" class="form-control" formControlName="hora_fin" [class.is-invalid]="formError('horaFinRequerida') || formError('horaFinAnterior') || formError('fechaFinInvalida')">
+        </div>
+        <div class="col-12">
+          <div class="invalid-feedback d-block">
+            @if (formError('horaFinRequerida')) {La fecha/hora de fin es obligatoria.}
+            @if (formError('horaFinAnterior')) {La fecha/hora de salida no puede ser anterior o igual a la de entrada.}
+            @if (formError('fechaInicioInvalida') || formError('fechaFinInvalida')) {Revisa el formato de fecha y hora.}
+            @if (formError('fechaPasada')) {No puedes seleccionar fechas en el pasado.}
+          </div>
         </div>
       </div>
       }
@@ -124,11 +136,18 @@
       <div class="row g-3 mt-2">
         <div class="col-md-4">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha inicio</label>
-          <input type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today">
+          <input type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today" [class.is-invalid]="controlInvalido('fecha_inicio') || formError('fechaInicioInvalida') || formError('fechaPasada')">
         </div>
         <div class="col-md-4">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha fin</label>
-          <input type="date" class="form-control" formControlName="fecha_fin" [attr.min]="today">
+          <input type="date" class="form-control" formControlName="fecha_fin" [attr.min]="today" [class.is-invalid]="formError('fechaFinInvalida') || formError('fechaPasada') || formError('fechaFinAnterior')">
+        </div>
+        <div class="col-12">
+          <div class="invalid-feedback d-block">
+            @if (formError('fechaFinAnterior')) {La fecha de salida no puede ser anterior a la fecha de entrada.}
+            @if (formError('fechaInicioInvalida') || formError('fechaFinInvalida')) {Revisa el formato de las fechas.}
+            @if (formError('fechaPasada')) {No puedes seleccionar fechas en el pasado.}
+          </div>
         </div>
       </div>
       }
