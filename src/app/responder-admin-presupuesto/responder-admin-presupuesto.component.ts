@@ -492,8 +492,11 @@ export class ResponderAdminPresupuestoComponent {
     if (fin < inicio) return null;
 
     return {
+      // Para reservas de día completo el calendario trabaja por rangos de día
+      // (fin exclusivo), por eso enviamos el fin al final del día para evitar
+      // que backend marque conflicto por desfase de 00:00:00.
       inicio: `${inicio} 00:00:00`,
-      fin: `${fin} 00:00:00`,
+      fin: `${fin} 23:59:59`,
     };
   }
 
