@@ -139,8 +139,8 @@
             <span class="text-muted small">No hay tipos de producto activos para esta empresa.</span>
             }
         </div>
-        @if (form.controls.productosSeleccionados.touched && form.controls.productosSeleccionados.errors?.['minSeleccionados']) {
-        <p class="text-danger mt-2 mb-0">Selecciona al menos un producto/tipo para continuar.</p>
+        @if (productosError()) {
+        <p class="text-danger mt-2 mb-0">Debes seleccionar o crear al menos un producto/servicio para guardar.</p>
         }
     </article>
 
