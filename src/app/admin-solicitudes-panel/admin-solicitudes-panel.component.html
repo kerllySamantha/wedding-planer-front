@@ -1,66 +1,79 @@
-<table mat-table [dataSource]="arrayInfoPresupuestos() ?? []" class="mat-elevation-z8">
+<section class="solicitudes-panel">
+  <header class="panel-header">
+    <div>
+      <h2>Panel de solicitudes</h2>
+      <p>Gestiona y prioriza tus solicitudes con estados claros para actuar más rápido.</p>
+    </div>
+    <span class="badge-total">{{ totalSolicitudes() }} solicitudes</span>
+  </header>
 
-    <!-- Evento -->
-    <ng-container matColumnDef="fecha">
-        <th mat-header-cell *matHeaderCellDef> Evento </th>
-        <td mat-cell *matCellDef="let presupuesto">
-            {{ formaterFecha(presupuesto.fecha) }}
-        </td>
-    </ng-container>
+  <div class="resumen-grid">
+    <article class="resumen-card aceptada">
+      <span>Aceptadas</span>
+      <strong>{{ totalAceptadas() }}</strong>
+    </article>
+    <article class="resumen-card pendiente">
+      <span>Pendientes</span>
+      <strong>{{ totalPendientes() }}</strong>
+    </article>
+    <article class="resumen-card rechazada">
+      <span>Rechazadas</span>
+      <strong>{{ totalRechazadas() }}</strong>
+    </article>
+  </div>
 
-    <!-- Precio -->
-    <ng-container matColumnDef="importe">
-        <th mat-header-cell *matHeaderCellDef> Precio </th>
-        <td mat-cell *matCellDef="let presupuesto">
-            {{ presupuesto.importe_ofertado }}
-        </td>
-    </ng-container>
+  @if ((arrayInfoPresupuestos() ?? []).length > 0) {
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="arrayInfoPresupuestos() ?? []" class="solicitudes-table">
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef>Evento</th>
+          <td mat-cell *matCellDef="let presupuesto">{{ formaterFecha(presupuesto.fecha) }}</td>
+        </ng-container>
 
-    <!-- Estado -->
-    <ng-container matColumnDef="estado">
-        <th mat-header-cell *matHeaderCellDef> Estado </th>
-        <td mat-cell *matCellDef="let presupuesto">
-            {{ presupuesto.estado }}
-        </td>
-    </ng-container>
-    <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef> Email </th>
-        <td mat-cell *matCellDef="let presupuesto">
-            {{ presupuesto.email}}
-        </td>
-    </ng-container>
+        <ng-container matColumnDef="importe">
+          <th mat-header-cell *matHeaderCellDef>Precio</th>
+          <td mat-cell *matCellDef="let presupuesto">{{ presupuesto.importe_ofertado || '-' }}</td>
+        </ng-container>
 
-    <ng-container matColumnDef="acciones">
-        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let presupuesto">
+            <span class="estado-chip" [ngClass]="estadoVisual(presupuesto.estado)">
+              {{ estadoLabel(presupuesto.estado) }}
+            </span>
+          </td>
+        </ng-container>
 
-        <td mat-cell *matCellDef="let presupuesto">
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let presupuesto">{{ presupuesto.email || '-' }}</td>
+        </ng-container>
 
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let presupuesto">
             <div class="acciones-container">
-
-                <button  mat-icon-button class="btn-icon btn-edit d-flex justify-content-center" [routerLink]="['/proveedor-dashboard', 'solicitudes', presupuesto.id]">
-
-                    <mat-icon>visibility</mat-icon>
-
-                </button>
-
-                <!-- <button class="btn-icon btn-edit" title="Editar">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-          viewBox="0 0 16 16">
-          <path
-            d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708z"/>
-          <path
-            d="M13.5 6.207L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207z"/>
-          <path
-            d="M6.032 13.675A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5l-2 5a.5.5 0 0 0 .65.65l5-2z"/>
-        </svg>
-      </button> -->
-
+              <button
+                mat-icon-button
+                class="btn-icon btn-edit d-flex justify-content-center"
+                [routerLink]="['/proveedor-dashboard', 'solicitudes', presupuesto.id]"
+                aria-label="Ver solicitud"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
             </div>
+          </td>
+        </ng-container>
 
-        </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-
-</table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <mat-icon>mail_outline</mat-icon>
+      <h3>Sin solicitudes por el momento</h3>
+      <p>Cuando recibas solicitudes nuevas de clientes aparecerán aquí con su estado.</p>
+    </div>
+  }
+</section>
