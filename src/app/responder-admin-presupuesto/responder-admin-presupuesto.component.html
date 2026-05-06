@@ -71,6 +71,13 @@
   <article class="detail-card detail-card--wide">
     <h2>Propuesta del proveedor</h2>
 
+    @if (!puedeResponderSolicitud()) {
+    <div class="alert alert-warning mt-3">
+      Esta solicitud ya fue respondida anteriormente. Solo se permite una respuesta para evitar notificaciones duplicadas al cliente.
+    </div>
+    }
+
+
     <form [formGroup]="respuestaForm" (ngSubmit)="enviarRespuesta()">
       <div class="row g-3 mt-1">
         <div class="col-md-6">
@@ -255,7 +262,7 @@
       }
 
       <div class="d-flex justify-content-end mt-3">
-        <button class="btn btn-primary" type="submit" [disabled]="enviandoRespuesta()">Enviar propuesta</button>
+        <button class="btn btn-primary" type="submit" [disabled]="enviandoRespuesta() || !puedeResponderSolicitud()">Enviar propuesta</button>
       </div>
     </form>
   </article>
