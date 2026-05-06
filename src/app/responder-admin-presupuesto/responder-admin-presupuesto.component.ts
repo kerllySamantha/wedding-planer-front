@@ -18,6 +18,8 @@ import {
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { ProductoEmpresa } from '../Interfaces/Producto';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
+import { ReservasServiceServiceService } from '../Services/Reservas/reservas-service-service.service';
+import { ReservaEvent } from '../Interfaces/Reserva';
 
 /**
  * Panel del proveedor para gestionar una solicitud de presupuesto.
@@ -48,10 +50,12 @@ export class ResponderAdminPresupuestoComponent {
   private route = inject(ActivatedRoute);
   private empresasCtx = inject(EmpresasApiServiceService);
   private pedirPresupuestoCtx = inject(PedirPresupuestoService);
+  private reservasCtx = inject(ReservasServiceServiceService);
 
   // ── Datos ────────────────────────────────────────────────────────────
   protected solicitud = signal<PedirPresupuestoInfo | null>(null);
   protected productosEmpresa = signal<ProductoEmpresa[]>([]);
+  protected reservasCalendario = signal<ReservaEvent[]>([]);
 
   /**
    * Productos filtrados por el tipo solicitado por el cliente.
@@ -188,6 +192,7 @@ export class ResponderAdminPresupuestoComponent {
       if (data) {
         this.solicitud.set(data);
         this.cargarProductosEmpresa();
+        this.cargarReservasCalendario();
       }
     });
 
@@ -288,6 +293,26 @@ export class ResponderAdminPresupuestoComponent {
         this.autoseleccionarProductoSegunSolicitud();
       },
       error: () => this.productosEmpresa.set([]),
+    });
+  }
+
+  private cargarReservasCalendario(): void {
+    const empresaId =
+      Number(this.solicitud()?.empresa_id) ||
+      Number(localStorage.getItem('idEmpresa'));
+    if (!empresaId) {
+      this.reservasCalendario.set([]);
+      return;
+    }
+    this.reservasCtx.getCalendarioEmpresa(String(empresaId)).subscribe({
+      next: (eventos) => {
+        this.reservasCalendario.set(eventos ?? []);
+        this.respuestaForm.updateValueAndValidity({ emitEvent: false });
+      },
+      error: () => {
+        this.reservasCalendario.set([]);
+        this.respuestaForm.updateValueAndValidity({ emitEvent: false });
+      },
     });
   }
 
@@ -419,6 +444,14 @@ export class ResponderAdminPresupuestoComponent {
           ) {
             errors.horaFinAnterior = true;
           }
+
+          if (
+            !isNaN(inicio.getTime()) &&
+            !isNaN(fin.getTime()) &&
+            this.hayConflictoConCalendario(inicio, fin)
+          ) {
+            errors.fechaNoDisponible = true;
+          }
         }
       }
 
@@ -442,10 +475,36 @@ export class ResponderAdminPresupuestoComponent {
         if (fechaInicio && fechaFin && fechaFin < fechaInicio) {
           errors.fechaFinAnterior = true;
         }
+
+        if (
+          fechaInicio &&
+          fechaFin &&
+          /^\d{4}-\d{2}-\d{2}$/.test(fechaInicio) &&
+          /^\d{4}-\d{2}-\d{2}$/.test(fechaFin)
+        ) {
+          const inicio = new Date(`${fechaInicio}T00:00:00`);
+          const fin = new Date(`${fechaFin}T23:59:59`);
+          if (this.hayConflictoConCalendario(inicio, fin)) {
+            errors.fechaNoDisponible = true;
+          }
+        }
       }
 
       return Object.keys(errors).length ? errors : null;
     };
+  }
+
+  private hayConflictoConCalendario(inicio: Date, fin: Date): boolean {
+    const ini = inicio.getTime();
+    const end = fin.getTime();
+    if (Number.isNaN(ini) || Number.isNaN(end)) return false;
+
+    return this.reservasCalendario().some((ev) => {
+      const evInicio = new Date(ev.start).getTime();
+      const evFin = new Date(ev.end ?? ev.start).getTime();
+      if (Number.isNaN(evInicio) || Number.isNaN(evFin)) return false;
+      return ini < evFin && end > evInicio;
+    });
   }
 
 

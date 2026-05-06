@@ -128,6 +128,9 @@
           @if (mostrarErrorFormulario('fechaPasada')) {
           <div class="invalid-feedback d-block">La fecha no puede ser anterior a hoy.</div>
           }
+          @if (mostrarErrorFormulario('fechaNoDisponible')) {
+          <div class="invalid-feedback d-block">Ese rango ya no está disponible en tu calendario.</div>
+          }
         </div>
         <div class="col-md-2">
           <label class="form-label small fw-bold text-uppercase text-muted">Hora inicio</label>
@@ -147,6 +150,9 @@
           }
           @if (mostrarErrorFormulario('fechaPasada')) {
           <div class="invalid-feedback d-block">La fecha no puede ser anterior a hoy.</div>
+          }
+          @if (mostrarErrorFormulario('fechaNoDisponible')) {
+          <div class="invalid-feedback d-block">Ese rango ya no está disponible en tu calendario.</div>
           }
         </div>
         <div class="col-md-2">
@@ -188,6 +194,9 @@
           }
           @if (mostrarErrorFormulario('fechaFinAnterior')) {
           <div class="invalid-feedback d-block">La fecha de fin no puede ser anterior a la fecha de inicio.</div>
+          }
+          @if (mostrarErrorFormulario('fechaNoDisponible')) {
+          <div class="invalid-feedback d-block">Ese rango ya no está disponible en tu calendario.</div>
           }
         </div>
       </div>
