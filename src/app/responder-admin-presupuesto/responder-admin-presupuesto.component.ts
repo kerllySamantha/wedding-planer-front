@@ -90,6 +90,16 @@ export class ResponderAdminPresupuestoComponent {
   protected enviandoRechazo = signal(false);
   protected respuestaError = signal<string | null>(null);
   protected respuestaOk = signal<string | null>(null);
+  protected intentoEnviarRespuesta = signal(false);
+
+
+  protected estadoSolicitudNormalizado = computed(() =>
+    this.normalizarEstado(this.solicitud()?.estado),
+  );
+
+  protected puedeResponderSolicitud = computed(() =>
+    this.estadoSolicitudNormalizado() === 'pendiente',
+  );
 
   /**
    * Resumen de la propuesta en curso, actualizado reactivamente
@@ -328,13 +338,21 @@ export class ResponderAdminPresupuestoComponent {
 
   controlInvalido(controlName: string): boolean {
     const control = this.respuestaForm.get(controlName);
-    return !!control && control.invalid && (control.touched || control.dirty);
+    return (
+      !!control &&
+      control.invalid &&
+      (control.touched || control.dirty || this.intentoEnviarRespuesta())
+    );
   }
 
   mostrarErrorFormulario(errorKey: string): boolean {
     return (
       !!this.respuestaForm.errors?.[errorKey] &&
-      (this.respuestaForm.touched || this.respuestaForm.dirty)
+      (
+        this.respuestaForm.touched ||
+        this.respuestaForm.dirty ||
+        this.intentoEnviarRespuesta()
+      )
     );
   }
 
@@ -430,6 +448,29 @@ export class ResponderAdminPresupuestoComponent {
     };
   }
 
+
+  private normalizarEstado(estado: unknown): string {
+    if (!estado) return 'pendiente';
+
+    if (typeof estado === 'string') {
+      return estado.toLowerCase().trim();
+    }
+
+    if (typeof estado === 'object') {
+      const estadoObj = estado as Record<string, unknown>;
+      const valor =
+        estadoObj['pendiente'] ??
+        estadoObj['pendiente_usuario'] ??
+        estadoObj['aceptado_empresa'] ??
+        estadoObj['rechazado_empresa'];
+      if (typeof valor === 'string' && valor.trim()) {
+        return valor.toLowerCase().trim();
+      }
+    }
+
+    return 'pendiente';
+  }
+
   /** El importe no puede ser negativo. */
   private importeValidator(): ValidatorFn {
     return (control: AbstractControl) => {
@@ -473,12 +514,20 @@ export class ResponderAdminPresupuestoComponent {
   // ── Acciones ─────────────────────────────────────────────────────────
 
   enviarRespuesta(): void {
+    this.intentoEnviarRespuesta.set(true);
     this.respuestaError.set(null);
     this.respuestaOk.set(null);
 
     const solicitudId = this.solicitud()?.id;
     if (!solicitudId) {
       this.respuestaError.set('No se encontró la solicitud.');
+      return;
+    }
+
+    if (!this.puedeResponderSolicitud()) {
+      this.respuestaError.set(
+        'Esta solicitud ya fue respondida. Solo puedes enviar una propuesta por solicitud.',
+      );
       return;
     }
 
@@ -577,6 +626,13 @@ export class ResponderAdminPresupuestoComponent {
     const solicitudId = this.solicitud()?.id;
     if (!solicitudId) {
       this.respuestaError.set('No se encontró la solicitud.');
+      return;
+    }
+
+    if (!this.puedeResponderSolicitud()) {
+      this.respuestaError.set(
+        'Esta solicitud ya fue respondida. Solo puedes enviar una propuesta por solicitud.',
+      );
       return;
     }
 
