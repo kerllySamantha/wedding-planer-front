@@ -1,6 +1,6 @@
 import { computed, Injectable, signal, inject, resource } from '@angular/core';
 
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { Empresa } from '../Interfaces/Empresa';
 import { Filtros } from '../Interfaces/Filtro';
 import { EmpresasServiceServiceService } from './Empresas/empresas-service-service.service';
@@ -16,8 +16,19 @@ export class ServicioFiltrado {
 
   serviceEmpresa = inject(EmpresasServiceServiceService);
 
+
+  private toResourceError(error: unknown): Error {
+    if (error instanceof Error) return error;
+    const message = (error as { message?: string })?.message ?? 'Error desconocido al cargar empresas';
+    return new Error(message);
+  }
+
   protected empresasResource = resource({
-    loader: () => firstValueFrom(this.serviceEmpresa.getEmpresas())
+    loader: () => firstValueFrom(
+      this.serviceEmpresa.getEmpresas().pipe(
+        catchError((error) => throwError(() => this.toResourceError(error)))
+      )
+    )
   });
 
 
