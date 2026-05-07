@@ -91,17 +91,27 @@
 
     <article class="settings-card">
         <h2>Categorías y tipos</h2>
-        <p class="settings-subtitle mb-3">Marca productos existentes o añade productos personalizados por tipo.</p>
+        <p class="settings-subtitle mb-3">Selecciona una única categoría y luego marca productos del catálogo general o añade personalizados.</p>
+        <div class="category-picker mb-3">
+            @for (categoria of categoriasEmpresa(); track categoria.id) {
+            <label class="category-option">
+                <input type="radio" name="categoria-activa" [checked]="categoriaSeleccionadaId() === categoria.id"
+                    (change)="onCategoriaSeleccionada(categoria.id)">
+                <span>{{ categoria.nombre }}</span>
+            </label>
+            }
+        </div>
         <div class="types-by-category">
-            @for (tipoPermitido of tiposEditablesEmpresa(); track tipoPermitido.tipoId) {
-            <div class="category-row category-row--edit">
-                <p class="category-name">{{ tipoPermitido.categoriaNombre }}</p>
+            @for (categoria of tiposEditablesPorCategoriaEmpresa(); track categoria.categoriaNombre) {
+            <div class="category-row category-row--edit category-row--stacked">
+                <p class="category-name">{{ categoria.categoriaNombre }}</p>
                 <div class="types-row types-row--stacked d-block">
-                    <div class="type-editor-card">
-                        <div class="type-editor-card__header">
+                    @for (tipoPermitido of categoria.tipos; track tipoPermitido.tipoId) {
+                    <details class="type-editor-card" open>
+                        <summary class="type-editor-card__header type-editor-card__header--summary">
                             <span class="fw-semibold">{{ tipoPermitido.tipoNombre }}</span>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="agregarCampoNuevoProducto(tipoPermitido.tipoId)">+ Añadir producto</button>
-                        </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="$event.preventDefault(); agregarCampoNuevoProducto(tipoPermitido.tipoId)">+ Añadir producto</button>
+                        </summary>
 
                         <div class="type-editor-card__checks">
                             @for (producto of productosPorTipo(tipoPermitido.tipoId); track producto.id) {
@@ -110,6 +120,8 @@
                                     (change)="onProductoToggle(producto.id, $any($event.target).checked)">
                                 <span>{{ producto.nombre }}</span>
                             </label>
+                            } @empty {
+                            <span class="text-muted small">No hay productos predefinidos para este tipo en el catálogo general. Puedes crear uno personalizado.</span>
                             }
                         </div>
 
@@ -132,7 +144,8 @@
                             <button type="button" class="btn btn-sm btn-outline-danger" (click)="eliminarCampoNuevoProducto(tipoPermitido.tipoId, idx)">Quitar</button>
                         </div>
                         }
-                    </div>
+                    </details>
+                    }
                 </div>
             </div>
             } @empty {
