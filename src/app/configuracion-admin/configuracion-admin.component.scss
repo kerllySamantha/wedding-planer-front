@@ -54,6 +54,7 @@
 .types-by-category { display: grid; gap: 0.9rem; }
 .category-row { display: flex; gap: 1rem; align-items: flex-start; border-bottom: 1px solid rgba(20, 63, 102, 0.12); padding-bottom: 0.7rem; }
 .category-row--edit { gap: 1.2rem; }
+.category-row--stacked { flex-direction: column; }
 .category-name { margin: 0; min-width: 180px; font-weight: 700; color: #143f66; }
 .types-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .types-row--stacked { width: 100%; }
@@ -82,6 +83,11 @@
     gap: .55rem;
     margin-bottom: .6rem;
 }
+.type-editor-card__header--summary {
+    cursor: pointer;
+    list-style: none;
+}
+.type-editor-card__header--summary::-webkit-details-marker { display: none; }
 .type-editor-card__checks {
     display: flex;
     flex-wrap: wrap;

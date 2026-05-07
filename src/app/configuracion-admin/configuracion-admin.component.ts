@@ -176,6 +176,48 @@ export class ConfiguracionAdminComponent {
     );
   }
 
+  categoriasEmpresa(): InfoCategoria[] {
+    const tipoServicio = (this.form.controls.tipo_servicio.value ?? '')
+      .toString()
+      .trim()
+      .toLocaleLowerCase();
+    if (!tipoServicio) return this.categorias();
+
+    const exacta = this.categorias().filter(
+      (c) => c.nombre?.toLocaleLowerCase() === tipoServicio,
+    );
+    if (exacta.length) return exacta;
+
+    return this.categorias().filter((c) =>
+      c.nombre?.toLocaleLowerCase().includes(tipoServicio),
+    );
+  }
+
+  tiposEditablesPorCategoriaEmpresa(): Array<{
+    categoriaNombre: string;
+    tipos: Array<{ tipoId: number; tipoNombre: string }>;
+  }> {
+    const tipos = this.tiposEditablesEmpresa();
+    const categoriasPermitidas = new Set(
+      this.categoriasEmpresa().map((c) => c.nombre),
+    );
+    const tiposFiltrados = categoriasPermitidas.size
+      ? tipos.filter((t) => categoriasPermitidas.has(t.categoriaNombre))
+      : tipos;
+
+    const map = new Map<string, Array<{ tipoId: number; tipoNombre: string }>>();
+    tiposFiltrados.forEach((tipo) => {
+      const actuales = map.get(tipo.categoriaNombre) ?? [];
+      actuales.push({ tipoId: tipo.tipoId, tipoNombre: tipo.tipoNombre });
+      map.set(tipo.categoriaNombre, actuales);
+    });
+
+    return Array.from(map.entries()).map(([categoriaNombre, tiposCat]) => ({
+      categoriaNombre,
+      tipos: tiposCat,
+    }));
+  }
+
   agregarCampoNuevoProducto(tipoId: number) {
     this.nuevosProductosPorTipo.update((prev) => ({
       ...prev,

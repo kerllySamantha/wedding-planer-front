@@ -93,15 +93,16 @@
         <h2>Categorías y tipos</h2>
         <p class="settings-subtitle mb-3">Marca productos existentes o añade productos personalizados por tipo.</p>
         <div class="types-by-category">
-            @for (tipoPermitido of tiposEditablesEmpresa(); track tipoPermitido.tipoId) {
-            <div class="category-row category-row--edit">
-                <p class="category-name">{{ tipoPermitido.categoriaNombre }}</p>
+            @for (categoria of tiposEditablesPorCategoriaEmpresa(); track categoria.categoriaNombre) {
+            <div class="category-row category-row--edit category-row--stacked">
+                <p class="category-name">{{ categoria.categoriaNombre }}</p>
                 <div class="types-row types-row--stacked d-block">
-                    <div class="type-editor-card">
-                        <div class="type-editor-card__header">
+                    @for (tipoPermitido of categoria.tipos; track tipoPermitido.tipoId) {
+                    <details class="type-editor-card" open>
+                        <summary class="type-editor-card__header type-editor-card__header--summary">
                             <span class="fw-semibold">{{ tipoPermitido.tipoNombre }}</span>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="agregarCampoNuevoProducto(tipoPermitido.tipoId)">+ Añadir producto</button>
-                        </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="$event.preventDefault(); agregarCampoNuevoProducto(tipoPermitido.tipoId)">+ Añadir producto</button>
+                        </summary>
 
                         <div class="type-editor-card__checks">
                             @for (producto of productosPorTipo(tipoPermitido.tipoId); track producto.id) {
@@ -132,7 +133,8 @@
                             <button type="button" class="btn btn-sm btn-outline-danger" (click)="eliminarCampoNuevoProducto(tipoPermitido.tipoId, idx)">Quitar</button>
                         </div>
                         }
-                    </div>
+                    </details>
+                    }
                 </div>
             </div>
             } @empty {
