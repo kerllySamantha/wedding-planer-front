@@ -13,6 +13,8 @@ import {
 } from '@angular/forms';
 import { CreateEmpresa } from '../Interfaces/Empresa';
 import { Foto } from '../Interfaces/Resenia';
+import { HttpClient } from '@angular/common/http';
+import { Producto } from '../Interfaces/Producto';
 
 @Component({
   selector: 'app-configuracion-admin',
@@ -25,9 +27,12 @@ export class ConfiguracionAdminComponent {
   empresaCtx = inject(EmpresasApiServiceService);
   categoriaCtx = inject(CategoriasApiServiceService);
   private fb = inject(FormBuilder);
+  private http = inject(HttpClient);
   empresa = signal<Empresa | null>(null);
   categorias = signal<InfoCategoria[]>([]);
   productosSeleccionados = signal<number[]>([]);
+  categoriaSeleccionadaId = signal<number | null>(null);
+  productosCatalogoGeneral = signal<Producto[]>([]);
   nuevosProductosPorTipo = signal<
     Record<
       number,
@@ -63,6 +68,7 @@ export class ConfiguracionAdminComponent {
   ngOnInit() {
     this.getEmpresa();
     this.getCategorias();
+    this.getProductosCatalogoGeneral();
   }
 
   getEmpresa() {
@@ -100,9 +106,27 @@ export class ConfiguracionAdminComponent {
 
   getCategorias() {
     this.categoriaCtx.getCategorias().subscribe({
-      next: (data) => this.categorias.set(data?.data ?? []),
+      next: (data) => {
+        const categorias = data?.data ?? [];
+        this.categorias.set(categorias);
+        if (!this.categoriaSeleccionadaId() && categorias.length) {
+          this.categoriaSeleccionadaId.set(categorias[0].id);
+        }
+      },
       error: (err) => console.error('Error al cargar categorías', err),
     });
+  }
+
+  getProductosCatalogoGeneral() {
+    this.http
+      .get<{ data: Producto[] }>(`${this.empresaCtx.apiUrl}/productos`)
+      .subscribe({
+        next: (response) => this.productosCatalogoGeneral.set(response?.data ?? []),
+        error: (err) => {
+          console.error('Error al cargar productos globales', err);
+          this.productosCatalogoGeneral.set([]);
+        },
+      });
   }
 
   productosAgrupadosPorCategoria(): Array<{
@@ -134,9 +158,11 @@ export class ConfiguracionAdminComponent {
   }
 
   productosPorTipo(tipoId: number) {
-    return (this.empresa()?.productos ?? []).filter(
-      (p) => p.tipo_producto?.id === tipoId,
-    );
+    return this.productosCatalogoGeneral().filter((p) => p.tipo_producto?.id === tipoId);
+  }
+
+  onCategoriaSeleccionada(categoriaId: number) {
+    this.categoriaSeleccionadaId.set(categoriaId);
   }
 
   tiposEditablesEmpresa(): Array<{
@@ -197,13 +223,14 @@ export class ConfiguracionAdminComponent {
     categoriaNombre: string;
     tipos: Array<{ tipoId: number; tipoNombre: string }>;
   }> {
-    const tipos = this.tiposEditablesEmpresa();
-    const categoriasPermitidas = new Set(
-      this.categoriasEmpresa().map((c) => c.nombre),
+    const categoriaSeleccionada = this.categorias().find(
+      (c) => c.id === this.categoriaSeleccionadaId(),
     );
-    const tiposFiltrados = categoriasPermitidas.size
-      ? tipos.filter((t) => categoriasPermitidas.has(t.categoriaNombre))
-      : tipos;
+    const tiposFiltrados = (categoriaSeleccionada?.tipos ?? []).map((tipo) => ({
+      categoriaNombre: categoriaSeleccionada?.nombre ?? 'Sin categoría',
+      tipoId: tipo.id,
+      tipoNombre: tipo.nombre,
+    }));
 
     const map = new Map<string, Array<{ tipoId: number; tipoNombre: string }>>();
     tiposFiltrados.forEach((tipo) => {

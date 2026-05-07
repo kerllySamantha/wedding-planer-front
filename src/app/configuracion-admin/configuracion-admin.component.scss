@@ -52,6 +52,21 @@
 .form-grid .form-control { border-radius: .7rem; }
 
 .types-by-category { display: grid; gap: 0.9rem; }
+.category-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+}
+.category-option {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .4rem .65rem;
+    border: 1px solid rgba(20, 63, 102, 0.2);
+    border-radius: 999px;
+    background: #fff;
+    cursor: pointer;
+}
 .category-row { display: flex; gap: 1rem; align-items: flex-start; border-bottom: 1px solid rgba(20, 63, 102, 0.12); padding-bottom: 0.7rem; }
 .category-row--edit { gap: 1.2rem; }
 .category-row--stacked { flex-direction: column; }

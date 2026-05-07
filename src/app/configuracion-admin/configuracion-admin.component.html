@@ -91,7 +91,16 @@
 
     <article class="settings-card">
         <h2>Categorías y tipos</h2>
-        <p class="settings-subtitle mb-3">Marca productos existentes o añade productos personalizados por tipo.</p>
+        <p class="settings-subtitle mb-3">Selecciona una única categoría y luego marca productos del catálogo general o añade personalizados.</p>
+        <div class="category-picker mb-3">
+            @for (categoria of categoriasEmpresa(); track categoria.id) {
+            <label class="category-option">
+                <input type="radio" name="categoria-activa" [checked]="categoriaSeleccionadaId() === categoria.id"
+                    (change)="onCategoriaSeleccionada(categoria.id)">
+                <span>{{ categoria.nombre }}</span>
+            </label>
+            }
+        </div>
         <div class="types-by-category">
             @for (categoria of tiposEditablesPorCategoriaEmpresa(); track categoria.categoriaNombre) {
             <div class="category-row category-row--edit category-row--stacked">
