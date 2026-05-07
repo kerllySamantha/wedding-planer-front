@@ -332,13 +332,20 @@ export class ResponderAdminPresupuestoComponent {
     );
   }
 
+
+  modalidadTexto(modalidad: 'servicio' | 'producto' | 'dia' | null | undefined): string {
+    if (modalidad === 'servicio') return 'hora';
+    if (modalidad === 'producto' || modalidad === 'dia') return 'día';
+    return 'sin modalidad';
+  }
+
   etiquetaProducto(
     producto: Partial<ProductoEmpresa> | null | undefined,
   ): string {
     if (!producto) return 'Producto sin datos';
     const nombre = producto.nombre ?? 'Producto';
     const tipo = producto.tipo_producto?.nombre ?? 'Tipo sin nombre';
-    const modalidad = producto.tipo_producto?.modalidad ?? 'sin modalidad';
+    const modalidad = this.modalidadTexto(producto.tipo_producto?.modalidad ?? null);
     const categoria = producto.categoria?.nombre
       ? ` · ${producto.categoria.nombre}`
       : '';
@@ -370,15 +377,15 @@ export class ResponderAdminPresupuestoComponent {
     );
   }
 
-  mostrarErrorFormulario(errorKey: string): boolean {
-    return (
-      !!this.respuestaForm.errors?.[errorKey] &&
-      (
-        this.respuestaForm.touched ||
-        this.respuestaForm.dirty ||
-        this.intentoEnviarRespuesta()
-      )
-    );
+  mostrarErrorFormulario(errorKey: string, controlNames: string[] = []): boolean {
+    if (!this.respuestaForm.errors?.[errorKey]) return false;
+    if (this.intentoEnviarRespuesta()) return true;
+    if (!controlNames.length) return this.respuestaForm.touched || this.respuestaForm.dirty;
+
+    return controlNames.some((name) => {
+      const control = this.respuestaForm.get(name);
+      return !!control && (control.touched || control.dirty);
+    });
   }
 
   // ── Validadores ──────────────────────────────────────────────────────

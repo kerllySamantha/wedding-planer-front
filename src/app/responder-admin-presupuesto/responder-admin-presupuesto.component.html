@@ -40,7 +40,7 @@
           <dt>Tipo solicitado</dt>
           <dd>
             @if (tipoSolicitado(); as tipo) {
-            {{ tipo.nombre }}@if (tipo.modalidad) { ({{ tipo.modalidad }}) }
+            {{ tipo.nombre }}@if (tipo.modalidad) { ({{ modalidadTexto(tipo.modalidad) }}) }
             } @else {
             Sin tipo indicado
             }
@@ -113,7 +113,7 @@
 
       <div class="mt-3">
         <label class="form-label small fw-bold text-uppercase text-muted">Modalidad</label>
-        <input class="form-control" [value]="modalidadSeleccionada || 'Sin modalidad'" readonly>
+        <input class="form-control" [value]="modalidadTexto(modalidadSeleccionada)" readonly>
       </div>
 
       @if (modalidadSeleccionada === 'servicio') {
@@ -121,48 +121,48 @@
         <div class="col-md-3">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha inicio</label>
           <input type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today"
-            [class.is-invalid]="controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida') || mostrarErrorFormulario('fechaPasada')">
-          @if (controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida')) {
+            [class.is-invalid]="controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio']) || mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])">
+          @if (controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio'])) {
           <div class="invalid-feedback d-block">Introduce una fecha de inicio válida.</div>
           }
-          @if (mostrarErrorFormulario('fechaPasada')) {
+          @if (mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])) {
           <div class="invalid-feedback d-block">La fecha no puede ser anterior a hoy.</div>
           }
-          @if (mostrarErrorFormulario('fechaNoDisponible')) {
+          @if (mostrarErrorFormulario('fechaNoDisponible', ['fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin'])) {
           <div class="invalid-feedback d-block">Ese rango ya no está disponible en tu calendario.</div>
           }
         </div>
         <div class="col-md-2">
           <label class="form-label small fw-bold text-uppercase text-muted">Hora inicio</label>
           <input type="time" class="form-control" formControlName="hora_inicio"
-            [class.is-invalid]="controlInvalido('hora_inicio') || mostrarErrorFormulario('horaInicioRequerida')">
+            [class.is-invalid]="controlInvalido('hora_inicio') || mostrarErrorFormulario('horaInicioRequerida', ['hora_inicio'])">
 
-          @if (mostrarErrorFormulario('horaInicioRequerida')) {
+          @if (mostrarErrorFormulario('horaInicioRequerida', ['hora_inicio'])) {
           <div class="invalid-feedback d-block">La hora de inicio es obligatoria.</div>
           }
         </div>
         <div class="col-md-3">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha fin</label>
           <input type="date" class="form-control" formControlName="fecha_fin" [attr.min]="today"
-            [class.is-invalid]="controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida') || mostrarErrorFormulario('horaFinAnterior') || mostrarErrorFormulario('fechaPasada')">
-          @if (controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida')) {
+            [class.is-invalid]="controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida', ['fecha_fin']) || mostrarErrorFormulario('horaFinAnterior', ['fecha_inicio', 'hora_inicio', 'fecha_fin', 'hora_fin']) || mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])">
+          @if (controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida', ['fecha_fin'])) {
           <div class="invalid-feedback d-block">Introduce una fecha de fin válida.</div>
           }
-          @if (mostrarErrorFormulario('fechaPasada')) {
+          @if (mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])) {
           <div class="invalid-feedback d-block">La fecha no puede ser anterior a hoy.</div>
           }
-          @if (mostrarErrorFormulario('fechaNoDisponible')) {
+          @if (mostrarErrorFormulario('fechaNoDisponible', ['fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin'])) {
           <div class="invalid-feedback d-block">Ese rango ya no está disponible en tu calendario.</div>
           }
         </div>
         <div class="col-md-2">
           <label class="form-label small fw-bold text-uppercase text-muted">Hora fin</label>
           <input type="time" class="form-control" formControlName="hora_fin"
-            [class.is-invalid]="controlInvalido('hora_fin') || mostrarErrorFormulario('horaFinRequerida') || mostrarErrorFormulario('horaFinAnterior')">
-          @if (mostrarErrorFormulario('horaFinRequerida')) {
+            [class.is-invalid]="controlInvalido('hora_fin') || mostrarErrorFormulario('horaFinRequerida', ['hora_fin']) || mostrarErrorFormulario('horaFinAnterior', ['fecha_inicio', 'hora_inicio', 'fecha_fin', 'hora_fin'])">
+          @if (mostrarErrorFormulario('horaFinRequerida', ['hora_fin'])) {
           <div class="invalid-feedback d-block">La hora de fin es obligatoria.</div>
           }
-          @if (mostrarErrorFormulario('horaFinAnterior')) {
+          @if (mostrarErrorFormulario('horaFinAnterior', ['fecha_inicio', 'hora_inicio', 'fecha_fin', 'hora_fin'])) {
           <div class="invalid-feedback d-block">La fecha/hora de fin debe ser posterior al inicio.</div>
           }
         </div>
@@ -174,28 +174,28 @@
         <div class="col-md-4">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha inicio</label>
           <input type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today"
-            [class.is-invalid]="controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida') || mostrarErrorFormulario('fechaPasada')">
-          @if (controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida')) {
+            [class.is-invalid]="controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio']) || mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])">
+          @if (controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio'])) {
           <div class="invalid-feedback d-block">Introduce una fecha de inicio válida.</div>
           }
-          @if (mostrarErrorFormulario('fechaPasada')) {
+          @if (mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])) {
           <div class="invalid-feedback d-block">La fecha no puede ser anterior a hoy.</div>
           }
         </div>
         <div class="col-md-4">
           <label class="form-label small fw-bold text-uppercase text-muted">Fecha fin</label>
           <input type="date" class="form-control" formControlName="fecha_fin" [attr.min]="today"
-            [class.is-invalid]="controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida') || mostrarErrorFormulario('fechaFinAnterior') || mostrarErrorFormulario('fechaPasada')">
-          @if (controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida')) {
+            [class.is-invalid]="controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida', ['fecha_fin']) || mostrarErrorFormulario('fechaFinAnterior', ['fecha_inicio', 'fecha_fin']) || mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])">
+          @if (controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida', ['fecha_fin'])) {
           <div class="invalid-feedback d-block">Introduce una fecha de fin válida.</div>
           }
-          @if (mostrarErrorFormulario('fechaPasada')) {
+          @if (mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])) {
           <div class="invalid-feedback d-block">La fecha no puede ser anterior a hoy.</div>
           }
-          @if (mostrarErrorFormulario('fechaFinAnterior')) {
+          @if (mostrarErrorFormulario('fechaFinAnterior', ['fecha_inicio', 'fecha_fin'])) {
           <div class="invalid-feedback d-block">La fecha de fin no puede ser anterior a la fecha de inicio.</div>
           }
-          @if (mostrarErrorFormulario('fechaNoDisponible')) {
+          @if (mostrarErrorFormulario('fechaNoDisponible', ['fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin'])) {
           <div class="invalid-feedback d-block">Ese rango ya no está disponible en tu calendario.</div>
           }
         </div>
@@ -242,7 +242,7 @@
         <div class="proposal-summary__title">Resumen de propuesta</div>
         <div class="proposal-summary__row">
           <span class="proposal-summary__label">Producto/servicio:</span>
-          <span>{{ resumen.productoNombre }} ({{ resumen.modalidad }})</span>
+          <span>{{ resumen.productoNombre }} ({{ modalidadTexto(resumen.modalidad) }})</span>
         </div>
         <div class="proposal-summary__row">
           <span class="proposal-summary__label">Fecha inicio:</span>
