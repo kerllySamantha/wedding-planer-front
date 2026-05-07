@@ -120,6 +120,8 @@
                                     (change)="onProductoToggle(producto.id, $any($event.target).checked)">
                                 <span>{{ producto.nombre }}</span>
                             </label>
+                            } @empty {
+                            <span class="text-muted small">No hay productos predefinidos para este tipo en el catálogo general. Puedes crear uno personalizado.</span>
                             }
                         </div>
 

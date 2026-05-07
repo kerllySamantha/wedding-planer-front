@@ -203,20 +203,7 @@ export class ConfiguracionAdminComponent {
   }
 
   categoriasEmpresa(): InfoCategoria[] {
-    const tipoServicio = (this.form.controls.tipo_servicio.value ?? '')
-      .toString()
-      .trim()
-      .toLocaleLowerCase();
-    if (!tipoServicio) return this.categorias();
-
-    const exacta = this.categorias().filter(
-      (c) => c.nombre?.toLocaleLowerCase() === tipoServicio,
-    );
-    if (exacta.length) return exacta;
-
-    return this.categorias().filter((c) =>
-      c.nombre?.toLocaleLowerCase().includes(tipoServicio),
-    );
+    return this.categorias();
   }
 
   tiposEditablesPorCategoriaEmpresa(): Array<{
