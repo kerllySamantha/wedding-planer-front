@@ -226,7 +226,7 @@ export class ContenedorTiposComponent {
 
     this.detallesPedidoctx.postDetalles(detalleData).subscribe({
       next: (value) => {
-        const savedId = (value as any)?.id;
+        const savedId = value?.id;
         if (savedId) item.id = savedId;
         this.recalcularResumen();
       },
@@ -257,7 +257,11 @@ export class ContenedorTiposComponent {
   }
 
   esMontoEstimadoEditable(item: PresupuestoItem): boolean {
-    return (item.monto_pagado ?? 0) <= 0;
+    return !this.estaBloqueadoPorPago(item);
+  }
+
+  estaBloqueadoPorPago(item: PresupuestoItem): boolean {
+    return (item.monto_pagado ?? 0) > 0;
   }
 
   private setBaseTotalesCategoria(categoriaId: number, detalles: PresupuestoItem[]) {
