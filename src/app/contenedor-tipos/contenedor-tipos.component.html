@@ -37,7 +37,9 @@
                 [(ngModel)]="detalle.nombre_tipo_personalizado"
                 (ngModelChange)="detalle.es_personalizado = true; onDetalleChange(detalle)"
                 name="nombre_tipo_{{detalle.tipo_producto_id}}"
-                class="input-tipo" />
+                class="input-tipo"
+                [readonly]="estaBloqueadoPorPago(detalle)"
+                [class.readonly]="estaBloqueadoPorPago(detalle)" />
             </td>
             <td>
               <input type="number"
@@ -53,7 +55,9 @@
                 [(ngModel)]="detalle.monto_pagado"
                 (ngModelChange)="onDetalleChange(detalle)"
                 name="monto_pagado_{{detalle.tipo_producto_id}}"
-                class="input-tipo input-numero" />
+                class="input-tipo input-numero"
+                [readonly]="estaBloqueadoPorPago(detalle)"
+                [class.readonly]="estaBloqueadoPorPago(detalle)" />
             </td>
             <td>
               <span class="diferencia-valor"
