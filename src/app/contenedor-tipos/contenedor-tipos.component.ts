@@ -33,6 +33,8 @@ export class ContenedorTiposComponent {
   error = signal<string | null>(null);
   detallesPorCategoria = signal<Record<number, PresupuestoItem[]>>({});
 
+  
+
   lastId: number | null = null;
   private baseTotalesPorCategoria: Record<number, Record<number, { estimado: number; pagado: number }>> = {};
   private presupuestosBaseActuales: Array<{ monto_total: number; monto_pagado: number }> = [];

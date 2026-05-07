@@ -1,0 +1,77 @@
+$accent: #f76c6f;
+$accent-light: rgba($accent, 0.08);
+$color-border: rgb(237, 230, 230);
+$text-dark: #2c2c2c;
+$text-muted: #9ca3af;
+
+.presupuesto-card {
+  background: white;
+  border: 1px solid $color-border;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem 1rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.presupuesto-titulo {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $text-muted;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid $color-border;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 1rem;
+
+  &--middle {
+    border-left: 1px solid $color-border;
+    border-right: 1px solid $color-border;
+  }
+}
+
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: $accent-light;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+
+  i {
+    font-size: 1rem;
+    color: $accent;
+  }
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $text-muted;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: $text-dark;
+  margin: 0;
+
+  &--pagado {
+    color: #3aab7b;
+  }
+
+  &--restante {
+    color: $accent;
+  }
+}

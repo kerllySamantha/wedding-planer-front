@@ -1,71 +1,99 @@
-$color-border : rgb(237, 230, 230);
-$fondo2 : #f76c6f;
+$color-border: rgb(237, 230, 230);
+$accent: #f76c6f;
+$accent-light: rgba($accent, 0.08);
+$accent-mid: rgba($accent, 0.15);
+$text-muted: #b0b8cc;
+$text-dark: #2c2c2c;
 
 .container-personal {
-    width: 90%;
-    margin: 0 auto;
-    padding: 0;
+  width: 90%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+// ── Toggle buttons ─────────────────────────────────────
+.toggle-btn {
+  min-width: 120px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 8px !important;
+  padding: 8px 20px;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
 }
 
 .btn-selected {
-    background-color: $color-border !important;
-    color: rgb(7, 7, 7) !important;
-    border: 1px solid $color-border !important;
-    // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    // transform: scale(1.05);
-    // transition: all 0.2s ease-in-out;
+  background-color: $color-border !important;
+  color: $text-dark !important;
+  border: 1px solid darken($color-border, 5%) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .btn-unselected {
-    background-color: rgb(253, 253, 253);
-    color: #cdd4e9;
-    border: 1px solid $color-border !important;
-    // transition: all 0.2s ease-in-out;
+  background-color: #fff;
+  color: $text-muted;
+  border: 1px solid $color-border !important;
+
+  &:hover {
+    background-color: rgba($color-border, 0.4);
+    color: $text-dark;
+  }
 }
 
-.bi-plus-circle {
-    color: $fondo2;
-    font-weight: 800;
+// ── Lista de categorías ────────────────────────────────
+.categoria-list {
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
-
-img {
-    width: 25px;
-    height: auto;
-    object-fit: contain;
-    vertical-align: middle;
-}
-
 
 .categoria-item {
-    cursor: pointer;
-    padding: 20px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: white;
-    position: relative;
-    transition: all 0.2s ease;
-    border: 1px solid transparent; 
-}
+  cursor: pointer;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border: 1px solid transparent;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  color: $text-dark;
 
-.categoria-item:hover {
-    border-right: 2px solid rgb(160, 158, 158);
-    background-color: rgba($fondo2, 0.03); 
-}
+  &:hover {
+    background-color: $accent-light;
+    border-left-color: rgba($accent, 0.3);
+  }
 
-.categoria-item.active {
-    border: 1px solid transparent; 
-    border-right: 3px solid $fondo2;
-    background-color: rgba($fondo2, 0.1);
-    color: black;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    z-index: 10; 
-}
+  &.active {
+    background-color: $accent-mid;
+    border-left: 3px solid $accent;
+    color: $text-dark;
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px rgba($accent, 0.1);
+  }
 
-.categoria-item img {
+  img {
     width: 22px;
     height: 22px;
     object-fit: contain;
-    flex-shrink: 0; 
+    flex-shrink: 0;
+  }
 }
 
+// ── Ítem "Añadir categoría" ────────────────────────────
+.categoria-add {
+  color: $accent;
+  font-weight: 500;
+  border-bottom: 1px solid $color-border !important;
+
+  .bi-plus-circle {
+    font-size: 1rem;
+  }
+
+  &:hover {
+    background-color: $accent-light;
+    color: darken($accent, 8%);
+  }
+}
