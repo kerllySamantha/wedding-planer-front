@@ -14,6 +14,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import {
   CalendarSelection,
   ExtendedReservaProps,
+  RawCalendarEvent,
   ReservaEvent,
   ReservaFormValue,
 } from '../Interfaces/Reserva';
@@ -27,13 +28,7 @@ import {
 import { ModalCalendarFormComponent } from '../modal-calendar-form/modal-calendar-form.component';
 
 
-interface RawCalendarEvent extends Partial<ReservaEvent> {
-  titulo?: string;
-  fecha_inicio?: string;
-  fecha_fin?: string;
-  estado?: ExtendedReservaProps['estado'];
-  tipo_reserva?: NonNullable<ExtendedReservaProps['tipo_reserva']>;
-}
+
 
 @Component({
   selector: 'app-calendar-proveedores',
