@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, resource, signal } from '@angular/core';
 import { EmpresasServiceServiceService } from './Services/Empresas/empresas-service-service.service';
 import { firstValueFrom } from 'rxjs';
+import { Empresa } from './Interfaces/Empresa';
 
 
 @Injectable({
@@ -26,9 +27,13 @@ export class FiltroEmpresasServiceService {
     this.empresasResource.value()?.data ?? []
   );
 
+  private empresaTieneImagenes(empresa: Empresa): boolean {
+    return (empresa.fotos?.length ?? 0) > 0;
+  }
+
   empresasFiltradas = computed(() => {
     const idSeleccionado = this.categoriaSeleccionadaId();
-    const todas = this.empresasRecibidas();
+    const todas = this.empresasRecibidas().filter((empresa) => this.empresaTieneImagenes(empresa));
 
     if (!idSeleccionado) return todas;
 
