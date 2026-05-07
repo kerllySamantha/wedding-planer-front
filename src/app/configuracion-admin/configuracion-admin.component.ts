@@ -32,6 +32,7 @@ export class ConfiguracionAdminComponent {
   loadingUpload = signal(false);
   saving = signal(false);
   modoEdicion = signal(false);
+  productosError = signal(false);
   idUser = signal<string>(localStorage.getItem('id')!);
   form = this.fb.group(
     {
@@ -43,7 +44,6 @@ export class ConfiguracionAdminComponent {
       direccion: ['', [Validators.required, Validators.minLength(5)]],
       productosSeleccionados: this.fb.control<number[]>([], {
         nonNullable: true,
-        validators: [this.minSeleccionados(1)],
       }),
     },
     { validators: [this.cruceContactoValidator()] },
@@ -116,6 +116,7 @@ export class ConfiguracionAdminComponent {
     this.productosSeleccionados.set(seleccionados);
     this.form.controls.productosSeleccionados.setValue(seleccionados);
     this.form.controls.productosSeleccionados.markAsTouched();
+    this.productosError.set(false);
   }
 
   productosPorTipo(tipoId: number) {
@@ -124,11 +125,19 @@ export class ConfiguracionAdminComponent {
 
 
   tiposEditablesEmpresa(): Array<{ categoriaNombre: string; tipoId: number; tipoNombre: string }> {
-    const empresaActual = this.empresa();
-    if (!empresaActual) return [];
-
     const map = new Map<number, { categoriaNombre: string; tipoId: number; tipoNombre: string }>();
-    for (const producto of empresaActual.productos ?? []) {
+    for (const categoria of this.categorias()) {
+      for (const tipo of categoria.tipos ?? []) {
+        if (map.has(tipo.id)) continue;
+        map.set(tipo.id, {
+          categoriaNombre: categoria.nombre ?? 'Sin categoría',
+          tipoId: tipo.id,
+          tipoNombre: tipo.nombre,
+        });
+      }
+    }
+
+    for (const producto of this.empresa()?.productos ?? []) {
       const tipo = producto.tipo_producto;
       if (!tipo || map.has(tipo.id)) continue;
       map.set(tipo.id, {
@@ -157,6 +166,7 @@ export class ConfiguracionAdminComponent {
       lista[idx] = { ...lista[idx], nombre: value };
       return { ...prev, [tipoId]: lista };
     });
+    this.productosError.set(false);
   }
   onNuevoProductoFieldInput(tipoId: number, idx: number, field: 'descripcion' | 'precio_min' | 'precio_max', value: string) {
     this.nuevosProductosPorTipo.update((prev) => {
@@ -165,6 +175,7 @@ export class ConfiguracionAdminComponent {
       lista[idx] = { ...lista[idx], [field]: value };
       return { ...prev, [tipoId]: lista };
     });
+    this.productosError.set(false);
   }
 
   eliminarCampoNuevoProducto(tipoId: number, idx: number) {
@@ -243,7 +254,12 @@ export class ConfiguracionAdminComponent {
     const values = this.form.getRawValue();
     const productosPayload = this.buildProductosPayload(
       values.productosSeleccionados ?? [],
-    );
+    ) ?? [];
+    if (productosPayload.length === 0) {
+      this.productosError.set(true);
+      return;
+    }
+    this.productosError.set(false);
     const formEmpresa: CreateEmpresa = {
       nombre_empresa: values.nombre_empresa ?? '',
       tipo_servicio: values.tipo_servicio ?? '',
@@ -333,13 +349,6 @@ export class ConfiguracionAdminComponent {
     const apiBase = this.empresaCtx.apiUrl.replace(/\/$/, '');
     const path = url.startsWith('/') ? url : `/${url}`;
     return `${apiBase}${path}`;
-  }
-
-  private minSeleccionados(min: number): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const value = control.value as number[] | null;
-      return value && value.length >= min ? null : { minSeleccionados: true };
-    };
   }
 
   private cruceContactoValidator(): ValidatorFn {
