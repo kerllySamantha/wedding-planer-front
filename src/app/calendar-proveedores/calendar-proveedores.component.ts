@@ -14,6 +14,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import {
   CalendarSelection,
   ExtendedReservaProps,
+  RawCalendarEvent,
   ReservaEvent,
   ReservaFormValue,
 } from '../Interfaces/Reserva';
@@ -25,6 +26,9 @@ import {
   EventMountArg,
 } from '@fullcalendar/core/index.js';
 import { ModalCalendarFormComponent } from '../modal-calendar-form/modal-calendar-form.component';
+
+
+
 
 @Component({
   selector: 'app-calendar-proveedores',
@@ -105,13 +109,6 @@ export class CalendarProveedoresComponent implements OnInit {
       info.el.style.backgroundColor = info.event.backgroundColor!;
       info.el.style.borderColor = info.event.borderColor!;
     },
-
-    datesSet: (info: any) => {
-      setTimeout(() => {
-        const calendarEl = info.el;
-        calendarEl?.classList.remove('fc-skeleton-active');
-      }, 300);
-    },
   }));
 
   getReservas() {
@@ -120,12 +117,12 @@ export class CalendarProveedoresComponent implements OnInit {
     this.reservasctx.getCalendarioEmpresa(this.idEmpresa()).subscribe({
       next: (data) => {
         const eventos = (data || [])
-          .filter((ev: any) =>
+          .filter((ev: RawCalendarEvent) =>
             ['bloqueada', 'confirmada'].includes(
-              ev?.extendedProps?.estado ?? ev?.estado,
+              ev?.extendedProps?.estado ?? ev?.estado ?? 'bloqueada',
             ),
           )
-          .map((ev: any) => this.normalizarEventoCalendario(ev));
+          .map((ev: RawCalendarEvent) => this.normalizarEventoCalendario(ev));
 
         this.events.set(eventos);
         this.loading.set(false);
@@ -216,53 +213,12 @@ export class CalendarProveedoresComponent implements OnInit {
     if (modalElem) bootstrap.Modal.getOrCreateInstance(modalElem).show();
   }
 
-  private renderEventContent(arg: EventContentArg) {
-    const tipo = arg.event.extendedProps['tipo_reserva'];
-    const timeText = tipo === 'servicio' ? arg.timeText : '';
-    const badge =
-      tipo === 'servicio'
-        ? 'Servicio'
-        : tipo === 'producto'
-          ? 'Producto'
-          : 'Bloqueo';
-
-    return {
-      html: `
-        <div class="evento-reserva evento-reserva--${tipo}">
-          <div class="evento-reserva__top">
-            <span class="evento-reserva__badge">${badge}</span>
-            ${timeText ? `<span class="evento-reserva__time">${timeText}</span>` : ''}
-          </div>
-          <div class="evento-reserva__title">${arg.event.title}</div>
-        </div>
-      `,
-    };
-  }
-
-  private buildTooltipText(
-    title: string,
-    tipo: string,
-    start: string,
-    end?: string | null,
-  ): string {
-    if (tipo === 'servicio') {
-      const horaInicio = start.includes('T')
-        ? start.split('T')[1]?.slice(0, 5)
-        : '';
-      const horaFin =
-        end && end.includes('T') ? end.split('T')[1]?.slice(0, 5) : '';
-      return `${title} · Servicio${horaInicio ? ` · ${horaInicio}` : ''}${horaFin ? ` - ${horaFin}` : ''}`;
-    }
-
-    return `${title} · ${tipo === 'producto' ? 'Producto' : 'Bloqueo por fechas'}`;
-  }
-
-  private normalizarEventoCalendario(ev: any): ReservaEvent {
+  private normalizarEventoCalendario(ev: RawCalendarEvent): ReservaEvent {
     const tipo =
       ev?.extendedProps?.tipo_reserva ?? ev?.tipo_reserva ?? 'bloqueo';
     const estado = ev?.extendedProps?.estado ?? ev?.estado ?? 'bloqueada';
     const titulo = ev?.title ?? ev?.titulo ?? 'Reserva';
-    const start = ev?.start ?? ev?.fecha_inicio;
+    const start = ev?.start ?? ev?.fecha_inicio ?? new Date().toISOString();
     const rawEnd = ev?.end ?? ev?.fecha_fin ?? start;
     const colores: Record<string, string> = {
       pendiente: '#f3c623',
@@ -274,7 +230,7 @@ export class CalendarProveedoresComponent implements OnInit {
 
     const esServicio = tipo === 'servicio';
     const startNormalizado = start;
-    const endNormalizado = esServicio ? rawEnd : this.toExclusiveDate(rawEnd);
+    const endNormalizado = esServicio ? rawEnd : this.toExclusiveDate(rawEnd ?? start);
     const fechaFinVisual = esServicio
       ? (rawEnd ?? start)
       : this.toDateOnly(rawEnd ?? start);
