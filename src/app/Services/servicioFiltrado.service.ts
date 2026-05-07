@@ -28,6 +28,10 @@ export class ServicioFiltrado {
 
   protected empresasRecibidas = computed(() => this.empresasResource.value()?.data ?? []);
 
+  private empresaTieneImagenes(empresa: Empresa): boolean {
+    return (empresa.fotos?.length ?? 0) > 0;
+  }
+
 
   setFilters(filtros: Filtros) {
     this.filtros.set(filtros);
@@ -70,7 +74,7 @@ export class ServicioFiltrado {
 
 
   companiesTotalFiltered = computed(() => {
-    let empresas = [...this.empresas()];
+    let empresas = [...this.empresas()].filter((empresa) => this.empresaTieneImagenes(empresa));
     const filtros = this.filtros();
 
     if (filtros) {

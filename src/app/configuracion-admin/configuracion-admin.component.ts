@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { Empresa } from '../Interfaces/Empresa';
 import { CategoriasApiServiceService } from '../Services/Catergorias/categoria-api-service.service';
@@ -45,6 +45,7 @@ export class ConfiguracionAdminComponent {
     >
   >({});
   galeriaUrls = signal<Foto[]>([]);
+  empresaSinImagenes = computed(() => (this.empresa()?.fotos?.length ?? 0) === 0);
   loadingUpload = signal(false);
   saving = signal(false);
   modoEdicion = signal(false);

@@ -5,6 +5,13 @@
         <p class="settings-subtitle">Mantén tu ficha al día para que las parejas te encuentren más rápido y con una presentación profesional.</p>
     </header>
 
+    @if (empresaSinImagenes()) {
+    <article class="settings-card mb-3 border-warning">
+        <h2 class="mb-2">Tu perfil aún no es visible</h2>
+        <p class="mb-0">Para que tu empresa se muestre en el listado público, necesitas subir al menos una imagen en la galería.</p>
+    </article>
+    }
+
     @if (empresa(); as data) {
     @if (!modoEdicion()) {
     <div class="settings-grid">
