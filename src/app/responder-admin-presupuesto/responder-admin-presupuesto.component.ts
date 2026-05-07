@@ -331,11 +331,10 @@ export class ResponderAdminPresupuestoComponent {
       { emitEvent: false },
     );
   }
-
-
   modalidadTexto(modalidad: 'servicio' | 'producto' | 'dia' | null | undefined): string {
-    if (modalidad === 'servicio') return 'hora';
-    if (modalidad === 'producto' || modalidad === 'dia') return 'día';
+    if (modalidad === 'servicio') return 'servicio';
+    if (modalidad === 'producto') return 'producto';
+    if (modalidad === 'dia') return 'día';
     return 'sin modalidad';
   }
 
