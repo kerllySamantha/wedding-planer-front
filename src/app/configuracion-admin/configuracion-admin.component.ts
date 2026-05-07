@@ -12,6 +12,7 @@ import {
   ValidatorFn,
 } from '@angular/forms';
 import { CreateEmpresa } from '../Interfaces/Empresa';
+import { Foto } from '../Interfaces/Resenia';
 
 @Component({
   selector: 'app-configuracion-admin',
@@ -27,8 +28,18 @@ export class ConfiguracionAdminComponent {
   empresa = signal<Empresa | null>(null);
   categorias = signal<InfoCategoria[]>([]);
   productosSeleccionados = signal<number[]>([]);
-  nuevosProductosPorTipo = signal<Record<number, Array<{ nombre: string; descripcion: string; precio_min: string; precio_max: string }>>>({});
-  galeriaUrls = signal<string[]>([]);
+  nuevosProductosPorTipo = signal<
+    Record<
+      number,
+      Array<{
+        nombre: string;
+        descripcion: string;
+        precio_min: string;
+        precio_max: string;
+      }>
+    >
+  >({});
+  galeriaUrls = signal<Foto[]>([]);
   loadingUpload = signal(false);
   saving = signal(false);
   modoEdicion = signal(false);
@@ -75,13 +86,13 @@ export class ConfiguracionAdminComponent {
           this.productosSeleccionados(),
         );
         this.nuevosProductosPorTipo.set({});
-        const fotos = (empresa.fotos ?? [])
-          .map((foto) =>
-            this.normalizeImageUrl(
-              typeof foto === 'string' ? foto : foto?.url,
-            ),
-          )
-          .filter((url): url is string => Boolean(url));
+        const fotos: Foto[] = ((empresa.fotos ?? []) as Foto[])
+          .map((foto) => ({
+            path: foto.path,
+            url: this.normalizeImageUrl(foto.url),
+          }))
+          .filter((foto) => Boolean(foto.url));
+
         this.galeriaUrls.set(fotos);
       },
     });
@@ -94,7 +105,10 @@ export class ConfiguracionAdminComponent {
     });
   }
 
-  productosAgrupadosPorCategoria(): Array<{ categoria: string; productos: Empresa['productos'] }> {
+  productosAgrupadosPorCategoria(): Array<{
+    categoria: string;
+    productos: Empresa['productos'];
+  }> {
     const productos = this.empresa()?.productos ?? [];
     const map = new Map<string, Empresa['productos']>();
     productos.forEach((p) => {
@@ -120,12 +134,20 @@ export class ConfiguracionAdminComponent {
   }
 
   productosPorTipo(tipoId: number) {
-    return (this.empresa()?.productos ?? []).filter((p) => p.tipo_producto?.id === tipoId);
+    return (this.empresa()?.productos ?? []).filter(
+      (p) => p.tipo_producto?.id === tipoId,
+    );
   }
 
-
-  tiposEditablesEmpresa(): Array<{ categoriaNombre: string; tipoId: number; tipoNombre: string }> {
-    const map = new Map<number, { categoriaNombre: string; tipoId: number; tipoNombre: string }>();
+  tiposEditablesEmpresa(): Array<{
+    categoriaNombre: string;
+    tipoId: number;
+    tipoNombre: string;
+  }> {
+    const map = new Map<
+      number,
+      { categoriaNombre: string; tipoId: number; tipoNombre: string }
+    >();
     for (const categoria of this.categorias()) {
       for (const tipo of categoria.tipos ?? []) {
         if (map.has(tipo.id)) continue;
@@ -147,15 +169,20 @@ export class ConfiguracionAdminComponent {
       });
     }
 
-    return Array.from(map.values()).sort((a, b) =>
-      a.categoriaNombre.localeCompare(b.categoriaNombre) || a.tipoNombre.localeCompare(b.tipoNombre),
+    return Array.from(map.values()).sort(
+      (a, b) =>
+        a.categoriaNombre.localeCompare(b.categoriaNombre) ||
+        a.tipoNombre.localeCompare(b.tipoNombre),
     );
   }
 
   agregarCampoNuevoProducto(tipoId: number) {
     this.nuevosProductosPorTipo.update((prev) => ({
       ...prev,
-      [tipoId]: [...(prev[tipoId] ?? []), { nombre: '', descripcion: '', precio_min: '', precio_max: '' }],
+      [tipoId]: [
+        ...(prev[tipoId] ?? []),
+        { nombre: '', descripcion: '', precio_min: '', precio_max: '' },
+      ],
     }));
   }
 
@@ -168,7 +195,12 @@ export class ConfiguracionAdminComponent {
     });
     this.productosError.set(false);
   }
-  onNuevoProductoFieldInput(tipoId: number, idx: number, field: 'descripcion' | 'precio_min' | 'precio_max', value: string) {
+  onNuevoProductoFieldInput(
+    tipoId: number,
+    idx: number,
+    field: 'descripcion' | 'precio_min' | 'precio_max',
+    value: string,
+  ) {
     this.nuevosProductosPorTipo.update((prev) => {
       const lista = [...(prev[tipoId] ?? [])];
       if (idx < 0 || idx >= lista.length) return prev;
@@ -203,15 +235,21 @@ export class ConfiguracionAdminComponent {
       this.loadingUpload.set(true);
       this.empresaCtx.uploadImageBase64(base64, extension, userId).subscribe({
         next: (res) => {
-          const url = this.normalizeImageUrl(res?.data?.url ?? res?.url);
-          if (url) {
-            this.galeriaUrls.set([...this.galeriaUrls(), url]);
+          console.log('Respuesta subida imagen:', res);
+
+          const path = res?.path ?? '';
+          const url = this.normalizeImageUrl(res?.url ?? '');
+
+          if (path && url) {
+            this.galeriaUrls.set([...this.galeriaUrls(), { path, url }]);
           }
           this.loadingUpload.set(false);
         },
         error: (err) => {
-          console.error('Error al subir imagen', err);
-          this.loadingUpload.set(false);
+          console.error('Error completo:', err);
+          console.error('Errores Laravel:', err.error?.errors);
+          console.error('Mensaje:', err.error?.message);
+          this.saving.set(false);
         },
       });
     };
@@ -252,9 +290,8 @@ export class ConfiguracionAdminComponent {
     }
 
     const values = this.form.getRawValue();
-    const productosPayload = this.buildProductosPayload(
-      values.productosSeleccionados ?? [],
-    ) ?? [];
+    const productosPayload =
+      this.buildProductosPayload(values.productosSeleccionados ?? []) ?? [];
     if (productosPayload.length === 0) {
       this.productosError.set(true);
       return;
@@ -298,11 +335,16 @@ export class ConfiguracionAdminComponent {
     const payload: NonNullable<CreateEmpresa['productos']> = [];
 
     for (const productoId of productosSeleccionados) {
-      const productoExistente = productosActuales.find((p) => p.id === productoId);
+      const productoExistente = productosActuales.find(
+        (p) => p.id === productoId,
+      );
       if (!productoExistente) continue;
       payload.push({
         id: productoExistente.id ?? null,
-        nombre: productoExistente.nombre ?? productoExistente.tipo_producto?.nombre ?? '',
+        nombre:
+          productoExistente.nombre ??
+          productoExistente.tipo_producto?.nombre ??
+          '',
         descripcion: productoExistente.descripcion ?? '',
         precio_max: productoExistente.precio_max ?? 0,
         precio_min: productoExistente.precio_min ?? 0,
@@ -311,23 +353,29 @@ export class ConfiguracionAdminComponent {
       });
     }
 
-    Object.entries(this.nuevosProductosPorTipo()).forEach(([tipoIdStr, productos]) => {
-      const tipoInfo = this.findTipoById(Number(tipoIdStr));
-      if (!tipoInfo) return;
-      productos.forEach((productoNuevo) => {
-        const nombreLimpio = productoNuevo.nombre.trim();
-        if (!nombreLimpio) return;
-        payload.push({
-          id: null,
-          nombre: nombreLimpio,
-          descripcion: productoNuevo.descripcion.trim() || undefined,
-          precio_max: productoNuevo.precio_max ? Number(productoNuevo.precio_max) : undefined,
-          precio_min: productoNuevo.precio_min ? Number(productoNuevo.precio_min) : undefined,
-          tipo_producto_nombre: tipoInfo.nombre,
-          categoria_nombre: tipoInfo.categoriaNombre,
+    Object.entries(this.nuevosProductosPorTipo()).forEach(
+      ([tipoIdStr, productos]) => {
+        const tipoInfo = this.findTipoById(Number(tipoIdStr));
+        if (!tipoInfo) return;
+        productos.forEach((productoNuevo) => {
+          const nombreLimpio = productoNuevo.nombre.trim();
+          if (!nombreLimpio) return;
+          payload.push({
+            id: null,
+            nombre: nombreLimpio,
+            descripcion: productoNuevo.descripcion.trim() || undefined,
+            precio_max: productoNuevo.precio_max
+              ? Number(productoNuevo.precio_max)
+              : undefined,
+            precio_min: productoNuevo.precio_min
+              ? Number(productoNuevo.precio_min)
+              : undefined,
+            tipo_producto_nombre: tipoInfo.nombre,
+            categoria_nombre: tipoInfo.categoriaNombre,
+          });
         });
-      });
-    });
+      },
+    );
 
     return payload;
   }
@@ -335,9 +383,14 @@ export class ConfiguracionAdminComponent {
   private findTipoById(
     tipoId: number,
   ): { nombre: string; categoriaNombre: string } | null {
-    const tipoEmpresa = this.tiposEditablesEmpresa().find((item) => item.tipoId === tipoId);
+    const tipoEmpresa = this.tiposEditablesEmpresa().find(
+      (item) => item.tipoId === tipoId,
+    );
     if (tipoEmpresa) {
-      return { nombre: tipoEmpresa.tipoNombre, categoriaNombre: tipoEmpresa.categoriaNombre };
+      return {
+        nombre: tipoEmpresa.tipoNombre,
+        categoriaNombre: tipoEmpresa.categoriaNombre,
+      };
     }
 
     return null;
