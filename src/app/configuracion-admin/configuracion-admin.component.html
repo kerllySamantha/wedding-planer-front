@@ -65,7 +65,7 @@
                         @for (producto of grupo.productos; track producto.id) {
                         <span class="type-chip">
                             <strong>{{ producto.nombre }}</strong>
-                            <small>· {{ producto.tipo_producto.nombre }} ({{ producto.tipo_producto.modalidad }})</small>
+                            <small>· {{ producto.tipo_producto.nombre }} ({{ unidadPorModalidad(producto.tipo_producto.modalidad) }})</small>
                         </span>
                         }
                     </div>
@@ -89,7 +89,7 @@
                 <label>Tipo de servicio <input class="form-control" formControlName="tipo_servicio"></label>
                 <label>Dirección <input class="form-control" formControlName="direccion"></label>
             </div>
-            @if (form.errors?.['contactoRequerido']) {
+            @if (form.errors?.['contactoRequerido'] && (form.touched || form.dirty)) {
             <p class="text-danger mt-2 mb-0">Debes informar al menos email o teléfono de contacto.</p>
             }
         </article>

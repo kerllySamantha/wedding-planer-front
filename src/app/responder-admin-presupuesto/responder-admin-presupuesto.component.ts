@@ -202,12 +202,13 @@ export class ResponderAdminPresupuestoComponent {
       .get('producto_id')
       ?.valueChanges.subscribe((productoId) => {
         const modalidad = this.modalidadDelProducto(productoId) ?? 'servicio';
+        const fechaBase = modalidad === 'servicio' ? this.today : '';
         this.respuestaForm.patchValue(
           {
             modalidad,
-            fecha_inicio: '',
+            fecha_inicio: fechaBase,
             hora_inicio: '',
-            fecha_fin: '',
+            fecha_fin: fechaBase,
             hora_fin: '',
           },
           { emitEvent: false },
@@ -327,9 +328,23 @@ export class ResponderAdminPresupuestoComponent {
       {
         producto_id: primerProducto.id,
         modalidad: primerProducto.tipo_producto?.modalidad ?? 'servicio',
+        fecha_inicio:
+          (primerProducto.tipo_producto?.modalidad ?? 'servicio') === 'servicio'
+            ? this.today
+            : '',
+        fecha_fin:
+          (primerProducto.tipo_producto?.modalidad ?? 'servicio') === 'servicio'
+            ? this.today
+            : '',
       },
       { emitEvent: false },
     );
+  }
+  modalidadTexto(modalidad: 'servicio' | 'producto' | 'dia' | null | undefined): string {
+    if (modalidad === 'servicio') return 'servicio';
+    if (modalidad === 'producto') return 'producto';
+    if (modalidad === 'dia') return 'día';
+    return 'sin modalidad';
   }
 
   etiquetaProducto(
@@ -338,7 +353,7 @@ export class ResponderAdminPresupuestoComponent {
     if (!producto) return 'Producto sin datos';
     const nombre = producto.nombre ?? 'Producto';
     const tipo = producto.tipo_producto?.nombre ?? 'Tipo sin nombre';
-    const modalidad = producto.tipo_producto?.modalidad ?? 'sin modalidad';
+    const modalidad = this.modalidadTexto(producto.tipo_producto?.modalidad ?? null);
     const categoria = producto.categoria?.nombre
       ? ` · ${producto.categoria.nombre}`
       : '';
@@ -370,15 +385,15 @@ export class ResponderAdminPresupuestoComponent {
     );
   }
 
-  mostrarErrorFormulario(errorKey: string): boolean {
-    return (
-      !!this.respuestaForm.errors?.[errorKey] &&
-      (
-        this.respuestaForm.touched ||
-        this.respuestaForm.dirty ||
-        this.intentoEnviarRespuesta()
-      )
-    );
+  mostrarErrorFormulario(errorKey: string, controlNames: string[] = []): boolean {
+    if (!this.respuestaForm.errors?.[errorKey]) return false;
+    if (this.intentoEnviarRespuesta()) return true;
+    if (!controlNames.length) return this.respuestaForm.touched || this.respuestaForm.dirty;
+
+    return controlNames.some((name) => {
+      const control = this.respuestaForm.get(name);
+      return !!control && (control.touched || control.dirty);
+    });
   }
 
   // ── Validadores ──────────────────────────────────────────────────────
@@ -412,22 +427,13 @@ export class ResponderAdminPresupuestoComponent {
         if (!horaInicio) {
           errors.horaInicioRequerida = true;
         }
-
-        if (!fechaFin) {
-          errors.fechaFinInvalida = true;
-        }
-
         if (!horaFin) {
           errors.horaFinRequerida = true;
         }
-
-        if (fechaFin && fechaFin < this.today) {
-          errors.fechaPasada = true;
-        }
-
-        if (fechaInicio && horaInicio && fechaFin && horaFin) {
-          const inicio = new Date(`${fechaInicio}T${horaInicio}`);
-          const fin = new Date(`${fechaFin}T${horaFin}`);
+        if (horaInicio && horaFin) {
+          const fechaServicio = this.today;
+          const inicio = new Date(`${fechaServicio}T${horaInicio}`);
+          const fin = new Date(`${fechaServicio}T${horaFin}`);
 
           if (isNaN(inicio.getTime())) {
             errors.fechaInicioInvalida = true;
@@ -619,12 +625,13 @@ export class ResponderAdminPresupuestoComponent {
       this.respuestaForm.get('hora_inicio')?.value?.trim() ?? '';
     const fechaFin = this.respuestaForm.get('fecha_fin')?.value?.trim() ?? '';
     const horaFin = this.respuestaForm.get('hora_fin')?.value?.trim() ?? '';
+    const fechaServicio = this.today;
     const inicioRaw =
       modalidad === 'servicio'
-        ? `${fechaInicio} ${horaInicio}`.trim()
+        ? `${fechaServicio} ${horaInicio}`.trim()
         : fechaInicio;
     const finRaw =
-      modalidad === 'servicio' ? `${fechaFin} ${horaFin}`.trim() : fechaFin;
+      modalidad === 'servicio' ? `${fechaServicio} ${horaFin}`.trim() : fechaFin;
 
     const fechas =
       modalidad === 'servicio'
