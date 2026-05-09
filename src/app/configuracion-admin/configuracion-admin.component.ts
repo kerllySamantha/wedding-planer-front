@@ -460,6 +460,15 @@ export class ConfiguracionAdminComponent {
 
   private findCategoriaNombreByTipoId(tipoId?: number): string {
     if (!tipoId) return '';
+    const categoriaActiva = this.categorias().find(
+      (categoria) =>
+        categoria.id === this.categoriaSeleccionadaId() &&
+        (categoria.tipos ?? []).some((tipo) => tipo.id === tipoId),
+    );
+    if (categoriaActiva) {
+      return categoriaActiva.nombre ?? '';
+    }
+
     for (const categoria of this.categorias()) {
       if ((categoria.tipos ?? []).some((tipo) => tipo.id === tipoId)) {
         return categoria.nombre ?? '';
