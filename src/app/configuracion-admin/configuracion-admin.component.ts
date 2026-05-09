@@ -135,19 +135,28 @@ export class ConfiguracionAdminComponent {
     const categorias = this.categorias();
     if (!categorias.length) return;
 
-    const primerProductoEmpresa = this.empresa()?.productos?.[0];
-    const categoriaProductoId = primerProductoEmpresa?.categoria?.id;
-    const tipoProductoId = primerProductoEmpresa?.tipo_producto?.id;
-
+    const productosEmpresa = this.empresa()?.productos ?? [];
     let categoriaObjetivoId: number | null = null;
 
-    const categoriaPorId = categorias.find((c) => c.id === categoriaProductoId);
-    if (categoriaPorId) categoriaObjetivoId = categoriaPorId.id;
+    const categoriaValidaDesdeProducto = productosEmpresa.find((producto) =>
+      categorias.some((categoria) => categoria.id === producto.categoria?.id),
+    );
 
-    if (!categoriaObjetivoId && tipoProductoId) {
-      const categoriaPorTipo = categorias.find((categoria) =>
-        (categoria.tipos ?? []).some((tipo) => tipo.id === tipoProductoId),
-      );
+    if (categoriaValidaDesdeProducto?.categoria?.id) {
+      categoriaObjetivoId = categoriaValidaDesdeProducto.categoria.id;
+    }
+
+    if (!categoriaObjetivoId) {
+      const categoriaPorTipo = productosEmpresa
+        .map((producto) => producto.tipo_producto?.id)
+        .filter((tipoId): tipoId is number => Boolean(tipoId))
+        .map((tipoId) =>
+          categorias.find((categoria) =>
+            (categoria.tipos ?? []).some((tipo) => tipo.id === tipoId),
+          ),
+        )
+        .find((categoria): categoria is InfoCategoria => Boolean(categoria));
+
       if (categoriaPorTipo) {
         categoriaObjetivoId = categoriaPorTipo.id;
       }
@@ -213,9 +222,13 @@ export class ConfiguracionAdminComponent {
     );
     if (!tipoPerteneceCategoria) return [];
 
-    return this.productosCatalogoGeneral().filter(
-      (producto) => producto.tipo_producto?.id === tipoId,
-    );
+    const empresaId = this.empresa()?.id;
+    return this.productosCatalogoGeneral().filter((producto) => {
+      const esDelTipo = producto.tipo_producto?.id === tipoId;
+      const esPropioEmpresa =
+        Boolean(empresaId) && producto.empresa?.id === empresaId;
+      return esDelTipo && !esPropioEmpresa;
+    });
   }
 
   unidadPorModalidad(modalidad?: string): string {
@@ -227,8 +240,16 @@ export class ConfiguracionAdminComponent {
   private inicializarProductosPersonalizados() {
     const catalogoIds = new Set(this.productosCatalogoGeneral().map((p) => p.id));
     const porTipo: Record<number, Array<{ id: number; nombre: string; descripcion: string; precio_min: string; precio_max: string }>> = {};
+    const empresaId = this.empresa()?.id;
+    const productosPropiosEnCatalogo = new Set(
+      this.productosCatalogoGeneral()
+        .filter((producto) => Boolean(empresaId) && producto.empresa?.id === empresaId)
+        .map((producto) => producto.id),
+    );
+
     for (const producto of this.empresa()?.productos ?? []) {
-      if (catalogoIds.has(producto.id)) continue;
+      const esPropioEmpresa = productosPropiosEnCatalogo.has(producto.id);
+      if (!esPropioEmpresa && catalogoIds.has(producto.id)) continue;
       const tipoId = producto.tipo_producto?.id;
       if (!tipoId) continue;
       porTipo[tipoId] = porTipo[tipoId] ?? [];
