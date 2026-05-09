@@ -205,7 +205,17 @@ export class ConfiguracionAdminComponent {
   }
 
   productosPorTipo(tipoId: number) {
-    return this.productosCatalogoGeneral().filter((p) => p.tipo_producto?.id === tipoId);
+    const categoriaSeleccionada = this.categorias().find(
+      (c) => c.id === this.categoriaSeleccionadaId(),
+    );
+    const tipoPerteneceCategoria = (categoriaSeleccionada?.tipos ?? []).some(
+      (tipo) => tipo.id === tipoId,
+    );
+    if (!tipoPerteneceCategoria) return [];
+
+    return this.productosCatalogoGeneral().filter(
+      (producto) => producto.tipo_producto?.id === tipoId,
+    );
   }
 
   unidadPorModalidad(modalidad?: string): string {
