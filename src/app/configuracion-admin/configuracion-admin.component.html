@@ -187,6 +187,26 @@
                 }
               </div>
 
+              <!-- Productos personalizados existentes (siempre editables) -->
+              @for (personalizado of (productosPersonalizados()[tipoPermitido.tipoId]); track personalizado.id; let idx = $index) {
+              <div class="type-editor-card__new-item">
+                <input class="form-control form-control-sm" placeholder="Nombre del producto personalizado" [value]="personalizado.nombre"
+                  (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'nombre', $any($event.target).value)">
+                <input class="form-control form-control-sm" placeholder="Descripción (opcional)" [value]="personalizado.descripcion"
+                  (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'descripcion', $any($event.target).value)">
+                <div class="row g-2">
+                  <div class="col">
+                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio mínimo" [value]="personalizado.precio_min"
+                      (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_min', $any($event.target).value)">
+                  </div>
+                  <div class="col">
+                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio máximo" [value]="personalizado.precio_max"
+                      (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
+                  </div>
+                </div>
+              </div>
+              }
+
               <!-- Campos para nuevos productos personalizados -->
               @for (nuevo of (nuevosProductosPorTipo()[tipoPermitido.tipoId]); track $index; let idx = $index) {
               <div class="type-editor-card__new-item">

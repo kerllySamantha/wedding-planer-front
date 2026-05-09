@@ -33,6 +33,19 @@ export class ConfiguracionAdminComponent {
   productosSeleccionados = signal<number[]>([]);
   categoriaSeleccionadaId = signal<number | null>(null);
   productosCatalogoGeneral = signal<Producto[]>([]);
+
+  productosPersonalizados = signal<
+    Record<
+      number,
+      Array<{
+        id: number;
+        nombre: string;
+        descripcion: string;
+        precio_min: string;
+        precio_max: string;
+      }>
+    >
+  >({});
   nuevosProductosPorTipo = signal<
     Record<
       number,
@@ -93,6 +106,7 @@ export class ConfiguracionAdminComponent {
           this.productosSeleccionados(),
         );
         this.nuevosProductosPorTipo.set({});
+        this.inicializarProductosPersonalizados();
         const fotos: Foto[] = ((empresa.fotos ?? []) as Foto[])
           .map((foto) => ({
             path: foto.path,
@@ -152,7 +166,10 @@ export class ConfiguracionAdminComponent {
     this.http
       .get<{ data: Producto[] }>(`${this.empresaCtx.apiUrl}/productos`)
       .subscribe({
-        next: (response) => this.productosCatalogoGeneral.set(response?.data ?? []),
+        next: (response) => {
+          this.productosCatalogoGeneral.set(response?.data ?? []);
+          this.inicializarProductosPersonalizados();
+        },
         error: (err) => {
           console.error('Error al cargar productos globales', err);
           this.productosCatalogoGeneral.set([]);
@@ -195,6 +212,40 @@ export class ConfiguracionAdminComponent {
     return modalidad === 'servicio' ? 'horas' : 'días';
   }
 
+
+
+  private inicializarProductosPersonalizados() {
+    const catalogoIds = new Set(this.productosCatalogoGeneral().map((p) => p.id));
+    const porTipo: Record<number, Array<{ id: number; nombre: string; descripcion: string; precio_min: string; precio_max: string }>> = {};
+    for (const producto of this.empresa()?.productos ?? []) {
+      if (catalogoIds.has(producto.id)) continue;
+      const tipoId = producto.tipo_producto?.id;
+      if (!tipoId) continue;
+      porTipo[tipoId] = porTipo[tipoId] ?? [];
+      porTipo[tipoId].push({
+        id: producto.id,
+        nombre: producto.nombre ?? '',
+        descripcion: producto.descripcion ?? '',
+        precio_min: String(producto.precio_min ?? ''),
+        precio_max: String(producto.precio_max ?? ''),
+      });
+    }
+    this.productosPersonalizados.set(porTipo);
+  }
+
+  onProductoPersonalizadoFieldInput(
+    tipoId: number,
+    idx: number,
+    field: 'nombre' | 'descripcion' | 'precio_min' | 'precio_max',
+    value: string,
+  ) {
+    this.productosPersonalizados.update((prev) => {
+      const lista = [...(prev[tipoId] ?? [])];
+      if (idx < 0 || idx >= lista.length) return prev;
+      lista[idx] = { ...lista[idx], [field]: value };
+      return { ...prev, [tipoId]: lista };
+    });
+  }
 
   onCategoriaSeleccionada(categoriaId: number) {
     this.categoriaSeleccionadaId.set(categoriaId);
@@ -426,9 +477,15 @@ export class ConfiguracionAdminComponent {
     const productosActuales = empresaActual?.productos ?? [];
     const payload: NonNullable<CreateEmpresa['productos']> = [];
 
+    const personalizadosIds = new Set(
+      Object.values(this.productosPersonalizados())
+        .flat()
+        .map((item) => item.id),
+    );
+
     for (const productoId of productosSeleccionados) {
       const productoExistente = productosActuales.find((p) => p.id === productoId);
-      if (productoExistente) {
+      if (productoExistente && !personalizadosIds.has(productoId)) {
         payload.push({
           id: productoExistente.id ?? null,
           nombre:
@@ -460,6 +517,24 @@ export class ConfiguracionAdminComponent {
         ),
       });
     }
+
+    Object.entries(this.productosPersonalizados()).forEach(([tipoIdStr, productos]) => {
+      const tipoInfo = this.findTipoById(Number(tipoIdStr));
+      if (!tipoInfo) return;
+      productos.forEach((productoEditado) => {
+        const nombreLimpio = productoEditado.nombre.trim();
+        if (!nombreLimpio) return;
+        payload.push({
+          id: productoEditado.id,
+          nombre: nombreLimpio,
+          descripcion: productoEditado.descripcion.trim() || undefined,
+          precio_max: productoEditado.precio_max ? Number(productoEditado.precio_max) : undefined,
+          precio_min: productoEditado.precio_min ? Number(productoEditado.precio_min) : undefined,
+          tipo_producto_nombre: tipoInfo.nombre,
+          categoria_nombre: tipoInfo.categoriaNombre,
+        });
+      });
+    });
 
     Object.entries(this.nuevosProductosPorTipo()).forEach(
       ([tipoIdStr, productos]) => {
