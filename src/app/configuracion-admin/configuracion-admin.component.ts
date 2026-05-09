@@ -553,6 +553,7 @@ export class ConfiguracionAdminComponent {
     const empresaActual = this.empresa();
     const productosActuales = empresaActual?.productos ?? [];
     const payload: NonNullable<CreateEmpresa['productos']> = [];
+    const productosEmpresaIds = new Set((empresaActual?.productos ?? []).map((p) => p.id));
 
     const personalizadosIds = new Set(
       Object.values(this.productosPersonalizados())
@@ -604,7 +605,7 @@ export class ConfiguracionAdminComponent {
         const nombreLimpio = productoEditado.nombre.trim();
         if (!nombreLimpio) return;
         payload.push({
-          id: productoEditado.id,
+          id: productosEmpresaIds.has(productoEditado.id) ? productoEditado.id : null,
           nombre: nombreLimpio,
           descripcion: productoEditado.descripcion.trim() || undefined,
           precio_max: productoEditado.precio_max ? Number(productoEditado.precio_max) : undefined,
