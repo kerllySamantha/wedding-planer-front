@@ -68,6 +68,7 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
       logo: empresa.logo ?? '',
       fotos: empresa.fotos ?? [],
       productos: empresa.productos ?? [],
+      productos_eliminados: empresa.productos_eliminados ?? [],
     };
 
     return this.http
@@ -93,6 +94,7 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
       logo: empresa.logo ?? '',
       fotos: empresa.fotos ?? [],
       productos: empresa.productos ?? [],
+      productos_eliminados: empresa.productos_eliminados ?? [],
     };
     return this.http.put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject);
   }

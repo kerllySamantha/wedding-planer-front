@@ -101,6 +101,7 @@ export class ConfiguracionAdminComponent {
           .filter((foto) => Boolean(foto.url));
 
         this.galeriaUrls.set(fotos);
+        this.inicializarCategoriaSeleccionada();
       },
     });
   }
@@ -110,12 +111,41 @@ export class ConfiguracionAdminComponent {
       next: (data) => {
         const categorias = data?.data ?? [];
         this.categorias.set(categorias);
-        if (!this.categoriaSeleccionadaId() && categorias.length) {
-          this.categoriaSeleccionadaId.set(categorias[0].id);
-        }
+        this.inicializarCategoriaSeleccionada();
       },
       error: (err) => console.error('Error al cargar categorías', err),
     });
+  }
+
+  private inicializarCategoriaSeleccionada() {
+    const categorias = this.categorias();
+    if (!categorias.length) return;
+
+    const primerProductoEmpresa = this.empresa()?.productos?.[0];
+    const categoriaProductoId = primerProductoEmpresa?.categoria?.id;
+    const tipoProductoId = primerProductoEmpresa?.tipo_producto?.id;
+
+    let categoriaObjetivoId: number | null = null;
+
+    const categoriaPorId = categorias.find((c) => c.id === categoriaProductoId);
+    if (categoriaPorId) categoriaObjetivoId = categoriaPorId.id;
+
+    if (!categoriaObjetivoId && tipoProductoId) {
+      const categoriaPorTipo = categorias.find((categoria) =>
+        (categoria.tipos ?? []).some((tipo) => tipo.id === tipoProductoId),
+      );
+      if (categoriaPorTipo) {
+        categoriaObjetivoId = categoriaPorTipo.id;
+      }
+    }
+
+    if (!categoriaObjetivoId) {
+      categoriaObjetivoId = categorias[0].id;
+    }
+
+    if (this.categoriaSeleccionadaId() !== categoriaObjetivoId) {
+      this.categoriaSeleccionadaId.set(categoriaObjetivoId);
+    }
   }
 
   getProductosCatalogoGeneral() {
@@ -371,6 +401,7 @@ export class ConfiguracionAdminComponent {
       logo: empresa.logo ?? '',
       fotos: this.galeriaUrls(),
       productos: productosPayload,
+      productos_eliminados: this.getProductosEliminados(values.productosSeleccionados ?? []),
     };
 
     this.saving.set(true);
@@ -457,9 +488,26 @@ export class ConfiguracionAdminComponent {
     return payload;
   }
 
+  private getProductosEliminados(productosSeleccionados: number[]): number[] {
+    const idsActuales = (this.empresa()?.productos ?? [])
+      .map((producto) => producto.id)
+      .filter((id): id is number => Number.isInteger(id));
+    const idsSeleccionados = new Set(productosSeleccionados);
+    return idsActuales.filter((id) => !idsSeleccionados.has(id));
+  }
+
 
   private findCategoriaNombreByTipoId(tipoId?: number): string {
     if (!tipoId) return '';
+    const categoriaActiva = this.categorias().find(
+      (categoria) =>
+        categoria.id === this.categoriaSeleccionadaId() &&
+        (categoria.tipos ?? []).some((tipo) => tipo.id === tipoId),
+    );
+    if (categoriaActiva) {
+      return categoriaActiva.nombre ?? '';
+    }
+
     for (const categoria of this.categorias()) {
       if ((categoria.tipos ?? []).some((tipo) => tipo.id === tipoId)) {
         return categoria.nombre ?? '';
