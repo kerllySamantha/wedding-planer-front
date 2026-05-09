@@ -63,6 +63,7 @@ export class ConfiguracionAdminComponent {
   saving = signal(false);
   modoEdicion = signal(false);
   productosError = signal(false);
+  productosRangoError = signal<string | null>(null);
   idUser = signal<string>(localStorage.getItem('id')!);
   form = this.fb.group(
     {
@@ -211,6 +212,7 @@ export class ConfiguracionAdminComponent {
     this.productosSeleccionados.set(seleccionados);
     this.form.controls.productosSeleccionados.setValue(seleccionados);
     this.productosError.set(false);
+    this.productosRangoError.set(null);
   }
 
   productosPorTipo(tipoId: number) {
@@ -276,6 +278,7 @@ export class ConfiguracionAdminComponent {
       lista[idx] = { ...lista[idx], [field]: value };
       return { ...prev, [tipoId]: lista };
     });
+    this.productosRangoError.set(null);
   }
 
   onCategoriaSeleccionada(categoriaId: number) {
@@ -367,6 +370,7 @@ export class ConfiguracionAdminComponent {
       return { ...prev, [tipoId]: lista };
     });
     this.productosError.set(false);
+    this.productosRangoError.set(null);
   }
   onNuevoProductoFieldInput(
     tipoId: number,
@@ -381,6 +385,7 @@ export class ConfiguracionAdminComponent {
       return { ...prev, [tipoId]: lista };
     });
     this.productosError.set(false);
+    this.productosRangoError.set(null);
   }
 
   eliminarCampoNuevoProducto(tipoId: number, idx: number) {
@@ -470,6 +475,24 @@ export class ConfiguracionAdminComponent {
       return;
     }
     this.productosError.set(false);
+    const productoConRangoInvalido = productosPayload.find((producto) => {
+      const min = producto.precio_min;
+      const max = producto.precio_max;
+      return (
+        typeof min === 'number' &&
+        typeof max === 'number' &&
+        !Number.isNaN(min) &&
+        !Number.isNaN(max) &&
+        min > max
+      );
+    });
+    if (productoConRangoInvalido) {
+      this.productosRangoError.set(
+        `El producto "${productoConRangoInvalido.nombre}" tiene un rango inválido: precio mínimo mayor al máximo.`,
+      );
+      return;
+    }
+    this.productosRangoError.set(null);
     const formEmpresa: CreateEmpresa = {
       nombre_empresa: values.nombre_empresa ?? '',
       tipo_servicio: values.tipo_servicio ?? '',
