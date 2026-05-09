@@ -101,6 +101,7 @@ export class ConfiguracionAdminComponent {
           .filter((foto) => Boolean(foto.url));
 
         this.galeriaUrls.set(fotos);
+        this.inicializarCategoriaSeleccionada();
       },
     });
   }
@@ -110,12 +111,38 @@ export class ConfiguracionAdminComponent {
       next: (data) => {
         const categorias = data?.data ?? [];
         this.categorias.set(categorias);
-        if (!this.categoriaSeleccionadaId() && categorias.length) {
-          this.categoriaSeleccionadaId.set(categorias[0].id);
-        }
+        this.inicializarCategoriaSeleccionada();
       },
       error: (err) => console.error('Error al cargar categorías', err),
     });
+  }
+
+  private inicializarCategoriaSeleccionada() {
+    if (this.categoriaSeleccionadaId()) return;
+    const categorias = this.categorias();
+    if (!categorias.length) return;
+
+    const primerProductoEmpresa = this.empresa()?.productos?.[0];
+    const categoriaProductoId = primerProductoEmpresa?.categoria?.id;
+    const tipoProductoId = primerProductoEmpresa?.tipo_producto?.id;
+
+    const categoriaPorId = categorias.find((c) => c.id === categoriaProductoId);
+    if (categoriaPorId) {
+      this.categoriaSeleccionadaId.set(categoriaPorId.id);
+      return;
+    }
+
+    if (tipoProductoId) {
+      const categoriaPorTipo = categorias.find((categoria) =>
+        (categoria.tipos ?? []).some((tipo) => tipo.id === tipoProductoId),
+      );
+      if (categoriaPorTipo) {
+        this.categoriaSeleccionadaId.set(categoriaPorTipo.id);
+        return;
+      }
+    }
+
+    this.categoriaSeleccionadaId.set(categorias[0].id);
   }
 
   getProductosCatalogoGeneral() {
