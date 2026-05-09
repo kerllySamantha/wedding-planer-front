@@ -143,10 +143,10 @@
         <select
           id="categoria-activa-select"
           class="form-select"
-          [value]="categoriaSeleccionadaId()"
+          [value]="categoriaSeleccionadaId()?.toString() ?? ''"
           (change)="onCategoriaSeleccionada(+$any($event.target).value)">
           @for (categoria of categoriasEmpresa(); track categoria.id) {
-          <option [value]="categoria.id">{{ categoria.nombre }}</option>
+          <option [value]="categoria.id.toString()">{{ categoria.nombre }}</option>
           }
         </select>
       </div>
