@@ -241,6 +241,9 @@
       @if (productosError()) {
       <p class="text-danger mt-2 mb-0">Debes seleccionar o crear al menos un producto/servicio para guardar.</p>
       }
+      @if (productosRangoError()) {
+      <p class="text-danger mt-2 mb-0">{{ productosRangoError() }}</p>
+      }
     </article>
 
     <!-- Galería de fotos -->
