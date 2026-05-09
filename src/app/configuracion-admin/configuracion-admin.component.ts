@@ -532,6 +532,7 @@ export class ConfiguracionAdminComponent {
       productos_eliminados: this.getProductosEliminados(values.productosSeleccionados ?? []),
     };
 
+    console.log('Payload enviado a /api/empresas/:id', formEmpresa);
     this.saving.set(true);
     this.empresaCtx.editEmpresa(String(empresa.id), formEmpresa).subscribe({
       next: (value) => {
