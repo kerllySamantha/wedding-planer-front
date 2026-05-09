@@ -134,21 +134,21 @@
     <article class="settings-card">
       <h2>Categorías y tipos</h2>
       <p class="settings-subtitle mb-3">
-        Selecciona una única categoría y luego marca productos del catálogo general o añade personalizados.
+        Selecciona una categoría del desplegable para ver todos los tipos y productos globales de esa categoría, además de tus personalizados.
       </p>
 
-      <!-- Selector de categoría (radio pills) -->
-      <div class="category-picker mb-3">
-        @for (categoria of categoriasEmpresa(); track categoria.id) {
-        <label class="category-option">
-          <input
-            type="radio"
-            name="categoria-activa"
-            [checked]="categoriaSeleccionadaId() === categoria.id"
-            (change)="onCategoriaSeleccionada(categoria.id)">
-          <span>{{ categoria.nombre }}</span>
-        </label>
-        }
+      <!-- Selector de categoría (desplegable) -->
+      <div class="mb-3">
+        <label class="form-label" for="categoria-activa-select">Categoría</label>
+        <select
+          id="categoria-activa-select"
+          class="form-select"
+          [value]="categoriaSeleccionadaId()"
+          (change)="onCategoriaSeleccionada(+$any($event.target).value)">
+          @for (categoria of categoriasEmpresa(); track categoria.id) {
+          <option [value]="categoria.id">{{ categoria.nombre }}</option>
+          }
+        </select>
       </div>
 
       <!-- Tipos editables -->
