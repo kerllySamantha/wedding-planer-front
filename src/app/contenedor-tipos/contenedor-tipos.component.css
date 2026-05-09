@@ -1,1 +1,102 @@
-/*# sourceMappingURL=contenedor-tipos.component.css.map */
+.skeleton-wrapper {
+  padding: 0.5rem 0;
+}
+
+.skeleton-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgb(237, 230, 230);
+}
+.skeleton-row.header {
+  padding-bottom: 14px;
+}
+.skeleton-row.header .skeleton {
+  height: 14px;
+  border-radius: 6px;
+}
+
+.skeleton-cell {
+  border-radius: 8px;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgb(237, 230, 230) 25%, rgba(255, 255, 255, 0.8) 50%, rgb(237, 230, 230) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 8px;
+  height: 36px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.tipos-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.tipos-table thead tr th {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #9ca3af;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgb(237, 230, 230);
+  white-space: nowrap;
+}
+.tipos-table tbody .tipo-row {
+  transition: background 0.15s ease;
+}
+.tipos-table tbody .tipo-row:hover {
+  background-color: rgba(247, 108, 111, 0.08);
+}
+.tipos-table tbody .tipo-row td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(237, 230, 230, 0.6);
+  vertical-align: middle;
+}
+
+.input-tipo {
+  width: 100%;
+  border: 1px solid rgb(237, 230, 230);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 0.875rem;
+  color: #2c2c2c;
+  background: white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+.input-tipo:focus {
+  border-color: rgba(247, 108, 111, 0.5);
+  box-shadow: 0 0 0 3px rgba(247, 108, 111, 0.1);
+}
+.input-tipo.readonly {
+  background-color: #fafafa;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.input-numero {
+  text-align: right;
+}
+
+.diferencia-valor {
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.diferencia-valor.positivo {
+  color: #3aab7b;
+}
+.diferencia-valor.negativo {
+  color: #f76c6f;
+}/*# sourceMappingURL=contenedor-tipos.component.css.map */
