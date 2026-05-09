@@ -134,21 +134,21 @@
     <article class="settings-card">
       <h2>Categorías y tipos</h2>
       <p class="settings-subtitle mb-3">
-        Selecciona una única categoría y luego marca productos del catálogo general o añade personalizados.
+        Selecciona una categoría del desplegable para ver todos los tipos y productos globales de esa categoría, además de tus personalizados.
       </p>
 
-      <!-- Selector de categoría (radio pills) -->
-      <div class="category-picker mb-3">
-        @for (categoria of categoriasEmpresa(); track categoria.id) {
-        <label class="category-option">
-          <input
-            type="radio"
-            name="categoria-activa"
-            [checked]="categoriaSeleccionadaId() === categoria.id"
-            (change)="onCategoriaSeleccionada(categoria.id)">
-          <span>{{ categoria.nombre }}</span>
-        </label>
-        }
+      <!-- Selector de categoría (desplegable) -->
+      <div class="mb-3">
+        <label class="form-label" for="categoria-activa-select">Categoría</label>
+        <select
+          id="categoria-activa-select"
+          class="form-select"
+          [value]="categoriaSeleccionadaId()"
+          (change)="onCategoriaSeleccionada(+$any($event.target).value)">
+          @for (categoria of categoriasEmpresa(); track categoria.id) {
+          <option [value]="categoria.id">{{ categoria.nombre }}</option>
+          }
+        </select>
       </div>
 
       <!-- Tipos editables -->
@@ -186,6 +186,26 @@
                 </span>
                 }
               </div>
+
+              <!-- Productos personalizados existentes (siempre editables) -->
+              @for (personalizado of (productosPersonalizados()[tipoPermitido.tipoId]); track personalizado.id; let idx = $index) {
+              <div class="type-editor-card__new-item">
+                <input class="form-control form-control-sm" placeholder="Nombre del producto personalizado" [value]="personalizado.nombre"
+                  (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'nombre', $any($event.target).value)">
+                <input class="form-control form-control-sm" placeholder="Descripción (opcional)" [value]="personalizado.descripcion"
+                  (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'descripcion', $any($event.target).value)">
+                <div class="row g-2">
+                  <div class="col">
+                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio mínimo" [value]="personalizado.precio_min"
+                      (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_min', $any($event.target).value)">
+                  </div>
+                  <div class="col">
+                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio máximo" [value]="personalizado.precio_max"
+                      (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
+                  </div>
+                </div>
+              </div>
+              }
 
               <!-- Campos para nuevos productos personalizados -->
               @for (nuevo of (nuevosProductosPorTipo()[tipoPermitido.tipoId]); track $index; let idx = $index) {
