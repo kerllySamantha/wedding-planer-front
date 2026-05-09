@@ -118,7 +118,6 @@ export class ConfiguracionAdminComponent {
   }
 
   private inicializarCategoriaSeleccionada() {
-    if (this.categoriaSeleccionadaId()) return;
     const categorias = this.categorias();
     if (!categorias.length) return;
 
@@ -126,23 +125,27 @@ export class ConfiguracionAdminComponent {
     const categoriaProductoId = primerProductoEmpresa?.categoria?.id;
     const tipoProductoId = primerProductoEmpresa?.tipo_producto?.id;
 
-    const categoriaPorId = categorias.find((c) => c.id === categoriaProductoId);
-    if (categoriaPorId) {
-      this.categoriaSeleccionadaId.set(categoriaPorId.id);
-      return;
-    }
+    let categoriaObjetivoId: number | null = null;
 
-    if (tipoProductoId) {
+    const categoriaPorId = categorias.find((c) => c.id === categoriaProductoId);
+    if (categoriaPorId) categoriaObjetivoId = categoriaPorId.id;
+
+    if (!categoriaObjetivoId && tipoProductoId) {
       const categoriaPorTipo = categorias.find((categoria) =>
         (categoria.tipos ?? []).some((tipo) => tipo.id === tipoProductoId),
       );
       if (categoriaPorTipo) {
-        this.categoriaSeleccionadaId.set(categoriaPorTipo.id);
-        return;
+        categoriaObjetivoId = categoriaPorTipo.id;
       }
     }
 
-    this.categoriaSeleccionadaId.set(categorias[0].id);
+    if (!categoriaObjetivoId) {
+      categoriaObjetivoId = categorias[0].id;
+    }
+
+    if (this.categoriaSeleccionadaId() !== categoriaObjetivoId) {
+      this.categoriaSeleccionadaId.set(categoriaObjetivoId);
+    }
   }
 
   getProductosCatalogoGeneral() {
