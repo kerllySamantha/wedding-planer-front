@@ -224,15 +224,36 @@ export class ConfiguracionAdminComponent {
     );
     if (!tipoPerteneceCategoria) return [];
 
-    const map = new Map<number, Producto>();
-    this.productosCatalogoGeneral().forEach((producto) => {
+    const productosEmpresa = this.empresa()?.productos ?? [];
+    const idsEmpresa = new Set(productosEmpresa.map((producto) => producto.id));
+    const map = new Map<string, Producto>();
+
+    const upsertProducto = (producto: Producto) => {
       if (producto.tipo_producto?.id !== tipoId) return;
       if (!producto.id) return;
-      if (map.has(producto.id)) return;
-      map.set(producto.id, producto);
-    });
+      const key = this.productoComparableKey(producto);
+      const existente = map.get(key);
+      if (!existente) {
+        map.set(key, producto);
+        return;
+      }
+      const actualEsEmpresa = idsEmpresa.has(existente.id);
+      const nuevoEsEmpresa = idsEmpresa.has(producto.id);
+      if (!actualEsEmpresa && nuevoEsEmpresa) {
+        map.set(key, producto);
+      }
+    };
+
+    this.productosCatalogoGeneral().forEach(upsertProducto);
+    productosEmpresa.forEach(upsertProducto);
 
     return Array.from(map.values());
+  }
+
+  private productoComparableKey(producto: Producto): string {
+    const tipoId = producto.tipo_producto?.id ?? 0;
+    const nombre = (producto.nombre ?? '').trim().toLowerCase();
+    return `${tipoId}::${nombre}`;
   }
 
   unidadPorModalidad(modalidad?: string): string {
