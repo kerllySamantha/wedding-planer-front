@@ -34,18 +34,29 @@ export class CardActividadesNoviaComponent {
   formatearMoneda(valor: number): string {
     return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(valor || 0);
   }
+formatearNombrePareja(nombre: string | null | undefined): string {
+  if (!nombre) return 'Nuestra Boda';
 
-  formatearNombrePareja(nombre: string | null | undefined): string {
-    if (!nombre) return 'Nuestra Boda';
+  const nombreLimpio = nombre.trim();
+  const LIMITE_CARACTERES = 20;
 
-    const palabras = nombre
-      .trim()
+  if (nombreLimpio.length <= LIMITE_CARACTERES) {
+    return nombreLimpio
       .toLowerCase()
       .split(/\s+/)
-      .filter(Boolean)
-      .map((palabra) => palabra.charAt(0).toUpperCase() + palabra.slice(1));
+      .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(' ');
+  }
 
-    const primerasDos = palabras.slice(0, 2).join(' ');
-    return primerasDos || 'Nuestra Boda';
+  const palabras = nombreLimpio
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((palabra) => palabra.charAt(0).toUpperCase() + palabra.slice(1));
+
+  const primerasDos = palabras.slice(0, 2).join(' ');
+
+  return primerasDos || 'Nuestra Boda';
+
   }
 }
