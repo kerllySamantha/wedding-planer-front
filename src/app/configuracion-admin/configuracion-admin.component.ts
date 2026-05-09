@@ -14,7 +14,7 @@ import {
 import { CreateEmpresa } from '../Interfaces/Empresa';
 import { Foto } from '../Interfaces/Resenia';
 import { HttpClient } from '@angular/common/http';
-import { Producto } from '../Interfaces/Producto';
+import { Producto, ProductoEmpresa } from '../Interfaces/Producto';
 
 @Component({
   selector: 'app-configuracion-admin',
@@ -226,9 +226,9 @@ export class ConfiguracionAdminComponent {
 
     const productosEmpresa = this.empresa()?.productos ?? [];
     const idsEmpresa = new Set(productosEmpresa.map((producto) => producto.id));
-    const map = new Map<string, Producto>();
+    const map = new Map<string, ProductoEmpresa | Producto>();
 
-    const upsertProducto = (producto: Producto) => {
+    const upsertProducto = (producto: ProductoEmpresa | Producto) => {
       if (producto.tipo_producto?.id !== tipoId) return;
       if (!producto.id) return;
       const key = this.productoComparableKey(producto);
@@ -250,7 +250,7 @@ export class ConfiguracionAdminComponent {
     return Array.from(map.values());
   }
 
-  private productoComparableKey(producto: Producto): string {
+  private productoComparableKey(producto: ProductoEmpresa | Producto): string {
     const tipoId = producto.tipo_producto?.id ?? 0;
     const nombre = (producto.nombre ?? '').trim().toLowerCase();
     return `${tipoId}::${nombre}`;
