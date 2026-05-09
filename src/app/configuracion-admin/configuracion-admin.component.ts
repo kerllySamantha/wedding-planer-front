@@ -224,13 +224,15 @@ export class ConfiguracionAdminComponent {
     );
     if (!tipoPerteneceCategoria) return [];
 
-    const empresaId = this.empresa()?.id;
-    return this.productosCatalogoGeneral().filter((producto) => {
-      const esDelTipo = producto.tipo_producto?.id === tipoId;
-      const esPropioEmpresa =
-        Boolean(empresaId) && producto.empresa?.id === empresaId;
-      return esDelTipo && !esPropioEmpresa;
+    const map = new Map<number, Producto>();
+    this.productosCatalogoGeneral().forEach((producto) => {
+      if (producto.tipo_producto?.id !== tipoId) return;
+      if (!producto.id) return;
+      if (map.has(producto.id)) return;
+      map.set(producto.id, producto);
     });
+
+    return Array.from(map.values());
   }
 
   unidadPorModalidad(modalidad?: string): string {
@@ -560,7 +562,7 @@ export class ConfiguracionAdminComponent {
       );
       if (!productoCatalogo) continue;
       payload.push({
-        id: null,
+        id: productoCatalogo.id ?? null,
         nombre: productoCatalogo.nombre ?? '',
         descripcion: productoCatalogo.descripcion ?? '',
         precio_max: productoCatalogo.precio_max ?? 0,
