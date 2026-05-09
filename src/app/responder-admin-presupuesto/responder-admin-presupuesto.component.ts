@@ -424,14 +424,17 @@ export class ResponderAdminPresupuestoComponent {
       }
 
       if (modalidad === 'servicio') {
+        if (fechaInicio && !/^\d{4}-\d{2}-\d{2}$/.test(fechaInicio)) {
+          errors.fechaInicioInvalida = true;
+        }
         if (!horaInicio) {
           errors.horaInicioRequerida = true;
         }
         if (!horaFin) {
           errors.horaFinRequerida = true;
         }
-        if (horaInicio && horaFin) {
-          const fechaServicio = this.today;
+        if (fechaInicio && horaInicio && horaFin) {
+          const fechaServicio = fechaInicio;
           const inicio = new Date(`${fechaServicio}T${horaInicio}`);
           const fin = new Date(`${fechaServicio}T${horaFin}`);
 
@@ -625,7 +628,7 @@ export class ResponderAdminPresupuestoComponent {
       this.respuestaForm.get('hora_inicio')?.value?.trim() ?? '';
     const fechaFin = this.respuestaForm.get('fecha_fin')?.value?.trim() ?? '';
     const horaFin = this.respuestaForm.get('hora_fin')?.value?.trim() ?? '';
-    const fechaServicio = this.today;
+    const fechaServicio = fechaInicio;
     const inicioRaw =
       modalidad === 'servicio'
         ? `${fechaServicio} ${horaInicio}`.trim()
