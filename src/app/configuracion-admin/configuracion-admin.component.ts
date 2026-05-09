@@ -401,6 +401,7 @@ export class ConfiguracionAdminComponent {
       logo: empresa.logo ?? '',
       fotos: this.galeriaUrls(),
       productos: productosPayload,
+      productos_eliminados: this.getProductosEliminados(values.productosSeleccionados ?? []),
     };
 
     this.saving.set(true);
@@ -485,6 +486,14 @@ export class ConfiguracionAdminComponent {
     );
 
     return payload;
+  }
+
+  private getProductosEliminados(productosSeleccionados: number[]): number[] {
+    const idsActuales = (this.empresa()?.productos ?? [])
+      .map((producto) => producto.id)
+      .filter((id): id is number => Number.isInteger(id));
+    const idsSeleccionados = new Set(productosSeleccionados);
+    return idsActuales.filter((id) => !idsSeleccionados.has(id));
   }
 
 

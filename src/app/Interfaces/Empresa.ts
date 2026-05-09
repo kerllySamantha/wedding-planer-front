@@ -64,8 +64,8 @@ export interface CreateEmpresa  {
     tipo_producto_nombre: string,
     categoria_nombre: string
   }[]
+  productos_eliminados?: number[]
 
 }
-
 
 
