@@ -37,6 +37,7 @@
   justify-content: center;
   align-items: center;
   padding: 3rem 2rem;
+  overflow-y: auto;
 }
 
 .login-content {
@@ -62,7 +63,9 @@ h2 {
   border-radius: 14px;
   padding: 6px 8px;
   background: white;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .bloque-input:hover {
   border-color: #c0c0c0;
@@ -163,6 +166,7 @@ a:hover {
     padding: 1.5rem 1rem;
   }
   .login-row {
+    overflow-y: auto;
     max-width: 92%;
   }
   .column-login {
@@ -182,4 +186,4 @@ a:hover {
   .image-fondo {
     display: none;
   }
-}/*# sourceMappingURL=login-usuarios.component.css.map */
+} /*# sourceMappingURL=login-usuarios.component.css.map */
