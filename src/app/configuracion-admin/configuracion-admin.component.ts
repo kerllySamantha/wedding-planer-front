@@ -213,13 +213,9 @@ export class ConfiguracionAdminComponent {
     );
     if (!tipoPerteneceCategoria) return [];
 
-    return this.productosCatalogoGeneral()
-      .filter((producto) => producto.tipo_producto?.id === tipoId)
-      .filter((producto) => this.esProductoCatalogoGeneral(producto));
-  }
-
-  private esProductoCatalogoGeneral(producto: Producto): boolean {
-    return !producto?.empresa || !producto.empresa?.id;
+    return this.productosCatalogoGeneral().filter(
+      (producto) => producto.tipo_producto?.id === tipoId,
+    );
   }
 
   unidadPorModalidad(modalidad?: string): string {
