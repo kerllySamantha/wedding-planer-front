@@ -562,7 +562,9 @@ export class ConfiguracionAdminComponent {
       );
       if (!productoCatalogo) continue;
       payload.push({
-        id: productoCatalogo.id ?? null,
+        // Para productos del catálogo general que aún no pertenecen a la empresa,
+        // enviamos id null para que backend los asocie/cree correctamente.
+        id: null,
         nombre: productoCatalogo.nombre ?? '',
         descripcion: productoCatalogo.descripcion ?? '',
         precio_max: productoCatalogo.precio_max ?? 0,
