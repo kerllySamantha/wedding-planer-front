@@ -154,13 +154,17 @@ export class ConfiguracionAdminComponent {
     const seleccionados = Array.from(current);
     this.productosSeleccionados.set(seleccionados);
     this.form.controls.productosSeleccionados.setValue(seleccionados);
-    this.form.controls.productosSeleccionados.markAsTouched();
     this.productosError.set(false);
   }
 
   productosPorTipo(tipoId: number) {
     return this.productosCatalogoGeneral().filter((p) => p.tipo_producto?.id === tipoId);
   }
+
+  unidadPorModalidad(modalidad?: string): string {
+    return modalidad === 'servicio' ? 'horas' : 'días';
+  }
+
 
   onCategoriaSeleccionada(categoriaId: number) {
     this.categoriaSeleccionadaId.set(categoriaId);
@@ -392,21 +396,37 @@ export class ConfiguracionAdminComponent {
     const payload: NonNullable<CreateEmpresa['productos']> = [];
 
     for (const productoId of productosSeleccionados) {
-      const productoExistente = productosActuales.find(
+      const productoExistente = productosActuales.find((p) => p.id === productoId);
+      if (productoExistente) {
+        payload.push({
+          id: productoExistente.id ?? null,
+          nombre:
+            productoExistente.nombre ??
+            productoExistente.tipo_producto?.nombre ??
+            '',
+          descripcion: productoExistente.descripcion ?? '',
+          precio_max: productoExistente.precio_max ?? 0,
+          precio_min: productoExistente.precio_min ?? 0,
+          tipo_producto_nombre: productoExistente.tipo_producto?.nombre ?? '',
+          categoria_nombre: productoExistente.categoria?.nombre ?? '',
+        });
+        continue;
+      }
+
+      const productoCatalogo = this.productosCatalogoGeneral().find(
         (p) => p.id === productoId,
       );
-      if (!productoExistente) continue;
+      if (!productoCatalogo) continue;
       payload.push({
-        id: productoExistente.id ?? null,
-        nombre:
-          productoExistente.nombre ??
-          productoExistente.tipo_producto?.nombre ??
-          '',
-        descripcion: productoExistente.descripcion ?? '',
-        precio_max: productoExistente.precio_max ?? 0,
-        precio_min: productoExistente.precio_min ?? 0,
-        tipo_producto_nombre: productoExistente.tipo_producto?.nombre ?? '',
-        categoria_nombre: productoExistente.categoria?.nombre ?? '',
+        id: null,
+        nombre: productoCatalogo.nombre ?? '',
+        descripcion: productoCatalogo.descripcion ?? '',
+        precio_max: productoCatalogo.precio_max ?? 0,
+        precio_min: productoCatalogo.precio_min ?? 0,
+        tipo_producto_nombre: productoCatalogo.tipo_producto?.nombre ?? '',
+        categoria_nombre: this.findCategoriaNombreByTipoId(
+          productoCatalogo.tipo_producto?.id,
+        ),
       });
     }
 
@@ -435,6 +455,19 @@ export class ConfiguracionAdminComponent {
     );
 
     return payload;
+  }
+
+
+  private findCategoriaNombreByTipoId(tipoId?: number): string {
+    if (!tipoId) return '';
+    for (const categoria of this.categorias()) {
+      if ((categoria.tipos ?? []).some((tipo) => tipo.id === tipoId)) {
+        return categoria.nombre ?? '';
+      }
+    }
+
+    const tipoEmpresa = this.tiposEditablesEmpresa().find((item) => item.tipoId === tipoId);
+    return tipoEmpresa?.categoriaNombre ?? '';
   }
 
   private findTipoById(
