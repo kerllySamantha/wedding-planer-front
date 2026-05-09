@@ -135,19 +135,28 @@ export class ConfiguracionAdminComponent {
     const categorias = this.categorias();
     if (!categorias.length) return;
 
-    const primerProductoEmpresa = this.empresa()?.productos?.[0];
-    const categoriaProductoId = primerProductoEmpresa?.categoria?.id;
-    const tipoProductoId = primerProductoEmpresa?.tipo_producto?.id;
-
+    const productosEmpresa = this.empresa()?.productos ?? [];
     let categoriaObjetivoId: number | null = null;
 
-    const categoriaPorId = categorias.find((c) => c.id === categoriaProductoId);
-    if (categoriaPorId) categoriaObjetivoId = categoriaPorId.id;
+    const categoriaValidaDesdeProducto = productosEmpresa.find((producto) =>
+      categorias.some((categoria) => categoria.id === producto.categoria?.id),
+    );
 
-    if (!categoriaObjetivoId && tipoProductoId) {
-      const categoriaPorTipo = categorias.find((categoria) =>
-        (categoria.tipos ?? []).some((tipo) => tipo.id === tipoProductoId),
-      );
+    if (categoriaValidaDesdeProducto?.categoria?.id) {
+      categoriaObjetivoId = categoriaValidaDesdeProducto.categoria.id;
+    }
+
+    if (!categoriaObjetivoId) {
+      const categoriaPorTipo = productosEmpresa
+        .map((producto) => producto.tipo_producto?.id)
+        .filter((tipoId): tipoId is number => Boolean(tipoId))
+        .map((tipoId) =>
+          categorias.find((categoria) =>
+            (categoria.tipos ?? []).some((tipo) => tipo.id === tipoId),
+          ),
+        )
+        .find((categoria): categoria is InfoCategoria => Boolean(categoria));
+
       if (categoriaPorTipo) {
         categoriaObjetivoId = categoriaPorTipo.id;
       }
