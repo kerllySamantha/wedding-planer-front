@@ -238,9 +238,28 @@ export class ConfiguracionAdminComponent {
     }));
   }
 
+
+  private resolverIdCatalogo(productoId: number): number {
+    const producto = this.productosCatalogoGeneral().find((p) => p.id === productoId)
+      ?? this.empresa()?.productos.find((p) => p.id === productoId);
+    if (!producto) return productoId;
+
+    const key = this.productoComparableKey(producto as ProductoEmpresa | Producto);
+    const equivalenteCatalogo = this.productosCatalogoGeneral().find(
+      (item) => this.productoComparableKey(item) === key,
+    );
+    return equivalenteCatalogo?.id ?? productoId;
+  }
+
+  isProductoMarcado(productoId: number): boolean {
+    const idCatalogo = this.resolverIdCatalogo(productoId);
+    return this.productosSeleccionados().includes(idCatalogo);
+  }
+
   onProductoToggle(productoId: number, checked: boolean) {
+    const idCatalogo = this.resolverIdCatalogo(productoId);
     const current = new Set(this.productosSeleccionados());
-    checked ? current.add(productoId) : current.delete(productoId);
+    checked ? current.add(idCatalogo) : current.delete(idCatalogo);
     const seleccionados = Array.from(current);
     this.productosSeleccionados.set(seleccionados);
     this.form.controls.productosSeleccionados.setValue(seleccionados);

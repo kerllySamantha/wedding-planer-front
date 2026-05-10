@@ -176,7 +176,7 @@
                 <label>
                   <input
                     type="checkbox"
-                    [checked]="productosSeleccionados().includes(producto.id)"
+                    [checked]="isProductoMarcado(producto.id)"
                     (change)="onProductoToggle(producto.id, $any($event.target).checked)">
                   <span>{{ producto.nombre }}</span>
                 </label>
