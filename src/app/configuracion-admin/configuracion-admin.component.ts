@@ -342,7 +342,6 @@ export class ConfiguracionAdminComponent {
     const porTipoKeys = new Map<number, Set<string>>();
 
     for (const producto of this.empresa()?.productos ?? []) {
-      if (Number(producto.id ?? 0) > 0) continue;
       const tipoId = producto.tipo_producto?.id;
       if (!tipoId) continue;
 
