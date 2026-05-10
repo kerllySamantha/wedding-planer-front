@@ -136,6 +136,10 @@
       <p class="settings-subtitle mb-3">
         Selecciona una categoría del desplegable para ver todos los tipos y productos globales de esa categoría, además de tus personalizados.
       </p>
+      <p class="text-muted small mb-3">
+        Los productos del catálogo general no se editan directamente: al añadirlos a tu empresa se guardan como copia propia,
+        y desde ahí puedes modificar descripción, precios o quitarlos.
+      </p>
 
       <!-- Selector de categoría (desplegable) -->
       <div class="mb-3">
@@ -170,21 +174,10 @@
                 </button>
               </summary>
 
-              <!-- Checkboxes de productos existentes -->
               <div class="type-editor-card__checks">
-                @for (producto of productosPorTipo(tipoPermitido.tipoId); track productoTrackKey(producto)) {
-                <label>
-                  <input
-                    type="checkbox"
-                    [checked]="productosSeleccionados().includes(producto.id)"
-                    (change)="onProductoToggle(producto.id, $any($event.target).checked)">
-                  <span>{{ producto.nombre }}</span>
-                </label>
-                } @empty {
                 <span class="text-muted small">
-                  No hay productos predefinidos para este tipo en el catálogo general. Puedes crear uno personalizado.
+                  Este tipo usa productos propios de tu empresa. Añade o edita nombre, descripción y precios abajo.
                 </span>
-                }
               </div>
 
               <!-- Productos personalizados existentes (editables) -->

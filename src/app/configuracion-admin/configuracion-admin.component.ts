@@ -46,6 +46,7 @@ export class ConfiguracionAdminComponent {
       }>
     >
   >({});
+  edicionCatalogoPorId = signal<Record<number, { descripcion: string; precio_min: string; precio_max: string }>>({});
   nuevosProductosPorTipo = signal<
     Record<
       number,
@@ -203,9 +204,7 @@ export class ConfiguracionAdminComponent {
       const equivalenteCatalogo = catalogoPorKey.get(key);
       if (equivalenteCatalogo?.id) {
         seleccionados.add(equivalenteCatalogo.id);
-        return;
       }
-      seleccionados.add(productoEmpresa.id);
     });
 
     const seleccion = Array.from(seleccionados);
@@ -240,9 +239,54 @@ export class ConfiguracionAdminComponent {
     }));
   }
 
+
+  private resolverIdCatalogo(productoId: number): number {
+    const producto = this.productosCatalogoGeneral().find((p) => p.id === productoId)
+      ?? this.empresa()?.productos.find((p) => p.id === productoId);
+    if (!producto) return productoId;
+
+    const key = this.productoComparableKey(producto as ProductoEmpresa | Producto);
+    const equivalenteCatalogo = this.productosCatalogoGeneral().find(
+      (item) => this.productoComparableKey(item) === key,
+    );
+    return equivalenteCatalogo?.id ?? productoId;
+  }
+
+  isProductoMarcado(productoId: number): boolean {
+    const idCatalogo = this.resolverIdCatalogo(productoId);
+    return this.productosSeleccionados().includes(idCatalogo);
+  }
+
+
+  productosSeleccionadosPorTipo(tipoId: number): Producto[] {
+    const seleccionados = new Set(this.productosSeleccionados());
+    return this.productosPorTipo(tipoId).filter((producto) => seleccionados.has(this.resolverIdCatalogo(producto.id)));
+  }
+
+  datosEdicionCatalogo(producto: Producto): { descripcion: string; precio_min: string; precio_max: string } {
+    const id = this.resolverIdCatalogo(producto.id);
+    const actual = this.edicionCatalogoPorId()[id];
+    if (actual) return actual;
+    const empresaMatch = (this.empresa()?.productos ?? []).find(
+      (item) => this.productoComparableKey(item) === this.productoComparableKey(producto),
+    );
+    return {
+      descripcion: empresaMatch?.descripcion ?? producto.descripcion ?? '',
+      precio_min: String(empresaMatch?.precio_min ?? producto.precio_min ?? ''),
+      precio_max: String(empresaMatch?.precio_max ?? producto.precio_max ?? ''),
+    };
+  }
+
+  onEdicionCatalogoInput(producto: Producto, field: 'descripcion' | 'precio_min' | 'precio_max', value: string) {
+    const id = this.resolverIdCatalogo(producto.id);
+    const current = this.datosEdicionCatalogo(producto);
+    this.edicionCatalogoPorId.update((prev: Record<number, { descripcion: string; precio_min: string; precio_max: string }>) => ({ ...prev, [id]: { ...current, [field]: value } }));
+  }
+
   onProductoToggle(productoId: number, checked: boolean) {
+    const idCatalogo = this.resolverIdCatalogo(productoId);
     const current = new Set(this.productosSeleccionados());
-    checked ? current.add(productoId) : current.delete(productoId);
+    checked ? current.add(idCatalogo) : current.delete(idCatalogo);
     const seleccionados = Array.from(current);
     this.productosSeleccionados.set(seleccionados);
     this.form.controls.productosSeleccionados.setValue(seleccionados);
@@ -251,25 +295,8 @@ export class ConfiguracionAdminComponent {
   }
 
   productosPorTipo(tipoId: number): Producto[] {
-    const categoriaSeleccionada = this.categorias().find(
-      (c) => c.id === this.categoriaSeleccionadaId(),
-    );
-    const tipoPerteneceCategoria = (categoriaSeleccionada?.tipos ?? []).some(
-      (tipo) => tipo.id === tipoId,
-    );
-    if (!tipoPerteneceCategoria) return [];
-
-    const map = new Map<string, Producto>();
-
-    this.productosCatalogoGeneral().forEach((producto) => {
-      if (producto.tipo_producto?.id !== tipoId || !producto.id) return;
-      const key = this.productoComparableKey(producto);
-      if (!map.has(key)) {
-        map.set(key, producto);
-      }
-    });
-
-    return Array.from(map.values());
+    void tipoId;
+    return [];
   }
 
 
@@ -277,13 +304,17 @@ export class ConfiguracionAdminComponent {
     return `${producto.id ?? 0}::${this.productoComparableKey(producto)}`;
   }
 
+  private normalizarTexto(valor: string): string {
+    return valor.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+  }
+
   private productoComparableKey(producto: ProductoEmpresa | Producto): string {
-    const tipoId = producto.tipo_producto?.id;
-    const tipoNombre = (producto.tipo_producto?.nombre ?? '').trim().toLowerCase();
-    const tipoKey = Number.isInteger(tipoId) && (tipoId ?? 0) > 0
-      ? `id:${tipoId}`
+    const tipoIdNumerico = Number(producto.tipo_producto?.id ?? 0);
+    const tipoNombre = this.normalizarTexto(producto.tipo_producto?.nombre ?? '');
+    const tipoKey = Number.isFinite(tipoIdNumerico) && tipoIdNumerico > 0
+      ? `id:${tipoIdNumerico}`
       : `name:${tipoNombre}`;
-    const nombre = (producto.nombre ?? '').trim().toLowerCase();
+    const nombre = this.normalizarTexto(producto.nombre ?? '');
     return `${tipoKey}::${nombre}`;
   }
 
@@ -306,8 +337,12 @@ export class ConfiguracionAdminComponent {
       if (!tipoId) continue;
 
       const comparableKey = this.productoComparableKey(producto);
+      const tipoIdProducto = Number(producto.tipo_producto?.id ?? 0);
+      const existeTipoEnCatalogo = this.productosCatalogoGeneral().some(
+        (itemCatalogo) => Number(itemCatalogo.tipo_producto?.id ?? 0) === tipoIdProducto,
+      );
       const existeEnCatalogo =
-        catalogoIds.has(producto.id) || catalogoKeys.has(comparableKey);
+        catalogoIds.has(producto.id) || catalogoKeys.has(comparableKey) || existeTipoEnCatalogo;
       if (existeEnCatalogo) continue;
 
       const vistosTipo = porTipoKeys.get(tipoId) ?? new Set<string>();
@@ -394,23 +429,28 @@ export class ConfiguracionAdminComponent {
     const categoriaSeleccionada = this.categorias().find(
       (c) => c.id === this.categoriaSeleccionadaId(),
     );
-    const tiposFiltrados = (categoriaSeleccionada?.tipos ?? []).map((tipo) => ({
-      categoriaNombre: categoriaSeleccionada?.nombre ?? 'Sin categoría',
-      tipoId: tipo.id,
-      tipoNombre: tipo.nombre,
-    }));
+    if (!categoriaSeleccionada) return [];
 
-    const map = new Map<string, Array<{ tipoId: number; tipoNombre: string }>>();
-    tiposFiltrados.forEach((tipo) => {
-      const actuales = map.get(tipo.categoriaNombre) ?? [];
-      actuales.push({ tipoId: tipo.tipoId, tipoNombre: tipo.tipoNombre });
-      map.set(tipo.categoriaNombre, actuales);
+    const mapTipos = new Map<number, { tipoId: number; tipoNombre: string }>();
+
+    (categoriaSeleccionada.tipos ?? []).forEach((tipo) => {
+      mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
     });
 
-    return Array.from(map.entries()).map(([categoriaNombre, tiposCat]) => ({
-      categoriaNombre,
-      tipos: tiposCat,
-    }));
+    (this.empresa()?.productos ?? []).forEach((producto) => {
+      const categoriaProducto = producto.categoria?.nombre ?? 'Sin categoría';
+      if (categoriaProducto !== (categoriaSeleccionada.nombre ?? 'Sin categoría')) return;
+      const tipo = producto.tipo_producto;
+      if (!tipo?.id) return;
+      if (!mapTipos.has(tipo.id)) {
+        mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
+      }
+    });
+
+    return [{
+      categoriaNombre: categoriaSeleccionada.nombre ?? 'Sin categoría',
+      tipos: Array.from(mapTipos.values()),
+    }];
   }
 
   agregarCampoNuevoProducto(tipoId: number) {
@@ -605,6 +645,13 @@ export class ConfiguracionAdminComponent {
         .filter((producto) => Boolean(producto.id))
         .map((producto) => [producto.id, producto]),
     );
+    const productosEmpresaPorKey = new Map<string, ProductoEmpresa>();
+    productosActuales.forEach((producto) => {
+      const key = this.productoComparableKey(producto);
+      if (!productosEmpresaPorKey.has(key)) {
+        productosEmpresaPorKey.set(key, producto);
+      }
+    });
 
     const personalizadosIds = new Set(
       Object.values(this.productosPersonalizados())
@@ -628,6 +675,7 @@ export class ConfiguracionAdminComponent {
           descripcion: productoExistente.descripcion ?? '',
           precio_max: productoExistente.precio_max ?? 0,
           precio_min: productoExistente.precio_min ?? 0,
+          tipo_producto_id: productoExistente.tipo_producto?.id ?? undefined,
           tipo_producto_nombre: productoExistente.tipo_producto?.nombre ?? '',
           categoria_nombre: productoExistente.categoria?.nombre ?? '',
         });
@@ -638,13 +686,45 @@ export class ConfiguracionAdminComponent {
         (p) => p.id === productoId,
       );
       if (!productoCatalogo) continue;
+
+      const keyCatalogo = this.productoComparableKey(productoCatalogo);
+      const productoEmpresaEquivalente = productosEmpresaPorKey.get(keyCatalogo);
+      if (productoEmpresaEquivalente) {
+        payload.push({
+          id: productoEmpresaEquivalente.id ?? null,
+          nombre:
+            productoEmpresaEquivalente.nombre ??
+            productoEmpresaEquivalente.tipo_producto?.nombre ??
+            productoCatalogo.nombre ??
+            '',
+          descripcion:
+            productoEmpresaEquivalente.descripcion ?? productoCatalogo.descripcion ?? '',
+          precio_max:
+            productoEmpresaEquivalente.precio_max ?? productoCatalogo.precio_max ?? 0,
+          precio_min:
+            productoEmpresaEquivalente.precio_min ?? productoCatalogo.precio_min ?? 0,
+          tipo_producto_id:
+            productoEmpresaEquivalente.tipo_producto?.id ?? productoCatalogo.tipo_producto?.id ?? undefined,
+          tipo_producto_nombre:
+            productoEmpresaEquivalente.tipo_producto?.nombre ??
+            productoCatalogo.tipo_producto?.nombre ??
+            '',
+          categoria_nombre:
+            productoEmpresaEquivalente.categoria?.nombre ??
+            this.findCategoriaNombreByTipoId(productoCatalogo.tipo_producto?.id),
+        });
+        continue;
+      }
+
+      const edicionCatalogo = this.edicionCatalogoPorId()[productoCatalogo.id ?? 0];
       payload.push({
         // Para productos del sistema enviamos su id original; backend crea/copia para empresa sin tocar el global.
         id: productoCatalogo.id ?? null,
         nombre: productoCatalogo.nombre ?? '',
-        descripcion: productoCatalogo.descripcion ?? '',
-        precio_max: productoCatalogo.precio_max ?? 0,
-        precio_min: productoCatalogo.precio_min ?? 0,
+        descripcion: edicionCatalogo?.descripcion ?? productoCatalogo.descripcion ?? '',
+        precio_max: edicionCatalogo?.precio_max ? Number(edicionCatalogo.precio_max) : (productoCatalogo.precio_max ?? 0),
+        precio_min: edicionCatalogo?.precio_min ? Number(edicionCatalogo.precio_min) : (productoCatalogo.precio_min ?? 0),
+        tipo_producto_id: productoCatalogo.tipo_producto?.id ?? undefined,
         tipo_producto_nombre: productoCatalogo.tipo_producto?.nombre ?? '',
         categoria_nombre: this.findCategoriaNombreByTipoId(
           productoCatalogo.tipo_producto?.id,
@@ -664,6 +744,7 @@ export class ConfiguracionAdminComponent {
           descripcion: productoEditado.descripcion.trim() || undefined,
           precio_max: productoEditado.precio_max ? Number(productoEditado.precio_max) : undefined,
           precio_min: productoEditado.precio_min ? Number(productoEditado.precio_min) : undefined,
+          tipo_producto_id: Number(tipoIdStr),
           tipo_producto_nombre: tipoInfo.nombre,
           categoria_nombre: tipoInfo.categoriaNombre,
         });
@@ -687,6 +768,7 @@ export class ConfiguracionAdminComponent {
             precio_min: productoNuevo.precio_min
               ? Number(productoNuevo.precio_min)
               : undefined,
+            tipo_producto_id: Number(tipoIdStr),
             tipo_producto_nombre: tipoInfo.nombre,
             categoria_nombre: tipoInfo.categoriaNombre,
           });
@@ -696,9 +778,10 @@ export class ConfiguracionAdminComponent {
 
     const payloadUnico = new Map<string, (typeof payload)[number]>();
     payload.forEach((producto) => {
+      const tipoId = Number(producto.tipo_producto_id ?? 0);
       const tipo = (producto.tipo_producto_nombre ?? '').trim().toLowerCase();
-      const nombre = (producto.nombre ?? '').trim().toLowerCase();
-      const key = `${tipo}::${nombre}`;
+      const nombre = this.normalizarTexto(producto.nombre ?? '');
+      const key = `${tipoId > 0 ? `id:${tipoId}` : `name:${tipo}`}::${nombre}`;
       if (!payloadUnico.has(key)) payloadUnico.set(key, producto);
     });
 
