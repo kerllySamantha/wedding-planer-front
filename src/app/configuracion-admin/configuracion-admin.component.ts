@@ -438,13 +438,18 @@ export class ConfiguracionAdminComponent {
     categoriaNombre: string;
     tipos: Array<{ tipoId: number; tipoNombre: string }>;
   }> {
-    return this.categorias().map((categoria) => ({
-      categoriaNombre: categoria.nombre ?? 'Sin categoría',
-      tipos: (categoria.tipos ?? []).map((tipo) => ({
+    const categoriaSeleccionada = this.categorias().find(
+      (c) => c.id === this.categoriaSeleccionadaId(),
+    );
+    if (!categoriaSeleccionada) return [];
+
+    return [{
+      categoriaNombre: categoriaSeleccionada.nombre ?? 'Sin categoría',
+      tipos: (categoriaSeleccionada.tipos ?? []).map((tipo) => ({
         tipoId: tipo.id,
         tipoNombre: tipo.nombre,
       })),
-    })).filter((categoria) => categoria.tipos.length > 0);
+    }];
   }
 
   agregarCampoNuevoProducto(tipoId: number) {
