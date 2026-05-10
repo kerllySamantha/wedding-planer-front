@@ -172,8 +172,7 @@ export class ConfiguracionAdminComponent {
       .get<{ data: Producto[] }>(`${this.empresaCtx.apiUrl}/productos`)
       .subscribe({
         next: (response) => {
-          const productosGlobales = (response?.data ?? []).filter((producto) => !producto.empresa?.id);
-          this.productosCatalogoGeneral.set(productosGlobales);
+          this.productosCatalogoGeneral.set(response?.data ?? []);
           this.inicializarProductosPersonalizados();
           this.sincronizarSeleccionConCatalogo();
         },
