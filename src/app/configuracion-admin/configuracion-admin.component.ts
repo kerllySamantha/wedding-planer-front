@@ -278,9 +278,13 @@ export class ConfiguracionAdminComponent {
   }
 
   private productoComparableKey(producto: ProductoEmpresa | Producto): string {
-    const tipoId = producto.tipo_producto?.id ?? 0;
+    const tipoId = producto.tipo_producto?.id;
+    const tipoNombre = (producto.tipo_producto?.nombre ?? '').trim().toLowerCase();
+    const tipoKey = Number.isInteger(tipoId) && (tipoId ?? 0) > 0
+      ? `id:${tipoId}`
+      : `name:${tipoNombre}`;
     const nombre = (producto.nombre ?? '').trim().toLowerCase();
-    return `${tipoId}::${nombre}`;
+    return `${tipoKey}::${nombre}`;
   }
 
   unidadPorModalidad(modalidad?: string): string {
@@ -295,19 +299,22 @@ export class ConfiguracionAdminComponent {
       this.productosCatalogoGeneral().map((producto) => this.productoComparableKey(producto)),
     );
     const porTipo: Record<number, Array<{ id: number; nombre: string; descripcion: string; precio_min: string; precio_max: string }>> = {};
-    const empresaId = this.empresa()?.id;
-    const productosPropiosEnCatalogo = new Set(
-      this.productosCatalogoGeneral()
-        .filter((producto) => Boolean(empresaId) && producto.empresa?.id === empresaId)
-        .map((producto) => producto.id),
-    );
+    const porTipoKeys = new Map<number, Set<string>>();
 
     for (const producto of this.empresa()?.productos ?? []) {
-      const esPropioEmpresa = productosPropiosEnCatalogo.has(producto.id);
-      const existeEquivalenteEnCatalogo = catalogoKeys.has(this.productoComparableKey(producto));
-      if (!esPropioEmpresa && (catalogoIds.has(producto.id) || existeEquivalenteEnCatalogo)) continue;
       const tipoId = producto.tipo_producto?.id;
       if (!tipoId) continue;
+
+      const comparableKey = this.productoComparableKey(producto);
+      const existeEnCatalogo =
+        catalogoIds.has(producto.id) || catalogoKeys.has(comparableKey);
+      if (existeEnCatalogo) continue;
+
+      const vistosTipo = porTipoKeys.get(tipoId) ?? new Set<string>();
+      if (vistosTipo.has(comparableKey)) continue;
+      vistosTipo.add(comparableKey);
+      porTipoKeys.set(tipoId, vistosTipo);
+
       porTipo[tipoId] = porTipo[tipoId] ?? [];
       porTipo[tipoId].push({
         id: producto.id,
