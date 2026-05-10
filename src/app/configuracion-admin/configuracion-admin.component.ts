@@ -557,8 +557,9 @@ export class ConfiguracionAdminComponent {
     const productosEliminados = this.getProductosEliminados(values.productosSeleccionados ?? []);
     const eliminadosSet = new Set(productosEliminados);
     const productosPayloadFiltrado = productosPayload.filter((producto) => {
-      if (!Number.isInteger(producto.id)) return true;
-      return !eliminadosSet.has(producto.id);
+      const productoId = producto.id;
+      if (!Number.isInteger(productoId)) return true;
+      return !eliminadosSet.has(productoId);
     });
 
     const formEmpresa: CreateEmpresa = {
