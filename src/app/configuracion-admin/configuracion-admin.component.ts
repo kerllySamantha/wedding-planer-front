@@ -296,8 +296,12 @@ export class ConfiguracionAdminComponent {
       if (!tipoId) continue;
 
       const comparableKey = this.productoComparableKey(producto);
+      const tipoIdProducto = Number(producto.tipo_producto?.id ?? 0);
+      const existeTipoEnCatalogo = this.productosCatalogoGeneral().some(
+        (itemCatalogo) => Number(itemCatalogo.tipo_producto?.id ?? 0) === tipoIdProducto,
+      );
       const existeEnCatalogo =
-        catalogoIds.has(producto.id) || catalogoKeys.has(comparableKey);
+        catalogoIds.has(producto.id) || catalogoKeys.has(comparableKey) || existeTipoEnCatalogo;
       if (existeEnCatalogo) continue;
 
       const vistosTipo = porTipoKeys.get(tipoId) ?? new Set<string>();
