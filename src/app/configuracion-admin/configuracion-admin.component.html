@@ -213,6 +213,12 @@
                       (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
                   </div>
                 </div>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="eliminarProductoPersonalizado(tipoPermitido.tipoId, idx)">
+                  Quitar
+                </button>
               </div>
               }
 

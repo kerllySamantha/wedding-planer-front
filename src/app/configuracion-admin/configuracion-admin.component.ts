@@ -15,6 +15,7 @@ import { CreateEmpresa } from '../Interfaces/Empresa';
 import { Foto } from '../Interfaces/Resenia';
 import { HttpClient } from '@angular/common/http';
 import { Producto, ProductoEmpresa } from '../Interfaces/Producto';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-configuracion-admin',
@@ -491,6 +492,27 @@ export class ConfiguracionAdminComponent {
 
   eliminarCampoNuevoProducto(tipoId: number, idx: number) {
     this.nuevosProductosPorTipo.update((prev) => {
+      const lista = [...(prev[tipoId] ?? [])];
+      if (idx < 0 || idx >= lista.length) return prev;
+      lista.splice(idx, 1);
+      return { ...prev, [tipoId]: lista };
+    });
+  }
+
+  async eliminarProductoPersonalizado(tipoId: number, idx: number) {
+    const result = await Swal.fire({
+      title: '¿Quitar producto?',
+      text: 'Este producto se eliminará de tu configuración al guardar cambios.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, quitar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true,
+    });
+
+    if (!result.isConfirmed) return;
+
+    this.productosPersonalizados.update((prev) => {
       const lista = [...(prev[tipoId] ?? [])];
       if (idx < 0 || idx >= lista.length) return prev;
       lista.splice(idx, 1);
