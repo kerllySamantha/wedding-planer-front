@@ -268,10 +268,10 @@ export class ConfiguracionAdminComponent {
   }
 
   private productoComparableKey(producto: ProductoEmpresa | Producto): string {
-    const tipoId = producto.tipo_producto?.id;
+    const tipoIdNumerico = Number(producto.tipo_producto?.id ?? 0);
     const tipoNombre = (producto.tipo_producto?.nombre ?? '').trim().toLowerCase();
-    const tipoKey = Number.isInteger(tipoId) && (tipoId ?? 0) > 0
-      ? `id:${tipoId}`
+    const tipoKey = Number.isFinite(tipoIdNumerico) && tipoIdNumerico > 0
+      ? `id:${tipoIdNumerico}`
       : `name:${tipoNombre}`;
     const nombre = (producto.nombre ?? '').trim().toLowerCase();
     return `${tipoKey}::${nombre}`;
