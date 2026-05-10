@@ -172,7 +172,7 @@
 
               <!-- Checkboxes de productos existentes -->
               <div class="type-editor-card__checks">
-                @for (producto of productosPorTipo(tipoPermitido.tipoId); track producto.id) {
+                @for (producto of productosPorTipo(tipoPermitido.tipoId); track productoTrackKey(producto)) {
                 <label>
                   <input
                     type="checkbox"

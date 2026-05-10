@@ -272,6 +272,11 @@ export class ConfiguracionAdminComponent {
     return Array.from(map.values());
   }
 
+
+  productoTrackKey(producto: Producto): string {
+    return `${producto.id ?? 0}::${this.productoComparableKey(producto)}`;
+  }
+
   private productoComparableKey(producto: ProductoEmpresa | Producto): string {
     const tipoId = producto.tipo_producto?.id ?? 0;
     const nombre = (producto.nombre ?? '').trim().toLowerCase();
