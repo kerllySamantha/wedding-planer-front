@@ -249,14 +249,6 @@ export class ConfiguracionAdminComponent {
   }
 
   productosPorTipo(tipoId: number): Producto[] {
-    const categoriaSeleccionada = this.categorias().find(
-      (c) => c.id === this.categoriaSeleccionadaId(),
-    );
-    const tipoPerteneceCategoria = (categoriaSeleccionada?.tipos ?? []).some(
-      (tipo) => Number(tipo.id) === Number(tipoId),
-    );
-    if (!tipoPerteneceCategoria) return [];
-
     const map = new Map<string, Producto>();
 
     this.productosCatalogoGeneral().forEach((producto) => {
