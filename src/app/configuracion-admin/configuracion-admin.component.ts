@@ -604,6 +604,13 @@ export class ConfiguracionAdminComponent {
         .filter((producto) => Boolean(producto.id))
         .map((producto) => [producto.id, producto]),
     );
+    const productosEmpresaPorKey = new Map<string, ProductoEmpresa>();
+    productosActuales.forEach((producto) => {
+      const key = this.productoComparableKey(producto);
+      if (!productosEmpresaPorKey.has(key)) {
+        productosEmpresaPorKey.set(key, producto);
+      }
+    });
 
     const personalizadosIds = new Set(
       Object.values(this.productosPersonalizados())
@@ -637,6 +644,34 @@ export class ConfiguracionAdminComponent {
         (p) => p.id === productoId,
       );
       if (!productoCatalogo) continue;
+
+      const keyCatalogo = this.productoComparableKey(productoCatalogo);
+      const productoEmpresaEquivalente = productosEmpresaPorKey.get(keyCatalogo);
+      if (productoEmpresaEquivalente) {
+        payload.push({
+          id: productoEmpresaEquivalente.id ?? null,
+          nombre:
+            productoEmpresaEquivalente.nombre ??
+            productoEmpresaEquivalente.tipo_producto?.nombre ??
+            productoCatalogo.nombre ??
+            '',
+          descripcion:
+            productoEmpresaEquivalente.descripcion ?? productoCatalogo.descripcion ?? '',
+          precio_max:
+            productoEmpresaEquivalente.precio_max ?? productoCatalogo.precio_max ?? 0,
+          precio_min:
+            productoEmpresaEquivalente.precio_min ?? productoCatalogo.precio_min ?? 0,
+          tipo_producto_nombre:
+            productoEmpresaEquivalente.tipo_producto?.nombre ??
+            productoCatalogo.tipo_producto?.nombre ??
+            '',
+          categoria_nombre:
+            productoEmpresaEquivalente.categoria?.nombre ??
+            this.findCategoriaNombreByTipoId(productoCatalogo.tipo_producto?.id),
+        });
+        continue;
+      }
+
       payload.push({
         // Para productos del sistema enviamos su id original; backend crea/copia para empresa sin tocar el global.
         id: productoCatalogo.id ?? null,
