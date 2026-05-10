@@ -204,7 +204,9 @@ export class ConfiguracionAdminComponent {
       const equivalenteCatalogo = catalogoPorKey.get(key);
       if (equivalenteCatalogo?.id) {
         seleccionados.add(equivalenteCatalogo.id);
+        return;
       }
+      seleccionados.add(productoEmpresa.id);
     });
 
     const seleccion = Array.from(seleccionados);
@@ -304,6 +306,19 @@ export class ConfiguracionAdminComponent {
         map.set(key, producto);
       }
     });
+
+    if (map.size === 0) {
+      (this.empresa()?.productos ?? []).forEach((productoEmpresa) => {
+        if (Number(productoEmpresa.tipo_producto?.id) !== Number(tipoId) || !productoEmpresa.id) return;
+        const key = this.productoComparableKey(productoEmpresa);
+        if (!map.has(key)) {
+          map.set(key, {
+            ...(productoEmpresa as unknown as Producto),
+            empresa: { id: this.empresa()?.id ?? 0, nombre: this.empresa()?.nombre_empresa ?? '' },
+          });
+        }
+      });
+    }
 
     return Array.from(map.values());
   }
