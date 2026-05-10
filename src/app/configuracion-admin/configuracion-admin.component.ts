@@ -100,12 +100,7 @@ export class ConfiguracionAdminComponent {
           name: empresa.usuario?.name ?? '',
           direccion: empresa.direccion ?? '',
         });
-        this.productosSeleccionados.set([
-          ...new Set((empresa.productos ?? []).map((item) => item.id)),
-        ]);
-        this.form.controls.productosSeleccionados.setValue(
-          this.productosSeleccionados(),
-        );
+        this.sincronizarSeleccionConCatalogo();
         this.nuevosProductosPorTipo.set({});
         this.inicializarProductosPersonalizados();
         const fotos: Foto[] = ((empresa.fotos ?? []) as Foto[])
@@ -179,6 +174,7 @@ export class ConfiguracionAdminComponent {
         next: (response) => {
           this.productosCatalogoGeneral.set(response?.data ?? []);
           this.inicializarProductosPersonalizados();
+          this.sincronizarSeleccionConCatalogo();
         },
         error: (err) => {
           console.error('Error al cargar productos globales', err);
@@ -187,18 +183,57 @@ export class ConfiguracionAdminComponent {
       });
   }
 
+
+  private sincronizarSeleccionConCatalogo() {
+    const productosEmpresa = this.empresa()?.productos ?? [];
+    const catalogo = this.productosCatalogoGeneral();
+
+    const catalogoPorKey = new Map<string, Producto>();
+    catalogo.forEach((producto) => {
+      if (!producto.id) return;
+      const key = this.productoComparableKey(producto);
+      if (!catalogoPorKey.has(key)) catalogoPorKey.set(key, producto);
+    });
+
+    const seleccionados = new Set<number>();
+
+    productosEmpresa.forEach((productoEmpresa) => {
+      if (!productoEmpresa.id) return;
+      const key = this.productoComparableKey(productoEmpresa);
+      const equivalenteCatalogo = catalogoPorKey.get(key);
+      if (equivalenteCatalogo?.id) {
+        seleccionados.add(equivalenteCatalogo.id);
+        return;
+      }
+      seleccionados.add(productoEmpresa.id);
+    });
+
+    const seleccion = Array.from(seleccionados);
+    this.productosSeleccionados.set(seleccion);
+    this.form.controls.productosSeleccionados.setValue(seleccion);
+  }
+
   productosAgrupadosPorCategoria(): Array<{
     categoria: string;
     productos: Empresa['productos'];
   }> {
     const productos = this.empresa()?.productos ?? [];
     const map = new Map<string, Empresa['productos']>();
+    const vistosPorCategoria = new Map<string, Set<string>>();
+
     productos.forEach((p) => {
       const categoria = p.categoria?.nombre ?? 'Sin categoría';
       const actual = map.get(categoria) ?? [];
-      actual.push(p);
+      const vistos = vistosPorCategoria.get(categoria) ?? new Set<string>();
+      const key = this.productoComparableKey(p);
+      if (!vistos.has(key)) {
+        actual.push(p);
+        vistos.add(key);
+      }
       map.set(categoria, actual);
+      vistosPorCategoria.set(categoria, vistos);
     });
+
     return Array.from(map.entries()).map(([categoria, productosCategoria]) => ({
       categoria,
       productos: productosCategoria,
@@ -215,7 +250,7 @@ export class ConfiguracionAdminComponent {
     this.productosRangoError.set(null);
   }
 
-  productosPorTipo(tipoId: number) {
+  productosPorTipo(tipoId: number): Producto[] {
     const categoriaSeleccionada = this.categorias().find(
       (c) => c.id === this.categoriaSeleccionadaId(),
     );
@@ -224,30 +259,22 @@ export class ConfiguracionAdminComponent {
     );
     if (!tipoPerteneceCategoria) return [];
 
-    const productosEmpresa = this.empresa()?.productos ?? [];
-    const idsEmpresa = new Set(productosEmpresa.map((producto) => producto.id));
-    const map = new Map<string, ProductoEmpresa | Producto>();
+    const map = new Map<string, Producto>();
 
-    const upsertProducto = (producto: ProductoEmpresa | Producto) => {
-      if (producto.tipo_producto?.id !== tipoId) return;
-      if (!producto.id) return;
+    this.productosCatalogoGeneral().forEach((producto) => {
+      if (producto.tipo_producto?.id !== tipoId || !producto.id) return;
       const key = this.productoComparableKey(producto);
-      const existente = map.get(key);
-      if (!existente) {
-        map.set(key, producto);
-        return;
-      }
-      const actualEsEmpresa = idsEmpresa.has(existente.id);
-      const nuevoEsEmpresa = idsEmpresa.has(producto.id);
-      if (!actualEsEmpresa && nuevoEsEmpresa) {
+      if (!map.has(key)) {
         map.set(key, producto);
       }
-    };
-
-    this.productosCatalogoGeneral().forEach(upsertProducto);
-    productosEmpresa.forEach(upsertProducto);
+    });
 
     return Array.from(map.values());
+  }
+
+
+  productoTrackKey(producto: Producto): string {
+    return `${producto.id ?? 0}::${this.productoComparableKey(producto)}`;
   }
 
   private productoComparableKey(producto: ProductoEmpresa | Producto): string {
@@ -264,6 +291,9 @@ export class ConfiguracionAdminComponent {
 
   private inicializarProductosPersonalizados() {
     const catalogoIds = new Set(this.productosCatalogoGeneral().map((p) => p.id));
+    const catalogoKeys = new Set(
+      this.productosCatalogoGeneral().map((producto) => this.productoComparableKey(producto)),
+    );
     const porTipo: Record<number, Array<{ id: number; nombre: string; descripcion: string; precio_min: string; precio_max: string }>> = {};
     const empresaId = this.empresa()?.id;
     const productosPropiosEnCatalogo = new Set(
@@ -274,7 +304,8 @@ export class ConfiguracionAdminComponent {
 
     for (const producto of this.empresa()?.productos ?? []) {
       const esPropioEmpresa = productosPropiosEnCatalogo.has(producto.id);
-      if (!esPropioEmpresa && catalogoIds.has(producto.id)) continue;
+      const existeEquivalenteEnCatalogo = catalogoKeys.has(this.productoComparableKey(producto));
+      if (!esPropioEmpresa && (catalogoIds.has(producto.id) || existeEquivalenteEnCatalogo)) continue;
       const tipoId = producto.tipo_producto?.id;
       if (!tipoId) continue;
       porTipo[tipoId] = porTipo[tipoId] ?? [];
@@ -650,15 +681,44 @@ export class ConfiguracionAdminComponent {
       },
     );
 
-    return payload;
+    const payloadUnico = new Map<string, (typeof payload)[number]>();
+    payload.forEach((producto) => {
+      const tipo = (producto.tipo_producto_nombre ?? '').trim().toLowerCase();
+      const nombre = (producto.nombre ?? '').trim().toLowerCase();
+      const key = `${tipo}::${nombre}`;
+      if (!payloadUnico.has(key)) payloadUnico.set(key, producto);
+    });
+
+    return Array.from(payloadUnico.values());
   }
 
   private getProductosEliminados(productosSeleccionados: number[]): number[] {
-    const idsActuales = (this.empresa()?.productos ?? [])
+    const productosEmpresa = this.empresa()?.productos ?? [];
+    const idsActuales = productosEmpresa
       .map((producto) => producto.id)
       .filter((id): id is number => Number.isInteger(id));
+
     const idsSeleccionados = new Set(productosSeleccionados);
-    return idsActuales.filter((id) => !idsSeleccionados.has(id));
+    const catalogoPorId = new Map(
+      this.productosCatalogoGeneral()
+        .filter((producto) => Boolean(producto.id))
+        .map((producto) => [producto.id, producto]),
+    );
+
+    const keysSeleccionadas = new Set<string>();
+    productosSeleccionados.forEach((id) => {
+      const catalogo = catalogoPorId.get(id);
+      if (!catalogo) return;
+      keysSeleccionadas.add(this.productoComparableKey(catalogo));
+    });
+
+    return idsActuales.filter((id) => {
+      if (idsSeleccionados.has(id)) return false;
+      const producto = productosEmpresa.find((item) => item.id === id);
+      if (!producto) return false;
+      const key = this.productoComparableKey(producto);
+      return !keysSeleccionadas.has(key);
+    });
   }
 
 
