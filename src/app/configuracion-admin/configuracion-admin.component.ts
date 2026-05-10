@@ -100,12 +100,7 @@ export class ConfiguracionAdminComponent {
           name: empresa.usuario?.name ?? '',
           direccion: empresa.direccion ?? '',
         });
-        this.productosSeleccionados.set([
-          ...new Set((empresa.productos ?? []).map((item) => item.id)),
-        ]);
-        this.form.controls.productosSeleccionados.setValue(
-          this.productosSeleccionados(),
-        );
+        this.sincronizarSeleccionConCatalogo();
         this.nuevosProductosPorTipo.set({});
         this.inicializarProductosPersonalizados();
         const fotos: Foto[] = ((empresa.fotos ?? []) as Foto[])
@@ -179,12 +174,43 @@ export class ConfiguracionAdminComponent {
         next: (response) => {
           this.productosCatalogoGeneral.set(response?.data ?? []);
           this.inicializarProductosPersonalizados();
+          this.sincronizarSeleccionConCatalogo();
         },
         error: (err) => {
           console.error('Error al cargar productos globales', err);
           this.productosCatalogoGeneral.set([]);
         },
       });
+  }
+
+
+  private sincronizarSeleccionConCatalogo() {
+    const productosEmpresa = this.empresa()?.productos ?? [];
+    const catalogo = this.productosCatalogoGeneral();
+
+    const catalogoPorKey = new Map<string, Producto>();
+    catalogo.forEach((producto) => {
+      if (!producto.id) return;
+      const key = this.productoComparableKey(producto);
+      if (!catalogoPorKey.has(key)) catalogoPorKey.set(key, producto);
+    });
+
+    const seleccionados = new Set<number>();
+
+    productosEmpresa.forEach((productoEmpresa) => {
+      if (!productoEmpresa.id) return;
+      const key = this.productoComparableKey(productoEmpresa);
+      const equivalenteCatalogo = catalogoPorKey.get(key);
+      if (equivalenteCatalogo?.id) {
+        seleccionados.add(equivalenteCatalogo.id);
+        return;
+      }
+      seleccionados.add(productoEmpresa.id);
+    });
+
+    const seleccion = Array.from(seleccionados);
+    this.productosSeleccionados.set(seleccion);
+    this.form.controls.productosSeleccionados.setValue(seleccion);
   }
 
   productosAgrupadosPorCategoria(): Array<{
