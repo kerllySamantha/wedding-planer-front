@@ -295,17 +295,8 @@ export class ConfiguracionAdminComponent {
   }
 
   productosPorTipo(tipoId: number): Producto[] {
-    const map = new Map<string, Producto>();
-
-    this.productosCatalogoGeneral().forEach((producto) => {
-      if (Number(producto.tipo_producto?.id) !== Number(tipoId) || !producto.id) return;
-      const key = this.productoComparableKey(producto);
-      if (!map.has(key)) {
-        map.set(key, producto);
-      }
-    });
-
-    return Array.from(map.values());
+    void tipoId;
+    return [];
   }
 
 
