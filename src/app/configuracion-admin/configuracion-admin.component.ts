@@ -278,9 +278,13 @@ export class ConfiguracionAdminComponent {
   }
 
   private productoComparableKey(producto: ProductoEmpresa | Producto): string {
-    const tipoId = producto.tipo_producto?.id ?? 0;
+    const tipoId = producto.tipo_producto?.id;
+    const tipoNombre = (producto.tipo_producto?.nombre ?? '').trim().toLowerCase();
+    const tipoKey = Number.isInteger(tipoId) && (tipoId ?? 0) > 0
+      ? `id:${tipoId}`
+      : `name:${tipoNombre}`;
     const nombre = (producto.nombre ?? '').trim().toLowerCase();
-    return `${tipoId}::${nombre}`;
+    return `${tipoKey}::${nombre}`;
   }
 
   unidadPorModalidad(modalidad?: string): string {
@@ -295,19 +299,22 @@ export class ConfiguracionAdminComponent {
       this.productosCatalogoGeneral().map((producto) => this.productoComparableKey(producto)),
     );
     const porTipo: Record<number, Array<{ id: number; nombre: string; descripcion: string; precio_min: string; precio_max: string }>> = {};
-    const empresaId = this.empresa()?.id;
-    const productosPropiosEnCatalogo = new Set(
-      this.productosCatalogoGeneral()
-        .filter((producto) => Boolean(empresaId) && producto.empresa?.id === empresaId)
-        .map((producto) => producto.id),
-    );
+    const porTipoKeys = new Map<number, Set<string>>();
 
     for (const producto of this.empresa()?.productos ?? []) {
-      const esPropioEmpresa = productosPropiosEnCatalogo.has(producto.id);
-      const existeEquivalenteEnCatalogo = catalogoKeys.has(this.productoComparableKey(producto));
-      if (!esPropioEmpresa && (catalogoIds.has(producto.id) || existeEquivalenteEnCatalogo)) continue;
       const tipoId = producto.tipo_producto?.id;
       if (!tipoId) continue;
+
+      const comparableKey = this.productoComparableKey(producto);
+      const existeEnCatalogo =
+        catalogoIds.has(producto.id) || catalogoKeys.has(comparableKey);
+      if (existeEnCatalogo) continue;
+
+      const vistosTipo = porTipoKeys.get(tipoId) ?? new Set<string>();
+      if (vistosTipo.has(comparableKey)) continue;
+      vistosTipo.add(comparableKey);
+      porTipoKeys.set(tipoId, vistosTipo);
+
       porTipo[tipoId] = porTipo[tipoId] ?? [];
       porTipo[tipoId].push({
         id: producto.id,
@@ -547,6 +554,14 @@ export class ConfiguracionAdminComponent {
       return;
     }
     this.productosRangoError.set(null);
+    const productosEliminados = this.getProductosEliminados(values.productosSeleccionados ?? []);
+    const eliminadosSet = new Set(productosEliminados);
+    const productosPayloadFiltrado = productosPayload.filter((producto) => {
+      const productoId = producto.id!;
+      if (!Number.isInteger(productoId)) return true;
+      return !eliminadosSet.has(productoId);
+    });
+
     const formEmpresa: CreateEmpresa = {
       nombre_empresa: values.nombre_empresa ?? '',
       tipo_servicio: values.tipo_servicio ?? '',
@@ -559,8 +574,8 @@ export class ConfiguracionAdminComponent {
       descripcion: empresa.descripcion ?? '',
       logo: empresa.logo ?? '',
       fotos: this.galeriaUrls(),
-      productos: productosPayload,
-      productos_eliminados: this.getProductosEliminados(values.productosSeleccionados ?? []),
+      productos: productosPayloadFiltrado,
+      productos_eliminados: productosEliminados,
     };
 
     console.log('Payload enviado a /api/empresas/:id', formEmpresa);
@@ -585,7 +600,6 @@ export class ConfiguracionAdminComponent {
     const empresaActual = this.empresa();
     const productosActuales = empresaActual?.productos ?? [];
     const payload: NonNullable<CreateEmpresa['productos']> = [];
-    const productosEmpresaIds = new Set((empresaActual?.productos ?? []).map((p) => p.id));
     const catalogoPorId = new Map(
       this.productosCatalogoGeneral()
         .filter((producto) => Boolean(producto.id))
@@ -625,9 +639,8 @@ export class ConfiguracionAdminComponent {
       );
       if (!productoCatalogo) continue;
       payload.push({
-        // Para productos del catálogo general que aún no pertenecen a la empresa,
-        // enviamos id null para que backend los asocie/cree correctamente.
-        id: null,
+        // Para productos del sistema enviamos su id original; backend crea/copia para empresa sin tocar el global.
+        id: productoCatalogo.id ?? null,
         nombre: productoCatalogo.nombre ?? '',
         descripcion: productoCatalogo.descripcion ?? '',
         precio_max: productoCatalogo.precio_max ?? 0,
@@ -646,7 +659,7 @@ export class ConfiguracionAdminComponent {
         const nombreLimpio = productoEditado.nombre.trim();
         if (!nombreLimpio) return;
         payload.push({
-          id: productosEmpresaIds.has(productoEditado.id) ? productoEditado.id : null,
+          id: productoEditado.id ?? null,
           nombre: nombreLimpio,
           descripcion: productoEditado.descripcion.trim() || undefined,
           precio_max: productoEditado.precio_max ? Number(productoEditado.precio_max) : undefined,
@@ -693,33 +706,41 @@ export class ConfiguracionAdminComponent {
   }
 
   private getProductosEliminados(productosSeleccionados: number[]): number[] {
+    const empresaId = this.empresa()?.id;
     const productosEmpresa = this.empresa()?.productos ?? [];
-    const idsActuales = productosEmpresa
-      .map((producto) => producto.id)
-      .filter((id): id is number => Number.isInteger(id));
-
     const idsSeleccionados = new Set(productosSeleccionados);
-    const catalogoPorId = new Map(
-      this.productosCatalogoGeneral()
-        .filter((producto) => Boolean(producto.id))
-        .map((producto) => [producto.id, producto]),
-    );
+
+    const catalogoPorKey = new Map<string, Producto>();
+    this.productosCatalogoGeneral().forEach((producto) => {
+      const key = this.productoComparableKey(producto);
+      if (!catalogoPorKey.has(key)) catalogoPorKey.set(key, producto);
+    });
 
     const keysSeleccionadas = new Set<string>();
     productosSeleccionados.forEach((id) => {
-      const catalogo = catalogoPorId.get(id);
-      if (!catalogo) return;
-      keysSeleccionadas.add(this.productoComparableKey(catalogo));
+      const productoCatalogo = this.productosCatalogoGeneral().find((producto) => producto.id === id);
+      if (productoCatalogo) {
+        keysSeleccionadas.add(this.productoComparableKey(productoCatalogo));
+      }
     });
 
-    return idsActuales.filter((id) => {
-      if (idsSeleccionados.has(id)) return false;
-      const producto = productosEmpresa.find((item) => item.id === id);
-      if (!producto) return false;
-      const key = this.productoComparableKey(producto);
-      return !keysSeleccionadas.has(key);
-    });
+    return productosEmpresa
+      .filter((producto) => {
+        const key = this.productoComparableKey(producto);
+        const matchCatalogo = catalogoPorKey.get(key);
+        const esPropioEmpresa =
+          Boolean(matchCatalogo?.empresa?.id) && matchCatalogo?.empresa?.id === empresaId;
+
+        // Solo eliminamos IDs propios de la empresa.
+        if (!esPropioEmpresa) return false;
+        if (idsSeleccionados.has(producto.id)) return false;
+        if (keysSeleccionadas.has(key)) return false;
+        return true;
+      })
+      .map((producto) => producto.id)
+      .filter((id): id is number => Number.isInteger(id));
   }
+
 
 
   private findCategoriaNombreByTipoId(tipoId?: number): string {
