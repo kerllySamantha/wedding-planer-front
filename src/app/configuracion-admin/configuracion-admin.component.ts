@@ -633,6 +633,7 @@ export class ConfiguracionAdminComponent {
           descripcion: productoExistente.descripcion ?? '',
           precio_max: productoExistente.precio_max ?? 0,
           precio_min: productoExistente.precio_min ?? 0,
+          tipo_producto_id: productoExistente.tipo_producto?.id ?? undefined,
           tipo_producto_nombre: productoExistente.tipo_producto?.nombre ?? '',
           categoria_nombre: productoExistente.categoria?.nombre ?? '',
         });
@@ -660,6 +661,8 @@ export class ConfiguracionAdminComponent {
             productoEmpresaEquivalente.precio_max ?? productoCatalogo.precio_max ?? 0,
           precio_min:
             productoEmpresaEquivalente.precio_min ?? productoCatalogo.precio_min ?? 0,
+          tipo_producto_id:
+            productoEmpresaEquivalente.tipo_producto?.id ?? productoCatalogo.tipo_producto?.id ?? undefined,
           tipo_producto_nombre:
             productoEmpresaEquivalente.tipo_producto?.nombre ??
             productoCatalogo.tipo_producto?.nombre ??
@@ -678,6 +681,7 @@ export class ConfiguracionAdminComponent {
         descripcion: productoCatalogo.descripcion ?? '',
         precio_max: productoCatalogo.precio_max ?? 0,
         precio_min: productoCatalogo.precio_min ?? 0,
+        tipo_producto_id: productoCatalogo.tipo_producto?.id ?? undefined,
         tipo_producto_nombre: productoCatalogo.tipo_producto?.nombre ?? '',
         categoria_nombre: this.findCategoriaNombreByTipoId(
           productoCatalogo.tipo_producto?.id,
@@ -697,6 +701,7 @@ export class ConfiguracionAdminComponent {
           descripcion: productoEditado.descripcion.trim() || undefined,
           precio_max: productoEditado.precio_max ? Number(productoEditado.precio_max) : undefined,
           precio_min: productoEditado.precio_min ? Number(productoEditado.precio_min) : undefined,
+          tipo_producto_id: Number(tipoIdStr),
           tipo_producto_nombre: tipoInfo.nombre,
           categoria_nombre: tipoInfo.categoriaNombre,
         });
@@ -720,6 +725,7 @@ export class ConfiguracionAdminComponent {
             precio_min: productoNuevo.precio_min
               ? Number(productoNuevo.precio_min)
               : undefined,
+            tipo_producto_id: Number(tipoIdStr),
             tipo_producto_nombre: tipoInfo.nombre,
             categoria_nombre: tipoInfo.categoriaNombre,
           });
@@ -729,9 +735,10 @@ export class ConfiguracionAdminComponent {
 
     const payloadUnico = new Map<string, (typeof payload)[number]>();
     payload.forEach((producto) => {
+      const tipoId = Number(producto.tipo_producto_id ?? 0);
       const tipo = (producto.tipo_producto_nombre ?? '').trim().toLowerCase();
       const nombre = (producto.nombre ?? '').trim().toLowerCase();
-      const key = `${tipo}::${nombre}`;
+      const key = `${tipoId > 0 ? `id:${tipoId}` : `name:${tipo}`}::${nombre}`;
       if (!payloadUnico.has(key)) payloadUnico.set(key, producto);
     });
 
