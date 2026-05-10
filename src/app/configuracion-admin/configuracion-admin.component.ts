@@ -215,7 +215,7 @@ export class ConfiguracionAdminComponent {
     this.productosRangoError.set(null);
   }
 
-  productosPorTipo(tipoId: number) {
+  productosPorTipo(tipoId: number): Producto[] {
     const categoriaSeleccionada = this.categorias().find(
       (c) => c.id === this.categoriaSeleccionadaId(),
     );
@@ -224,28 +224,15 @@ export class ConfiguracionAdminComponent {
     );
     if (!tipoPerteneceCategoria) return [];
 
-    const productosEmpresa = this.empresa()?.productos ?? [];
-    const idsEmpresa = new Set(productosEmpresa.map((producto) => producto.id));
-    const map = new Map<string, ProductoEmpresa | Producto>();
+    const map = new Map<string, Producto>();
 
-    const upsertProducto = (producto: ProductoEmpresa | Producto) => {
-      if (producto.tipo_producto?.id !== tipoId) return;
-      if (!producto.id) return;
+    this.productosCatalogoGeneral().forEach((producto) => {
+      if (producto.tipo_producto?.id !== tipoId || !producto.id) return;
       const key = this.productoComparableKey(producto);
-      const existente = map.get(key);
-      if (!existente) {
-        map.set(key, producto);
-        return;
-      }
-      const actualEsEmpresa = idsEmpresa.has(existente.id);
-      const nuevoEsEmpresa = idsEmpresa.has(producto.id);
-      if (!actualEsEmpresa && nuevoEsEmpresa) {
+      if (!map.has(key)) {
         map.set(key, producto);
       }
-    };
-
-    this.productosCatalogoGeneral().forEach(upsertProducto);
-    productosEmpresa.forEach(upsertProducto);
+    });
 
     return Array.from(map.values());
   }
