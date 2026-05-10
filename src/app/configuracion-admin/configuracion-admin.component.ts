@@ -305,19 +305,6 @@ export class ConfiguracionAdminComponent {
       }
     });
 
-    if (map.size === 0) {
-      (this.empresa()?.productos ?? []).forEach((productoEmpresa) => {
-        if (Number(productoEmpresa.tipo_producto?.id) !== Number(tipoId) || !productoEmpresa.id) return;
-        const key = this.productoComparableKey(productoEmpresa);
-        if (!map.has(key)) {
-          map.set(key, {
-            ...(productoEmpresa as unknown as Producto),
-            empresa: { id: this.empresa()?.id ?? 0, nombre: this.empresa()?.nombre_empresa ?? '' },
-          });
-        }
-      });
-    }
-
     return Array.from(map.values());
   }
 
