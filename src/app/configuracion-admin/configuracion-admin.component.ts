@@ -441,12 +441,25 @@ export class ConfiguracionAdminComponent {
     );
     if (!categoriaSeleccionada) return [];
 
+    const mapTipos = new Map<number, { tipoId: number; tipoNombre: string }>();
+
+    (categoriaSeleccionada.tipos ?? []).forEach((tipo) => {
+      mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
+    });
+
+    (this.empresa()?.productos ?? []).forEach((producto) => {
+      const categoriaProducto = producto.categoria?.nombre ?? 'Sin categoría';
+      if (categoriaProducto !== (categoriaSeleccionada.nombre ?? 'Sin categoría')) return;
+      const tipo = producto.tipo_producto;
+      if (!tipo?.id) return;
+      if (!mapTipos.has(tipo.id)) {
+        mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
+      }
+    });
+
     return [{
       categoriaNombre: categoriaSeleccionada.nombre ?? 'Sin categoría',
-      tipos: (categoriaSeleccionada.tipos ?? []).map((tipo) => ({
-        tipoId: tipo.id,
-        tipoNombre: tipo.nombre,
-      })),
+      tipos: Array.from(mapTipos.values()),
     }];
   }
 
