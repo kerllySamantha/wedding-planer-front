@@ -253,14 +253,14 @@ export class ConfiguracionAdminComponent {
       (c) => c.id === this.categoriaSeleccionadaId(),
     );
     const tipoPerteneceCategoria = (categoriaSeleccionada?.tipos ?? []).some(
-      (tipo) => tipo.id === tipoId,
+      (tipo) => Number(tipo.id) === Number(tipoId),
     );
     if (!tipoPerteneceCategoria) return [];
 
     const map = new Map<string, Producto>();
 
     this.productosCatalogoGeneral().forEach((producto) => {
-      if (producto.tipo_producto?.id !== tipoId || !producto.id) return;
+      if (Number(producto.tipo_producto?.id) !== Number(tipoId) || !producto.id) return;
       const key = this.productoComparableKey(producto);
       if (!map.has(key)) {
         map.set(key, producto);
