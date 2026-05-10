@@ -554,6 +554,13 @@ export class ConfiguracionAdminComponent {
       return;
     }
     this.productosRangoError.set(null);
+    const productosEliminados = this.getProductosEliminados(values.productosSeleccionados ?? []);
+    const eliminadosSet = new Set(productosEliminados);
+    const productosPayloadFiltrado = productosPayload.filter((producto) => {
+      if (!Number.isInteger(producto.id)) return true;
+      return !eliminadosSet.has(producto.id);
+    });
+
     const formEmpresa: CreateEmpresa = {
       nombre_empresa: values.nombre_empresa ?? '',
       tipo_servicio: values.tipo_servicio ?? '',
@@ -566,8 +573,8 @@ export class ConfiguracionAdminComponent {
       descripcion: empresa.descripcion ?? '',
       logo: empresa.logo ?? '',
       fotos: this.galeriaUrls(),
-      productos: productosPayload,
-      productos_eliminados: this.getProductosEliminados(values.productosSeleccionados ?? []),
+      productos: productosPayloadFiltrado,
+      productos_eliminados: productosEliminados,
     };
 
     console.log('Payload enviado a /api/empresas/:id', formEmpresa);
