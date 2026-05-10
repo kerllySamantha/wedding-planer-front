@@ -172,7 +172,8 @@ export class ConfiguracionAdminComponent {
       .get<{ data: Producto[] }>(`${this.empresaCtx.apiUrl}/productos`)
       .subscribe({
         next: (response) => {
-          this.productosCatalogoGeneral.set(response?.data ?? []);
+          const productosGlobales = (response?.data ?? []).filter((producto) => !producto.empresa?.id);
+          this.productosCatalogoGeneral.set(productosGlobales);
           this.inicializarProductosPersonalizados();
           this.sincronizarSeleccionConCatalogo();
         },
@@ -203,9 +204,7 @@ export class ConfiguracionAdminComponent {
       const equivalenteCatalogo = catalogoPorKey.get(key);
       if (equivalenteCatalogo?.id) {
         seleccionados.add(equivalenteCatalogo.id);
-        return;
       }
-      seleccionados.add(productoEmpresa.id);
     });
 
     const seleccion = Array.from(seleccionados);
