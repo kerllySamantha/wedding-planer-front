@@ -291,6 +291,9 @@ export class ConfiguracionAdminComponent {
 
   private inicializarProductosPersonalizados() {
     const catalogoIds = new Set(this.productosCatalogoGeneral().map((p) => p.id));
+    const catalogoKeys = new Set(
+      this.productosCatalogoGeneral().map((producto) => this.productoComparableKey(producto)),
+    );
     const porTipo: Record<number, Array<{ id: number; nombre: string; descripcion: string; precio_min: string; precio_max: string }>> = {};
     const empresaId = this.empresa()?.id;
     const productosPropiosEnCatalogo = new Set(
@@ -301,7 +304,8 @@ export class ConfiguracionAdminComponent {
 
     for (const producto of this.empresa()?.productos ?? []) {
       const esPropioEmpresa = productosPropiosEnCatalogo.has(producto.id);
-      if (!esPropioEmpresa && catalogoIds.has(producto.id)) continue;
+      const existeEquivalenteEnCatalogo = catalogoKeys.has(this.productoComparableKey(producto));
+      if (!esPropioEmpresa && (catalogoIds.has(producto.id) || existeEquivalenteEnCatalogo)) continue;
       const tipoId = producto.tipo_producto?.id;
       if (!tipoId) continue;
       porTipo[tipoId] = porTipo[tipoId] ?? [];
@@ -694,6 +698,7 @@ export class ConfiguracionAdminComponent {
       .map((producto) => producto.id)
       .filter((id): id is number => Number.isInteger(id));
 
+    const idsSeleccionados = new Set(productosSeleccionados);
     const catalogoPorId = new Map(
       this.productosCatalogoGeneral()
         .filter((producto) => Boolean(producto.id))
@@ -707,15 +712,8 @@ export class ConfiguracionAdminComponent {
       keysSeleccionadas.add(this.productoComparableKey(catalogo));
     });
 
-    const idsPersonalizados = new Set(
-      Object.values(this.productosPersonalizados())
-        .flat()
-        .map((producto) => producto.id)
-        .filter((id): id is number => Number.isInteger(id)),
-    );
-
     return idsActuales.filter((id) => {
-      if (idsPersonalizados.has(id)) return false;
+      if (idsSeleccionados.has(id)) return false;
       const producto = productosEmpresa.find((item) => item.id === id);
       if (!producto) return false;
       const key = this.productoComparableKey(producto);
