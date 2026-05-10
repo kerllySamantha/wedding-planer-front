@@ -555,6 +555,11 @@ export class ConfiguracionAdminComponent {
     const productosActuales = empresaActual?.productos ?? [];
     const payload: NonNullable<CreateEmpresa['productos']> = [];
     const productosEmpresaIds = new Set((empresaActual?.productos ?? []).map((p) => p.id));
+    const catalogoPorId = new Map(
+      this.productosCatalogoGeneral()
+        .filter((producto) => Boolean(producto.id))
+        .map((producto) => [producto.id, producto]),
+    );
 
     const personalizadosIds = new Set(
       Object.values(this.productosPersonalizados())
@@ -565,8 +570,12 @@ export class ConfiguracionAdminComponent {
     for (const productoId of productosSeleccionados) {
       const productoExistente = productosActuales.find((p) => p.id === productoId);
       if (productoExistente && !personalizadosIds.has(productoId)) {
+        const catalogoMatch = catalogoPorId.get(productoExistente.id);
+        const perteneceAOtraEmpresa =
+          Boolean(catalogoMatch?.empresa?.id) &&
+          catalogoMatch?.empresa?.id !== empresaActual?.id;
         payload.push({
-          id: productoExistente.id ?? null,
+          id: perteneceAOtraEmpresa ? null : (productoExistente.id ?? null),
           nombre:
             productoExistente.nombre ??
             productoExistente.tipo_producto?.nombre ??
