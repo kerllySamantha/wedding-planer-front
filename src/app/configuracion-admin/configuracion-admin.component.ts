@@ -307,19 +307,6 @@ export class ConfiguracionAdminComponent {
       }
     });
 
-    if (map.size === 0) {
-      (this.empresa()?.productos ?? []).forEach((productoEmpresa) => {
-        if (Number(productoEmpresa.tipo_producto?.id) !== Number(tipoId) || !productoEmpresa.id) return;
-        const key = this.productoComparableKey(productoEmpresa);
-        if (!map.has(key)) {
-          map.set(key, {
-            ...(productoEmpresa as unknown as Producto),
-            empresa: { id: this.empresa()?.id ?? 0, nombre: this.empresa()?.nombre_empresa ?? '' },
-          });
-        }
-      });
-    }
-
     return Array.from(map.values());
   }
 
@@ -451,26 +438,13 @@ export class ConfiguracionAdminComponent {
     categoriaNombre: string;
     tipos: Array<{ tipoId: number; tipoNombre: string }>;
   }> {
-    const categoriaSeleccionada = this.categorias().find(
-      (c) => c.id === this.categoriaSeleccionadaId(),
-    );
-    const tiposFiltrados = (categoriaSeleccionada?.tipos ?? []).map((tipo) => ({
-      categoriaNombre: categoriaSeleccionada?.nombre ?? 'Sin categoría',
-      tipoId: tipo.id,
-      tipoNombre: tipo.nombre,
-    }));
-
-    const map = new Map<string, Array<{ tipoId: number; tipoNombre: string }>>();
-    tiposFiltrados.forEach((tipo) => {
-      const actuales = map.get(tipo.categoriaNombre) ?? [];
-      actuales.push({ tipoId: tipo.tipoId, tipoNombre: tipo.tipoNombre });
-      map.set(tipo.categoriaNombre, actuales);
-    });
-
-    return Array.from(map.entries()).map(([categoriaNombre, tiposCat]) => ({
-      categoriaNombre,
-      tipos: tiposCat,
-    }));
+    return this.categorias().map((categoria) => ({
+      categoriaNombre: categoria.nombre ?? 'Sin categoría',
+      tipos: (categoria.tipos ?? []).map((tipo) => ({
+        tipoId: tipo.id,
+        tipoNombre: tipo.nombre,
+      })),
+    })).filter((categoria) => categoria.tipos.length > 0);
   }
 
   agregarCampoNuevoProducto(tipoId: number) {
