@@ -66,6 +66,7 @@ export class ConfiguracionAdminComponent {
   modoEdicion = signal(false);
   productosError = signal(false);
   productosRangoError = signal<string | null>(null);
+  productosPersonalizadosEliminados = signal<number[]>([]);
   idUser = signal<string>(localStorage.getItem('id')!);
   form = this.fb.group(
     {
@@ -105,6 +106,7 @@ export class ConfiguracionAdminComponent {
         this.sincronizarSeleccionConCatalogo();
         this.nuevosProductosPorTipo.set({});
         this.inicializarProductosPersonalizados();
+        this.productosPersonalizadosEliminados.set([]);
         const fotos: Foto[] = ((empresa.fotos ?? []) as Foto[])
           .map((foto) => ({
             path: foto.path,
@@ -515,7 +517,12 @@ export class ConfiguracionAdminComponent {
     this.productosPersonalizados.update((prev) => {
       const lista = [...(prev[tipoId] ?? [])];
       if (idx < 0 || idx >= lista.length) return prev;
-      lista.splice(idx, 1);
+      const [eliminado] = lista.splice(idx, 1);
+      if (Number.isInteger(eliminado?.id) && (eliminado?.id ?? 0) > 0) {
+        this.productosPersonalizadosEliminados.update((ids) =>
+          ids.includes(eliminado.id) ? ids : [...ids, eliminado.id],
+        );
+      }
       return { ...prev, [tipoId]: lista };
     });
   }
@@ -616,7 +623,11 @@ export class ConfiguracionAdminComponent {
       return;
     }
     this.productosRangoError.set(null);
-    const productosEliminados = this.getProductosEliminados(values.productosSeleccionados ?? []);
+    const eliminadosDetectados = this.getProductosEliminados(values.productosSeleccionados ?? []);
+    const productosEliminados = Array.from(new Set([
+      ...eliminadosDetectados,
+      ...this.productosPersonalizadosEliminados(),
+    ]));
     const eliminadosSet = new Set(productosEliminados);
     const productosPayloadFiltrado = productosPayload.filter((producto) => {
       const productoId = producto.id!;
