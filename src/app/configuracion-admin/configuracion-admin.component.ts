@@ -426,30 +426,31 @@ export class ConfiguracionAdminComponent {
     categoriaNombre: string;
     tipos: Array<{ tipoId: number; tipoNombre: string }>;
   }> {
-    const categoriasBase = this.categorias().map((categoria) => {
-      const mapTipos = new Map<number, { tipoId: number; tipoNombre: string }>();
+    const categoriaSeleccionada = this.categorias().find(
+      (c) => c.id === this.categoriaSeleccionadaId(),
+    );
+    if (!categoriaSeleccionada) return [];
 
-      (categoria.tipos ?? []).forEach((tipo) => {
-        mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
-      });
+    const mapTipos = new Map<number, { tipoId: number; tipoNombre: string }>();
 
-      (this.empresa()?.productos ?? []).forEach((producto) => {
-        const categoriaProducto = producto.categoria?.nombre ?? 'Sin categoría';
-        if (categoriaProducto !== (categoria.nombre ?? 'Sin categoría')) return;
-        const tipo = producto.tipo_producto;
-        if (!tipo?.id) return;
-        if (!mapTipos.has(tipo.id)) {
-          mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
-        }
-      });
-
-      return {
-        categoriaNombre: categoria.nombre ?? 'Sin categoría',
-        tipos: Array.from(mapTipos.values()),
-      };
+    (categoriaSeleccionada.tipos ?? []).forEach((tipo) => {
+      mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
     });
 
-    return categoriasBase.filter((categoria) => categoria.tipos.length > 0);
+    (this.empresa()?.productos ?? []).forEach((producto) => {
+      const categoriaProducto = producto.categoria?.nombre ?? 'Sin categoría';
+      if (categoriaProducto !== (categoriaSeleccionada.nombre ?? 'Sin categoría')) return;
+      const tipo = producto.tipo_producto;
+      if (!tipo?.id) return;
+      if (!mapTipos.has(tipo.id)) {
+        mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
+      }
+    });
+
+    return [{
+      categoriaNombre: categoriaSeleccionada.nombre ?? 'Sin categoría',
+      tipos: Array.from(mapTipos.values()),
+    }];
   }
 
   agregarCampoNuevoProducto(tipoId: number) {
