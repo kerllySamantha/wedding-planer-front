@@ -592,7 +592,6 @@ export class ConfiguracionAdminComponent {
     const empresaActual = this.empresa();
     const productosActuales = empresaActual?.productos ?? [];
     const payload: NonNullable<CreateEmpresa['productos']> = [];
-    const productosEmpresaIds = new Set((empresaActual?.productos ?? []).map((p) => p.id));
     const catalogoPorId = new Map(
       this.productosCatalogoGeneral()
         .filter((producto) => Boolean(producto.id))
@@ -632,9 +631,8 @@ export class ConfiguracionAdminComponent {
       );
       if (!productoCatalogo) continue;
       payload.push({
-        // Para productos del catálogo general que aún no pertenecen a la empresa,
-        // enviamos id null para que backend los asocie/cree correctamente.
-        id: null,
+        // Para productos del sistema enviamos su id original; backend crea/copia para empresa sin tocar el global.
+        id: productoCatalogo.id ?? null,
         nombre: productoCatalogo.nombre ?? '',
         descripcion: productoCatalogo.descripcion ?? '',
         precio_max: productoCatalogo.precio_max ?? 0,
@@ -653,7 +651,7 @@ export class ConfiguracionAdminComponent {
         const nombreLimpio = productoEditado.nombre.trim();
         if (!nombreLimpio) return;
         payload.push({
-          id: productosEmpresaIds.has(productoEditado.id) ? productoEditado.id : null,
+          id: productoEditado.id ?? null,
           nombre: nombreLimpio,
           descripcion: productoEditado.descripcion.trim() || undefined,
           precio_max: productoEditado.precio_max ? Number(productoEditado.precio_max) : undefined,
@@ -700,33 +698,41 @@ export class ConfiguracionAdminComponent {
   }
 
   private getProductosEliminados(productosSeleccionados: number[]): number[] {
+    const empresaId = this.empresa()?.id;
     const productosEmpresa = this.empresa()?.productos ?? [];
-    const idsActuales = productosEmpresa
-      .map((producto) => producto.id)
-      .filter((id): id is number => Number.isInteger(id));
-
     const idsSeleccionados = new Set(productosSeleccionados);
-    const catalogoPorId = new Map(
-      this.productosCatalogoGeneral()
-        .filter((producto) => Boolean(producto.id))
-        .map((producto) => [producto.id, producto]),
-    );
+
+    const catalogoPorKey = new Map<string, Producto>();
+    this.productosCatalogoGeneral().forEach((producto) => {
+      const key = this.productoComparableKey(producto);
+      if (!catalogoPorKey.has(key)) catalogoPorKey.set(key, producto);
+    });
 
     const keysSeleccionadas = new Set<string>();
     productosSeleccionados.forEach((id) => {
-      const catalogo = catalogoPorId.get(id);
-      if (!catalogo) return;
-      keysSeleccionadas.add(this.productoComparableKey(catalogo));
+      const productoCatalogo = this.productosCatalogoGeneral().find((producto) => producto.id === id);
+      if (productoCatalogo) {
+        keysSeleccionadas.add(this.productoComparableKey(productoCatalogo));
+      }
     });
 
-    return idsActuales.filter((id) => {
-      if (idsSeleccionados.has(id)) return false;
-      const producto = productosEmpresa.find((item) => item.id === id);
-      if (!producto) return false;
-      const key = this.productoComparableKey(producto);
-      return !keysSeleccionadas.has(key);
-    });
+    return productosEmpresa
+      .filter((producto) => {
+        const key = this.productoComparableKey(producto);
+        const matchCatalogo = catalogoPorKey.get(key);
+        const esPropioEmpresa =
+          Boolean(matchCatalogo?.empresa?.id) && matchCatalogo?.empresa?.id === empresaId;
+
+        // Solo eliminamos IDs propios de la empresa.
+        if (!esPropioEmpresa) return false;
+        if (idsSeleccionados.has(producto.id)) return false;
+        if (keysSeleccionadas.has(key)) return false;
+        return true;
+      })
+      .map((producto) => producto.id)
+      .filter((id): id is number => Number.isInteger(id));
   }
+
 
 
   private findCategoriaNombreByTipoId(tipoId?: number): string {
