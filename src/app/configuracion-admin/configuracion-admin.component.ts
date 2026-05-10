@@ -435,40 +435,30 @@ export class ConfiguracionAdminComponent {
     categoriaNombre: string;
     tipos: Array<{ tipoId: number; tipoNombre: string }>;
   }> {
-    const categoriaSeleccionada = this.categorias().find(
-      (c) => c.id === this.categoriaSeleccionadaId(),
-    );
-    if (!categoriaSeleccionada) return [];
+    const categoriasBase = this.categorias().map((categoria) => {
+      const mapTipos = new Map<number, { tipoId: number; tipoNombre: string }>();
 
-    const mapTipos = new Map<number, { tipoId: number; tipoNombre: string }>();
-
-    (categoriaSeleccionada.tipos ?? []).forEach((tipo) => {
-      mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
-    });
-
-    (this.empresa()?.productos ?? []).forEach((producto) => {
-      const categoriaProducto = producto.categoria?.nombre ?? 'Sin categoría';
-      if (categoriaProducto !== (categoriaSeleccionada.nombre ?? 'Sin categoría')) return;
-      const tipo = producto.tipo_producto;
-      if (!tipo?.id) return;
-      if (!mapTipos.has(tipo.id)) {
-        mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
-      }
-    });
-
-
-    if (mapTipos.size === 0) {
-      (this.empresa()?.productos ?? []).forEach((producto) => {
-        const tipo = producto.tipo_producto;
-        if (!tipo?.id) return;
+      (categoria.tipos ?? []).forEach((tipo) => {
         mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
       });
-    }
 
-    return [{
-      categoriaNombre: categoriaSeleccionada.nombre ?? 'Sin categoría',
-      tipos: Array.from(mapTipos.values()),
-    }];
+      (this.empresa()?.productos ?? []).forEach((producto) => {
+        const categoriaProducto = producto.categoria?.nombre ?? 'Sin categoría';
+        if (categoriaProducto !== (categoria.nombre ?? 'Sin categoría')) return;
+        const tipo = producto.tipo_producto;
+        if (!tipo?.id) return;
+        if (!mapTipos.has(tipo.id)) {
+          mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
+        }
+      });
+
+      return {
+        categoriaNombre: categoria.nombre ?? 'Sin categoría',
+        tipos: Array.from(mapTipos.values()),
+      };
+    });
+
+    return categoriasBase.filter((categoria) => categoria.tipos.length > 0);
   }
 
   agregarCampoNuevoProducto(tipoId: number) {
