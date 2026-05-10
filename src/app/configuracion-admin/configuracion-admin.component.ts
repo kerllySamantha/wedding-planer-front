@@ -46,6 +46,7 @@ export class ConfiguracionAdminComponent {
       }>
     >
   >({});
+  edicionCatalogoPorId = signal<Record<number, { descripcion: string; precio_min: string; precio_max: string }>>({});
   nuevosProductosPorTipo = signal<
     Record<
       number,
@@ -254,6 +255,32 @@ export class ConfiguracionAdminComponent {
   isProductoMarcado(productoId: number): boolean {
     const idCatalogo = this.resolverIdCatalogo(productoId);
     return this.productosSeleccionados().includes(idCatalogo);
+  }
+
+
+  productosSeleccionadosPorTipo(tipoId: number): Producto[] {
+    const seleccionados = new Set(this.productosSeleccionados());
+    return this.productosPorTipo(tipoId).filter((producto) => seleccionados.has(this.resolverIdCatalogo(producto.id)));
+  }
+
+  datosEdicionCatalogo(producto: Producto): { descripcion: string; precio_min: string; precio_max: string } {
+    const id = this.resolverIdCatalogo(producto.id);
+    const actual = this.edicionCatalogoPorId()[id];
+    if (actual) return actual;
+    const empresaMatch = (this.empresa()?.productos ?? []).find(
+      (item) => this.productoComparableKey(item) === this.productoComparableKey(producto),
+    );
+    return {
+      descripcion: empresaMatch?.descripcion ?? producto.descripcion ?? '',
+      precio_min: String(empresaMatch?.precio_min ?? producto.precio_min ?? ''),
+      precio_max: String(empresaMatch?.precio_max ?? producto.precio_max ?? ''),
+    };
+  }
+
+  onEdicionCatalogoInput(producto: Producto, field: 'descripcion' | 'precio_min' | 'precio_max', value: string) {
+    const id = this.resolverIdCatalogo(producto.id);
+    const current = this.datosEdicionCatalogo(producto);
+    this.edicionCatalogoPorId.update((prev: Record<number, { descripcion: string; precio_min: string; precio_max: string }>) => ({ ...prev, [id]: { ...current, [field]: value } }));
   }
 
   onProductoToggle(productoId: number, checked: boolean) {
@@ -700,13 +727,14 @@ export class ConfiguracionAdminComponent {
         continue;
       }
 
+      const edicionCatalogo = this.edicionCatalogoPorId()[productoCatalogo.id ?? 0];
       payload.push({
         // Para productos del sistema enviamos su id original; backend crea/copia para empresa sin tocar el global.
         id: productoCatalogo.id ?? null,
         nombre: productoCatalogo.nombre ?? '',
-        descripcion: productoCatalogo.descripcion ?? '',
-        precio_max: productoCatalogo.precio_max ?? 0,
-        precio_min: productoCatalogo.precio_min ?? 0,
+        descripcion: edicionCatalogo?.descripcion ?? productoCatalogo.descripcion ?? '',
+        precio_max: edicionCatalogo?.precio_max ? Number(edicionCatalogo.precio_max) : (productoCatalogo.precio_max ?? 0),
+        precio_min: edicionCatalogo?.precio_min ? Number(edicionCatalogo.precio_min) : (productoCatalogo.precio_min ?? 0),
         tipo_producto_id: productoCatalogo.tipo_producto?.id ?? undefined,
         tipo_producto_nombre: productoCatalogo.tipo_producto?.nombre ?? '',
         categoria_nombre: this.findCategoriaNombreByTipoId(

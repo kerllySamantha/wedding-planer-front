@@ -187,6 +187,32 @@
                 }
               </div>
 
+
+
+              <!-- Edición de productos seleccionados del catálogo (nombre fijo) -->
+              @for (productoSel of productosSeleccionadosPorTipo(tipoPermitido.tipoId); track productoTrackKey(productoSel)) {
+              <div class="type-editor-card__new-item">
+                <input class="form-control form-control-sm" [value]="productoSel.nombre" readonly>
+                <input
+                  class="form-control form-control-sm"
+                  placeholder="Descripción"
+                  [value]="datosEdicionCatalogo(productoSel).descripcion"
+                  (input)="onEdicionCatalogoInput(productoSel, 'descripcion', $any($event.target).value)">
+                <div class="row g-2">
+                  <div class="col">
+                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio mínimo"
+                      [value]="datosEdicionCatalogo(productoSel).precio_min"
+                      (input)="onEdicionCatalogoInput(productoSel, 'precio_min', $any($event.target).value)">
+                  </div>
+                  <div class="col">
+                    <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio máximo"
+                      [value]="datosEdicionCatalogo(productoSel).precio_max"
+                      (input)="onEdicionCatalogoInput(productoSel, 'precio_max', $any($event.target).value)">
+                  </div>
+                </div>
+              </div>
+              }
+
               <!-- Productos personalizados existentes (editables) -->
               @for (personalizado of (productosPersonalizados()[tipoPermitido.tipoId]); track personalizado.id; let idx = $index) {
               <div class="type-editor-card__new-item">
