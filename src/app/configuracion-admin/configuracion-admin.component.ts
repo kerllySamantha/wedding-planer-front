@@ -557,7 +557,7 @@ export class ConfiguracionAdminComponent {
     const productosEliminados = this.getProductosEliminados(values.productosSeleccionados ?? []);
     const eliminadosSet = new Set(productosEliminados);
     const productosPayloadFiltrado = productosPayload.filter((producto) => {
-      const productoId = producto.id;
+      const productoId = producto.id!;
       if (!Number.isInteger(productoId)) return true;
       return !eliminadosSet.has(productoId);
     });
