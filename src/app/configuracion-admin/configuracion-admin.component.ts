@@ -305,17 +305,7 @@ export class ConfiguracionAdminComponent {
       }
     });
 
-    (this.empresa()?.productos ?? []).forEach((productoEmpresa) => {
-      if (Number(productoEmpresa.tipo_producto?.id) !== Number(tipoId) || !productoEmpresa.id) return;
-      const key = this.productoComparableKey(productoEmpresa);
-      if (map.has(key)) return;
-      map.set(key, {
-        ...(productoEmpresa as unknown as Producto),
-        empresa: { id: this.empresa()?.id ?? 0, nombre: this.empresa()?.nombre_empresa ?? '' },
-      });
-    });
-
-    return Array.from(map.values());
+        return Array.from(map.values());
   }
 
 
@@ -323,13 +313,17 @@ export class ConfiguracionAdminComponent {
     return `${producto.id ?? 0}::${this.productoComparableKey(producto)}`;
   }
 
+  private normalizarTexto(valor: string): string {
+    return valor.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+  }
+
   private productoComparableKey(producto: ProductoEmpresa | Producto): string {
     const tipoIdNumerico = Number(producto.tipo_producto?.id ?? 0);
-    const tipoNombre = (producto.tipo_producto?.nombre ?? '').trim().toLowerCase();
+    const tipoNombre = this.normalizarTexto(producto.tipo_producto?.nombre ?? '');
     const tipoKey = Number.isFinite(tipoIdNumerico) && tipoIdNumerico > 0
       ? `id:${tipoIdNumerico}`
       : `name:${tipoNombre}`;
-    const nombre = (producto.nombre ?? '').trim().toLowerCase();
+    const nombre = this.normalizarTexto(producto.nombre ?? '');
     return `${tipoKey}::${nombre}`;
   }
 
@@ -791,7 +785,7 @@ export class ConfiguracionAdminComponent {
     payload.forEach((producto) => {
       const tipoId = Number(producto.tipo_producto_id ?? 0);
       const tipo = (producto.tipo_producto_nombre ?? '').trim().toLowerCase();
-      const nombre = (producto.nombre ?? '').trim().toLowerCase();
+      const nombre = this.normalizarTexto(producto.nombre ?? '');
       const key = `${tipoId > 0 ? `id:${tipoId}` : `name:${tipo}`}::${nombre}`;
       if (!payloadUnico.has(key)) payloadUnico.set(key, producto);
     });
