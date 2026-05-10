@@ -457,6 +457,15 @@ export class ConfiguracionAdminComponent {
       }
     });
 
+
+    if (mapTipos.size === 0) {
+      (this.empresa()?.productos ?? []).forEach((producto) => {
+        const tipo = producto.tipo_producto;
+        if (!tipo?.id) return;
+        mapTipos.set(tipo.id, { tipoId: tipo.id, tipoNombre: tipo.nombre });
+      });
+    }
+
     return [{
       categoriaNombre: categoriaSeleccionada.nombre ?? 'Sin categoría',
       tipos: Array.from(mapTipos.values()),
