@@ -14,7 +14,7 @@ import {
 import { CreateEmpresa } from '../Interfaces/Empresa';
 import { Foto } from '../Interfaces/Resenia';
 import { HttpClient } from '@angular/common/http';
-import { Producto } from '../Interfaces/Producto';
+import { Producto, ProductoEmpresa } from '../Interfaces/Producto';
 
 @Component({
   selector: 'app-configuracion-admin',
@@ -224,15 +224,36 @@ export class ConfiguracionAdminComponent {
     );
     if (!tipoPerteneceCategoria) return [];
 
-    const map = new Map<number, Producto>();
-    this.productosCatalogoGeneral().forEach((producto) => {
+    const productosEmpresa = this.empresa()?.productos ?? [];
+    const idsEmpresa = new Set(productosEmpresa.map((producto) => producto.id));
+    const map = new Map<string, ProductoEmpresa | Producto>();
+
+    const upsertProducto = (producto: ProductoEmpresa | Producto) => {
       if (producto.tipo_producto?.id !== tipoId) return;
       if (!producto.id) return;
-      if (map.has(producto.id)) return;
-      map.set(producto.id, producto);
-    });
+      const key = this.productoComparableKey(producto);
+      const existente = map.get(key);
+      if (!existente) {
+        map.set(key, producto);
+        return;
+      }
+      const actualEsEmpresa = idsEmpresa.has(existente.id);
+      const nuevoEsEmpresa = idsEmpresa.has(producto.id);
+      if (!actualEsEmpresa && nuevoEsEmpresa) {
+        map.set(key, producto);
+      }
+    };
+
+    this.productosCatalogoGeneral().forEach(upsertProducto);
+    productosEmpresa.forEach(upsertProducto);
 
     return Array.from(map.values());
+  }
+
+  private productoComparableKey(producto: ProductoEmpresa | Producto): string {
+    const tipoId = producto.tipo_producto?.id ?? 0;
+    const nombre = (producto.nombre ?? '').trim().toLowerCase();
+    return `${tipoId}::${nombre}`;
   }
 
   unidadPorModalidad(modalidad?: string): string {
@@ -511,6 +532,7 @@ export class ConfiguracionAdminComponent {
       productos_eliminados: this.getProductosEliminados(values.productosSeleccionados ?? []),
     };
 
+    console.log('Payload enviado a /api/empresas/:id', formEmpresa);
     this.saving.set(true);
     this.empresaCtx.editEmpresa(String(empresa.id), formEmpresa).subscribe({
       next: (value) => {
@@ -532,6 +554,12 @@ export class ConfiguracionAdminComponent {
     const empresaActual = this.empresa();
     const productosActuales = empresaActual?.productos ?? [];
     const payload: NonNullable<CreateEmpresa['productos']> = [];
+    const productosEmpresaIds = new Set((empresaActual?.productos ?? []).map((p) => p.id));
+    const catalogoPorId = new Map(
+      this.productosCatalogoGeneral()
+        .filter((producto) => Boolean(producto.id))
+        .map((producto) => [producto.id, producto]),
+    );
 
     const personalizadosIds = new Set(
       Object.values(this.productosPersonalizados())
@@ -542,8 +570,12 @@ export class ConfiguracionAdminComponent {
     for (const productoId of productosSeleccionados) {
       const productoExistente = productosActuales.find((p) => p.id === productoId);
       if (productoExistente && !personalizadosIds.has(productoId)) {
+        const catalogoMatch = catalogoPorId.get(productoExistente.id);
+        const perteneceAOtraEmpresa =
+          Boolean(catalogoMatch?.empresa?.id) &&
+          catalogoMatch?.empresa?.id !== empresaActual?.id;
         payload.push({
-          id: productoExistente.id ?? null,
+          id: perteneceAOtraEmpresa ? null : (productoExistente.id ?? null),
           nombre:
             productoExistente.nombre ??
             productoExistente.tipo_producto?.nombre ??
@@ -562,7 +594,9 @@ export class ConfiguracionAdminComponent {
       );
       if (!productoCatalogo) continue;
       payload.push({
-        id: productoCatalogo.id ?? null,
+        // Para productos del catálogo general que aún no pertenecen a la empresa,
+        // enviamos id null para que backend los asocie/cree correctamente.
+        id: null,
         nombre: productoCatalogo.nombre ?? '',
         descripcion: productoCatalogo.descripcion ?? '',
         precio_max: productoCatalogo.precio_max ?? 0,
@@ -581,7 +615,7 @@ export class ConfiguracionAdminComponent {
         const nombreLimpio = productoEditado.nombre.trim();
         if (!nombreLimpio) return;
         payload.push({
-          id: productoEditado.id,
+          id: productosEmpresaIds.has(productoEditado.id) ? productoEditado.id : null,
           nombre: nombreLimpio,
           descripcion: productoEditado.descripcion.trim() || undefined,
           precio_max: productoEditado.precio_max ? Number(productoEditado.precio_max) : undefined,
