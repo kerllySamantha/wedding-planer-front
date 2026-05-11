@@ -11,6 +11,7 @@ import { map } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardMibodaEmpresaComponent } from '../card-miboda-empresa/card-miboda-empresa.component';
 import { Router, RouterOutlet } from '@angular/router';
+import { InfoCategoria } from '../Interfaces/Categoria';
 
 @Component({
   selector: 'app-mi-boda',
@@ -39,7 +40,9 @@ export class MiBodaComponent {
 
  
   categorias$ = this.servicioDeCategorias.getCategorias().pipe(
-    map(data => data?.data ?? [])
+    map((data) =>
+      (data?.data as InfoCategoria[] ?? []).filter((categoria) => (categoria.tipos ?? []).length > 0),
+    ),
   );
 
   onCategoriaChange(event: Event) {
