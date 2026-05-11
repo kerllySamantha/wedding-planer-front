@@ -15,6 +15,7 @@ import { CreateEmpresa } from '../Interfaces/Empresa';
 import { Foto } from '../Interfaces/Resenia';
 import { HttpClient } from '@angular/common/http';
 import { Producto, ProductoEmpresa } from '../Interfaces/Producto';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-configuracion-admin',
@@ -65,6 +66,7 @@ export class ConfiguracionAdminComponent {
   modoEdicion = signal(false);
   productosError = signal(false);
   productosRangoError = signal<string | null>(null);
+  productosPersonalizadosEliminados = signal<number[]>([]);
   idUser = signal<string>(localStorage.getItem('id')!);
   form = this.fb.group(
     {
@@ -104,6 +106,7 @@ export class ConfiguracionAdminComponent {
         this.sincronizarSeleccionConCatalogo();
         this.nuevosProductosPorTipo.set({});
         this.inicializarProductosPersonalizados();
+        this.productosPersonalizadosEliminados.set([]);
         const fotos: Foto[] = ((empresa.fotos ?? []) as Foto[])
           .map((foto) => ({
             path: foto.path,
@@ -498,6 +501,32 @@ export class ConfiguracionAdminComponent {
     });
   }
 
+  async eliminarProductoPersonalizado(tipoId: number, idx: number) {
+    const result = await Swal.fire({
+      title: '¿Quitar producto?',
+      text: 'Este producto se eliminará de tu configuración al guardar cambios.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, quitar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true,
+    });
+
+    if (!result.isConfirmed) return;
+
+    this.productosPersonalizados.update((prev) => {
+      const lista = [...(prev[tipoId] ?? [])];
+      if (idx < 0 || idx >= lista.length) return prev;
+      const [eliminado] = lista.splice(idx, 1);
+      if (Number.isInteger(eliminado?.id) && (eliminado?.id ?? 0) > 0) {
+        this.productosPersonalizadosEliminados.update((ids) =>
+          ids.includes(eliminado.id) ? ids : [...ids, eliminado.id],
+        );
+      }
+      return { ...prev, [tipoId]: lista };
+    });
+  }
+
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -594,7 +623,11 @@ export class ConfiguracionAdminComponent {
       return;
     }
     this.productosRangoError.set(null);
-    const productosEliminados = this.getProductosEliminados(values.productosSeleccionados ?? []);
+    const eliminadosDetectados = this.getProductosEliminados(values.productosSeleccionados ?? []);
+    const productosEliminados = Array.from(new Set([
+      ...eliminadosDetectados,
+      ...this.productosPersonalizadosEliminados(),
+    ]));
     const eliminadosSet = new Set(productosEliminados);
     const productosPayloadFiltrado = productosPayload.filter((producto) => {
       const productoId = producto.id!;
