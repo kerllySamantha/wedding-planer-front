@@ -1,20 +1,19 @@
 import { CommonModule, NgStyle } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, computed, HostListener, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
 
 @Component({
   selector: 'app-buscador',
-  imports: [CommonModule, NgStyle, FormsModule],
+  imports: [CommonModule, NgStyle, ReactiveFormsModule],
   templateUrl: './buscador.component.html',
   styleUrl: './buscador.component.scss'
 })
 export class BuscadorComponent {
 
-
-  termino = signal('');
+  readonly searchControl = new FormControl('', { nonNullable: true, validators: [Validators.maxLength(120)] });
 
   constructor(
     private readonly http: HttpClient,
@@ -39,7 +38,7 @@ export class BuscadorComponent {
 
   ngOnInit() {
     const searchParam = this.route.snapshot.queryParamMap.get('search') ?? '';
-    this.termino.set(searchParam);
+    this.searchControl.setValue(searchParam);
     this.aplicarBusqueda(searchParam);
 
     this.http.get<string[]>('assets/images/boda/boda.json')
@@ -55,7 +54,7 @@ export class BuscadorComponent {
 
   buscar(event?: Event) {
     event?.preventDefault();
-    const value = this.termino().trim();
+    const value = this.searchControl.value.trim();
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { search: value || null },

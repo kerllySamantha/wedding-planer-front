@@ -1,25 +1,25 @@
 <div class="tittle-header border-bottom mt-0 pt-0">
     <div class="row align-items-center justify-content-center text-center text-lg-start">
 
-        @if(anchoVentana() <= 608) { <!-- Pantallas pequeñas (sm) -->
+        @if(anchoVentana() <= 608) {
             <div class="col-11 searcher-container">
                 <h1 class="pt-4 mb-3 pb-3 w-100">
                     Para tu boda,<br class="d-none d-lg-block" />
                     aquí lo tienes todo
                 </h1>
 
-                <form
-                    class="d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-lg-start gap-2 w-100"
+                <form class="d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-lg-start gap-2 w-100"
                     role="search" (submit)="buscar($event)">
-                    <input class="form-control searcher_input w-100" type="search"
-                        placeholder="Busca por nombre o categoría" aria-label="Search" [(ngModel)]="termino" name="searchTerm" />
+                    <label class="visually-hidden" for="searchTerm-mobile">Buscar proveedores</label>
+                    <input id="searchTerm-mobile" class="form-control searcher_input w-100" type="search"
+                        placeholder="Busca por nombre o categoría" aria-label="Search" [formControl]="searchControl" />
                     <button class="btn btn-outline-success d-none d-sm-inline-block searcher__submit" type="submit">
                         Buscar
                     </button>
                 </form>
             </div>
 
-            } @else if (anchoVentana() <= 1180) { <!-- Pantallas medianas (md) -->
+            } @else if (anchoVentana() <= 1180) {
                 <div class="col-md-12">
                     <div class="fondo2" [ngStyle]="{'background-image': 'url(' + urlFondo() + ')'}"></div>
                 </div>
@@ -29,11 +29,11 @@
                         Para tu boda, aquí lo tienes todo
                     </h1>
 
-                    <form
-                        class="d-flex flex-column flex-sm-row align-items-center justify-content-center mb-4 pb-4 justify-content-lg-start gap-2 w-100"
+                    <form class="d-flex flex-column flex-sm-row align-items-center justify-content-center mb-4 pb-4 justify-content-lg-start gap-2 w-100"
                         role="search" (submit)="buscar($event)">
-                        <input class="form-control searcher_input w-100 w-md-75 w-lg-100" type="search"
-                            placeholder="Busca por nombre o categoría" aria-label="Search" [(ngModel)]="termino" name="searchTerm" />
+                        <label class="visually-hidden" for="searchTerm-tablet">Buscar proveedores</label>
+                        <input id="searchTerm-tablet" class="form-control searcher_input w-100 w-md-75 w-lg-100" type="search"
+                            placeholder="Busca por nombre o categoría" aria-label="Search" [formControl]="searchControl" />
                         <button class="btn btn-outline-success d-none d-sm-inline-block searcher__submit" type="submit">
                             Buscar
                         </button>
@@ -41,18 +41,17 @@
                 </div>
 
                 } @else {
-                <!-- Pantallas grandes (lg) -->
                 <div class="col-lg-5 offset-lg-1 col-sm-10 searcher-container">
                     <h1 class="pt-4 mb-3 pb-3 w-100">
                         Para tu boda,<br class="d-none d-lg-block" />
                         aquí lo tienes todo
                     </h1>
 
-                    <form
-                        class="d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-lg-start gap-2 w-100"
+                    <form class="d-flex flex-column flex-sm-row align-items-center justify-content-center justify-content-lg-start gap-2 w-100"
                         role="search" (submit)="buscar($event)">
-                        <input class="form-control searcher_input w-100 w-md-75 w-lg-100" type="search"
-                            placeholder="Busca por nombre o categoría" aria-label="Search" [(ngModel)]="termino" name="searchTerm" />
+                        <label class="visually-hidden" for="searchTerm-desktop">Buscar proveedores</label>
+                        <input id="searchTerm-desktop" class="form-control searcher_input w-100 w-md-75 w-lg-100" type="search"
+                            placeholder="Busca por nombre o categoría" aria-label="Search" [formControl]="searchControl" />
                         <button class="btn btn-outline-success d-none d-sm-inline-block searcher__submit" type="submit">
                             Buscar
                         </button>
@@ -60,9 +59,7 @@
                 </div>
 
                 <div class="col-lg-6 col-md-12 d-flex justify-content-center justify-content-lg-end">
-                <div class="fondo" [ngStyle]="{'background-image': 'url(' + urlFondo() + ')'}"></div>
-
-                    
+                    <div class="fondo" [ngStyle]="{'background-image': 'url(' + urlFondo() + ')'}"></div>
                 </div>
 
                 }
