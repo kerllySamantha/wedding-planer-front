@@ -13,6 +13,7 @@
   @if (empresaSinImagenes()) {
   <div class="settings-alert-banner">
     <i class="bi bi-exclamation-triangle-fill settings-alert-banner__icon" aria-hidden="true"></i>
+
     <div class="settings-alert-banner__body">
       <p class="settings-alert-banner__title">Tu perfil aún no es visible</p>
       <p class="settings-alert-banner__text">
@@ -25,295 +26,384 @@
   <!-- Contenido principal -->
   @if (empresa(); as data) {
 
-    <!-- MODO LECTURA -->
-    @if (!modoEdicion()) {
-    <div class="settings-grid">
+  <!-- MODO LECTURA -->
+  @if (!modoEdicion()) {
 
-      <article class="settings-card">
-        <h2>Información general</h2>
-        <dl class="settings-list">
-          <div>
-            <dt>Empresa</dt>
-            <dd>{{ data.nombre_empresa }}</dd>
-          </div>
-          <div>
-            <dt>Servicio</dt>
-            <dd>{{ data.tipo_servicio }}</dd>
-          </div>
-          <div>
-            <dt>Teléfono</dt>
-            <dd>{{ data.telefono }}</dd>
-          </div>
-          <div>
-            <dt>Dirección</dt>
-            <dd>{{ data.direccion }}</dd>
-          </div>
-        </dl>
-      </article>
-
-      <article class="settings-card">
-        <h2>Ubicación y descripción</h2>
-        <dl class="settings-list">
-          <div>
-            <dt>Población</dt>
-            <dd>{{ data.poblacion.nombre || 'Sin definir' }}</dd>
-          </div>
-          <div>
-            <dt>Provincia</dt>
-            <dd>{{ data.provincia.nombre || 'Sin definir' }}</dd>
-          </div>
-          <div>
-            <dt>Descripción</dt>
-            <dd>{{ data.descripcion || 'Sin descripción disponible.' }}</dd>
-          </div>
-        </dl>
-      </article>
-
-    </div>
+  <div class="settings-grid">
 
     <article class="settings-card">
-      <h2>Productos y servicios de tu empresa</h2>
-      <p class="settings-subtitle mb-3">Así ven los usuarios tu catálogo actual.</p>
+      <h2>
+        <i class="bi bi-building me-2"></i>
+        Información general
+      </h2>
 
-      @if (data.productos.length > 0) {
-      <div class="types-by-category">
-        @for (grupo of productosAgrupadosPorCategoria(); track grupo.categoria) {
-        <div class="category-row">
-          <p class="category-name">{{ grupo.categoria }}</p>
-          <div class="types-row">
-            @for (producto of grupo.productos; track producto.id) {
-            <span class="type-chip">
-              <strong>{{ producto.nombre }}</strong>
-              <small>· {{ producto.tipo_producto.nombre }} ({{ unidadPorModalidad(producto.tipo_producto.modalidad) }})</small>
-            </span>
-            }
-          </div>
+      <dl class="settings-list">
+        <div>
+          <dt>Empresa</dt>
+          <dd>{{ data.nombre_empresa }}</dd>
         </div>
-        }
-      </div>
-      } @else {
-      <p class="text-muted mb-0">No tienes productos/servicios cargados todavía.</p>
-      }
+
+        <div>
+          <dt>Servicio</dt>
+          <dd>{{ data.tipo_servicio }}</dd>
+        </div>
+
+        <div>
+          <dt>Teléfono</dt>
+          <dd>{{ data.telefono }}</dd>
+        </div>
+
+        <div>
+          <dt>Dirección</dt>
+          <dd>{{ data.direccion }}</dd>
+        </div>
+      </dl>
     </article>
 
-    <!-- MODO EDICIÓN -->
-    } @else {
-    <div class="settings-grid">
+    <article class="settings-card">
+      <h2>
+        <i class="bi bi-geo-alt me-2"></i>
+        Ubicación y descripción
+      </h2>
 
-      <!-- Datos principales -->
-      <article class="settings-card settings-card--full" [formGroup]="form">
-        <h2>Datos principales</h2>
-        <div class="form-grid">
-          <label>Nombre de empresa
-            <input class="form-control" formControlName="nombre_empresa">
-          </label>
-          <label>Nombre de contacto
-            <input class="form-control" formControlName="name">
-          </label>
-          <label>Email
-            <input class="form-control" formControlName="email">
-          </label>
-          <label>Teléfono
-            <input class="form-control" formControlName="telefono">
-          </label>
-          <label>Tipo de servicio
-            <input class="form-control" formControlName="tipo_servicio">
-          </label>
-          <label>Dirección
-            <input class="form-control" formControlName="direccion">
-          </label>
+      <dl class="settings-list">
+        <div>
+          <dt>Población</dt>
+          <dd>{{ data.poblacion.nombre || 'Sin definir' }}</dd>
         </div>
-        @if (form.errors?.['contactoRequerido'] && (form.touched || form.dirty)) {
-        <p class="text-danger mt-2 mb-0">Debes informar al menos email o teléfono de contacto.</p>
-        }
-      </article>
 
+        <div>
+          <dt>Provincia</dt>
+          <dd>{{ data.provincia.nombre || 'Sin definir' }}</dd>
+        </div>
+
+        <div class="settings-list__full">
+          <dt>Descripción</dt>
+          <dd>{{ data.descripcion || 'Sin descripción disponible.' }}</dd>
+        </div>
+      </dl>
+    </article>
+
+  </div>
+
+  <article class="settings-card settings-card--catalog">
+    <div class="settings-card__header">
+      <div>
+        <h2>
+          <i class="bi bi-tags me-2"></i>
+          Productos y servicios de tu empresa
+        </h2>
+        <p class="settings-subtitle">
+          Así ven los usuarios tu catálogo actual.
+        </p>
+      </div>
     </div>
 
-    <!-- Categorías y tipos -->
-    <article class="settings-card">
-      <h2>Categorías y tipos</h2>
-      <p class="settings-subtitle mb-3">
-        Selecciona una categoría del desplegable para ver todos los tipos y productos globales de esa categoría, además de tus personalizados.
-      </p>
-      <p class="text-muted small mb-3">
-        Los productos del catálogo general no se editan directamente: al añadirlos a tu empresa se guardan como copia propia,
-        y desde ahí puedes modificar descripción, precios o quitarlos.
-      </p>
+    @if (data.productos.length > 0) {
+    <div class="catalog-section">
+      @for (grupo of productosAgrupadosPorCategoria(); track grupo.categoria) {
+      <div class="catalog-category">
 
-      <!-- Selector de categoría (desplegable) -->
-      <div class="mb-3">
-        <label class="form-label" for="categoria-activa-select">Categoría</label>
-        <select
-          id="categoria-activa-select"
-          class="form-select"
-          [value]="categoriaSeleccionadaId()?.toString() ?? ''"
-          (change)="onCategoriaSeleccionada(+$any($event.target).value)">
-          @for (categoria of categoriasEmpresa(); track categoria.id) {
-          <option [value]="categoria.id.toString()" [selected]="categoria.id === categoriaSeleccionadaId()">{{ categoria.nombre }}</option>
+        <div class="catalog-category__title">
+          <span>{{ grupo.categoria }}</span>
+        </div>
+
+        <div class="types-row">
+          @for (producto of grupo.productos; track producto.id) {
+          <span class="type-chip">
+            <strong>{{ producto.nombre }}</strong>
+            <small>
+              · {{ producto.tipo_producto.nombre }}
+              ({{ unidadPorModalidad(producto.tipo_producto.modalidad) }})
+            </small>
+          </span>
           }
-        </select>
+        </div>
+
       </div>
+      }
+    </div>
+    } @else {
+    <p class="text-muted mb-0">
+      No tienes productos/servicios cargados todavía.
+    </p>
+    }
+  </article>
 
-      <!-- Tipos editables -->
-      <div class="types-by-category">
-        @for (categoria of tiposEditablesPorCategoriaEmpresa(); track categoria.categoriaNombre) {
-        <div class="category-row category-row--edit category-row--stacked">
-          <p class="category-name">{{ categoria.categoriaNombre }}</p>
-          <div class="types-row types-row--stacked d-block">
-            @for (tipoPermitido of categoria.tipos; track tipoPermitido.tipoId) {
-            <details class="type-editor-card" open>
+  <!-- MODO EDICIÓN -->
+  } @else {
 
-              <summary class="type-editor-card__header">
-                <span class="fw-semibold">{{ tipoPermitido.tipoNombre }}</span>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-secondary"
+  <!-- Datos principales -->
+  <article class="settings-card settings-card--full" [formGroup]="form">
+    <div class="settings-card__header">
+      <div>
+        <h2>
+          <i class="bi bi-card-checklist me-2"></i>
+          Datos principales
+        </h2>
+        <p class="settings-subtitle">
+          Actualiza los datos visibles de tu empresa y la información de contacto.
+        </p>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <label>
+        <span>
+          <i class="bi bi-shop me-1"></i>
+          Nombre de empresa
+        </span>
+        <input class="form-control" formControlName="nombre_empresa">
+      </label>
+
+      <label>
+        <span>
+          <i class="bi bi-person me-1"></i>
+          Nombre de contacto
+        </span>
+        <input class="form-control" formControlName="name">
+      </label>
+
+      <label>
+        <span>
+          <i class="bi bi-envelope me-1"></i>
+          Email
+        </span>
+        <input class="form-control" formControlName="email">
+      </label>
+
+      <label>
+        <span>
+          <i class="bi bi-telephone me-1"></i>
+          Teléfono
+        </span>
+        <input class="form-control" formControlName="telefono">
+      </label>
+
+      <label>
+        <span>
+          <i class="bi bi-briefcase me-1"></i>
+          Tipo de servicio
+        </span>
+        <input class="form-control" formControlName="tipo_servicio">
+      </label>
+
+      <label>
+        <span>
+          <i class="bi bi-geo-alt me-1"></i>
+          Dirección
+        </span>
+        <input class="form-control" formControlName="direccion">
+      </label>
+    </div>
+
+    @if (form.errors?.['contactoRequerido'] && (form.touched || form.dirty)) {
+    <p class="text-danger mt-3 mb-0">
+      Debes informar al menos email o teléfono de contacto.
+    </p>
+    }
+  </article>
+
+  <!-- Categorías y tipos -->
+  <article class="settings-card settings-card--catalog">
+    <div class="settings-card__header">
+      <div>
+        <h2>
+          <i class="bi bi-tags me-2"></i>
+          Categorías y tipos
+        </h2>
+        <p class="settings-subtitle">
+          Gestiona los productos y servicios que ofrece tu empresa.
+        </p>
+      </div>
+    </div>
+
+    <div class="catalog-info">
+      <i class="bi bi-info-circle"></i>
+      <p>
+        Los productos del catálogo general se guardan como copia propia al añadirlos.
+        Después podrás editar descripción, precios o quitarlos.
+      </p>
+    </div>
+
+    <div class="catalog-selector">
+      <label class="form-label" for="categoria-activa-select">
+        Categoría activa
+      </label>
+
+      <select id="categoria-activa-select" class="form-select" [value]="categoriaSeleccionadaId()?.toString() ?? ''"
+        (change)="onCategoriaSeleccionada(+$any($event.target).value)">
+        @for (categoria of categoriasEmpresa(); track categoria.id) {
+        <option [value]="categoria.id.toString()">
+          {{ categoria.nombre }}
+        </option>
+        }
+      </select>
+    </div>
+
+    <div class="catalog-section">
+      @for (categoria of tiposEditablesPorCategoriaEmpresa(); track categoria.categoriaNombre) {
+      <div class="catalog-category">
+
+        <div class="catalog-category__title">
+          <span>{{ categoria.categoriaNombre }}</span>
+        </div>
+
+        <div class="catalog-types">
+          @for (tipoPermitido of categoria.tipos; track tipoPermitido.tipoId) {
+          <details class="catalog-type-card">
+            <summary class="catalog-type-card__summary">
+
+              <div class="catalog-type-card__info">
+                <h3>{{ tipoPermitido.tipoNombre }}</h3>
+                <p>Productos propios de tu empresa</p>
+              </div>
+              <div class="catalog-type-card__actions">
+                <button type="button" class="btn btn-sm btn-outline-primary"
                   (click)="$event.preventDefault(); agregarCampoNuevoProducto(tipoPermitido.tipoId)">
-                  + Añadir producto
-                </button>
-              </summary>
 
-              <div class="type-editor-card__checks">
-                <span class="text-muted small">
-                  Este tipo usa productos propios de tu empresa. Añade o edita nombre, descripción y precios abajo.
+                  <i class="bi bi-plus-lg me-1"></i>
+                  Añadir
+                </button>
+
+                <span class="catalog-type-card__chevron">
+                  <i class="bi bi-chevron-down"></i>
                 </span>
+
               </div>
 
-              <!-- Productos personalizados existentes (editables) -->
-              @for (personalizado of (productosPersonalizados()[tipoPermitido.tipoId]); track personalizado.id; let idx = $index) {
-              <div class="type-editor-card__new-item">
-                <input
-                  class="form-control form-control-sm"
-                  placeholder="Nombre del producto personalizado"
+            </summary>
+
+            <div class="catalog-type-card__body">
+
+              @for (personalizado of (productosPersonalizados()[tipoPermitido.tipoId]); track personalizado.id; let idx
+              = $index) {
+              <div class="product-edit-card">
+                <input class="form-control form-control-sm" placeholder="Nombre del producto"
                   [value]="personalizado.nombre"
                   (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'nombre', $any($event.target).value)">
-                <input
-                  class="form-control form-control-sm"
-                  placeholder="Descripción (opcional)"
-                  [value]="personalizado.descripcion"
-                  (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'descripcion', $any($event.target).value)">
-                <div class="row g-2">
-                  <div class="col">
-                    <input
-                      class="form-control form-control-sm"
-                      type="number"
-                      min="0"
-                      placeholder="Precio mínimo"
-                      [value]="personalizado.precio_min"
-                      (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_min', $any($event.target).value)">
-                  </div>
-                  <div class="col">
-                    <input
-                      class="form-control form-control-sm"
-                      type="number"
-                      min="0"
-                      placeholder="Precio máximo"
-                      [value]="personalizado.precio_max"
-                      (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-danger"
+
+                <textarea class="form-control form-control-sm product-description" rows="3"
+                  placeholder="Descripción del producto"
+                  (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'descripcion', $any($event.target).value)">{{ personalizado.descripcion }}</textarea>
+
+                <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio mínimo"
+                  [value]="personalizado.precio_min"
+                  (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_min', $any($event.target).value)">
+
+                <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio máximo"
+                  [value]="personalizado.precio_max"
+                  (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
+
+                <button type="button" class="btn btn-sm btn-outline-danger product-edit-card__remove"
                   (click)="eliminarProductoPersonalizado(tipoPermitido.tipoId, idx)">
                   Quitar
                 </button>
               </div>
               }
 
-              <!-- Campos para nuevos productos personalizados -->
               @for (nuevo of (nuevosProductosPorTipo()[tipoPermitido.tipoId]); track $index; let idx = $index) {
-              <div class="type-editor-card__new-item">
-                <input
-                  class="form-control form-control-sm"
-                  placeholder="Nombre del producto extra"
+              <div class="product-edit-card product-edit-card--new">
+                <input class="form-control form-control-sm" placeholder="Nombre del producto extra"
                   [value]="nuevo.nombre"
                   (input)="onNuevoProductoInput(tipoPermitido.tipoId, idx, $any($event.target).value)">
-                <input
-                  class="form-control form-control-sm"
-                  placeholder="Descripción (opcional)"
-                  [value]="nuevo.descripcion"
-                  (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'descripcion', $any($event.target).value)">
-                <div class="row g-2">
-                  <div class="col">
-                    <input
-                      class="form-control form-control-sm"
-                      type="number"
-                      min="0"
-                      placeholder="Precio mínimo"
-                      [value]="nuevo.precio_min"
-                      (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'precio_min', $any($event.target).value)">
-                  </div>
-                  <div class="col">
-                    <input
-                      class="form-control form-control-sm"
-                      type="number"
-                      min="0"
-                      placeholder="Precio máximo"
-                      [value]="nuevo.precio_max"
-                      (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-outline-danger"
+
+                <textarea class="form-control form-control-sm product-description" rows="3"
+                  placeholder="Descripción del producto"
+                  (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'descripcion', $any($event.target).value)">{{ nuevo.descripcion }}</textarea>
+
+                <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio mínimo"
+                  [value]="nuevo.precio_min"
+                  (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'precio_min', $any($event.target).value)">
+
+                <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio máximo"
+                  [value]="nuevo.precio_max"
+                  (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
+
+                <button type="button" class="btn btn-sm btn-outline-danger product-edit-card__remove"
                   (click)="eliminarCampoNuevoProducto(tipoPermitido.tipoId, idx)">
                   Quitar
                 </button>
               </div>
               }
 
-            </details>
-            }
-          </div>
+            </div>
+          </details>
+          }
         </div>
-        } @empty {
-        <span class="text-muted small">No hay tipos de producto activos para esta empresa.</span>
-        }
+
       </div>
-
-      @if (productosError()) {
-      <p class="text-danger mt-2 mb-0">Debes seleccionar o crear al menos un producto/servicio para guardar.</p>
+      } @empty {
+      <span class="text-muted small">
+        No hay tipos de producto activos para esta empresa.
+      </span>
       }
-      @if (productosRangoError()) {
-      <p class="text-danger mt-2 mb-0">{{ productosRangoError() }}</p>
-      }
-    </article>
+    </div>
 
-    <!-- Galería de fotos -->
-    <article class="settings-card">
-      <h2>Galería de fotos</h2>
-      <p class="settings-subtitle mb-3">
-        Sube imágenes que representen tu trabajo. Se mostrarán en tu perfil público.
+    @if (productosError()) {
+    <p class="text-danger mt-3 mb-0">
+      Debes seleccionar o crear al menos un producto/servicio para guardar.
+    </p>
+    }
+
+    @if (productosRangoError()) {
+    <p class="text-danger mt-3 mb-0">
+      {{ productosRangoError() }}
+    </p>
+    }
+  </article>
+
+  <!-- Galería de fotos -->
+  <article class="settings-card settings-card--gallery">
+    <div class="settings-card__header">
+      <div>
+        <h2>
+          <i class="bi bi-images me-2"></i>
+          Galería de fotos
+        </h2>
+        <p class="settings-subtitle">
+          Sube imágenes que representen tu trabajo. Se mostrarán en tu perfil público.
+        </p>
+      </div>
+    </div>
+
+    <label class="gallery-upload-zone">
+      <input class="form-control" type="file" accept="image/*" (change)="onImageSelected($event)">
+
+      <span class="gallery-upload-zone__icon">
+        <i class="bi bi-cloud-arrow-up"></i>
+      </span>
+
+      <p class="gallery-upload-zone__label">
+        Arrastra una imagen o haz clic para seleccionar
       </p>
 
-      <!-- Zona de carga -->
-      <label class="gallery-upload-zone">
-        <input class="form-control" type="file" accept="image/*" (change)="onImageSelected($event)">
-        <span class="gallery-upload-zone__icon">&#8593;</span>
-        <p class="gallery-upload-zone__label">Arrastra una imagen o haz clic para seleccionar</p>
-        <p class="gallery-upload-zone__hint">PNG, JPG o WEBP · Máx. 10 MB</p>
-      </label>
+      <p class="gallery-upload-zone__hint">
+        PNG, JPG o WEBP · Máx. 10 MB
+      </p>
+    </label>
 
-      @if (loadingUpload()) {
-      <p class="text-muted mt-2 mb-0 small">Subiendo imagen...</p>
-      }
-
-      <!-- Miniaturas -->
-      <div class="gallery-preview mt-3">
-        @for (imagen of galeriaUrls(); track imagen.url) {
-        <a class="preview-item" [href]="imagen.url" target="_blank" rel="noopener">
-          <img [src]="imagen.url" alt="Vista previa de foto subida">
-          <span class="preview-overlay">Ver imagen &nearr;</span>
-        </a>
-        } @empty {
-        <p class="text-muted m-0 small">Sin imágenes nuevas en esta sesión.</p>
-        }
-      </div>
-    </article>
-
+    @if (loadingUpload()) {
+    <p class="text-muted mt-2 mb-0 small">
+      Subiendo imagen...
+    </p>
     }
+
+    <div class="gallery-preview mt-3">
+      @for (imagen of galeriaUrls(); track imagen.url) {
+      <a class="preview-item" [href]="imagen.url" target="_blank" rel="noopener">
+        <img [src]="imagen.url" alt="Vista previa de foto subida">
+        <span class="preview-overlay">Ver imagen &nearr;</span>
+      </a>
+      } @empty {
+      <p class="text-muted m-0 small">
+        Sin imágenes nuevas en esta sesión.
+      </p>
+      }
+    </div>
+  </article>
+
+  }
 
   <!-- Estado de carga -->
   } @else {
@@ -327,20 +417,23 @@
 
 <!-- Barra de acciones sticky -->
 <div class="actions-row mt-5">
-  <!-- Indicador de estado -->
   <span class="actions-row__status">
-    <span class="actions-row__status-dot" [class.actions-row__status-dot--editing]="modoEdicion()"></span>
+    <span class="actions-row__status-dot" [class.actions-row__status-dot--editing]="modoEdicion()">
+    </span>
+
     {{ modoEdicion() ? 'Editando — los cambios no se publican hasta guardar' : 'Perfil guardado' }}
   </span>
 
   @if (!modoEdicion()) {
   <button class="btn btn-outline-secondary" type="button" (click)="activarEdicion()">
+    <i class="bi bi-pencil-square me-1"></i>
     Editar perfil
   </button>
   } @else {
   <button class="btn btn-outline-secondary" type="button" (click)="cancelarEdicion()">
     Cancelar
   </button>
+
   <button class="btn btn-primary" type="button" (click)="guardarCambios()" [disabled]="saving()">
     {{ saving() ? 'Guardando...' : 'Guardar cambios' }}
   </button>
