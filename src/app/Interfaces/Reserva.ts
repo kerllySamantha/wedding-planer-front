@@ -73,6 +73,14 @@ export interface ReservaEvent {
     allDay: boolean
 }
 
+export interface RawCalendarEvent extends Partial<ReservaEvent> {
+  titulo?: string;
+  fecha_inicio?: string;
+  fecha_fin?: string;
+  estado?: ExtendedReservaProps['estado'];
+  tipo_reserva?: NonNullable<ExtendedReservaProps['tipo_reserva']>;
+}
+
 export interface ExtendedReservaProps {
     estado: 'bloqueada' | 'confirmada' | 'cancelada' | 'pendiente' | 'rechazada';
     origen?: string;

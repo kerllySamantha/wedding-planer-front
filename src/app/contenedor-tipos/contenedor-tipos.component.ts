@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { CategoriasServiceService } from '../Services/Catergorias/categoria-service.service';
@@ -15,7 +15,7 @@ import { Boda } from '../Interfaces/Boda';
 @Component({
   selector: 'app-contenedor-tipos',
   standalone: true,
-  imports: [FormsModule, MatProgressSpinnerModule],
+  imports: [ReactiveFormsModule, MatProgressSpinnerModule],
   templateUrl: './contenedor-tipos.component.html',
   styleUrls: ['./contenedor-tipos.component.scss']
 })
@@ -33,7 +33,35 @@ export class ContenedorTiposComponent {
   error = signal<string | null>(null);
   detallesPorCategoria = signal<Record<number, PresupuestoItem[]>>({});
 
-  lastId: number | null = null;
+  
+
+  
+
+  detallesForm = new FormArray<FormGroup>([]);
+
+  private crearFormDetalle(detalle: PresupuestoItem): FormGroup {
+    return new FormGroup({
+      nombre_tipo_personalizado: new FormControl(detalle.nombre_tipo_personalizado ?? '', { nonNullable: true, validators: [Validators.required] }),
+      monto_estimado: new FormControl(detalle.monto_estimado ?? 0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
+      monto_pagado: new FormControl(detalle.monto_pagado ?? 0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
+    });
+  }
+
+  private sincronizarFormulario(categoriaId: number, detalles: PresupuestoItem[]) {
+    this.detallesForm.clear();
+    detalles.forEach((detalle) => {
+      const fg = this.crearFormDetalle(detalle);
+      fg.valueChanges.subscribe((value) => {
+        detalle.nombre_tipo_personalizado = value.nombre_tipo_personalizado ?? '';
+        detalle.monto_estimado = Number(value.monto_estimado ?? 0);
+        detalle.monto_pagado = Number(value.monto_pagado ?? 0);
+        detalle.es_personalizado = true;
+        this.onDetalleChange(detalle);
+      });
+      this.detallesForm.push(fg);
+    });
+  }
+lastId: number | null = null;
   private baseTotalesPorCategoria: Record<number, Record<number, { estimado: number; pagado: number }>> = {};
   private presupuestosBaseActuales: Array<{ monto_total: number; monto_pagado: number }> = [];
   private presupuestoIdPorTipo = new Map<number, number>();
@@ -124,6 +152,7 @@ export class ContenedorTiposComponent {
             });
 
             this.detallesPorCategoria.update(prev => ({ ...prev, [categoriaId]: detalles }));
+            this.sincronizarFormulario(categoriaId, detalles);
             this.setBaseTotalesCategoria(categoriaId, detalles);
             this.recalcularResumen();
             this.cargando.set(false);
@@ -224,7 +253,7 @@ export class ContenedorTiposComponent {
 
     this.detallesPedidoctx.postDetalles(detalleData).subscribe({
       next: (value) => {
-        const savedId = (value as any)?.id;
+        const savedId = value?.id;
         if (savedId) item.id = savedId;
         this.recalcularResumen();
       },
@@ -255,7 +284,11 @@ export class ContenedorTiposComponent {
   }
 
   esMontoEstimadoEditable(item: PresupuestoItem): boolean {
-    return (item.monto_pagado ?? 0) <= 0;
+    return !this.estaBloqueadoPorPago(item);
+  }
+
+  estaBloqueadoPorPago(item: PresupuestoItem): boolean {
+    return (item.monto_pagado ?? 0) > 0;
   }
 
   private setBaseTotalesCategoria(categoriaId: number, detalles: PresupuestoItem[]) {

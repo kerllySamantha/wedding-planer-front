@@ -4,18 +4,16 @@
 <div class="container-personal">
     <!-- Botones Presupuesto / Pago -->
     <div class="row justify-content-center py-3">
-        <div class="btn-group col-3 gap-2" role="group" aria-label="Basic radio toggle button group">
+        <div class="btn-group col-auto gap-2" role="group">
             <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off"
                 (change)="selectColor('presupuesto')" [checked]="!selectPago" />
-            <label class="btn btn-outline-secondary" [ngClass]="selectPago ? 'btn-unselected'  : 'btn-selected'"
-                for="btnradio1">
+            <label class="btn toggle-btn" [ngClass]="selectPago ? 'btn-unselected' : 'btn-selected'" for="btnradio1">
                 Presupuesto
             </label>
 
             <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off"
                 (change)="selectColor('pago')" [checked]="selectPago" />
-            <label class="btn btn-outline-secondary" [ngClass]="selectPago ? 'btn-selected' : 'btn-unselected'"
-                for="btnradio2">
+            <label class="btn toggle-btn" [ngClass]="selectPago ? 'btn-selected' : 'btn-unselected'" for="btnradio2">
                 Pago
             </label>
         </div>
@@ -25,18 +23,13 @@
     <div class="row mt-4 gx-4 gy-3">
         <!-- Columna Categorías -->
         <div class="col-4">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex align-items-center categoria-item mb-2 py-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor"
-                        class="bi bi-plus-circle me-2" viewBox="0 0 16 16">
-                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                        <path
-                            d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                    </svg>
-                    Categoria
+            <ul class="list-group list-group-flush categoria-list">
+                <li class="list-group-item d-flex align-items-center categoria-item categoria-add mb-2">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Categoría
                 </li>
                 @for (categoria of categorias$ | async; track categoria.id) {
-                <li class="list-group-item categoria-item mb-2 py-2" [class.active]="categoria.id === idSelected()"
+                <li class="list-group-item categoria-item mb-2" [class.active]="categoria.id === idSelected()"
                     (click)="clickIdCategoria(categoria.id)">
                     <img [src]="categoria.icono" alt="" class="me-2">{{ categoria.nombre }}
                 </li>
@@ -50,9 +43,8 @@
                 <app-contenedor-presupuesto></app-contenedor-presupuesto>
             </div>
             <div class="container">
-                <app-contenedor-tipos [categoriaIdSeleccionada]="idSelected()"
-                [presupuestoId]="presupuestoId()"
-                ></app-contenedor-tipos>
+                <app-contenedor-tipos [categoriaIdSeleccionada]="idSelected()" [presupuestoId]="presupuestoId()">
+                </app-contenedor-tipos>
             </div>
         </div>
     </div>

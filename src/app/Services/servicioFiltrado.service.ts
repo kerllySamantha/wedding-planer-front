@@ -1,6 +1,6 @@
 import { computed, Injectable, signal, inject, resource } from '@angular/core';
 
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { Empresa } from '../Interfaces/Empresa';
 import { Filtros } from '../Interfaces/Filtro';
 import { EmpresasServiceServiceService } from './Empresas/empresas-service-service.service';
@@ -16,8 +16,19 @@ export class ServicioFiltrado {
 
   serviceEmpresa = inject(EmpresasServiceServiceService);
 
+
+  private toResourceError(error: unknown): Error {
+    if (error instanceof Error) return error;
+    const message = (error as { message?: string })?.message ?? 'Error desconocido al cargar empresas';
+    return new Error(message);
+  }
+
   protected empresasResource = resource({
-    loader: () => firstValueFrom(this.serviceEmpresa.getEmpresas())
+    loader: () => firstValueFrom(
+      this.serviceEmpresa.getEmpresas().pipe(
+        catchError((error) => throwError(() => this.toResourceError(error)))
+      )
+    )
   });
 
 
@@ -27,6 +38,10 @@ export class ServicioFiltrado {
   }
 
   protected empresasRecibidas = computed(() => this.empresasResource.value()?.data ?? []);
+
+  private empresaTieneImagenes(empresa: Empresa): boolean {
+    return (empresa.fotos?.length ?? 0) > 0;
+  }
 
 
   setFilters(filtros: Filtros) {
@@ -70,7 +85,7 @@ export class ServicioFiltrado {
 
 
   companiesTotalFiltered = computed(() => {
-    let empresas = [...this.empresas()];
+    let empresas = [...this.empresas()].filter((empresa) => this.empresaTieneImagenes(empresa));
     const filtros = this.filtros();
 
     if (filtros) {
@@ -80,7 +95,9 @@ export class ServicioFiltrado {
         (!poblacion || empresa.poblacion.id === poblacion) &&
         (!provincia || empresa.provincia.id === provincia) && 
         (!categoria || empresa.productos.some(producto => producto.categoria.id === categoria))&&
-        (!tipos || empresa.productos.some(producto => producto.tipo_producto.id === tipos))
+        (!tipos || (Array.isArray(tipos)
+          ? empresa.productos.some(producto => tipos.includes(producto.tipo_producto.id))
+          : empresa.productos.some(producto => producto.tipo_producto.id === tipos)))
         
 
       );

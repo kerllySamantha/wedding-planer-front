@@ -1,56 +1,72 @@
 <form (submit)="$event.preventDefault()">
 
-    @if (cargando()) {
-    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-        <mat-spinner></mat-spinner>
+  @if (cargando()) {
+    <div class="skeleton-wrapper">
+      <div class="skeleton-row header">
+        <div class="skeleton-cell skeleton" style="width: 30%"></div>
+        <div class="skeleton-cell skeleton" style="width: 20%"></div>
+        <div class="skeleton-cell skeleton" style="width: 20%"></div>
+        <div class="skeleton-cell skeleton" style="width: 20%"></div>
+      </div>
+      @for (i of [1,2,3,4,5]; track i) {
+        <div class="skeleton-row">
+          <div class="skeleton-cell skeleton" style="width: 85%; height: 36px"></div>
+          <div class="skeleton-cell skeleton" style="width: 85%; height: 36px"></div>
+          <div class="skeleton-cell skeleton" style="width: 85%; height: 36px"></div>
+          <div class="skeleton-cell skeleton" style="width: 50%; height: 36px"></div>
+        </div>
+      }
     </div>
+  }
 
-    }
-    @else if (categoriaIdSeleccionada() !== null) {
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">CONCEPTO</th>
-                <th scope="col">COSTE ESTIMADO</th>
-                <th scope="col">PAGADO</th>
-                <th scope="col">DIFERENCIA</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <div>Categoria seleccionada: {{ categoriaIdSeleccionada() }}</div>
-
-
-            @for (detalle of (detallesPorCategoria()[categoriaIdSeleccionada()!] || []); track $index;){
-
-            <tr>
-                <!-- <td>{{ detalle.nombre_tipo_personalizado }}</td> -->
-                <!-- <td class="col-5"> <input type="text" [(ngModel)]="detalle.nombre_tipo_personalizado"
-                        name="{{detalle.nombre_tipo_personalizado}}" (input)="detalle.es_personalizado = true; detalle.tipo_producto_id = 0"
-                        class="form-control"> -->
-                <td>
-                    <input type="text" [(ngModel)]="detalle.nombre_tipo_personalizado"
-                        (ngModelChange)="detalle.es_personalizado = true; onDetalleChange(detalle)"
-                        name="nombre_tipo_{{detalle.tipo_producto_id}}" class="form-control" />
-                </td>
-                
-                <!-- <td><input type="number" [(ngModel)]="detalle.monto_asignado" name="monto_asignado"
-                        class="form-control" /></td> -->
-                <td><input type="number" [(ngModel)]="detalle.monto_estimado" (ngModelChange)="onDetalleChange(detalle)" [readonly]="!esMontoEstimadoEditable(detalle)" name="monto_estimado_{{detalle.tipo_producto_id}}"
-                        class="form-control"> </td>
-                <td><input type="number" [(ngModel)]="detalle.monto_pagado" (ngModelChange)="onDetalleChange(detalle)" name="monto_pagado_{{detalle.tipo_producto_id}}"
-                        class="form-control" />
-                </td>
-                <td>{{ calcularDiferencia(detalle) }}</td>
-            </tr>
-
-
-            }
-        </tbody>
-
-
-
+  @else if (categoriaIdSeleccionada() !== null) {
+    <table class="table tipos-table">
+      <thead>
+        <tr>
+          <th>Concepto</th>
+          <th>Coste estimado</th>
+          <th>Pagado</th>
+          <th>Diferencia</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (detalle of (detallesPorCategoria()[categoriaIdSeleccionada()!] || []); track $index) {
+          <tr class="tipo-row">
+            <td>
+              <label class="visually-hidden" [attr.for]="'nombre_tipo_' + detalle.tipo_producto_id">Nombre del concepto</label>
+              <input [id]="'nombre_tipo_' + detalle.tipo_producto_id" type="text"
+                [formControl]="$any(detallesForm.at($index)).controls.nombre_tipo_personalizado"
+                class="input-tipo"
+                [readonly]="estaBloqueadoPorPago(detalle)"
+                [class.readonly]="estaBloqueadoPorPago(detalle)" />
+            </td>
+            <td>
+              <label class="visually-hidden" [attr.for]="'monto_estimado_' + detalle.tipo_producto_id">Coste estimado</label>
+              <input [id]="'monto_estimado_' + detalle.tipo_producto_id" type="number"
+                [formControl]="$any(detallesForm.at($index)).controls.monto_estimado"
+                [readonly]="!esMontoEstimadoEditable(detalle)"
+                class="input-tipo input-numero"
+                [class.readonly]="!esMontoEstimadoEditable(detalle)" />
+            </td>
+            <td>
+              <label class="visually-hidden" [attr.for]="'monto_pagado_' + detalle.tipo_producto_id">Monto pagado</label>
+              <input [id]="'monto_pagado_' + detalle.tipo_producto_id" type="number"
+                [formControl]="$any(detallesForm.at($index)).controls.monto_pagado"
+                class="input-tipo input-numero"
+                [readonly]="estaBloqueadoPorPago(detalle)"
+                [class.readonly]="estaBloqueadoPorPago(detalle)" />
+            </td>
+            <td>
+              <span class="diferencia-valor"
+                [class.positivo]="calcularDiferencia(detalle) >= 0"
+                [class.negativo]="calcularDiferencia(detalle) < 0">
+                {{ calcularDiferencia(detalle) }} €
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
     </table>
-    }
+  }
 
 </form>

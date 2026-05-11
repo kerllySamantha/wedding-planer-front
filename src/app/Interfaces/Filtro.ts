@@ -6,5 +6,5 @@ export interface Filtros{
     categoria?: number,
     direccion?: string
     servicio?:number
-    tipos?:number
+    tipos?: number | number[]
 }

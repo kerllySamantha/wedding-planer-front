@@ -1,0 +1,130 @@
+$accent: #f76c6f;
+$accent-light: rgba($accent, 0.08);
+$color-border: rgb(237, 230, 230);
+$text-dark: #2c2c2c;
+$text-muted: #9ca3af;
+
+// ── Skeleton ───────────────────────────────────────────
+.skeleton-wrapper {
+  padding: 0.5rem 0;
+}
+
+.skeleton-row {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1.5fr 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid $color-border;
+
+  &.header {
+    padding-bottom: 14px;
+
+    .skeleton {
+      height: 14px;
+      border-radius: 6px;
+    }
+  }
+}
+
+.skeleton-cell {
+  border-radius: 8px;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    $color-border 25%,
+    rgba(255, 255, 255, 0.8) 50%,
+    $color-border 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 8px;
+  height: 36px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// ── Tabla ──────────────────────────────────────────────
+.tipos-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  thead tr th {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: $text-muted;
+    padding: 10px 12px;
+    border-bottom: 1px solid $color-border;
+    white-space: nowrap;
+  }
+
+  tbody .tipo-row {
+    transition: background 0.15s ease;
+
+    &:hover {
+      background-color: $accent-light;
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba($color-border, 0.6);
+      vertical-align: middle;
+    }
+  }
+}
+
+// ── Inputs ─────────────────────────────────────────────
+.input-tipo {
+  width: 100%;
+  border: 1px solid $color-border;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 0.875rem;
+  color: $text-dark;
+  background: white;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  outline: none;
+
+  &:focus {
+    border-color: rgba($accent, 0.5);
+    box-shadow: 0 0 0 3px rgba($accent, 0.1);
+  }
+
+  &.readonly {
+    background-color: #fafafa;
+    color: $text-muted;
+    cursor: not-allowed;
+  }
+}
+
+.input-numero {
+  text-align: right;
+}
+
+// ── Diferencia ─────────────────────────────────────────
+.diferencia-valor {
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.positivo {
+    color: #3aab7b;
+  }
+
+  &.negativo {
+    color: $accent;
+  }
+}

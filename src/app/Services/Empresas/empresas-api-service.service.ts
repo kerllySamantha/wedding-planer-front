@@ -10,6 +10,7 @@ import {
 } from '../../Interfaces/Empresa';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Productos, ProductosPorCategoria } from '../../Interfaces/Producto';
+import { UploadImageResponse } from '../../Interfaces/Foto';
 
 @Injectable({
   providedIn: 'root',
@@ -52,22 +53,23 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
       );
   }
 
-override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
-  const postObject = {
-    name: empresa.name,
-    email: empresa.email,
-    password: empresa.password,
-    rol: 'empresa',
-    direccion: empresa.direccion,
-    telefono: empresa.telefono,
-    descripcion: empresa.descripcion ?? '',
-    nombre_empresa: empresa.nombre_empresa,
-    tipo_servicio: empresa.tipo_servicio,
-    poblacion_id: empresa.poblacion_id,
-    logo: empresa.logo ?? '',
-    fotos: empresa.fotos ?? [],
-    productos: empresa.productos ?? []
-  };
+  override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
+    const postObject = {
+      name: empresa.name,
+      email: empresa.email,
+      password: empresa.password,
+      rol: 'empresa',
+      direccion: empresa.direccion,
+      telefono: empresa.telefono,
+      descripcion: empresa.descripcion ?? '',
+      nombre_empresa: empresa.nombre_empresa,
+      tipo_servicio: empresa.tipo_servicio,
+      poblacion_id: empresa.poblacion_id,
+      logo: empresa.logo ?? '',
+      fotos: empresa.fotos ?? [],
+      productos: empresa.productos ?? [],
+      productos_eliminados: empresa.productos_eliminados ?? [],
+    };
 
     return this.http
       .post<Empresa>(`${this.apiUrl}/empresas`, postObject)
@@ -91,9 +93,10 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
       poblacion_id: empresa.poblacion_id,
       logo: empresa.logo ?? '',
       fotos: empresa.fotos ?? [],
-      productos: empresa.productos ?? []
-    }
-    return this.http.put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject)
+      productos: empresa.productos ?? [],
+      productos_eliminados: empresa.productos_eliminados ?? [],
+    };
+    return this.http.put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject);
   }
 
   override deleteEmpresa(idEmpresa: bigint): Observable<Object | null> {
@@ -148,19 +151,15 @@ override postEmpresa(empresa: CreateEmpresa): Observable<Empresa | null> {
     imageBase64: string,
     extension: string,
     userId: number,
-  ): Observable<{ data?: { url?: string }; url?: string } | null> {
+  ): Observable<UploadImageResponse> {
     return this.http
-      .post<{
-        data?: { url?: string };
-        url?: string;
-      }>(`${this.apiUrl}/imagenes`, {
+      .post<UploadImageResponse>(`${this.apiUrl}/imagenes`, {
         imagen: imageBase64,
         extension,
         user_id: userId,
       })
       .pipe(
-        map((response) => response || null),
-        tap((response)  =>  console.log(response.url)),
+        tap((response) => console.log(response.path, response.url)),
         catchError((error: Error) => {
           console.error('Error al subir imagen base64:', error);
           return throwError(() => error);

@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, resource, signal } from '@angular/core';
 import { EmpresasServiceServiceService } from './Services/Empresas/empresas-service-service.service';
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, throwError } from 'rxjs';
+import { Empresa } from './Interfaces/Empresa';
 
 
 @Injectable({
@@ -17,8 +18,19 @@ export class FiltroEmpresasServiceService {
   tipoSeleccionadoId = signal<number|null>(null)
 
 
+
+  private toResourceError(error: unknown): Error {
+    if (error instanceof Error) return error;
+    const message = (error as { message?: string })?.message ?? 'Error desconocido al cargar empresas';
+    return new Error(message);
+  }
+
   protected empresasResource = resource({
-    loader: () => firstValueFrom(this.servicioDeEmpresas.getEmpresas())
+    loader: () => firstValueFrom(
+      this.servicioDeEmpresas.getEmpresas().pipe(
+        catchError((error) => throwError(() => this.toResourceError(error)))
+      )
+    )
   });
   
 
@@ -26,9 +38,13 @@ export class FiltroEmpresasServiceService {
     this.empresasResource.value()?.data ?? []
   );
 
+  private empresaTieneImagenes(empresa: Empresa): boolean {
+    return (empresa.fotos?.length ?? 0) > 0;
+  }
+
   empresasFiltradas = computed(() => {
     const idSeleccionado = this.categoriaSeleccionadaId();
-    const todas = this.empresasRecibidas();
+    const todas = this.empresasRecibidas().filter((empresa) => this.empresaTieneImagenes(empresa));
 
     if (!idSeleccionado) return todas;
 

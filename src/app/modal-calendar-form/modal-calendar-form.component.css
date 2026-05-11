@@ -169,24 +169,24 @@ input[type=time]::-webkit-calendar-picker-indicator {
   box-shadow: 0 8px 20px rgba(4, 88, 127, 0.25);
 }
 
-/* BLOQUEO → color diferenciado */
+/* BLOQUEO → dentro de la paleta azul (más neutro que acción principal) */
 #tipoBloq + .btn-outline-primary {
-  color: #7c4a03;
-  border-color: #f1c46b;
-  background: #fffaf0;
+  color: #0b4f6c;
+  border-color: #9ecfe3;
+  background: #f3f9fc;
 }
 
 #tipoBloq + .btn-outline-primary:hover {
-  background: #fff3d6;
-  border-color: #d99012;
-  color: #6b3f02;
+  background: #e4f3f9;
+  border-color: #0b6f95;
+  color: #084d6b;
 }
 
 #tipoBloq:checked + .btn-outline-primary {
-  background: linear-gradient(135deg, #b7791f, #d97706);
-  border-color: #b7791f;
+  background: linear-gradient(135deg, #0b6f95, #1aaad0);
+  border-color: #1aaad0;
   color: #ffffff;
-  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.25);
+  box-shadow: 0 8px 20px rgba(26, 170, 208, 0.25);
 }
 
 /* =========================
@@ -228,7 +228,7 @@ input[type=time]::-webkit-calendar-picker-indicator {
 /* Bloqueada → mejor contraste */
 #st-bloqueada:checked + .btn-outline-secondary {
   background: #fef3c7;
-  border-color: #5f90da;
+  border-color: #d97706;
   color: #78350f;
 }
 
@@ -238,6 +238,20 @@ input[type=time]::-webkit-calendar-picker-indicator {
 .alert {
   border-radius: 10px;
   font-size: 0.85rem;
+}
+
+.icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 1.2rem;
+  color: white;
+  flex-shrink: 0;
 }
 
 /* =========================
@@ -263,5 +277,105 @@ input[type=time]::-webkit-calendar-picker-indicator {
   }
   .modal-body {
     padding: 1.5rem !important;
+  }
+}
+/* =========================
+   FOOTER BOTONES
+   ========================= */
+.modal-footer {
+  background: #ffffff !important;
+  border-top: 1px solid var(--modal-border) !important;
+  gap: 0.6rem;
+}
+
+.modal-footer .btn {
+  min-height: 40px;
+  padding: 0.55rem 1.05rem;
+  border-radius: 12px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.22s ease;
+}
+
+.modal-footer .btn i {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+/* Cerrar / Cancelar */
+.modal-footer .btn-light {
+  background: #f3f9fc;
+  border: 1px solid #dbe7ef;
+  color: #0b4f6c;
+}
+
+.modal-footer .btn-light:hover {
+  background: #e4f3f9;
+  border-color: #9ecfe3;
+  color: #04587f;
+}
+
+/* Editar */
+.modal-footer .btn-outline-primary {
+  background: #ffffff;
+  border-color: #9ecfe3;
+  color: #04587f;
+}
+
+.modal-footer .btn-outline-primary:hover {
+  background: #e6f4fa;
+  border-color: #0b6f95;
+  color: #04587f;
+}
+
+/* Guardar */
+.modal-footer .btn-primary {
+  background: linear-gradient(135deg, #04587f, #0b6f95);
+  border-color: #04587f;
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(4, 88, 127, 0.22);
+}
+
+.modal-footer .btn-primary:hover {
+  background: linear-gradient(135deg, #0b6f95, #1aaad0);
+  border-color: #0b6f95;
+  transform: translateY(-1px);
+}
+
+/* Eliminar, sin rojo chillón */
+.modal-footer .btn-outline-danger {
+  background: #fff7f7;
+  border-color: #f1b8b8;
+  color: #a12828;
+}
+
+.modal-footer .btn-outline-danger:hover {
+  background: #fdeaea;
+  border-color: #d94c4c;
+  color: #8f1d1d;
+}
+
+/* Disabled */
+.modal-footer .btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .modal-footer {
+    flex-wrap: wrap;
+  }
+  .modal-footer .btn {
+    flex: 1 1 auto;
+  }
+  .modal-footer .btn-outline-danger {
+    margin-right: auto;
   }
 }/*# sourceMappingURL=modal-calendar-form.component.css.map */

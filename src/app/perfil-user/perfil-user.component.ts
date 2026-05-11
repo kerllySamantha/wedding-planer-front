@@ -161,6 +161,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.notificacionesCtx.getNotificaciones(userId, page).pipe(
       map((paginated) => this.normalizarNotificaciones(paginated.data ?? [])),
       switchMap((base) => this.sincronizarSolicitudesPresupuesto(base)),
+      switchMap((base) => this.anexarSolicitudesCreadas(base, userId)),
     ).subscribe({
       next: (notificaciones) => {
         this.notificaciones.set(notificaciones);
@@ -562,6 +563,53 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
         }),
       ),
     );
+  }
+
+  private anexarSolicitudesCreadas(
+    notificaciones: Notificacion[],
+    userId: number,
+  ): Observable<Notificacion[]> {
+    return this.pedirPresupuestoCtx.getPedirPresupuestos().pipe(
+      map((solicitudes) => {
+        const delUsuario = (solicitudes ?? []).filter(
+          (item) => Number(item.user_id) === Number(userId),
+        );
+
+        if (delUsuario.length === 0) return notificaciones;
+
+        const existentes = new Set(
+          notificaciones
+            .map((notif) => this.presupuestoId(notif))
+            .filter((id): id is string => id != null),
+        );
+
+        const nuevas = delUsuario
+          .filter((solicitud) => {
+            const id = solicitud.id != null ? String(solicitud.id) : null;
+            return id != null && !existentes.has(id);
+          })
+          .map((solicitud) => this.crearNotificacionDesdeSolicitud(solicitud));
+
+        return [...nuevas, ...notificaciones];
+      }),
+      catchError(() => of(notificaciones)),
+    );
+  }
+
+  private crearNotificacionDesdeSolicitud(solicitud: any): Notificacion {
+    const idSolicitud = solicitud?.id != null ? String(solicitud.id) : `tmp-${Date.now()}`;
+    const syntheticId = Number(idSolicitud);
+    const id = Number.isFinite(syntheticId) ? -Math.abs(syntheticId) : -Date.now();
+
+    return {
+      id,
+      tipo: 'presupuesto',
+      titulo: 'Solicitud enviada',
+      mensaje: 'Tu solicitud fue enviada al proveedor y está pendiente de respuesta.',
+      leido: false,
+      referencia_id: idSolicitud,
+      referencia: solicitud,
+    };
   }
 
 }
