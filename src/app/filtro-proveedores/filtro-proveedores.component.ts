@@ -154,12 +154,16 @@ export class FiltroProveedoresComponent {
     event.preventDefault();
 
     const tiposSeleccionados = this.getTiposSeleccionadosIds();
+    const categoriasConTiposSeleccionados = Object.keys(this.tiposSeleccionadosPorCategoria()).map(Number);
+    const categoriaSeleccionada = this.form.controls.categoria.value?.id;
 
     const formData = {
       nombre: this.form.controls.nombre?.value ?? '',
       provincia: this.form.controls.provincia.value?.id ?? 0,
       ciudad: this.form.controls.localidad.value?.id,
-      categoria: this.form.controls.categoria.value?.id,
+      categoria: tiposSeleccionados.length
+        ? (categoriasConTiposSeleccionados.length === 1 ? categoriasConTiposSeleccionados[0] : undefined)
+        : categoriaSeleccionada,
       tipos: tiposSeleccionados.length ? tiposSeleccionados : undefined,
     };
 
