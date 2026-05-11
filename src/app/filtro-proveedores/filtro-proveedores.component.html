@@ -58,15 +58,25 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Tipo Producto</mat-label>
-                <mat-select formControlName="tipos" placeholder="Selecciona un tipo">
-                    @for (tipo of allTipos(); track tipo.id) {
-                    <mat-option [value]="tipo">{{ tipo.nombre }}</mat-option>
+            <div class="full-width">
+                <label class="mb-2 d-block">Tipos de producto</label>
+                @if (form.controls.categoria.value?.id; as categoriaId) {
+                @if (tiposFiltradosPorCategoria(categoriaId).length > 0) {
+                <div class="d-flex flex-column gap-2">
+                    @for (tipo of tiposFiltradosPorCategoria(categoriaId); track tipo.id) {
+                    <mat-checkbox [checked]="isTipoSeleccionado(tipo.id, categoriaId)"
+                        (change)="onTipoCheckboxChange(categoriaId, tipo.id, $event.checked)">
+                        {{ tipo.nombre }}
+                    </mat-checkbox>
                     }
-                </mat-select>
-
-            </mat-form-field>
+                </div>
+                } @else {
+                <small class="text-muted">No hay tipos para esta categoría.</small>
+                }
+                } @else {
+                <small class="text-muted">Selecciona una categoría para ver sus tipos.</small>
+                }
+            </div>
 
 
 
