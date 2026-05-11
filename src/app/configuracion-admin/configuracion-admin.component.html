@@ -153,7 +153,8 @@
           <i class="bi bi-shop me-1"></i>
           Nombre de empresa
         </span>
-        <input class="form-control" formControlName="nombre_empresa">
+        <input class="form-control" id="nombre_empresa" formControlName="nombre_empresa" [class.is-invalid]="form.controls.nombre_empresa.invalid && (form.controls.nombre_empresa.touched || form.controls.nombre_empresa.dirty)">
+        @if (form.controls.nombre_empresa.invalid && (form.controls.nombre_empresa.touched || form.controls.nombre_empresa.dirty)) {<small class="text-danger">Nombre de empresa obligatorio (mín. 2 caracteres).</small>}
       </label>
 
       <label>
@@ -161,7 +162,8 @@
           <i class="bi bi-person me-1"></i>
           Nombre de contacto
         </span>
-        <input class="form-control" formControlName="name">
+        <input class="form-control" id="name" formControlName="name" [class.is-invalid]="form.controls.name.invalid && (form.controls.name.touched || form.controls.name.dirty)">
+        @if (form.controls.name.invalid && (form.controls.name.touched || form.controls.name.dirty)) {<small class="text-danger">Nombre de contacto obligatorio.</small>}
       </label>
 
       <label>
@@ -169,7 +171,8 @@
           <i class="bi bi-envelope me-1"></i>
           Email
         </span>
-        <input class="form-control" formControlName="email">
+        <input class="form-control" id="email" type="email" formControlName="email" [class.is-invalid]="form.controls.email.invalid && (form.controls.email.touched || form.controls.email.dirty)">
+        @if (form.controls.email.invalid && (form.controls.email.touched || form.controls.email.dirty)) {<small class="text-danger">Introduce un email válido.</small>}
       </label>
 
       <label>
@@ -177,7 +180,8 @@
           <i class="bi bi-telephone me-1"></i>
           Teléfono
         </span>
-        <input class="form-control" formControlName="telefono">
+        <input class="form-control" id="telefono" formControlName="telefono" [class.is-invalid]="form.controls.telefono.invalid && (form.controls.telefono.touched || form.controls.telefono.dirty)">
+        @if (form.controls.telefono.invalid && (form.controls.telefono.touched || form.controls.telefono.dirty)) {<small class="text-danger">Teléfono obligatorio.</small>}
       </label>
 
       <label>
@@ -185,7 +189,8 @@
           <i class="bi bi-briefcase me-1"></i>
           Tipo de servicio
         </span>
-        <input class="form-control" formControlName="tipo_servicio">
+        <input class="form-control" id="tipo_servicio" formControlName="tipo_servicio" [class.is-invalid]="form.controls.tipo_servicio.invalid && (form.controls.tipo_servicio.touched || form.controls.tipo_servicio.dirty)">
+        @if (form.controls.tipo_servicio.invalid && (form.controls.tipo_servicio.touched || form.controls.tipo_servicio.dirty)) {<small class="text-danger">Tipo de servicio obligatorio.</small>}
       </label>
 
       <label>
@@ -193,7 +198,8 @@
           <i class="bi bi-geo-alt me-1"></i>
           Dirección
         </span>
-        <input class="form-control" formControlName="direccion">
+        <input class="form-control" id="direccion" formControlName="direccion" [class.is-invalid]="form.controls.direccion.invalid && (form.controls.direccion.touched || form.controls.direccion.dirty)">
+        @if (form.controls.direccion.invalid && (form.controls.direccion.touched || form.controls.direccion.dirty)) {<small class="text-danger">Dirección obligatoria (mín. 5 caracteres).</small>}
       </label>
     </div>
 
