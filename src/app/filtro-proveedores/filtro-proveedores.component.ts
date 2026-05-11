@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { tap, map, switchMap, of } from 'rxjs';
-import { Categoria } from '../Interfaces/Categoria';
+import { Categoria, InfoCategoria } from '../Interfaces/Categoria';
 import { CategoriasServiceService } from '../Services/Catergorias/categoria-service.service';
 import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
 import { RegionsServer } from '../Services/Regiones/regiones-abstract.server';
@@ -69,8 +69,12 @@ export class FiltroProveedoresComponent {
 
   provincias$ = this.regionesServerctx.getProvincias();
   categorias$ = this.categoriasctx.getCategorias().pipe(
-    tap((response) => console.log(response?.data as Categoria[])),
-    map((response) => response?.data as Categoria[]),
+    tap((response) => console.log(response?.data as InfoCategoria[])),
+    map((response) =>
+      (response?.data as InfoCategoria[]).filter((categoria) =>
+        (categoria.tipos ?? []).length > 0,
+      ) as Categoria[],
+    ),
   );
 
   poblaciones$ = this.form.controls.provincia.valueChanges.pipe(

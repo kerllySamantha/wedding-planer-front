@@ -120,6 +120,13 @@ export class ConfiguracionAdminComponent {
     });
   }
 
+
+
+  private categoriasConTipos(): InfoCategoria[] {
+    return this.categorias().filter((categoria) =>
+      (categoria.tipos ?? []).length > 0,
+    );
+  }
   getCategorias() {
     this.categoriaCtx.getCategorias().subscribe({
       next: (data) => {
@@ -132,7 +139,7 @@ export class ConfiguracionAdminComponent {
   }
 
   private inicializarCategoriaSeleccionada() {
-    const categorias = this.categorias();
+    const categorias = this.categoriasConTipos();
     if (!categorias.length) return;
 
     const productosEmpresa = this.empresa()?.productos ?? [];
@@ -422,14 +429,14 @@ export class ConfiguracionAdminComponent {
   }
 
   categoriasEmpresa(): InfoCategoria[] {
-    return this.categorias();
+    return this.categoriasConTipos();
   }
 
   tiposEditablesPorCategoriaEmpresa(): Array<{
     categoriaNombre: string;
     tipos: Array<{ tipoId: number; tipoNombre: string }>;
   }> {
-    const categoriaSeleccionada = this.categorias().find(
+    const categoriaSeleccionada = this.categoriasConTipos().find(
       (c) => c.id === this.categoriaSeleccionadaId(),
     );
     if (!categoriaSeleccionada) return [];
