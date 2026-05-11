@@ -14,7 +14,7 @@ import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
 import { RegionsServer } from '../Services/Regiones/regiones-abstract.server';
 import { Provincia, Town } from '../Interfaces/CIudades';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { MatButtonModule, MatFabButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -22,7 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { TipoData } from '../Interfaces/Tipos';
 import { TiposHttpService } from '../Services/Tipos/tipos-http.service';
-import { TipoProducto } from '../Interfaces/Presupuesto';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-filtro-proveedores',
@@ -39,6 +39,7 @@ import { TipoProducto } from '../Interfaces/Presupuesto';
     MatSlideToggleModule,
     MatIconModule,
     MatButtonModule,
+    MatCheckboxModule,
   ],
   templateUrl: './filtro-proveedores.component.html',
   styleUrl: './filtro-proveedores.component.scss',
@@ -51,10 +52,8 @@ export class FiltroProveedoresComponent {
   private _formBuilder = inject(FormBuilder);
   tiposCtx = inject(TiposHttpService);
   allTipos = signal<TipoData[]>([]);
-  // serviciosctx = inject(ServiciosServiceService);
-  mostrarFiltros = false;
+  tiposSeleccionadosPorCategoria = signal<Record<number, Set<number>>>({});
 
-  // isChecked = true;
   formGroup = this._formBuilder.group({
     enableWifi: '',
     acceptTerms: ['', Validators.requiredTrue],
@@ -66,8 +65,6 @@ export class FiltroProveedoresComponent {
     localidad: new FormControl<Town | null>(null),
     vacantes: new FormControl(null),
     categoria: new FormControl<Categoria | null>(null),
-    tipos: new FormControl<TipoData|null>(null)
-    // servicio: new FormControl<Servicio | null>(null)
   });
 
   provincias$ = this.regionesServerctx.getProvincias();
@@ -75,13 +72,6 @@ export class FiltroProveedoresComponent {
     tap((response) => console.log(response?.data as Categoria[])),
     map((response) => response?.data as Categoria[]),
   );
-
-  // servicios$ = this.serviciosctx.getServicios().pipe(
-  //   tap(response => console.log(response?.data as Servicio[])),
-  //   map(response => response?.data as Servicio[])
-  // );
-
-  errorsProvincia: boolean = false;
 
   poblaciones$ = this.form.controls.provincia.valueChanges.pipe(
     switchMap((provincia) => {
@@ -91,9 +81,43 @@ export class FiltroProveedoresComponent {
 
   ngOnInit() {
     this.getTipos();
-    this.form.valueChanges.subscribe({next(value) {
-      console.log(value.tipos);
-    },})
+  }
+
+  tiposFiltradosPorCategoria(categoriaId: number | null | undefined): TipoData[] {
+    if (!categoriaId) return [];
+    return this.allTipos().filter((tipo) => tipo.categoria?.id === categoriaId);
+  }
+
+  isTipoSeleccionado(tipoId: number, categoriaId: number | null | undefined): boolean {
+    if (!categoriaId) return false;
+    return this.tiposSeleccionadosPorCategoria()[categoriaId]?.has(tipoId) ?? false;
+  }
+
+  onTipoCheckboxChange(categoriaId: number | null | undefined, tipoId: number, checked: boolean): void {
+    if (!categoriaId) return;
+
+    this.tiposSeleccionadosPorCategoria.update((state) => {
+      const next: Record<number, Set<number>> = { ...state };
+      const selected = new Set(next[categoriaId] ?? []);
+
+      if (checked) {
+        selected.add(tipoId);
+      } else {
+        selected.delete(tipoId);
+      }
+
+      if (selected.size) {
+        next[categoriaId] = selected;
+      } else {
+        delete next[categoriaId];
+      }
+
+      return next;
+    });
+  }
+
+  private getTiposSeleccionadosIds(): number[] {
+    return Object.values(this.tiposSeleccionadosPorCategoria()).flatMap((tiposSet) => Array.from(tiposSet));
   }
 
   getTipos(): void {
@@ -101,7 +125,6 @@ export class FiltroProveedoresComponent {
       next: (data) => {
         const lista = data?.data ?? [];
         this.allTipos.set(lista);
-        console.log('Todos los tipos:', this.allTipos());
       },
       error: (err: Error) => {
         console.log(err.message);
@@ -115,32 +138,30 @@ export class FiltroProveedoresComponent {
       provincia: null,
       localidad: null,
       categoria: null,
-      tipos: null,
     });
+    this.tiposSeleccionadosPorCategoria.set({});
 
     this.filtradoEmpresctx.setFilters({
       nombre: ' ',
       provincia: undefined,
       poblacion: undefined,
       categoria: undefined,
-      tipos: undefined
+      tipos: undefined,
     });
   }
 
   submit(event: Event) {
     event.preventDefault();
 
+    const tiposSeleccionados = this.getTiposSeleccionadosIds();
+
     const formData = {
       nombre: this.form.controls.nombre?.value ?? '',
       provincia: this.form.controls.provincia.value?.id ?? 0,
       ciudad: this.form.controls.localidad.value?.id,
       categoria: this.form.controls.categoria.value?.id,
-      tipos: this.form.controls.tipos.value?.id ?? 0
-
-      // servicio: this.form.controls.servicio.value?.id
+      tipos: tiposSeleccionados.length ? tiposSeleccionados : undefined,
     };
-
-    console.log(formData);
 
     this.filtradoEmpresctx.setFilters(formData);
   }

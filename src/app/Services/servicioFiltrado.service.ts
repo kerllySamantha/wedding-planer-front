@@ -95,7 +95,9 @@ export class ServicioFiltrado {
         (!poblacion || empresa.poblacion.id === poblacion) &&
         (!provincia || empresa.provincia.id === provincia) && 
         (!categoria || empresa.productos.some(producto => producto.categoria.id === categoria))&&
-        (!tipos || empresa.productos.some(producto => producto.tipo_producto.id === tipos))
+        (!tipos || (Array.isArray(tipos)
+          ? empresa.productos.some(producto => tipos.includes(producto.tipo_producto.id))
+          : empresa.productos.some(producto => producto.tipo_producto.id === tipos)))
         
 
       );
