@@ -159,6 +159,7 @@
                     <p class="text-muted mb-0">Consulta opiniones reales antes de tomar una decision.</p>
                 </div>
                 <div class="reviews-section__stats">
+                    <button type="button" class="btn btn-sm btn-outline-dark me-2" (click)="irANuevaResenia()">Escribir resena</button>
                     <span class="reviews-section__count">{{ resenias().length }} resenas</span>
                     <span class="reviews-section__average">{{ puntuacionMedia().toFixed(1) }}/5</span>
                 </div>
