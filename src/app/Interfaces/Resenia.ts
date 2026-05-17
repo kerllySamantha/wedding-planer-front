@@ -24,7 +24,7 @@ export interface CreateResenia {
     empresa_id: string
     puntuacion: string
     comentario: string,
-    fotos: string
+    fotos: Foto[]
 
 }
 

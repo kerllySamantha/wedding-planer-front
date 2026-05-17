@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   FormControl,
   FormGroup,
@@ -31,6 +31,7 @@ export class LoginUsuariosComponent {
   constructor(private router: Router) {}
 
   authServicectx = inject(AuthenticationService);
+  private readonly route = inject(ActivatedRoute);
   nombreU = signal<string>('');
   message = signal<string>('');
 
@@ -62,7 +63,8 @@ export class LoginUsuariosComponent {
           this.message.set('Las credenciales ingresadas no son correctas.');
         } else {
           this.message.set('');
-          this.router.navigate(['/']);
+          const redirect = this.route.snapshot.queryParamMap.get('redirect');
+          this.router.navigateByUrl(redirect || '/');
         }
       },
 

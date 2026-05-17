@@ -14,23 +14,12 @@
 
           <div class="perfil-hero__info">
             <h2 class="mb-1 perfil-hero__name">{{ perfil()?.data?.usuario?.name }}</h2>
-            <!-- <p class="mb-2 text-muted">
-              <i class="bi bi-envelope me-1"></i>{{ perfil()?.data?.usuario?.email }}
-            </p> -->
 
             <div class="perfil-hero__chips">
               <span class="chip">
                 <i class="bi bi-heart-fill chip__icon"></i>
                 {{ boda()?.nombre_pareja || 'Nuestra boda' }}
               </span>
-              <!-- <span class="chip">
-                <i class="bi bi-geo-alt-fill chip__icon"></i>
-                {{ boda()?.ubicacion || 'Ubicación por definir' }}
-              </span> -->
-              <!-- <span class="chip">
-                <i class="bi bi-calendar-event-fill chip__icon"></i>
-                {{ fechaFormateada() }}
-              </span> -->
             </div>
           </div>
         </div>
@@ -38,7 +27,7 @@
         <div class="perfil-contacto mt-3">
           <div>
             <i class="bi bi-telephone me-1 text-muted"></i>
-            <strong>Teléfono:</strong> {{ perfil()?.data?.telefono || 'Sin registrar' }}
+            <strong>Telefono:</strong> {{ perfil()?.data?.telefono || 'Sin registrar' }}
           </div>
           <div>
             <i class="bi bi-envelope me-1 text-muted"></i>
@@ -86,7 +75,7 @@
     <div class="col-xl-4">
       <div class="card card-margin text-center shadow-sm rounded-4 p-3">
         <div class="card-header bg-light fw-semibold border-bottom">
-          <i class="bi bi-hourglass-split me-2 text-primary"></i>Cuenta atrás de la boda
+          <i class="bi bi-hourglass-split me-2 text-primary"></i>Cuenta atras de la boda
         </div>
 
         <div class="card-body py-3">
@@ -94,7 +83,7 @@
             <div class="countdown__unit">
               <span class="countdown__value">{{ countdown()?.days }}</span>
               <small class="countdown__label">
-                <i class="bi bi-calendar3 me-1"></i>días
+                <i class="bi bi-calendar3 me-1"></i>dias
               </small>
             </div>
             <div class="countdown__separator">:</div>
@@ -123,35 +112,38 @@
 
       <div class="card shadow-sm rounded-4 p-3">
         <h3 class="h6 mb-2">Tu evento</h3>
-        <!-- <p class="text-muted mb-3">Un perfil más completo como red social: datos personales, boda y actividad.</p> -->
         <ul class="list-unstyled mb-0 small perfil-evento-list">
-          <!-- <li>
-            <i class="bi bi-people-fill perfil-evento-list__icon"></i>
-            <span><strong>Pareja:</strong> {{ boda()?.nombre_pareja || 'Por confirmar' }}</span>
-          </li> -->
           <li>
             <i class="bi bi-buildings perfil-evento-list__icon"></i>
             <span><strong>Provincia:</strong> {{ boda()?.provincia?.nombre || 'Sin definir' }}</span>
           </li>
           <li>
             <i class="bi bi-pin-map-fill perfil-evento-list__icon"></i>
-            <span><strong>Población:</strong> {{ boda()?.poblacion?.nombre || 'Sin definir' }}</span>
+            <span><strong>Poblacion:</strong> {{ boda()?.poblacion?.nombre || 'Sin definir' }}</span>
           </li>
         </ul>
-        <button type="button" class="btn btn-primary btn-sm mt-3 w-100" (click)="irAPublicarBoda()">
-          <i class="bi bi-pencil-square me-1"></i>Publicar / Editar mi boda
-        </button>
+        <div class="d-grid gap-2 mt-3">
+          <button type="button" class="btn btn-primary btn-sm w-100" (click)="activarEdicionBoda()">
+            <i class="bi bi-pencil-square me-1"></i>Editar mi boda
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm w-100" (click)="irAPublicarBoda()">
+            <i class="bi bi-grid me-1"></i>Ir a mi panel de boda
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-
 <div class="container mt-4">
   <div class="card card-margin shadow-sm rounded-4 p-4">
     <div class="d-flex gap-2 mb-4">
-      <button class="btn btn-sm" [class.btn-primary]="pestanaActiva() === 'planificacion'" [class.btn-outline-primary]="pestanaActiva() !== 'planificacion'" (click)="seleccionarPestana('planificacion')">Información de la boda</button>
-      <button class="btn btn-sm" [class.btn-primary]="pestanaActiva() === 'resultado'" [class.btn-outline-primary]="pestanaActiva() !== 'resultado'" (click)="seleccionarPestana('resultado')">Así quedó la boda</button>
+      <button class="btn btn-sm" [class.btn-primary]="pestanaActiva() === 'planificacion'"
+        [class.btn-outline-primary]="pestanaActiva() !== 'planificacion'"
+        (click)="seleccionarPestana('planificacion')">Informacion de la boda</button>
+      <button class="btn btn-sm" [class.btn-primary]="pestanaActiva() === 'resultado'"
+        [class.btn-outline-primary]="pestanaActiva() !== 'resultado'"
+        (click)="seleccionarPestana('resultado')">Asi quedo la boda</button>
     </div>
 
     @if (pestanaActiva() === 'planificacion') {
@@ -162,7 +154,7 @@
       </li>
       <li>
         <i class="bi bi-geo-alt-fill perfil-evento-list__icon"></i>
-        <span><strong>Ubicación:</strong> {{ boda()?.ubicacion || 'Sin definir' }}</span>
+        <span><strong>Ubicacion:</strong> {{ boda()?.ubicacion || 'Sin definir' }}</span>
       </li>
       <li>
         <i class="bi bi-people-fill perfil-evento-list__icon"></i>
@@ -170,22 +162,259 @@
       </li>
       <li>
         <i class="bi bi-building-fill-check perfil-evento-list__icon"></i>
-        <span><strong>Publicada:</strong> {{ (boda()?.fotos?.length ?? 0) > 0 ? 'Sí' : 'No' }}</span>
+        <span><strong>Publicada:</strong> {{ (boda()?.fotos?.length ?? 0) > 0 ? 'Si' : 'No' }}</span>
       </li>
     </ul>
+
+    <section class="perfil-resenias mt-4">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+        <div>
+          <h4 class="h6 mb-1">Resenas de tu boda</h4>
+          <p class="text-muted small mb-0">Aqui puedes ver tus resenas y anadir nuevas valoraciones.</p>
+        </div>
+        <span class="perfil-notif-counter">
+          <i class="bi bi-chat-square-heart me-1"></i>{{ reseniasBoda().length }} resenas
+        </span>
+      </div>
+
+      @if (reseniasLoading()) {
+      <p class="text-muted small mb-3">Cargando resenas...</p>
+      } @else if (reseniasError()) {
+      <div class="alert alert-danger py-2 px-3">{{ reseniasError() }}</div>
+      } @else if (!reseniasBoda().length) {
+      <div class="perfil-resenias__empty">
+        <strong>No existen resenas para tu boda.</strong>
+        <p class="mb-0 small text-muted">Puedes anadir la primera desde el formulario inferior.</p>
+      </div>
+      } @else {
+      <div class="perfil-resenias__list">
+        @for (resenia of reseniasConEmpresa(); track resenia.id) {
+        <article class="perfil-resenias__item">
+          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+            <div>
+              <strong class="d-block">{{ resenia.empresaNombre }}</strong>
+              <span class="small text-muted">{{ resenia.usuario.name }}</span>
+            </div>
+            <span class="perfil-resenias__stars">
+              @for (_star of estrellasResenia(resenia.puntuacion); track $index) {
+              <i class="bi bi-star-fill"></i>
+              }
+            </span>
+          </div>
+          <p class="small text-muted mb-0">{{ resenia.comentario }}</p>
+        </article>
+        }
+      </div>
+      }
+
+      <form class="perfil-resenias__form mt-4" [formGroup]="reseniaForm" (ngSubmit)="enviarResenia()">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" for="empresaResenia">Empresa</label>
+            <select id="empresaResenia" class="form-select" formControlName="empresaId"
+              [class.is-invalid]="isInvalidReseniaField('empresaId')">
+              <option value="">Selecciona una empresa</option>
+              @for (empresa of empresasResenia(); track empresa.id) {
+              <option [value]="empresa.id">{{ empresa.nombre_empresa }}</option>
+              }
+            </select>
+            @if (isInvalidReseniaField('empresaId')) {
+            <div class="invalid-feedback d-block">{{ getReseniaFieldError('empresaId') }}</div>
+            }
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label" for="puntuacionResenia">Puntuacion</label>
+            <select id="puntuacionResenia" class="form-select" formControlName="puntuacion"
+              [class.is-invalid]="isInvalidReseniaField('puntuacion')">
+              <option value="">Selecciona una puntuacion</option>
+              @for (puntuacion of [5, 4, 3, 2, 1]; track puntuacion) {
+              <option [value]="puntuacion">{{ puntuacion }} estrella(s)</option>
+              }
+            </select>
+            @if (isInvalidReseniaField('puntuacion')) {
+            <div class="invalid-feedback d-block">{{ getReseniaFieldError('puntuacion') }}</div>
+            }
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="comentarioResenia">Comentario</label>
+            <textarea id="comentarioResenia" rows="4" class="form-control" formControlName="comentario"
+              [class.is-invalid]="isInvalidReseniaField('comentario')"
+              placeholder="Cuentanos como fue tu experiencia"></textarea>
+            @if (isInvalidReseniaField('comentario')) {
+            <div class="invalid-feedback d-block">{{ getReseniaFieldError('comentario') }}</div>
+            }
+          </div>
+        </div>
+
+        @if (reseniaError()) {
+        <div class="alert alert-danger mt-3 mb-0">{{ reseniaError() }}</div>
+        }
+
+        @if (reseniaSuccess()) {
+        <div class="alert alert-success mt-3 mb-0">{{ reseniaSuccess() }}</div>
+        }
+
+        <div class="mt-3">
+          <button type="submit" class="btn btn-primary" [disabled]="enviandoResenia()">
+            @if (enviandoResenia()) {
+            Guardando resena...
+            } @else {
+            Anadir resena
+            }
+          </button>
+        </div>
+      </form>
+    </section>
     }
 
     @if (pestanaActiva() === 'resultado') {
     <div class="row g-2">
       @for (foto of fotosResultado(); track foto.path ?? foto.url ?? $index) {
       <div class="col-6 col-md-4 col-lg-3">
-        <img [src]="foto.url || foto.path" class="img-fluid rounded-3 w-100" style="height: 140px; object-fit: cover;" alt="Foto final boda">
+        <img [src]="foto.url || foto.path" class="img-fluid rounded-3 w-100"
+          style="height: 140px; object-fit: cover;" alt="Foto final boda">
       </div>
       }
       @if (!fotosResultado().length) {
-      <p class="text-muted small mb-0">Aún no hay fotos publicadas del resultado del evento.</p>
+      <p class="text-muted small mb-0">Aun no hay fotos publicadas del resultado del evento.</p>
       }
     </div>
+    }
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div class="card card-margin shadow-sm rounded-4 p-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+      <div>
+        <h3 class="h5 mb-1">Mi boda</h3>
+        <p class="text-muted mb-0">
+          Consulta tus datos principales y actualizalos desde el perfil.
+        </p>
+      </div>
+      @if (!editandoBoda()) {
+      <button type="button" class="btn btn-outline-primary btn-sm" (click)="activarEdicionBoda()">
+        <i class="bi bi-pencil me-1"></i>Modificar
+      </button>
+      }
+    </div>
+
+    <div class="perfil-boda-summary">
+      <article class="perfil-boda-summary__item">
+        <span class="perfil-boda-summary__label">Pareja</span>
+        <strong>{{ boda()?.nombre_pareja || 'Sin definir' }}</strong>
+      </article>
+      <article class="perfil-boda-summary__item">
+        <span class="perfil-boda-summary__label">Fecha</span>
+        <strong>{{ fechaFormateada() || 'Sin definir' }}</strong>
+      </article>
+      <article class="perfil-boda-summary__item">
+        <span class="perfil-boda-summary__label">Ubicacion</span>
+        <strong>{{ boda()?.ubicacion || 'Sin definir' }}</strong>
+      </article>
+      <article class="perfil-boda-summary__item">
+        <span class="perfil-boda-summary__label">Notas</span>
+        <strong>{{ boda()?.notas || 'Sin notas registradas' }}</strong>
+      </article>
+    </div>
+
+    @if (bodaFormSuccess() && !editandoBoda()) {
+    <div class="alert alert-success mt-3 mb-0">{{ bodaFormSuccess() }}</div>
+    }
+
+    @if (editandoBoda()) {
+    <form class="perfil-boda-form mt-4" [formGroup]="bodaForm" (ngSubmit)="guardarBoda()">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label" for="nombrePareja">Nombre de la pareja</label>
+          <input id="nombrePareja" type="text" class="form-control" formControlName="nombrePareja"
+            [class.is-invalid]="isInvalidBodaField('nombrePareja')">
+          @if (isInvalidBodaField('nombrePareja')) {
+          <div class="invalid-feedback d-block">{{ getBodaFieldError('nombrePareja') }}</div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="weddingDate">Fecha de la boda</label>
+          <input id="weddingDate" type="date" class="form-control" formControlName="weddingDate"
+            [class.is-invalid]="isInvalidBodaField('weddingDate')">
+          @if (isInvalidBodaField('weddingDate')) {
+          <div class="invalid-feedback d-block">{{ getBodaFieldError('weddingDate') }}</div>
+          }
+        </div>
+
+        <div class="col-12">
+          <label class="form-label" for="ubicacionBoda">Ubicacion</label>
+          <input id="ubicacionBoda" type="text" class="form-control" formControlName="ubicacion"
+            [class.is-invalid]="isInvalidBodaField('ubicacion')">
+          @if (isInvalidBodaField('ubicacion')) {
+          <div class="invalid-feedback d-block">{{ getBodaFieldError('ubicacion') }}</div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="provinciaId">Provincia</label>
+          <select id="provinciaId" class="form-select" formControlName="provinciaId"
+            [class.is-invalid]="isInvalidBodaField('provinciaId')">
+            <option [ngValue]="null">Selecciona una provincia</option>
+            @for (provincia of provincias$ | async; track provincia.id) {
+            <option [ngValue]="provincia.id">{{ provincia.nombre }}</option>
+            }
+          </select>
+          @if (isInvalidBodaField('provinciaId')) {
+          <div class="invalid-feedback d-block">{{ getBodaFieldError('provinciaId') }}</div>
+          }
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="poblacionId">Poblacion</label>
+          <select id="poblacionId" class="form-select" formControlName="poblacionId"
+            [class.is-invalid]="isInvalidBodaField('poblacionId')">
+            <option [ngValue]="null">Selecciona una poblacion</option>
+            @for (poblacion of poblaciones$ | async; track poblacion.id) {
+            <option [ngValue]="poblacion.id">{{ poblacion.nombre }}</option>
+            }
+          </select>
+          @if (isInvalidBodaField('poblacionId')) {
+          <div class="invalid-feedback d-block">{{ getBodaFieldError('poblacionId') }}</div>
+          }
+        </div>
+
+        <div class="col-12">
+          <label class="form-label" for="notasBoda">Notas</label>
+          <textarea id="notasBoda" rows="4" class="form-control" formControlName="notas"
+            [class.is-invalid]="isInvalidBodaField('notas')"
+            placeholder="Detalles que quieras recordar sobre el evento"></textarea>
+          @if (isInvalidBodaField('notas')) {
+          <div class="invalid-feedback d-block">{{ getBodaFieldError('notas') }}</div>
+          }
+        </div>
+      </div>
+
+      @if (bodaFormError()) {
+      <div class="alert alert-danger mt-3 mb-0">{{ bodaFormError() }}</div>
+      }
+
+      @if (bodaFormSuccess()) {
+      <div class="alert alert-success mt-3 mb-0">{{ bodaFormSuccess() }}</div>
+      }
+
+      <div class="d-flex gap-2 flex-wrap mt-4">
+        <button type="submit" class="btn btn-primary" [disabled]="guardandoBoda()">
+          @if (guardandoBoda()) {
+          Guardando...
+          } @else {
+          Guardar cambios
+          }
+        </button>
+        <button type="button" class="btn btn-outline-secondary" (click)="cancelarEdicionBoda()"
+          [disabled]="guardandoBoda()">
+          Cancelar
+        </button>
+      </div>
+    </form>
     }
   </div>
 </div>
@@ -234,7 +463,7 @@
         <i class="bi bi-bell-slash"></i>
       </div>
       <div class="fw-semibold">No tienes solicitudes enviadas por ahora</div>
-      <div class="text-muted small">Cuando envíes una solicitud al servidor aparecerá aquí.</div>
+      <div class="text-muted small">Cuando envies una solicitud al servidor aparecera aqui.</div>
     </div>
     } @else {
     <div class="perfil-notif-list">
@@ -243,7 +472,7 @@
         <div class="perfil-notif-main">
           <div class="perfil-notif-top">
             <div class="perfil-notif-title-wrap">
-              <h3 class="perfil-notif-title mb-0">{{ notif.titulo || 'Notificación' }}</h3>
+              <h3 class="perfil-notif-title mb-0">{{ notif.titulo || 'Notificacion' }}</h3>
               @if (!esLeida(notif)) {
               <span class="perfil-notif-pill">
                 <i class="bi bi-circle-fill me-1" style="font-size: 0.45rem;"></i>Nueva

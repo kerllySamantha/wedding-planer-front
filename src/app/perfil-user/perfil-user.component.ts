@@ -4,6 +4,7 @@ import {
   OnDestroy,
   OnInit,
   computed,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -17,21 +18,54 @@ import { EchoService } from '../Services/Echo/echo.service';
 import { Notificacion, NotificacionResponse } from '../Interfaces/Notificacion';
 import { PerfilResponse } from '../Interfaces/Perfil';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { Empresa } from '../Interfaces/Empresa';
+import {
+  FormControl,
+  FormGroup,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { catchError, forkJoin, map, Observable, of, startWith, switchMap, tap } from 'rxjs';
 import { APP_PATHS } from '../app.paths';
+import { RegionsServer } from '../Services/Regiones/regiones-abstract.server';
+import { Town } from '../Interfaces/CIudades';
+import { Boda, CreateBoda } from '../Interfaces/Boda';
+import { CreateResenia, Resenia } from '../Interfaces/Resenia';
+import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
+import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
+
+type BodaProfileForm = {
+  nombrePareja: FormControl<string>;
+  weddingDate: FormControl<string>;
+  ubicacion: FormControl<string>;
+  provinciaId: FormControl<number | null>;
+  poblacionId: FormControl<number | null>;
+  notas: FormControl<string>;
+};
+
+type ReseniaBodaForm = {
+  empresaId: FormControl<string>;
+  puntuacion: FormControl<string>;
+  comentario: FormControl<string>;
+};
 
 @Component({
   selector: 'app-perfil-user',
-  imports: [CommonModule, NavbarComponent],
+  imports: [CommonModule, NavbarComponent, ReactiveFormsModule],
   templateUrl: './perfil-user.component.html',
   styleUrl: './perfil-user.component.scss',
 })
 export class PerfilUserComponent implements OnInit, OnDestroy {
+  private readonly fb = inject(NonNullableFormBuilder);
   private readonly perfilServiceCtx = inject(PerfilServiceServiceService);
   private readonly notificacionesCtx = inject(NotificacionesService);
   private readonly bodaCtx = inject(CountdownServiceService);
   private readonly echoSvc = inject(EchoService);
   private readonly pedirPresupuestoCtx = inject(PedirPresupuestoService);
+  private readonly regionesServer = inject(RegionsServer);
+  private readonly reseniasService = inject(ReseniasServiceServiceService);
+  private readonly empresasService = inject(EmpresasServiceServiceService);
   private readonly router = inject(Router);
 
   readonly perfil = signal<PerfilResponse | null>(null);
@@ -45,6 +79,74 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly notificacionesError = signal<string | null>(null);
   readonly mensajeAccion = signal<string | null>(null);
   readonly expandedNotifId = signal<number | string | null>(null);
+  readonly editandoBoda = signal(false);
+  readonly guardandoBoda = signal(false);
+  readonly submittedBoda = signal(false);
+  readonly bodaFormError = signal<string | null>(null);
+  readonly bodaFormSuccess = signal<string | null>(null);
+  readonly reseniasBoda = signal<Resenia[]>([]);
+  readonly reseniasLoading = signal(false);
+  readonly reseniasError = signal<string | null>(null);
+  readonly submittedResenia = signal(false);
+  readonly enviandoResenia = signal(false);
+  readonly reseniaSuccess = signal<string | null>(null);
+  readonly reseniaError = signal<string | null>(null);
+  readonly empresasResenia = signal<Empresa[]>([]);
+
+  readonly bodaForm = new FormGroup<BodaProfileForm>({
+    nombrePareja: this.fb.control('', [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(80),
+    ]),
+    weddingDate: this.fb.control('', [Validators.required]),
+    ubicacion: this.fb.control('', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(255),
+    ]),
+    provinciaId: new FormControl<number | null>(null, {
+      validators: [Validators.required],
+    }),
+    poblacionId: new FormControl<number | null>(
+      { value: null, disabled: true },
+      { validators: [Validators.required] },
+    ),
+    notas: this.fb.control('', [Validators.maxLength(500)]),
+  });
+
+  readonly provincias$ = this.regionesServer.getProvincias();
+  readonly poblaciones$ = this.bodaForm.controls.provinciaId.valueChanges.pipe(
+    startWith(this.bodaForm.controls.provinciaId.value),
+    tap((provinciaId) => {
+      if (!provinciaId) {
+        this.bodaForm.controls.poblacionId.reset(null, { emitEvent: false });
+        this.bodaForm.controls.poblacionId.disable({ emitEvent: false });
+        return;
+      }
+
+      this.bodaForm.controls.poblacionId.enable({ emitEvent: false });
+    }),
+    switchMap((provinciaId) =>
+      provinciaId ? this.regionesServer.getTowns(provinciaId) : of([] as Town[]),
+    ),
+  );
+  readonly reseniasConEmpresa = computed(() =>
+    this.reseniasBoda().map((resenia) => ({
+      ...resenia,
+      empresaNombre: resenia.empresa?.nombre || 'Empresa',
+    })),
+  );
+
+  readonly reseniaForm = new FormGroup<ReseniaBodaForm>({
+    empresaId: this.fb.control('', [Validators.required]),
+    puntuacion: this.fb.control('', [Validators.required]),
+    comentario: this.fb.control('', [
+      Validators.required,
+      Validators.minLength(10),
+      Validators.maxLength(500),
+    ]),
+  });
 
   readonly notificacionesNoLeidas = computed(
     () => this.notificaciones().filter((n) => !this.esLeida(n)).length,
@@ -102,6 +204,12 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   private readonly rechazandoIds = signal<Set<string>>(new Set());
   private unsubscribeNotificaciones: (() => void) | null = null;
 
+  constructor() {
+    effect(() => {
+      this.patchBodaForm(this.boda());
+    });
+  }
+
   ngOnInit(): void {
     const userId = Number(localStorage.getItem('id'));
 
@@ -116,6 +224,8 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.perfil.set(res);
         this.cargarNotificaciones();
+        this.cargarReseniasDeLaBoda(userId);
+        this.cargarEmpresasParaResenia();
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error al cargar perfil:', err);
@@ -134,6 +244,206 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error al cargar perfil:', err);
+      },
+    });
+  }
+
+  isInvalidBodaField<K extends keyof BodaProfileForm>(field: K): boolean {
+    const control = this.bodaForm.controls[field];
+    return control.invalid && (control.dirty || control.touched || this.submittedBoda());
+  }
+
+  getBodaFieldError(field: keyof BodaProfileForm): string {
+    const control = this.bodaForm.controls[field];
+    if (!control.errors) return '';
+
+    const messages: Record<string, Record<string, string>> = {
+      nombrePareja: {
+        required: 'El nombre de la pareja es obligatorio.',
+        minlength: 'Escribe al menos 2 caracteres.',
+        maxlength: 'No superes los 80 caracteres.',
+      },
+      weddingDate: {
+        required: 'La fecha de la boda es obligatoria.',
+      },
+      ubicacion: {
+        required: 'La ubicacion es obligatoria.',
+        minlength: 'Escribe al menos 3 caracteres.',
+        maxlength: 'No superes los 255 caracteres.',
+      },
+      provinciaId: {
+        required: 'Selecciona una provincia.',
+      },
+      poblacionId: {
+        required: 'Selecciona una poblacion.',
+      },
+      notas: {
+        maxlength: 'No superes los 500 caracteres.',
+      },
+    };
+
+    const key = Object.keys(control.errors)[0];
+    return messages[field]?.[key] ?? 'Campo invalido.';
+  }
+
+  isInvalidReseniaField<K extends keyof ReseniaBodaForm>(field: K): boolean {
+    const control = this.reseniaForm.controls[field];
+    return control.invalid && (control.dirty || control.touched || this.submittedResenia());
+  }
+
+  getReseniaFieldError(field: keyof ReseniaBodaForm): string {
+    const control = this.reseniaForm.controls[field];
+    if (!control.errors) return '';
+
+    const messages: Record<string, Record<string, string>> = {
+      empresaId: {
+        required: 'Selecciona la empresa que quieres valorar.',
+      },
+      puntuacion: {
+        required: 'Selecciona una puntuacion.',
+      },
+      comentario: {
+        required: 'El comentario es obligatorio.',
+        minlength: 'Escribe al menos 10 caracteres.',
+        maxlength: 'No superes los 500 caracteres.',
+      },
+    };
+
+    const key = Object.keys(control.errors)[0];
+    return messages[field]?.[key] ?? 'Campo invalido.';
+  }
+
+  estrellasResenia(puntuacion: string | number | null | undefined): number[] {
+    const total = Math.max(0, Math.min(5, Number(puntuacion) || 0));
+    return Array.from({ length: total }, (_, index) => index);
+  }
+
+  enviarResenia(): void {
+    const userId = Number(localStorage.getItem('id'));
+    const userName = localStorage.getItem('nombre') ?? 'Usuario';
+
+    this.submittedResenia.set(true);
+    this.reseniaSuccess.set(null);
+    this.reseniaError.set(null);
+
+    if (this.reseniaForm.invalid) {
+      this.reseniaForm.markAllAsTouched();
+      return;
+    }
+
+    const empresa = this.empresasResenia().find(
+      (item) => String(item.id) === this.reseniaForm.controls.empresaId.value,
+    );
+
+    if (!userId || !empresa?.id) {
+      this.reseniaError.set('No se pudo preparar la reseña.');
+      return;
+    }
+
+    const payload: CreateResenia = {
+      user_id: String(userId),
+      empresa_id: String(empresa.id),
+      puntuacion: this.reseniaForm.controls.puntuacion.value,
+      comentario: this.reseniaForm.controls.comentario.value.trim(),
+      fotos: [],
+    };
+
+    this.enviandoResenia.set(true);
+
+    this.reseniasService.postResenia(payload).subscribe({
+      next: () => {
+        const nuevaResenia: Resenia = {
+          id: Date.now(),
+          comentario: payload.comentario,
+          puntuacion: payload.puntuacion,
+          usuario: {
+            id: userId,
+            name: userName,
+            rol: 'usuario',
+          },
+          empresa: {
+            id: Number(empresa.id),
+            nombre: empresa.nombre_empresa,
+          },
+          fotos: [],
+        };
+
+        this.reseniasBoda.update((actuales) => [nuevaResenia, ...actuales]);
+        this.reseniaForm.reset({
+          empresaId: '',
+          puntuacion: '',
+          comentario: '',
+        });
+        this.submittedResenia.set(false);
+        this.enviandoResenia.set(false);
+        this.reseniaSuccess.set('Tu reseña se ha guardado correctamente.');
+      },
+      error: (err: HttpErrorResponse) => {
+        this.enviandoResenia.set(false);
+        this.reseniaError.set(
+          err.error?.message ??
+            err.error?.mensaje ??
+            'No se pudo guardar la reseña.',
+        );
+      },
+    });
+  }
+
+  activarEdicionBoda(): void {
+    this.editandoBoda.set(true);
+    this.submittedBoda.set(false);
+    this.bodaFormError.set(null);
+    this.bodaFormSuccess.set(null);
+    this.patchBodaForm(this.boda());
+  }
+
+  cancelarEdicionBoda(): void {
+    this.editandoBoda.set(false);
+    this.submittedBoda.set(false);
+    this.bodaFormError.set(null);
+    this.bodaFormSuccess.set(null);
+    this.patchBodaForm(this.boda());
+  }
+
+  guardarBoda(): void {
+    this.submittedBoda.set(true);
+    this.bodaFormError.set(null);
+    this.bodaFormSuccess.set(null);
+
+    if (this.bodaForm.invalid) {
+      this.bodaForm.markAllAsTouched();
+      return;
+    }
+
+    const payload: CreateBoda = {
+      nombre_pareja: this.bodaForm.controls.nombrePareja.value.trim(),
+      fecha_boda: this.bodaForm.controls.weddingDate.value,
+      ubicacion: this.bodaForm.controls.ubicacion.value.trim(),
+      notas: this.bodaForm.controls.notas.value.trim(),
+      poblacion_id: Number(this.bodaForm.controls.poblacionId.value),
+    };
+
+    const bodaActual = this.boda();
+    const request$ = bodaActual?.id
+      ? this.bodaCtx.bodaservicectx.editarBoda(String(bodaActual.id), payload)
+      : this.bodaCtx.bodaservicectx.postBoda(payload);
+
+    this.guardandoBoda.set(true);
+
+    request$.subscribe({
+      next: () => {
+        this.guardandoBoda.set(false);
+        this.editandoBoda.set(false);
+        this.bodaFormSuccess.set('La boda se ha actualizado correctamente.');
+        this.bodaCtx.cargarBodaDelUsuario();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.guardandoBoda.set(false);
+        this.bodaFormError.set(
+          err.error?.message ??
+            err.error?.mensaje ??
+            'No se pudo guardar la boda.',
+        );
       },
     });
   }
@@ -610,6 +920,75 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       referencia_id: idSolicitud,
       referencia: solicitud,
     };
+  }
+
+  private cargarReseniasDeLaBoda(userId: number): void {
+    this.reseniasLoading.set(true);
+    this.reseniasError.set(null);
+
+    this.reseniasService.getResenias().subscribe({
+      next: (response) => {
+        const reseniasUsuario = (response?.data ?? []).filter(
+          (resenia) => Number(resenia.usuario?.id) === Number(userId),
+        );
+        this.reseniasBoda.set(reseniasUsuario);
+        this.reseniasLoading.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.reseniasLoading.set(false);
+        this.reseniasError.set(
+          err.error?.message ??
+            err.error?.mensaje ??
+            'No se pudieron cargar las reseñas.',
+        );
+      },
+    });
+  }
+
+  private cargarEmpresasParaResenia(): void {
+    this.empresasService.getEmpresas().subscribe({
+      next: (response) => {
+        this.empresasResenia.set(response?.data ?? []);
+      },
+      error: () => {
+        this.empresasResenia.set([]);
+      },
+    });
+  }
+
+  private patchBodaForm(boda: Boda | null): void {
+    if (!boda) {
+      this.bodaForm.reset({
+        nombrePareja: '',
+        weddingDate: '',
+        ubicacion: '',
+        provinciaId: null,
+        poblacionId: null,
+        notas: '',
+      });
+      this.bodaForm.controls.poblacionId.disable({ emitEvent: false });
+      return;
+    }
+
+    this.bodaForm.patchValue({
+      nombrePareja: boda.nombre_pareja ?? '',
+      weddingDate: this.toInputDate(boda.fecha_boda),
+      ubicacion: boda.ubicacion ?? '',
+      provinciaId: boda.provincia?.id ?? null,
+      poblacionId: boda.poblacion?.id ?? null,
+      notas: boda.notas ?? '',
+    });
+
+    if (boda.provincia?.id) {
+      this.bodaForm.controls.poblacionId.enable({ emitEvent: false });
+    }
+  }
+
+  private toInputDate(value: string | Date | null | undefined): string {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toISOString().split('T')[0];
   }
 
 }

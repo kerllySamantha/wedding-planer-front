@@ -48,8 +48,8 @@ export class ReseniasApiServiceService extends ReseniasServiceServiceService {
       "user_id": `${resenia.user_id}`,
       "puntuacion": `${resenia.puntuacion}`,
       "comentario": `${resenia.comentario}`,
-
-    }
+      "fotos": resenia.fotos ?? [],
+    };
     return this.http.post<CreateResenia>(`${this.apiUrl}/resenias`, postObject);
   }
   override editarResenia(idResenia: string | null, resenia: CreateResenia): Observable<Object | null> {
@@ -58,7 +58,8 @@ export class ReseniasApiServiceService extends ReseniasServiceServiceService {
       "user_id": `${resenia.user_id}`,
       "puntuacion": `${resenia.puntuacion}`,
       "comentario": `${resenia.comentario}`,
-    }
+      "fotos": resenia.fotos ?? [],
+    };
     console.log(putObject)
     return this.http.put(`${this.apiUrl}/resenias/${idResenia}`, putObject)
   }

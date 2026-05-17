@@ -499,9 +499,71 @@ h1 {
   text-align: center;
 }
 
+.perfil-boda-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+.perfil-boda-summary__item {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid #f0e8eb;
+  background: #fff8f8;
+}
+.perfil-boda-summary__label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #727686;
+}
+
+.perfil-boda-form {
+  padding: 1.25rem;
+  border-radius: 18px;
+  border: 1px solid #f0e8eb;
+  background: linear-gradient(180deg, #ffffff 0%, #fff8f9 100%);
+}
+
+.perfil-resenias {
+  border-top: 1px solid #f0e8eb;
+  padding-top: 1.25rem;
+}
+.perfil-resenias__empty {
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px dashed #d7c6cb;
+  background: #fffafb;
+}
+.perfil-resenias__list {
+  display: grid;
+  gap: 0.85rem;
+}
+.perfil-resenias__item {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid #f0e8eb;
+  background: #fff;
+}
+.perfil-resenias__stars {
+  display: inline-flex;
+  gap: 0.15rem;
+  color: #f2a541;
+}
+.perfil-resenias__form {
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid #f0e8eb;
+  background: linear-gradient(180deg, #ffffff 0%, #fff8f9 100%);
+}
+
 @media (max-width: 767.98px) {
   .perfil-contacto,
-  .resumen-grid {
+  .resumen-grid,
+  .perfil-boda-summary {
     grid-template-columns: 1fr;
   }
   .perfil-notif-header {

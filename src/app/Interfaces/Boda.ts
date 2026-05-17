@@ -1,6 +1,6 @@
     import { Poblacion, Provincia } from "./CIudades";
     import { Presupuesto } from "./Presupuesto";
-    import { Foto } from "./Resenia";
+    import { Foto, Resenia } from "./Resenia";
     import { User } from "./User";
 
 export interface Boda {
@@ -25,6 +25,7 @@ export interface Boda {
         resultado_evento?: {
             fotos?: Array<Foto | string> | null,
         } | null,
+        resenias?: Resenia[] | null,
         
     }
 
@@ -46,8 +47,10 @@ export interface Boda {
 
     export interface CreateBoda {
         nombre_pareja: string,
-        fecha_boda: Date, 
-        ubicacion: string
+        fecha_boda: Date | string,
+        ubicacion: string,
+        notas?: string,
+        poblacion_id?: number,
     }
 
 

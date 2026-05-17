@@ -68,10 +68,10 @@ export class BodaApiServiceService extends BodaServiceServiceService{
   override getBoda(idBoda: bigint): Observable <Boda|  null> {
     console.log("idUsuario: " + idBoda);
 
-    return this.http.get<Boda>(`${this.apiUrl}/empresas/${idBoda.toString()}`).pipe(
+    return this.http.get<Boda>(`${this.apiUrl}/bodas/${idBoda.toString()}`).pipe(
       map(response => {
         if (response) {
-          return response;
+          return this.normalizarBoda(response);
         }
         return null;
       }),
@@ -84,22 +84,26 @@ export class BodaApiServiceService extends BodaServiceServiceService{
 
   override postBoda(boda:CreateBoda): Observable<CreateBoda| null> {
     const postObject = {
-      name: boda.fecha_boda,
-      email: boda.nombre_pareja,
-      password: boda.ubicacion,
-    
-    }
-    return this.http.post<Boda>(`${this.apiUrl}/empresas`, postObject);
+      nombre_pareja: boda.nombre_pareja,
+      fecha_boda: boda.fecha_boda,
+      ubicacion: boda.ubicacion,
+      notas: boda.notas ?? '',
+      poblacion_id: boda.poblacion_id ?? null,
+    };
+
+    return this.http.post<CreateBoda>(`${this.apiUrl}/bodas`, postObject);
   }
 
 
 
   override editarBoda(idBoda : string, boda: CreateBoda): Observable<Object| null> {
     const putObject = {
-      name: boda.fecha_boda,
-      email: boda.nombre_pareja,
-      password: boda.ubicacion,
-    }
+      nombre_pareja: boda.nombre_pareja,
+      fecha_boda: boda.fecha_boda,
+      ubicacion: boda.ubicacion,
+      notas: boda.notas ?? '',
+      poblacion_id: boda.poblacion_id ?? null,
+    };
     return this.http.put(`${this.apiUrl}/bodas/${idBoda}`, putObject)
   }
 
