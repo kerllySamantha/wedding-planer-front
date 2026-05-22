@@ -4,7 +4,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
 import { ReservasServiceServiceService } from '../Services/Reservas/reservas-service-service.service';
+import { StripeService } from '../Services/Stripe/stripe.service';
 import { EstadoPresupuesto } from '../Interfaces/Presupuesto';
+import { Stripe, StripeCardElement, StripeElements } from '@stripe/stripe-js';
 
 @Component({
   selector: 'app-aceptar-presupuesto',
@@ -18,6 +20,7 @@ export class AceptarPresupuestoComponent {
   private router = inject(Router);
   private presupuestoService = inject(PedirPresupuestoService);
   private reservasService = inject(ReservasServiceServiceService);
+  private stripeService = inject(StripeService);
 
   presupuesto = signal<any | null>(null);
   loading = signal(false);
@@ -27,6 +30,12 @@ export class AceptarPresupuestoComponent {
   procesandoRechazar = signal(false);
   procesandoPago = signal(false);
   reservaId = signal<number | string | null>(null);
+  mostrandoFormaPago = signal(false);
+  errorPago = signal<string | null>(null);
+
+  private stripe: Stripe | null = null;
+  private elements: StripeElements | null = null;
+  private cardElement: StripeCardElement | null = null;
 
   ngOnInit() {
     const nav = this.router.currentNavigation();
@@ -137,35 +146,88 @@ export class AceptarPresupuestoComponent {
       },
     });
   }
-  simularPagoYConfirmarReserva() {
+
+  async mostrarFormaPago() {
+    if (this.mostrandoFormaPago() || this.procesandoPago()) return;
+
+    if (!this.stripe) {
+      this.stripe = await this.stripeService.getStripe();
+    }
+
+    this.mostrandoFormaPago.set(true);
+    this.errorPago.set(null);
+
+    // Wait for Angular to render the #card-element div
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const container = document.getElementById('card-element');
+    if (container && this.stripe) {
+      this.elements = this.stripe.elements();
+      this.cardElement = this.elements.create('card', {
+        style: {
+          base: {
+            fontSize: '16px',
+            color: '#2f2528',
+            fontFamily: 'inherit',
+            '::placeholder': { color: '#a08090' },
+          },
+          invalid: { color: '#982949' },
+        },
+      });
+      this.cardElement.mount(container);
+    }
+  }
+
+  async pagarYConfirmar() {
     const reservaId = this.reservaId();
-    if (reservaId == null || this.procesandoPago()) return;
+    if (!reservaId || !this.stripe || !this.cardElement || this.procesandoPago()) return;
 
-    this.accionMensaje.set(null);
     this.procesandoPago.set(true);
+    this.errorPago.set(null);
 
-    this.reservasService.confirmarReserva(reservaId).subscribe({
-      next: () => {
-        this.procesandoPago.set(false);
-        this.accionMensaje.set(
-          'Pago simulado completado. La reserva ha pasado a confirmada.',
-        );
+    try {
+      const clientSecret = await this.stripeService.createPaymentIntent(reservaId);
 
-        const presupuestoId = this.presupuesto()?.id;
-        if (presupuestoId) {
-          this.cargarPresupuesto(String(presupuestoId));
-        }
-      },
-      error: (err) => {
-        console.error('ERROR CONFIRMAR RESERVA', err);
+      const result = await this.stripe.confirmCardPayment(clientSecret, {
+        payment_method: { card: this.cardElement },
+      });
+
+      if (result.error) {
+        this.errorPago.set(result.error.message ?? 'Error al procesar el pago.');
         this.procesandoPago.set(false);
-        this.accionMensaje.set(
-          err?.error?.message ??
-            err?.error?.mensaje ??
-            'No se pudo confirmar la reserva.',
-        );
-      },
-    });
+        return;
+      }
+
+      // Payment succeeded — confirm reservation in Laravel
+      this.reservasService.confirmarReserva(reservaId).subscribe({
+        next: () => {
+          this.procesandoPago.set(false);
+          this.mostrandoFormaPago.set(false);
+          this.accionMensaje.set('Pago completado. La reserva está confirmada.');
+          const presupuestoId = this.presupuesto()?.id;
+          if (presupuestoId) this.cargarPresupuesto(String(presupuestoId));
+        },
+        error: () => {
+          // Webhook will confirm the reservation automatically
+          this.procesandoPago.set(false);
+          this.mostrandoFormaPago.set(false);
+          this.accionMensaje.set('Pago recibido. La reserva se confirmará en breve.');
+          const presupuestoId = this.presupuesto()?.id;
+          if (presupuestoId) this.cargarPresupuesto(String(presupuestoId));
+        },
+      });
+    } catch {
+      this.errorPago.set('Error inesperado. Inténtalo de nuevo.');
+      this.procesandoPago.set(false);
+    }
+  }
+
+  cancelarPago() {
+    this.cardElement?.destroy();
+    this.cardElement = null;
+    this.elements = null;
+    this.mostrandoFormaPago.set(false);
+    this.errorPago.set(null);
   }
 
   puedeAceptar(): boolean {
@@ -203,12 +265,6 @@ export class AceptarPresupuestoComponent {
     if (reservaIdDetectada != null) {
       this.reservaId.set(reservaIdDetectada);
     }
-
-  }
-
-  private esEstadoPendienteUsuario(estado: unknown): boolean {
-    const valor = this.normalizarEstado(estado);
-    return valor === 'pendiente_usuario' || valor === 'pendiente';
   }
 
   private normalizarEstado(estado: unknown): string {
