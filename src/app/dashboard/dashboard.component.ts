@@ -16,10 +16,11 @@ import { CardActividadesNoviaComponent } from "../card-actividades-novia/card-ac
 import { BuscadorComponent } from "../buscador/buscador.component";
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
+import { PaginadorComponent } from '../paginador/paginador.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [NavbarComponent, CardEmpresaComponent, CardBodaComponent, CardActividadesNoviaComponent, BuscadorComponent],
+  imports: [NavbarComponent, CardEmpresaComponent, CardBodaComponent, CardActividadesNoviaComponent, BuscadorComponent, PaginadorComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

@@ -23,14 +23,9 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
     super();
   }
 
-  override getEmpresas(): Observable<Empresas | null> {
-    return this.http.get<Empresas>(`${this.apiUrl}/empresas`).pipe(
-      map((response) => {
-        if (response) {
-          return response;
-        }
-        return null;
-      }),
+  override getEmpresas(page: number = 1): Observable<Empresas | null> {
+    return this.http.get<Empresas>(`${this.apiUrl}/empresas?page=${page}`).pipe(
+      map((response) => response ?? null),
     );
   }
 

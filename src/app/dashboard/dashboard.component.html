@@ -37,6 +37,12 @@
           </div>
         }
       </div>
+      <app-paginador
+        [currentPage]="filtradoTotalServicectx.paginaMeta().currentPage"
+        [lastPage]="filtradoTotalServicectx.paginaMeta().lastPage"
+        [total]="filtradoTotalServicectx.paginaMeta().total"
+        (pageChange)="filtradoTotalServicectx.irAPagina($event)">
+      </app-paginador>
     }
 
     <h1 class="h1-tittle">Bodas publicadas</h1>

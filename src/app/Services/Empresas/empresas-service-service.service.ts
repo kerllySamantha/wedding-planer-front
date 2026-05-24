@@ -11,7 +11,7 @@ export abstract class EmpresasServiceServiceService {
 
   constructor() { }
 
-  abstract getEmpresas(): Observable<Empresas | null>;
+  abstract getEmpresas(page?: number): Observable<Empresas | null>;
   abstract getEmpresa(idUsuario: bigint): Observable<Empresa | null>;
   abstract postEmpresa(usuario: CreateEmpresa): Observable<Empresa | null>;
   abstract editEmpresa(idUsuario: string | null, usuario: CreateUser): Observable<Object | null>;
