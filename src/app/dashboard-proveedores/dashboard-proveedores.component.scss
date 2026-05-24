@@ -136,25 +136,75 @@
   }
 }
 
-// ── Estado cargando ─────────────────────────────────────
-.prov-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 3rem;
-  color: #9aa0b4;
-  font-size: 0.9rem;
+// ── Skeletons ────────────────────────────────────────────
+$sk-color: #e8d5d7;
 
-  &__spinner {
-    width: 22px;
-    height: 22px;
-    border: 2px solid rgba(247, 108, 111, 0.25);
-    border-top-color: #f76c6f;
-    border-radius: 50%;
-    animation: spin-prov 0.8s linear infinite;
-    flex-shrink: 0;
+.sk-card {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06);
+  height: 18em;
+  display: flex;
+  flex-direction: column;
+
+  &__img {
+    display: block;
+    width: 100%;
+    flex: 1;
+    background-color: $sk-color;
+  }
+
+  &__body {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    background: #fff;
+  }
+
+  &__line {
+    display: block;
+    background-color: $sk-color;
+    border-radius: 0.3rem;
+    height: 0.75rem;
+
+    &--titulo { width: 60%; }
+    &--texto  { width: 85%; }
   }
 }
 
-@keyframes spin-prov { to { transform: rotate(360deg); } }
+.sk-hcard {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f0e4e7;
+  align-items: flex-start;
+
+  &__img {
+    display: block;
+    flex-shrink: 0;
+    width: 220px;
+    height: 160px;
+    background-color: $sk-color;
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.25rem;
+  }
+
+  &__line {
+    display: block;
+    background-color: $sk-color;
+    border-radius: 0.3rem;
+    height: 0.8rem;
+
+    &--titulo { width: 45%; height: 1.1rem; }
+    &--texto  { width: 90%; }
+    &--corto  { width: 65%; }
+    &--medio  { width: 35%; }
+  }
+}

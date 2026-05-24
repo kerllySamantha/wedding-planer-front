@@ -5,6 +5,26 @@
     <div class="row justify-content-between">
         <div class="col-lg-8 col-12">
             <div class="container-imagenes">
+                @if (fotosOrdenadas().length === 0) {
+                <div class="row gx-0 w-100 sk-galeria">
+                    <div class="col-5 p-0 pe-2 d-flex">
+                        <div class="sk-galeria__izq"></div>
+                    </div>
+                    <div class="col-7 p-0">
+                        <div class="row gx-0 gy-0">
+                            <div class="col-6 p-0 pe-1">
+                                <div class="sk-galeria__pequena"></div>
+                            </div>
+                            <div class="col-6 p-0 ps-1">
+                                <div class="sk-galeria__pequena sk-galeria__pequena--end"></div>
+                            </div>
+                            <div class="col-12 p-0 pt-2">
+                                <div class="sk-galeria__bottom"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                } @else {
                 <div class="row gx-0">
                     <div class="col-5 p-0 pe-2">
                         @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
@@ -45,6 +65,7 @@
                         </div>
                     </div>
                 </div>
+                }
             </div>
 
         </div>

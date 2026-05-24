@@ -21,10 +21,35 @@
 <div class="row justify-content-center mt-5 pt-4">
     <div class="col-9">
         @if (filtradoTotalServicectx.isLoading()) {
-          <div class="prov-loading">
-            <span class="prov-loading__spinner"></span>
-            <span>Buscando proveedores...</span>
-          </div>
+          @if (modo() === 'imagenes') {
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+              @for (i of skeletonItems; track i) {
+                <div class="col">
+                  <div class="sk-card placeholder-glow">
+                    <span class="placeholder sk-card__img"></span>
+                    <div class="sk-card__body">
+                      <span class="placeholder sk-card__line sk-card__line--titulo"></span>
+                      <span class="placeholder sk-card__line sk-card__line--texto"></span>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="d-flex flex-column gap-0">
+              @for (i of skeletonItems; track i) {
+                <div class="sk-hcard placeholder-glow">
+                  <span class="placeholder sk-hcard__img rounded-4"></span>
+                  <div class="sk-hcard__body">
+                    <span class="placeholder sk-hcard__line sk-hcard__line--titulo"></span>
+                    <span class="placeholder sk-hcard__line sk-hcard__line--texto"></span>
+                    <span class="placeholder sk-hcard__line sk-hcard__line--corto"></span>
+                    <span class="placeholder sk-hcard__line sk-hcard__line--medio"></span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
         } @else if (empresas().length === 0) {
           <div class="prov-empty">
             <div class="prov-empty__circle">

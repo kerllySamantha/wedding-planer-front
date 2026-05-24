@@ -1,4 +1,19 @@
 <div class="card mb-4 border-0 border-bottom mt-4 rounded-0">
+    @if (!empresa()) {
+    <div class="row g-0 placeholder-glow">
+        <div class="col-md-4">
+            <span class="placeholder skeleton-h-img rounded-4"></span>
+        </div>
+        <div class="col-md-8 mb-5">
+            <div class="card-body ms-4">
+                <span class="placeholder skeleton-h-titulo mb-2"></span>
+                <span class="placeholder skeleton-h-texto mb-1"></span>
+                <span class="placeholder skeleton-h-texto-corto mb-1"></span>
+                <span class="placeholder skeleton-h-texto-medio"></span>
+            </div>
+        </div>
+    </div>
+    } @else {
     <div class="row g-0">
         <!-- Imagen -->
         <div class="col-md-4">
@@ -28,9 +43,10 @@
                     </small>
                 </p>
                 <div class="row d-flex justify-content-end mt-4">
-<button [routerLink]="['/proveedores/detalles', empresa()?.id]" class="btn searcher__submit col-4 text-center justify-content-center" type="button">Detalles</button>
+                    <button [routerLink]="['/proveedores/detalles', empresa()?.id]" class="btn searcher__submit col-4 text-center justify-content-center" type="button">Detalles</button>
                 </div>
             </div>
         </div>
     </div>
+    }
 </div>

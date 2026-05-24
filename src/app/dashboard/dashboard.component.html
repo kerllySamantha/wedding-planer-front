@@ -46,13 +46,32 @@
     }
 
     <h1 class="h1-tittle">Bodas publicadas</h1>
-    @if (bodas().length) {
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-        @for (boda of bodas(); track boda.id) {
-        <app-card-boda [boda]="boda"></app-card-boda>
+    @if (bodasLoading()) {
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        @for (i of skeletonBodas; track i) {
+          <div class="col">
+            <div class="sk-boda placeholder-glow">
+              <span class="placeholder sk-boda__img rounded-top-3"></span>
+              <div class="sk-boda__thumbs">
+                <span class="placeholder sk-boda__thumb"></span>
+                <span class="placeholder sk-boda__thumb"></span>
+                <span class="placeholder sk-boda__thumb"></span>
+              </div>
+              <div class="sk-boda__body">
+                <span class="placeholder sk-boda__titulo"></span>
+                <span class="placeholder sk-boda__subtitulo"></span>
+              </div>
+            </div>
+          </div>
         }
-    </div>
+      </div>
+    } @else if (bodas().length) {
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        @for (boda of bodas(); track boda.id) {
+          <app-card-boda [boda]="boda"></app-card-boda>
+        }
+      </div>
     } @else {
-    <p class="text-muted mt-3">Aún no hay bodas publicadas con información completa (incluyendo fotos).</p>
+      <p class="text-muted mt-3">Aún no hay bodas publicadas con información completa (incluyendo fotos).</p>
     }
 </div>

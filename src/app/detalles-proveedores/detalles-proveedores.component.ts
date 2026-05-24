@@ -192,7 +192,7 @@ export class DetallesProveedoresComponent {
       return;
     }
 
-    this.router.navigate(['/proveedores/detalles', empresaId, 'reseñas', 'nueva']);
+    this.router.navigate(['/proveedores/detalles', empresaId, 'resenas', 'nueva']);
   }
 
   cerrarMensajeReviewCreada(): void {

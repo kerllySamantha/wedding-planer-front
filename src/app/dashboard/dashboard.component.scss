@@ -154,3 +154,61 @@ h1 {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
+// ── Skeleton bodas ───────────────────────────────────────
+$sk: #e8d5d7;
+
+.sk-boda {
+  max-width: 22rem;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0.5rem 0.5rem 1rem rgba(144, 134, 134, 0.2);
+  background: #fff;
+
+  &__img {
+    display: block;
+    width: 100%;
+    height: 220px;
+    background-color: $sk;
+  }
+
+  &__thumbs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 0.5rem 0;
+  }
+
+  &__thumb {
+    display: block;
+    width: 75px;
+    height: 60px;
+    background-color: $sk;
+    border-radius: 0.25rem;
+  }
+
+  &__body {
+    padding: 0.75rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  &__titulo {
+    display: block;
+    width: 55%;
+    height: 1rem;
+    background-color: $sk;
+    border-radius: 0.3rem;
+  }
+
+  &__subtitulo {
+    display: block;
+    width: 70%;
+    height: 0.75rem;
+    background-color: $sk;
+    border-radius: 0.3rem;
+  }
+}
+

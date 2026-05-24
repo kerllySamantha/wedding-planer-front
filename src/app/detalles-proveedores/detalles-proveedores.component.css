@@ -59,6 +59,31 @@ svg {
   color: rgb(5, 91, 47);
 }
 
+.img-ultima-wrapper {
+  position: relative;
+}
+.img-ultima-wrapper .btn-ver-fotos {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  backdrop-filter: blur(4px);
+  transition: background-color 0.2s ease;
+}
+.img-ultima-wrapper .btn-ver-fotos:hover {
+  background-color: rgba(0, 0, 0, 0.72);
+  color: #fff;
+}
+.img-ultima-wrapper .btn-ver-fotos i {
+  color: #fff;
+}
+
 .detalles-empresa {
   display: flex;
   flex-direction: column;
@@ -308,6 +333,39 @@ svg {
 }
 .reviews-list__gallery img:hover {
   transform: scale(1.04);
+}
+
+@keyframes sk-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.sk-galeria {
+  animation: sk-pulse 1.5s ease-in-out infinite;
+}
+.sk-galeria__izq {
+  flex: 1;
+  background: #e8d5d7;
+  border-top-left-radius: 1.5rem;
+  border-bottom-left-radius: 1.5rem;
+  min-height: 15em;
+}
+.sk-galeria__pequena {
+  width: 100%;
+  height: 15em;
+  background: #e8d5d7;
+}
+.sk-galeria__pequena--end {
+  border-top-right-radius: 1.5rem;
+}
+.sk-galeria__bottom {
+  width: 100%;
+  height: 19.9em;
+  background: #e8d5d7;
+  border-bottom-right-radius: 0.625rem;
 }
 
 @media (min-width: 992px) {

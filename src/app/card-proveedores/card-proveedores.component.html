@@ -1,4 +1,11 @@
 <div class="col">
+    @if (!empresa()) {
+    <div class="card-flip placeholder-glow">
+        <div class="card-front card-skeleton">
+            <span class="placeholder skeleton-card-img"></span>
+        </div>
+    </div>
+    } @else {
     <div class="card-flip tp-box" [attr.data-side]="flip()"  (click)="toggleFlip()">
 
         <!-- Carrusel de imágenes -->
@@ -9,24 +16,14 @@
                     <img class="card-img-top" [src]="imagen.url" class="d-block w-100" [alt]="empresa()?.usuario?.name">
                 </div>
                 <div class="card-overlay">
-                    <!-- Categoría arriba -->
                     <span class="card-category text-center">
-
                         @for (producto of empresa()?.productos; track producto.nombre; let idx = $index) {
                         @if(idx == 0 || producto.categoria.nombre !== productos()[idx-1].categoria.nombre){
                         {{ producto.categoria.nombre }}
                         }
                         }
-
-
                     </span>
-
-                    <!-- Nombre de la empresa abajo -->
-                    <!-- <h5 class="card-title fw-bold mb-0">
-                        {{ empresa()?.nombre_empresa }}
-                    </h5> -->
                 </div>
-
                 }
             </div>
         </div>
@@ -37,8 +34,8 @@
             <p class="card-text text-dark mb-2">{{verTexto()}}</p>
             <span class="text-muted"> {{empresa()?.poblacion?.nombre}}, {{empresa()?.provincia?.nombre}}</span>
             <p class="card-text"><small class="text-secondary">{{empresa()?.telefono}}</small></p>
-
-<a [routerLink]="['/proveedores/detalles', empresa()?.id]" class="btn btn-outline-pink">Ver detalles</a>
+            <a [routerLink]="['/proveedores/detalles', empresa()?.id]" class="btn btn-outline-pink">Ver detalles</a>
         </div>
     </div>
+    }
 </div>

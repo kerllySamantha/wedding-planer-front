@@ -144,4 +144,52 @@ h1 {
   to {
     transform: rotate(360deg);
   }
+}
+.sk-boda {
+  max-width: 22rem;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0.5rem 0.5rem 1rem rgba(144, 134, 134, 0.2);
+  background: #fff;
+}
+.sk-boda__img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  background-color: #e8d5d7;
+}
+.sk-boda__thumbs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.5rem 0;
+}
+.sk-boda__thumb {
+  display: block;
+  width: 75px;
+  height: 60px;
+  background-color: #e8d5d7;
+  border-radius: 0.25rem;
+}
+.sk-boda__body {
+  padding: 0.75rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+.sk-boda__titulo {
+  display: block;
+  width: 55%;
+  height: 1rem;
+  background-color: #e8d5d7;
+  border-radius: 0.3rem;
+}
+.sk-boda__subtitulo {
+  display: block;
+  width: 70%;
+  height: 0.75rem;
+  background-color: #e8d5d7;
+  border-radius: 0.3rem;
 }/*# sourceMappingURL=dashboard.component.css.map */

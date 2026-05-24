@@ -45,6 +45,7 @@ export class DashboardProveedoresComponent {
   bodas = signal<Boda[]>([]);
 
   modo = signal<'listado' | 'imagenes' | 'mapa'>('listado');
+  readonly skeletonItems = Array.from({ length: 8 }, (_, i) => i);
 
  
 

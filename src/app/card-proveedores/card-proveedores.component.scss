@@ -108,6 +108,18 @@ $color_principal : #f76c6f;
 }
 
 
+.card-skeleton {
+    background: #f0e4e6 !important;
+}
+
+.skeleton-card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: #e8d5d7;
+    border-radius: 0.5rem;
+}
+
 .btn-outline-pink {
     color: $color_principal;
     border: 2px solid $color_principal;
