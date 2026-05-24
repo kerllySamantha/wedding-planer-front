@@ -33,6 +33,8 @@ export class ServicioFiltrado {
 
 
 
+  readonly isLoading = this.empresasResource.isLoading;
+
   reloadEmpresas() {
     this.empresasResource.reload();
   }

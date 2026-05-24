@@ -16,7 +16,7 @@ import { NotificacionesService } from '../Services/Notificacion/notificaciones.s
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
 import { EchoService } from '../Services/Echo/echo.service';
 import { Notificacion, NotificacionResponse } from '../Interfaces/Notificacion';
-import { PerfilResponse } from '../Interfaces/Perfil';
+import { CreatePerfilUsuario, PerfilResponse } from '../Interfaces/Perfil';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Empresa } from '../Interfaces/Empresa';
 import {
@@ -34,6 +34,13 @@ import { Boda, CreateBoda } from '../Interfaces/Boda';
 import { CreateResenia, Resenia } from '../Interfaces/Resenia';
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
 import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
+
+type PerfilUsuarioForm = {
+  name: FormControl<string>;
+  telefono: FormControl<string>;
+  direccion: FormControl<string>;
+  newPassword: FormControl<string>;
+};
 
 type BodaProfileForm = {
   nombrePareja: FormControl<string>;
@@ -72,13 +79,18 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly boda = this.bodaCtx.bodaEncontrada;
   readonly countdown = this.bodaCtx.countdownValue;
   readonly fechaFormateada = this.bodaCtx.fechaFormateada;
-  readonly pestanaActiva = signal<'planificacion' | 'resultado'>('planificacion');
+  readonly pestanaActiva = signal<'perfil' | 'boda' | 'solicitudes' | 'notificaciones' | 'resenias'>('perfil');
 
   readonly notificaciones = signal<Notificacion[]>([]);
   readonly notificacionesLoading = signal<boolean>(false);
   readonly notificacionesError = signal<string | null>(null);
   readonly mensajeAccion = signal<string | null>(null);
   readonly expandedNotifId = signal<number | string | null>(null);
+  readonly editandoPerfil = signal(false);
+  readonly guardandoPerfil = signal(false);
+  readonly perfilFormError = signal<string | null>(null);
+  readonly perfilFormSuccess = signal<string | null>(null);
+  readonly submittedPerfil = signal(false);
   readonly editandoBoda = signal(false);
   readonly guardandoBoda = signal(false);
   readonly submittedBoda = signal(false);
@@ -92,6 +104,17 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly reseniaSuccess = signal<string | null>(null);
   readonly reseniaError = signal<string | null>(null);
   readonly empresasResenia = signal<Empresa[]>([]);
+
+  readonly perfilForm = new FormGroup<PerfilUsuarioForm>({
+    name: this.fb.control('', [
+      Validators.required,
+      Validators.minLength(2),
+      Validators.maxLength(80),
+    ]),
+    telefono: this.fb.control('', [Validators.maxLength(20)]),
+    direccion: this.fb.control('', [Validators.maxLength(255)]),
+    newPassword: this.fb.control('', [Validators.minLength(8)]),
+  });
 
   readonly bodaForm = new FormGroup<BodaProfileForm>({
     nombrePareja: this.fb.control('', [
@@ -176,6 +199,15 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly totalPendienteSolicitudes = computed(() =>
     Math.max(0, this.totalOfertadoSolicitudes() - this.totalPagadoSolicitudes()),
   );
+  readonly notificacionesGenerales = computed(() =>
+    this.notificaciones()
+      .filter((n) => !this.esPresupuesto(n))
+      .sort((a, b) => Number(b.id) - Number(a.id)),
+  );
+  readonly notificacionesGeneralesNoLeidas = computed(
+    () => this.notificacionesGenerales().filter((n) => !this.esLeida(n)).length,
+  );
+
   readonly presupuestosOrdenados = computed(() =>
     [...(this.boda()?.presupuestos ?? [])].sort(
       (a, b) =>
@@ -454,8 +486,96 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     return boda.presupuestos.reduce((total, p) => total + p.monto_total, 0);
   }
 
-  seleccionarPestana(tab: 'planificacion' | 'resultado'): void {
+  seleccionarPestana(tab: 'perfil' | 'boda' | 'solicitudes' | 'notificaciones' | 'resenias'): void {
     this.pestanaActiva.set(tab);
+  }
+
+  activarEdicionPerfil(): void {
+    this.editandoPerfil.set(true);
+    this.submittedPerfil.set(false);
+    this.perfilFormError.set(null);
+    this.perfilFormSuccess.set(null);
+    const p = this.perfil()?.data;
+    this.perfilForm.patchValue({
+      name: p?.usuario?.name ?? '',
+      telefono: p?.telefono ?? '',
+      direccion: p?.direccion ?? '',
+      newPassword: '',
+    });
+  }
+
+  cancelarEdicionPerfil(): void {
+    this.editandoPerfil.set(false);
+    this.submittedPerfil.set(false);
+    this.perfilFormError.set(null);
+    this.perfilFormSuccess.set(null);
+  }
+
+  isInvalidPerfilField<K extends keyof PerfilUsuarioForm>(field: K): boolean {
+    const control = this.perfilForm.controls[field];
+    return control.invalid && (control.dirty || control.touched || this.submittedPerfil());
+  }
+
+  getPerfilFieldError(field: keyof PerfilUsuarioForm): string {
+    const control = this.perfilForm.controls[field];
+    if (!control.errors) return '';
+    const messages: Record<string, Record<string, string>> = {
+      name: {
+        required: 'El nombre es obligatorio.',
+        minlength: 'Escribe al menos 2 caracteres.',
+        maxlength: 'No superes los 80 caracteres.',
+      },
+      telefono: { maxlength: 'No superes los 20 caracteres.' },
+      direccion: { maxlength: 'No superes los 255 caracteres.' },
+      newPassword: { minlength: 'La contraseña debe tener al menos 8 caracteres.' },
+    };
+    const key = Object.keys(control.errors)[0];
+    return messages[field]?.[key] ?? 'Campo inválido.';
+  }
+
+  guardarPerfil(): void {
+    this.submittedPerfil.set(true);
+    this.perfilFormError.set(null);
+    this.perfilFormSuccess.set(null);
+
+    if (this.perfilForm.invalid) {
+      this.perfilForm.markAllAsTouched();
+      return;
+    }
+
+    const perfilActual = this.perfil()?.data;
+    if (!perfilActual?.id) {
+      this.perfilFormError.set('No se encontró el perfil del usuario.');
+      return;
+    }
+
+    const payload: CreatePerfilUsuario = {
+      name: this.perfilForm.controls.name.value.trim(),
+      email: perfilActual.usuario?.email ?? '',
+      password: this.perfilForm.controls.newPassword.value || '',
+      direccion: this.perfilForm.controls.direccion.value.trim(),
+      telefono: this.perfilForm.controls.telefono.value.trim(),
+      poblacion_id: 0,
+      fecha_boda: '',
+    };
+
+    this.guardandoPerfil.set(true);
+
+    this.perfilServiceCtx.editarPerfil(String(perfilActual.id), payload).subscribe({
+      next: () => {
+        this.guardandoPerfil.set(false);
+        this.editandoPerfil.set(false);
+        this.perfilFormSuccess.set('Perfil actualizado correctamente.');
+        const userId = Number(localStorage.getItem('id'));
+        if (userId) this.cargarPerfil(userId);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.guardandoPerfil.set(false);
+        this.perfilFormError.set(
+          err.error?.message ?? err.error?.mensaje ?? 'No se pudo actualizar el perfil.',
+        );
+      },
+    });
   }
 
   cargarNotificaciones(page = 1): void {

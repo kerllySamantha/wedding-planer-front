@@ -14,13 +14,30 @@
 <div class="personal-container">
 
     <h1 class="h1-tittle">Empresas</h1>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-        @for (empresa of empresas(); track empresa.id) {
-        <div class="col">
-            <app-card-empresa [empresa]="empresa"></app-card-empresa>
+    @if (filtradoTotalServicectx.isLoading()) {
+      <div class="empresas-loading">
+        <span class="empresas-loading__spinner"></span>
+        <span>Buscando empresas...</span>
+      </div>
+    } @else if (empresas().length === 0) {
+      <div class="empresas-empty">
+        <div class="empresas-empty__circle">
+          <i class="bi bi-search"></i>
+          <i class="bi bi-heart-fill empresas-empty__heart"></i>
         </div>
+        <h3 class="empresas-empty__title">Sin resultados</h3>
+        <p class="empresas-empty__text">No encontramos empresas con los filtros aplicados.</p>
+        <p class="empresas-empty__hint">Prueba a ajustar o eliminar los criterios de búsqueda.</p>
+      </div>
+    } @else {
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        @for (empresa of empresas(); track empresa.id) {
+          <div class="col">
+            <app-card-empresa [empresa]="empresa"></app-card-empresa>
+          </div>
         }
-    </div>
+      </div>
+    }
 
     <h1 class="h1-tittle">Bodas publicadas</h1>
     @if (bodas().length) {

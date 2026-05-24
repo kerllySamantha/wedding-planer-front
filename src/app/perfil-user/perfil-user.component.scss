@@ -1,666 +1,861 @@
-// =============================================
-// Variables
-// =============================================
-$color-primary:       #f76c6f;
-$color-primary-dark:  #e91e63;
-$color-bg:            #F4F7FD;
-$color-text-muted:    #727686;
-$color-border:        #e6e4e9;
-$color-shadow:        rgba(82, 63, 105, 0.1);
-$color-white:         #ffffff;
+// ── Variables ──────────────────────────────────────────
+$pink:        #f76c6f;
+$pink-dark:   #e91e63;
+$navy:        #0e3654;
+$navy-light:  rgba(14, 54, 84, 0.55);
+$border:      rgba(247, 108, 111, 0.15);
+$shadow:      0 4px 24px rgba(82, 63, 105, 0.1);
 
-$border-radius-card:  8px;
-$border-radius-pill:  50px;
-
-$font-heading:        "Merriweather", serif;
-
-// =============================================
-// Base
-// =============================================
-body {
-  background: $color-bg;
-  margin-top: 20px;
+// ── Page shell ─────────────────────────────────────────
+.pf-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem 3rem;
 }
 
-h1 {
-  font-family: $font-heading;
-  font-size: 2em;
-  line-height: 2.25rem;
-}
-
-// =============================================
-// Card
-// =============================================
-.card {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  word-wrap: break-word;
-  background-color: $color-white;
-  border: 1px solid $color-border;
-  border-radius: $border-radius-card;
-  box-shadow: 0 0 10px 0 $color-shadow;
-
-  &-margin {
-    margin-bottom: 1.875rem;
-  }
-
-  &-header {
-    &:first-child {
-      border-radius: calc(#{$border-radius-card} - 1px) calc(#{$border-radius-card} - 1px) 0 0;
-    }
-
-    &.no-border {
-      border: 0;
-      background: none;
-      padding: 0 0.9375rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      min-height: 50px;
-    }
-  }
-}
-
-// =============================================
-// Widget-49 — Detalle de boda
-// =============================================
-.widget-49 {
-  width: 100%;
-
-  &__title-wrapper {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
-  &__date {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: $color-primary;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    flex-shrink: 0;
-    text-align: center;
-    color: $color-white;
-
-    &-day {
-      font-size: 1.5rem;
-      font-weight: 600;
-      line-height: 1;
-    }
-
-    &-month {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      line-height: 1;
-      letter-spacing: 0.05em;
-    }
-  }
-
-  &__info {
-    display: flex;
-    flex-direction: column;
-    margin-left: 1rem;
-
-    h2, h5 { margin: 0; }
-  }
-
-  &__points {
-    font-weight: 400;
-    font-size: 14px;
-    margin-top: 0.5rem;
-    padding-left: 0;
-    list-style-type: none;
-  }
-
-  &__point-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    color: $color-text-muted;
-
-    span { margin-left: 0.5rem; }
-  }
-
-  &__action {
-    text-align: center;
-    margin-top: 1rem;
-
-    button {
-      text-transform: uppercase;
-      border: 1px solid $color-primary;
-      background: transparent;
-      color: $color-primary;
-      padding: 0.375rem 1.25rem;
-      border-radius: $border-radius-pill;
-      transition: background-color 0.3s ease, color 0.3s ease;
-      cursor: pointer;
-
-      &:hover {
-        background-color: $color-primary;
-        color: $color-white;
-      }
-    }
-  }
-}
-
-// =============================================
-// Contador (card countdown)
-// =============================================
-.countdown {
-  &__unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 52px;
-  }
-
-  &__value {
-    font-size: 1.6rem;
-    font-weight: 700;
-    line-height: 1;
-    color: #2d2d3a;
-  }
-
-  &__label {
-    display: block;
-    font-size: 0.78rem;
-    color: #6c757d;
-    margin-top: 0.25rem;
-
-    i { font-size: 0.7rem; }
-  }
-
-  &__separator {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #ccc;
-    margin-bottom: 1rem;
-    align-self: flex-start;
-    margin-top: 0.15rem;
-  }
-}
-
-// =============================================
-// Utilidades
-// =============================================
-.text-color {
-  color: #6c757d;
-  font-weight: 600;
-}
-
-// =============================================
-// Notificaciones — tarjeta contenedora
-// =============================================
-.perfil-notif-card {
+// ── Hero ───────────────────────────────────────────────
+.pf-hero {
+  border-radius: 20px;
   overflow: hidden;
-  background: linear-gradient(180deg, #ffffff 0%, #fffafb 100%);
+  background: #fff;
+  box-shadow: $shadow;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.8);
 }
 
-.perfil-notif-header {
+.pf-hero__cover {
+  height: 130px;
+  background: linear-gradient(135deg, $pink 0%, #f8a3b2 60%, #fbc7d4 100%);
+}
+
+.pf-hero__body {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.5rem 1.5rem 1rem;
-  border-bottom: 1px solid #f0e8eb;
-
-  i { vertical-align: -0.1em; }
-}
-
-.perfil-notif-subtitle {
-  color: #727686;
-  font-size: 0.92rem;
-}
-
-.perfil-notif-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.perfil-notif-counter {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 34px;
-  padding: 0.35rem 0.85rem;
-  border-radius: 999px;
-  background: #fff1f3;
-  color: #e91e63;
-  font-size: 0.82rem;
-  font-weight: 700;
-
-  i { font-size: 0.8rem; }
-}
-
-.perfil-notif-state {
-  padding: 2rem 1.5rem;
-  color: #727686;
-
-  &__spinner {
-    display: inline-block;
-    animation: spin 1s linear infinite;
-  }
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.perfil-notif-empty {
-  padding: 2.5rem 1.5rem;
-  text-align: center;
-}
-
-.perfil-notif-empty-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
-  color: #d0c6cb;
-  line-height: 1;
-
-  i { display: block; }
-}
-
-.perfil-notif-list {
-  display: grid;
-  gap: 1rem;
-  padding: 1.25rem 1.5rem 1.5rem;
-}
-
-// =============================================
-// Item de notificación
-// =============================================
-.perfil-notif-item {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1rem;
-  align-items: center;
-  padding: 1rem 1rem 1rem 1.1rem;
-  border: 1px solid #f1e7ea;
-  border-left: 4px solid #f76c6f;
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 10px 25px rgba(82, 63, 105, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  overflow: hidden;
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 14px 28px rgba(82, 63, 105, 0.1);
-  }
-
-  &--read {
-    opacity: 0.88;
-    border-left-color: #d8c6cb;
-  }
-}
-
-.perfil-notif-main { min-width: 0; }
-
-.perfil-notif-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.35rem;
-}
-
-.perfil-notif-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.perfil-notif-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #2d2d3a;
-  overflow-wrap: anywhere;
-}
-
-.perfil-notif-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.22rem 0.6rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  background: #fff1f3;
-  color: #e91e63;
-  border: 1px solid #ffd8df;
-
-  i { vertical-align: middle; }
-}
-
-.perfil-notif-message {
-  color: #727686;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-}
-
-.perfil-notif-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  flex-wrap: wrap;
-  margin-top: 0.85rem;
-
-  i {
-    font-size: 0.8rem;
-    vertical-align: -0.05em;
-  }
-}
-
-.perfil-notif-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.7rem;
-  border-radius: 999px;
-  background: rgba(247, 108, 111, 0.1);
-  color: #f76c6f;
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.perfil-notif-price {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #217a43;
-
-  i { font-size: 0.8rem; }
-}
-
-.perfil-notif-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.55rem;
-  min-width: 150px;
-}
-
-.perfil-detalle-aceptada {
-  border-top: 1px dashed #eadde1;
-  margin-top: 0.7rem;
-  padding-top: 0.6rem;
-  display: grid;
-  gap: 0.35rem;
-
-  i {
-    font-size: 0.85rem;
-    vertical-align: -0.05em;
-    color: $color-primary;
-  }
-}
-
-// =============================================
-// Hero de perfil
-// =============================================
-// =============================================
-// Hero de Perfil - Versión Mejorada
-// =============================================
-.perfil-hero {
-  overflow: hidden;
-  position: relative;
-  border-radius: 16px;
-  background: white;
-  box-shadow: 0 8px 25px rgba(82, 63, 105, 0.1);
-}
-
-.perfil-hero__cover {
-  height: 145px;
-  margin: -1.5rem -1.5rem 0;
-  background: linear-gradient(135deg, #f76c6f 0%, #f8a3b2 100%);
-}
-
-.perfil-hero__content {
-  display: flex;
   gap: 1.5rem;
-  align-items: flex-start;
-  margin-top: -48px;
-  padding: 0 1.75rem 1.25rem;
+  padding: 0 2rem 1.75rem;
+  margin-top: -44px;
+  flex-wrap: wrap;
 }
 
-.perfil-hero__avatar {
-  width: 82px;
-  height: 82px;
+.pf-hero__avatar {
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
   background: #fff;
-  border: 4px solid white;
-  color: #f76c6f;
+  border: 4px solid #fff;
+  color: $pink;
   font-size: 2.1rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 6px 15px rgba(247, 108, 111, 0.25);
+  box-shadow: 0 6px 18px rgba(247, 108, 111, 0.25);
 }
 
-.perfil-hero__info {
+.pf-hero__info {
   flex: 1;
-  padding-top: 8px;
+  padding-top: 10px;
+  min-width: 0;
 }
 
-.perfil-hero__name {
-  font-size: 1.85rem;
+.pf-hero__eyebrow {
+  margin: 0 0 0.2rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.pf-hero__name {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.5rem, 2vw + 0.8rem, 2rem);
   font-weight: 700;
+  color: $navy;
   line-height: 1.15;
-  margin-bottom: 0.4rem;
-  color: #2d2d3a;
-  padding: 0.15rem 0.7rem;
-  border-radius: 8px;
-  background: rgba(247, 108, 111, 0.08);
-  display: inline-block;
 }
 
-.perfil-hero__chips {
+.pf-hero__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
-  margin-top: 1rem;
+  gap: 0.55rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.chip {
+.pf-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.48rem 0.95rem;
+  gap: 0.4rem;
+  padding: 0.38rem 0.85rem;
   border-radius: 999px;
   background: #fff4f6;
   border: 1px solid #fbe1e6;
-  font-size: 0.83rem;
+  font-size: 0.82rem;
   color: #444;
-  box-shadow: 0 2px 6px rgba(247, 108, 111, 0.1);
+  font-weight: 500;
 
-  &__icon {
-    font-size: 0.95rem;
-    color: #f76c6f;
+  &--neutral {
+    background: #f6f7fb;
+    border-color: #e8eaf0;
+    color: #555;
   }
+
+  &__icon { color: $pink; font-size: 0.85rem; }
 }
 
-// =============================================
-// Contacto (debajo del hero)
-// =============================================
-.perfil-contacto {
+// ── Layout ─────────────────────────────────────────────
+.pf-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 280px 1fr;
   gap: 1.25rem;
-  padding: 1.5rem 1.75rem;
-  margin: 0 1.5rem 1.5rem;
-  background: #fafafa;
-  border-radius: 12px;
-  border: 1px solid #f0e8eb;
-  font-size: 0.95rem;
-  color: #555;
+  align-items: start;
+}
 
-  i { 
-    color: #f76c6f;
-    vertical-align: -0.1em; 
+// ── Sidebar ────────────────────────────────────────────
+.pf-aside {
+  display: grid;
+  gap: 1rem;
+  position: sticky;
+  top: 1rem;
+}
+
+.pf-card {
+  background: #fff;
+  border: 1px solid $border;
+  border-radius: 18px;
+  padding: 1.25rem 1.35rem;
+  box-shadow: 0 2px 14px rgba(82, 63, 105, 0.07);
+}
+
+.pf-card__eyebrow {
+  margin: 0 0 1rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: rgba(247, 108, 111, 0.75);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid $border;
+}
+
+.pf-card__actions {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+}
+
+// ── Info list (sidebar) ────────────────────────────────
+.pf-info-list {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+
+  div { display: grid; gap: 0.1rem; }
+
+  dt {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(247, 108, 111, 0.65);
+    i { font-size: 0.7rem; }
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: $navy;
   }
 }
 
-// =============================================
-// Resumen financiero
-// =============================================
-.resumen-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
+// ── Countdown ──────────────────────────────────────────
+.pf-countdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
 }
 
-.resumen-card {
+.pf-countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 48px;
+}
+
+.pf-countdown__val {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: $navy;
+  line-height: 1;
+}
+
+.pf-countdown__label {
+  font-size: 0.72rem;
+  color: #888;
+  margin-top: 0.2rem;
+}
+
+.pf-countdown__sep {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ddd;
+  align-self: flex-start;
+  margin-top: 0.1rem;
+}
+
+.pf-countdown__date {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+// ── Finance ────────────────────────────────────────────
+.pf-finance {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.pf-finance__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
   background: #fff6f7;
   border: 1px solid #fbe1e6;
-  border-radius: 14px;
-  padding: 0.8rem 0.9rem;
+
+  strong { font-size: 1rem; color: $navy; }
+
+  &--ok { background: #f3fcf6; border-color: #cdeed8; }
+  &--warn { background: #fff8ef; border-color: #f7dfbf; }
+}
+
+.pf-finance__label {
+  font-size: 0.8rem;
+  color: #727686;
+  i { font-size: 0.76rem; vertical-align: -0.05em; }
+}
+
+// ── Buttons ────────────────────────────────────────────
+.pf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.55rem 1.1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  &--primary {
+    background: $pink;
+    color: #fff;
+    border-color: $pink;
+    &:hover:not(:disabled) { background: darken($pink, 8%); border-color: darken($pink, 8%); }
+  }
+
+  &--outline {
+    background: transparent;
+    color: $pink;
+    border-color: $pink;
+    &:hover:not(:disabled) { background: #fff4f6; }
+  }
+
+  &--ghost {
+    background: #f6f7fb;
+    color: #444;
+    border-color: #e8eaf0;
+    &:hover:not(:disabled) { background: #eef0f7; }
+  }
+
+  &--sm { padding: 0.38rem 0.85rem; font-size: 0.82rem; }
+}
+
+// ── Main content ───────────────────────────────────────
+.pf-main {
+  min-width: 0;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid $border;
+  box-shadow: 0 2px 14px rgba(82, 63, 105, 0.07);
+  overflow: hidden;
+}
+
+// ── Tabs ───────────────────────────────────────────────
+.pf-tabs {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  gap: 0;
+  border-bottom: 1px solid rgba(247, 108, 111, 0.12);
+  background: #fafafa;
+  padding: 0 1.5rem;
+}
 
-  strong {
-    font-size: 1.1rem;
+.pf-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #727686;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s;
+  white-space: nowrap;
+  margin-bottom: -1px;
+
+  i { font-size: 0.9rem; }
+
+  &:hover { color: $pink; }
+
+  &--active {
+    color: $pink;
+    border-bottom-color: $pink;
   }
 
-  &__label {
-    font-size: 0.82rem;
-    color: $color-text-muted;
-    i { font-size: 0.78rem; vertical-align: -0.05em; }
-  }
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: $pink;
+    color: #fff;
 
-  &--ok {
-    background: #f3fcf6;
-    border-color: #cdeed8;
-  }
-
-  &--warn {
-    background: #fff8ef;
-    border-color: #f7dfbf;
+    &--neutral {
+      background: #e8eaf0;
+      color: #555;
+    }
   }
 }
 
-// =============================================
-// Lista de evento (sidebar)
-// =============================================
-.perfil-evento-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
+// ── Tab content ────────────────────────────────────────
+.pf-tab-content {
+  padding: 1.75rem 1.75rem 2rem;
+}
 
-  li {
+// ── Section head ───────────────────────────────────────
+.pf-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+
+  &--mt { margin-top: 2rem; }
+
+  &__actions {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    font-size: 0.875rem;
-    color: #4a4e61;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+}
+
+.pf-section-title {
+  margin: 0 0 0.25rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: $navy;
+
+  &--sm { font-size: 0.9rem; }
+}
+
+.pf-section-sub {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #727686;
+}
+
+// ── Profile stats grid ─────────────────────────────────
+.pf-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.pf-profile-stat {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(247, 108, 111, 0.12);
+  background: #fff8f9;
+
+  strong {
+    font-size: 0.95rem;
+    color: $navy;
+    word-break: break-all;
+  }
+
+  &__label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #727686;
+    i { font-size: 0.7rem; }
+  }
+}
+
+.pf-label--optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #9aa0b4;
+  font-size: 0.72rem;
+}
+
+// ── Boda stats grid ────────────────────────────────────
+.pf-boda-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.pf-boda-stat {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(247, 108, 111, 0.12);
+  background: #fff8f9;
+}
+
+.pf-boda-stat__label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #727686;
+}
+
+// ── Photos ─────────────────────────────────────────────
+.pf-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.65rem;
+
+  &__img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+}
+
+// ── Badge count ────────────────────────────────────────
+.pf-badge-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: #fff1f3;
+  color: $pink-dark;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid #ffd8df;
+
+  &--neutral {
+    background: #f0f1f7;
+    color: #555;
+    border-color: #e0e2ec;
+  }
+}
+
+// ── Request list (solicitudes) ─────────────────────────
+.pf-request-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.pf-request {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.1rem 1rem 1.25rem;
+  border: 1px solid rgba(247, 108, 111, 0.15);
+  border-left: 4px solid $pink;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(82, 63, 105, 0.06);
+  transition: transform 0.18s, box-shadow 0.18s;
+
+  &:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(82, 63, 105, 0.1); }
+
+  &--read {
+    border-left-color: #d8c6cb;
+    opacity: 0.88;
+  }
+}
+
+.pf-request__main { min-width: 0; }
+
+.pf-request__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
+}
+
+.pf-request__title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2d2d3a;
+}
+
+.pf-request__new {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #fff1f3;
+  color: $pink-dark;
+  border: 1px solid #ffd8df;
+}
+
+.pf-request__message {
+  color: #727686;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 0 0 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.pf-request__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pf-request__status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(247, 108, 111, 0.1);
+  color: $pink;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.pf-request__detail {
+  font-size: 0.82rem;
+  color: #727686;
+  i { font-size: 0.78rem; }
+}
+
+.pf-request__price {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #217a43;
+}
+
+.pf-request__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.pf-request__extra {
+  border-top: 1px dashed rgba(247, 108, 111, 0.2);
+  margin-top: 0.75rem;
+  padding-top: 0.65rem;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+  color: #727686;
+
+  i { font-size: 0.82rem; vertical-align: -0.05em; color: $pink; }
+}
+
+// ── Notificaciones generales ───────────────────────────
+.pf-notif-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.pf-notif {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.85rem;
+  align-items: flex-start;
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(247, 108, 111, 0.15);
+  border-left: 4px solid $pink;
+  background: #fff;
+
+  &--read {
+    border-left-color: #d8c6cb;
+    opacity: 0.82;
   }
 
   &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: #fff4f6;
+    color: $pink;
     font-size: 1rem;
-    color: $color-primary;
     flex-shrink: 0;
-    width: 1.1rem;
-    text-align: center;
-  }
-}
-
-.perfil-boda-summary {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.85rem;
-
-  &__item {
-    display: grid;
-    gap: 0.35rem;
-    padding: 1rem;
-    border-radius: 14px;
-    border: 1px solid #f0e8eb;
-    background: #fff8f8;
   }
 
-  &__label {
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #727686;
-  }
-}
+  &__body { min-width: 0; }
 
-.perfil-boda-form {
-  padding: 1.25rem;
-  border-radius: 18px;
-  border: 1px solid #f0e8eb;
-  background: linear-gradient(180deg, #ffffff 0%, #fff8f9 100%);
-}
-
-.perfil-resenias {
-  border-top: 1px solid #f0e8eb;
-  padding-top: 1.25rem;
-
-  &__empty {
-    padding: 1rem;
-    border-radius: 16px;
-    border: 1px dashed #d7c6cb;
-    background: #fffafb;
-  }
-
-  &__list {
-    display: grid;
-    gap: 0.85rem;
-  }
-
-  &__item {
-    display: grid;
+  &__head {
+    display: flex;
+    align-items: center;
     gap: 0.55rem;
-    padding: 1rem;
-    border-radius: 16px;
-    border: 1px solid #f0e8eb;
-    background: #fff;
+    flex-wrap: wrap;
+    margin-bottom: 0.3rem;
+  }
+
+  &__title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: $navy;
+  }
+
+  &__message {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #727686;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+}
+
+// ── Reviews ────────────────────────────────────────────
+.pf-review-list {
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.pf-review {
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(247, 108, 111, 0.12);
+  background: #fff;
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+  }
+
+  &__empresa {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: $navy;
+  }
+
+  &__autor {
+    display: block;
+    font-size: 0.78rem;
+    color: #727686;
+    margin-top: 0.1rem;
   }
 
   &__stars {
     display: inline-flex;
-    gap: 0.15rem;
+    gap: 0.12rem;
     color: #f2a541;
+    font-size: 0.9rem;
+    flex-shrink: 0;
   }
 
-  &__form {
-    padding: 1rem;
-    border-radius: 16px;
-    border: 1px solid #f0e8eb;
-    background: linear-gradient(180deg, #ffffff 0%, #fff8f9 100%);
+  &__text {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #555;
+    line-height: 1.55;
   }
 }
 
-// =============================================
-// Responsive
-// =============================================
-@media (max-width: 767.98px) {
-  .perfil-contacto,
-  .resumen-grid,
-  .perfil-boda-summary {
-    grid-template-columns: 1fr;
+.pf-review-form-wrap {
+  margin-top: 0.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(247, 108, 111, 0.1);
+}
+
+// ── Form ───────────────────────────────────────────────
+.pf-form {
+  display: grid;
+  gap: 0;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
   }
 
-  .perfil-notif-header {
+  &__field {
+    display: flex;
     flex-direction: column;
-    align-items: stretch;
+    gap: 5px;
+    padding-bottom: 1.1rem;
   }
 
-  .perfil-notif-item {
+  &__actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding-top: 0.5rem;
+  }
+}
+
+.pf-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475467;
+}
+
+.pf-input {
+  border: 1px solid rgba(247, 108, 111, 0.25);
+  border-radius: 8px;
+  padding: 0 0.75rem;
+  height: 2.5rem;
+  font-size: 0.875rem;
+  color: $navy;
+  background: rgba(255, 255, 255, 0.9);
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:focus { border-color: $pink; box-shadow: 0 0 0 3px rgba(247, 108, 111, 0.12); }
+
+  &--error { border-color: #e53e3e; }
+  &--error:focus { box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1); }
+
+  &--select {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23667085' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.7rem;
+    background-color: rgba(255,255,255,0.9);
+  }
+
+  &--textarea {
+    height: auto;
+    padding: 0.55rem 0.75rem;
+    resize: vertical;
+    min-height: 90px;
+    font-family: inherit;
+    line-height: 1.5;
+  }
+}
+
+.pf-error {
+  font-size: 0.75rem;
+  color: #e53e3e;
+  font-weight: 500;
+}
+
+// ── Notices ────────────────────────────────────────────
+.pf-notice {
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+
+  &--ok    { background: #eefbf3; border: 1px solid #c6efd4; color: #0c7a43; }
+  &--error { background: #ffecec; border: 1px solid #ffcfd1; color: #b42318; }
+  &--info  { background: #eef4ff; border: 1px solid #c7d7fd; color: #3451b2; }
+}
+
+// ── State: loading / empty ─────────────────────────────
+.pf-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: #727686;
+
+  &--loading { flex-direction: row; padding: 2rem; }
+
+  &__icon {
+    font-size: 2.5rem;
+    color: #d4c6cb;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  p { margin: 0; font-size: 0.875rem; }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.pf-spin { display: inline-block; animation: spin 1s linear infinite; }
+
+// ── Responsive ─────────────────────────────────────────
+@media (max-width: 960px) {
+  .pf-layout {
     grid-template-columns: 1fr;
   }
 
-  .perfil-notif-actions {
-    min-width: 0;
-    align-items: stretch;
-
-    .btn { width: 100%; }
+  .pf-aside {
+    position: static;
+    grid-template-columns: repeat(2, 1fr);
   }
+}
+
+@media (max-width: 640px) {
+  .pf-aside { grid-template-columns: 1fr; }
+  .pf-hero__body { padding: 0 1.25rem 1.5rem; gap: 1rem; }
+  .pf-boda-grid { grid-template-columns: 1fr; }
+  .pf-profile-grid { grid-template-columns: 1fr; }
+  .pf-form__row { grid-template-columns: 1fr; }
+  .pf-tab span { display: none; }
+  .pf-tab { padding: 0.9rem 0.85rem; }
+  .pf-request { grid-template-columns: 1fr; }
+  .pf-request__actions { align-items: stretch; .pf-btn { width: 100%; } }
+  .pf-tabs { padding: 0 0.75rem; }
+  .pf-tab-content { padding: 1.25rem; }
 }

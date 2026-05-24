@@ -20,20 +20,39 @@
 </div>
 <div class="row justify-content-center mt-5 pt-4">
     <div class="col-9">
-        @if(modo() === 'imagenes'){
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-            @for (empresa of empresas(); track empresa.id) {
-            <app-card-proveedores [empresa]="empresa"></app-card-proveedores>
-            }
-        </div>
-        }
+        @if (filtradoTotalServicectx.isLoading()) {
+          <div class="prov-loading">
+            <span class="prov-loading__spinner"></span>
+            <span>Buscando proveedores...</span>
+          </div>
+        } @else if (empresas().length === 0) {
+          <div class="prov-empty">
+            <div class="prov-empty__circle">
+              <i class="bi bi-search"></i>
+              <i class="bi bi-heart-fill prov-empty__heart"></i>
+            </div>
+            <h3 class="prov-empty__title">Sin resultados</h3>
+            <p class="prov-empty__text">
+              No encontramos proveedores que coincidan con tu búsqueda.
+            </p>
+            <p class="prov-empty__hint">Prueba a ampliar o eliminar alguno de los filtros aplicados.</p>
+          </div>
+        } @else {
+          @if(modo() === 'imagenes'){
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+                @for (empresa of empresas(); track empresa.id) {
+                <app-card-proveedores [empresa]="empresa"></app-card-proveedores>
+                }
+            </div>
+          }
 
-        @if(modo() === 'listado'){
-        <div class="d-flex justify-content-center flex-wrap gap-3">
-            @for (empresa of empresas(); track empresa.id) {
-            <app-horizontal-card-proveedores [empresa]="empresa"></app-horizontal-card-proveedores>
-            }
-        </div>
+          @if(modo() === 'listado'){
+            <div class="d-flex justify-content-center flex-wrap gap-3">
+                @for (empresa of empresas(); track empresa.id) {
+                <app-horizontal-card-proveedores [empresa]="empresa"></app-horizontal-card-proveedores>
+                }
+            </div>
+          }
         }
     </div>
 </div>
