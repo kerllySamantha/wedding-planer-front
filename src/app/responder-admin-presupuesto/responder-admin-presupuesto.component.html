@@ -5,7 +5,14 @@
 
   @if (solicitud(); as item) {
     <header class="detail-header">
-      <h1>Propuesta para {{ item.nombre }}</h1>
+      <p class="detail-header__eyebrow">Gestión de solicitudes</p>
+      <h1 class="detail-header__title">
+        <span class="detail-header__label">Propuesta para</span>
+        <span class="detail-header__name">{{ item.nombre }}</span>
+      </h1>
+      <p class="detail-header__meta">
+        Revisa los detalles del cliente y elabora tu oferta personalizada
+      </p>
     </header>
 
     <div class="responder-layout">
