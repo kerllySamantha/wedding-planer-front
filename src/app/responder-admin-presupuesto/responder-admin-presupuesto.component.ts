@@ -90,6 +90,7 @@ export class ResponderAdminPresupuestoComponent {
   });
 
   // ── Estado UI ────────────────────────────────────────────────────────
+  protected modalidadActual = signal<'servicio' | 'producto' | 'dia'>('servicio');
   protected enviandoRespuesta = signal(false);
   protected enviandoRechazo = signal(false);
   protected respuestaError = signal<string | null>(null);
@@ -202,6 +203,7 @@ export class ResponderAdminPresupuestoComponent {
       .get('producto_id')
       ?.valueChanges.subscribe((productoId) => {
         const modalidad = this.modalidadDelProducto(productoId) ?? 'servicio';
+        this.modalidadActual.set(modalidad);
         const fechaBase = modalidad === 'servicio' ? this.today : '';
         this.respuestaForm.patchValue(
           {
@@ -324,18 +326,14 @@ export class ResponderAdminPresupuestoComponent {
     if (productoYaSeleccionado) return;
 
     const primerProducto = productos[0];
+    const mod = primerProducto.tipo_producto?.modalidad ?? 'servicio';
+    this.modalidadActual.set(mod);
     this.respuestaForm.patchValue(
       {
         producto_id: primerProducto.id,
-        modalidad: primerProducto.tipo_producto?.modalidad ?? 'servicio',
-        fecha_inicio:
-          (primerProducto.tipo_producto?.modalidad ?? 'servicio') === 'servicio'
-            ? this.today
-            : '',
-        fecha_fin:
-          (primerProducto.tipo_producto?.modalidad ?? 'servicio') === 'servicio'
-            ? this.today
-            : '',
+        modalidad: mod,
+        fecha_inicio: mod === 'servicio' ? this.today : '',
+        fecha_fin: mod === 'servicio' ? this.today : '',
       },
       { emitEvent: false },
     );

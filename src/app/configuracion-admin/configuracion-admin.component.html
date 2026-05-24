@@ -238,7 +238,8 @@
       </label>
 
       <select id="categoria-activa-select" class="form-select" [value]="categoriaSeleccionadaId()?.toString() ?? ''"
-        (change)="onCategoriaSeleccionada(+$any($event.target).value)">
+        (change)="onCategoriaSeleccionada(+$any($event.target).value)"
+        [disabled]="!categoriasEmpresa().length">
         @for (categoria of categoriasEmpresa(); track categoria.id) {
         <option [value]="categoria.id.toString()">
           {{ categoria.nombre }}
@@ -281,6 +282,10 @@
             </summary>
 
             <div class="catalog-type-card__body">
+
+              @if (!(productosPersonalizados()[tipoPermitido.tipoId]?.length) && !(nuevosProductosPorTipo()[tipoPermitido.tipoId]?.length)) {
+                <p class="catalog-body-empty">Sin productos añadidos. Pulsa <strong>Añadir</strong> para incluir uno.</p>
+              }
 
               @for (personalizado of (productosPersonalizados()[tipoPermitido.tipoId]); track personalizado.id; let idx
               = $index) {

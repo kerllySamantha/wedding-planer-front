@@ -1,5 +1,5 @@
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
@@ -27,12 +27,42 @@ export class CardInfoSolicitudComponent {
     { initialValue: null }
   );
 
+  protected puedeResponder = computed(() => {
+    const estado = this.solicitud()?.estado as unknown;
+    if (!estado) return false;
+    const v = typeof estado === 'string' ? estado.toLowerCase() : '';
+    return v === 'pendiente';
+  });
+
+  protected estadoVisual = computed(() => {
+    const estado = this.solicitud()?.estado as unknown;
+    if (!estado) return 'pendiente';
+    const v = typeof estado === 'string' ? estado.toLowerCase() : '';
+    if (['aceptado_usuario', 'aceptado_empresa', 'confirmado', 'confirmada'].includes(v)) return 'aceptada';
+    if (['rechazado_usuario', 'rechazado_empresa', 'cancelado', 'cancelada'].includes(v)) return 'rechazada';
+    if (v === 'pendiente_usuario') return 'en_revision';
+    if (v === 'pendiente') return 'pendiente';
+    return 'pendiente';
+  });
+
   constructor() {
     effect(() => {
       const data = this.pedirPresupuestoRoute();
-      if (data) {
-        this.solicitud.set(data);
-      }
+      if (data) this.solicitud.set(data);
     });
+  }
+
+  protected estadoLabel(estado?: unknown): string {
+    if (!estado) return 'Sin estado';
+    const v = typeof estado === 'string' ? estado.toLowerCase() : '';
+    const map: Record<string, string> = {
+      pendiente:          'Pendiente de respuesta',
+      pendiente_usuario:  'Esperando respuesta del cliente',
+      aceptado_usuario:   'Aceptado · pagado por cliente',
+      aceptado_empresa:   'Aceptado',
+      rechazado_usuario:  'Rechazado por el cliente',
+      rechazado_empresa:  'Rechazado',
+    };
+    return map[v] ?? (estado as string);
   }
 }

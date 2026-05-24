@@ -1,271 +1,307 @@
-<section class="request-detail">
-  <a class="back-link" [routerLink]="['/proveedor-dashboard/solicitudes', solicitud()?.id]">Volver a solicitud</a>
+<section class="request-detail row">
+  <a class="btn-accion btn-enviar col-md-2 col-12 justify-content-center" [routerLink]="['/proveedor-dashboard/solicitudes', solicitud()?.id]">
+    <i class="bi bi-arrow-left-short"></i> Volver
+  </a>
 
   @if (solicitud(); as item) {
-  <header class="detail-header">
-    <p class="detail-kicker">Responder</p>
-    <h1>Propuesta para {{ item.nombre }}</h1>
-    <p class="detail-subtitle">Define producto/servicio, fechas e importe para enviar al usuario.</p>
-  </header>
+    <header class="detail-header">
+      <h1>Propuesta para {{ item.nombre }}</h1>
+    </header>
 
-  <div class="detail-grid">
-    <article class="detail-card">
-      <h2>Datos del cliente</h2>
-      <dl class="detail-list">
-        <div>
-          <dt>Nombre</dt>
-          <dd>{{ item.nombre }}</dd>
-        </div>
-        <div>
-          <dt>Email</dt>
-          <dd>{{ item.email }}</dd>
-        </div>
-        <div>
-          <dt>Telefono</dt>
-          <dd>{{ item.telefono }}</dd>
-        </div>
-        <div>
-          <dt>Fecha del evento</dt>
-          <dd>{{ item.fecha ? (item.fecha | date:'dd/MM/yyyy') : 'Sin fecha indicada' }}</dd>
-        </div>
-        <div>
-          <dt>Invitados</dt>
-          <dd>{{ item.invitados}}</dd>
-        </div>
-        <div>
-          <dt>Presupuesto</dt>
-          <dd>{{ item.presupuesto}}</dd>
-        </div>
-        <div>
-          <dt>Tipo solicitado</dt>
-          <dd>
+    <div class="responder-layout">
+
+      <!-- ── Columna lateral ─────────────────────────── -->
+      <aside class="responder-aside">
+
+        <article class="detail-card">
+          <h2>Información del cliente</h2>
+          <dl class="detail-list">
+            <div><dt>Nombre</dt><dd>{{ item.nombre || '—' }}</dd></div>
+            <div><dt>Correo electrónico</dt><dd>{{ item.email }}</dd></div>
+            <div><dt>Teléfono</dt><dd>{{ item.telefono || '—' }}</dd></div>
+            <div><dt>Fecha del evento</dt><dd>{{ item.fecha ? (item.fecha | date:'dd/MM/yyyy') : 'Sin fecha indicada' }}</dd></div>
+            <div><dt>N.º de invitados</dt><dd>{{ item.invitados }}</dd></div>
+            <div><dt>Presupuesto disponible</dt><dd>{{ (item.presupuesto || 0) | currency:'EUR':'symbol':'1.0-0':'es' }}</dd></div>
             @if (tipoSolicitado(); as tipo) {
-            {{ tipo.nombre }}@if (tipo.modalidad) { ({{ modalidadTexto(tipo.modalidad) }}) }
-            } @else {
-            Sin tipo indicado
+              <div>
+                <dt>Servicio solicitado</dt>
+                <dd>{{ tipo.nombre }}@if (tipo.modalidad) { · {{ modalidadTexto(tipo.modalidad) }} }</dd>
+              </div>
             }
-          </dd>
-        </div>
-      </dl>
-    </article>
+          </dl>
+        </article>
 
-    <article class="detail-card">
-      <h2>Estado actual</h2>
-      <dl class="detail-list">
-        <div>
-          <dt>Estado</dt>
-          <dd>{{ item.estado }}</dd>
-        </div>
-        <div>
-          <dt>Importe ofertado</dt>
-          <dd>{{ (item.importe_ofertado || 0) | currency:'EUR':'symbol':'1.0-0':'es' }}</dd>
-        </div>
-        <div>
-          <dt>Fecha de respuesta</dt>
-          <dd>{{ item.fecha_respuesta ? (item.fecha_respuesta | date:'dd/MM/yyyy HH:mm') : 'Pendiente' }}</dd>
-        </div>
-      </dl>
-    </article>
-  </div>
+        <article class="detail-card">
+          <h2>Estado de la solicitud</h2>
+          <dl class="detail-list">
+            <div>
+              <dt class="mb-2">Estado actual</dt>
+              <dd>
+                <span class="estado-chip" [ngClass]="estadoSolicitudNormalizado()">
+                  {{ estadoSolicitudNormalizado() === 'pendiente' ? 'Pendiente de respuesta' : 'Respondida' }}
+                </span>
+              </dd>
+            </div>
+            @if (item.importe_ofertado) {
+              <div><dt>Importe ofertado</dt><dd>{{ item.importe_ofertado | currency:'EUR':'symbol':'1.0-0':'es' }}</dd></div>
+            }
+            @if (item.fecha_respuesta) {
+              <div><dt>Respondida el</dt><dd>{{ item.fecha_respuesta | date:'dd/MM/yyyy HH:mm' }}</dd></div>
+            }
+          </dl>
 
-  <article class="detail-card detail-card--wide">
-    <h2>Propuesta del proveedor</h2>
+          @if (tipoNoDisponible()) {
+            <div class="notice notice--warn mt-3">
+              El servicio solicitado ya no está en tu catálogo. Puedes ofrecer un producto alternativo.
+            </div>
+          }
+        </article>
 
-    @if (!puedeResponderSolicitud()) {
-    <div class="alert alert-warning mt-3">
-      Esta solicitud ya fue respondida anteriormente. Solo se permite una respuesta para evitar notificaciones duplicadas al cliente.
+        @if (!puedeResponderSolicitud()) {
+          <div class="notice notice--warn">
+            Esta solicitud ya ha sido respondida. Solo se permite una respuesta por solicitud.
+          </div>
+        }
+
+      </aside>
+
+      <!-- ── Columna principal ───────────────────────── -->
+      <article class="detail-card responder-main">
+        <h2>Prepara tu propuesta</h2>
+
+        <form [formGroup]="respuestaForm" (ngSubmit)="enviarRespuesta()">
+
+          <!-- Producto e importe -->
+          <div class="form-row">
+            <div class="form-field form-field--grow">
+              <label class="field-label" for="producto_id">Producto o servicio ofrecido</label>
+              <select id="producto_id" class="field-input" formControlName="producto_id">
+                <option [ngValue]="null" disabled>Elige un producto de tu catálogo</option>
+                @for (p of productosFiltrados(); track p.id) {
+                  <option [ngValue]="p.id">{{p.nombre}}</option>
+                }
+              </select>
+              @if (!productosFiltrados().length) {
+                <span class="field-error">No tienes productos disponibles para esta solicitud.</span>
+              }
+            </div>
+
+            <div class="form-field form-field--sm">
+              <label class="field-label" for="importe_ofertado">Tu precio (€)</label>
+              <input
+                id="importe_ofertado" type="number" class="field-input"
+                formControlName="importe_ofertado" min="0"
+                [class.field-input--error]="controlInvalido('importe_ofertado') || mostrarErrorFormulario('importeNegativo')"
+              >
+              @if (controlInvalido('importe_ofertado')) {
+                @if (respuestaForm.get('importe_ofertado')?.hasError('required')) {
+                  <span class="field-error">Indica el importe de tu propuesta.</span>
+                }
+                @if (respuestaForm.get('importe_ofertado')?.hasError('min')) {
+                  <span class="field-error">El importe no puede ser negativo.</span>
+                }
+              }
+            </div>
+
+            <div class="form-field form-field--sm">
+              <label class="field-label">Tipo de servicio</label>
+              <input class="field-input field-input--readonly" [value]="modalidadTexto(modalidadActual())" readonly>
+            </div>
+          </div>
+
+          <!-- Fechas servicio -->
+          @if (modalidadActual() === 'servicio') {
+            <div class="form-section-title">Horario del servicio</div>
+            <div class="form-row">
+              <div class="form-field form-field--grow">
+                <label class="field-label" for="fecha_inicio_servicio">Fecha del servicio</label>
+                <input
+                  id="fecha_inicio_servicio" type="date" class="field-input"
+                  formControlName="fecha_inicio" [attr.min]="today"
+                  [class.field-input--error]="controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio']) || mostrarErrorFormulario('fechaPasada', ['fecha_inicio'])"
+                >
+                @if (controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio'])) {
+                  <span class="field-error">Selecciona una fecha válida.</span>
+                }
+                @if (mostrarErrorFormulario('fechaPasada', ['fecha_inicio'])) {
+                  <span class="field-error">La fecha no puede ser anterior a hoy.</span>
+                }
+              </div>
+              <div class="form-field">
+                <label class="field-label" for="hora_inicio">Hora de inicio</label>
+                <input
+                  id="hora_inicio" type="time" class="field-input"
+                  formControlName="hora_inicio"
+                  [class.field-input--error]="controlInvalido('hora_inicio') || mostrarErrorFormulario('horaInicioRequerida', ['hora_inicio'])"
+                >
+                @if (mostrarErrorFormulario('horaInicioRequerida', ['hora_inicio'])) {
+                  <span class="field-error">La hora de inicio es obligatoria.</span>
+                }
+              </div>
+              <div class="form-field">
+                <label class="field-label" for="hora_fin">Hora de fin</label>
+                <input
+                  id="hora_fin" type="time" class="field-input"
+                  formControlName="hora_fin"
+                  [class.field-input--error]="controlInvalido('hora_fin') || mostrarErrorFormulario('horaFinRequerida', ['hora_fin']) || mostrarErrorFormulario('horaFinAnterior', ['fecha_inicio', 'hora_inicio', 'fecha_fin', 'hora_fin'])"
+                >
+                @if (mostrarErrorFormulario('horaFinRequerida', ['hora_fin'])) {
+                  <span class="field-error">La hora de fin es obligatoria.</span>
+                }
+                @if (mostrarErrorFormulario('horaFinAnterior', ['fecha_inicio', 'hora_inicio', 'fecha_fin', 'hora_fin'])) {
+                  <span class="field-error">La hora de fin debe ser posterior a la de inicio.</span>
+                }
+                @if (mostrarErrorFormulario('fechaNoDisponible', ['hora_inicio', 'hora_fin'])) {
+                  <span class="field-error">Ese horario ya está reservado.</span>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Fechas producto -->
+          @if (modalidadActual() === 'producto') {
+            <div class="form-section-title">Período de disponibilidad</div>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="field-label" for="fecha_inicio_producto">Fecha de inicio</label>
+                <input
+                  id="fecha_inicio_producto" type="date" class="field-input"
+                  formControlName="fecha_inicio" [attr.min]="today"
+                  [class.field-input--error]="controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio']) || mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])"
+                >
+                @if (controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio'])) {
+                  <span class="field-error">Selecciona una fecha de inicio válida.</span>
+                }
+              </div>
+              <div class="form-field">
+                <label class="field-label" for="fecha_fin">Fecha de fin</label>
+                <input
+                  id="fecha_fin" type="date" class="field-input"
+                  formControlName="fecha_fin" [attr.min]="today"
+                  [class.field-input--error]="controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida', ['fecha_fin']) || mostrarErrorFormulario('fechaFinAnterior', ['fecha_inicio', 'fecha_fin'])"
+                >
+                @if (mostrarErrorFormulario('fechaFinAnterior', ['fecha_inicio', 'fecha_fin'])) {
+                  <span class="field-error">La fecha de fin no puede ser anterior a la de inicio.</span>
+                }
+                @if (mostrarErrorFormulario('fechaNoDisponible', ['fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin'])) {
+                  <span class="field-error">Ese período ya está reservado.</span>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Comentario -->
+          <div class="form-field" style="margin-top: 1rem">
+            <label class="field-label" for="comentario_empresa">Mensaje para el cliente</label>
+            <textarea
+              id="comentario_empresa" class="field-input field-input--textarea"
+              rows="3" formControlName="comentario_empresa"
+              [class.field-input--error]="controlInvalido('comentario_empresa')"
+              placeholder="Describe tu propuesta: incluye detalles del servicio, condiciones, extras o cualquier aclaración relevante..."
+            ></textarea>
+            @if (controlInvalido('comentario_empresa')) {
+              @if (respuestaForm.get('comentario_empresa')?.hasError('required')) {
+                <span class="field-error">El mensaje es obligatorio.</span>
+              }
+              @if (respuestaForm.get('comentario_empresa')?.hasError('minlength')) {
+                <span class="field-error">El mensaje debe tener al menos 10 caracteres.</span>
+              }
+              @if (respuestaForm.get('comentario_empresa')?.hasError('maxlength')) {
+                <span class="field-error">El mensaje no puede superar los 500 caracteres.</span>
+              }
+            }
+          </div>
+
+          <!-- Preview de propuesta -->
+          @if (resumenPropuesta(); as resumen) {
+            <div class="proposal-summary">
+              <div class="proposal-summary__title">Resumen de tu propuesta</div>
+              <div class="proposal-summary__row">
+                <span class="proposal-summary__label">Producto:</span>
+                <span>{{ resumen.productoNombre }} ({{ modalidadTexto(resumen.modalidad) }})</span>
+              </div>
+              <div class="proposal-summary__row">
+                <span class="proposal-summary__label">Inicio:</span>
+                <span>{{ resumen.fechaInicio || 'Sin especificar' }}</span>
+              </div>
+              @if (resumen.modalidad !== 'servicio') {
+                <div class="proposal-summary__row">
+                  <span class="proposal-summary__label">Fin:</span>
+                  <span>{{ resumen.fechaFin || resumen.fechaInicio || 'Sin especificar' }}</span>
+                </div>
+              }
+              <div class="proposal-summary__row">
+                <span class="proposal-summary__label">Importe total:</span>
+                <span>
+                  @if (resumen.importe != null) { {{ resumen.importe | currency:'EUR':'symbol':'1.0-0':'es' }} }
+                  @else { Sin especificar }
+                </span>
+              </div>
+            </div>
+          }
+
+          @if (respuestaError()) {
+            <div class="notice notice--error">{{ respuestaError() }}</div>
+          }
+          @if (respuestaOk()) {
+            <div class="notice notice--ok">{{ respuestaOk() }}</div>
+          }
+
+          <!-- Acciones principales -->
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn-accion btn-rechazar"
+              (click)="toggleFormRechazo()"
+              [disabled]="!puedeResponderSolicitud()"
+            >
+              {{ mostrarFormRechazo() ? 'Cancelar' : 'No puedo atender esta solicitud' }}
+            </button>
+
+            <button
+              class="btn-accion btn-enviar"
+              type="submit"
+              [disabled]="enviandoRespuesta() || !puedeResponderSolicitud()"
+            >
+              {{ enviandoRespuesta() ? 'Enviando propuesta...' : 'Enviar propuesta al cliente' }}
+            </button>
+          </div>
+        </form>
+
+        <!-- Formulario de rechazo -->
+        @if (mostrarFormRechazo()) {
+          <div class="rechazo-section">
+            <div class="rechazo-section__title">¿Por qué no puedes atender esta solicitud?</div>
+            <form [formGroup]="rechazoForm" (ngSubmit)="rechazarSolicitud()">
+              <div class="form-field">
+                <label class="field-label" for="motivo_rechazo">Indica el motivo al cliente para que pueda buscar otras alternativas</label>
+                <textarea
+                  id="motivo_rechazo"
+                  class="field-input field-input--textarea"
+                  rows="3"
+                  formControlName="motivo_rechazo"
+                  placeholder="Ej: La fecha solicitada ya está reservada, el servicio no está disponible en tu localidad..."
+                ></textarea>
+                @if (rechazoForm.get('motivo_rechazo')?.invalid && rechazoForm.get('motivo_rechazo')?.touched) {
+                  <span class="field-error">Por favor, introduce un motivo de al menos 10 caracteres.</span>
+                }
+              </div>
+              <div class="form-actions form-actions--right">
+                <button class="btn-accion btn-enviar btn-enviar--danger" type="submit" [disabled]="enviandoRechazo()">
+                  {{ enviandoRechazo() ? 'Procesando...' : 'Confirmar y enviar rechazo' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        }
+      </article>
+
     </div>
-    }
 
-
-    <form [formGroup]="respuestaForm" (ngSubmit)="enviarRespuesta()">
-      <div class="row g-3 mt-1">
-        <div class="col-md-6">
-          <label class="form-label small fw-bold text-uppercase text-muted" for="producto_id">Producto o servicio</label>
-          <select id="producto_id" class="form-select" formControlName="producto_id">
-            <option [ngValue]="null" disabled>Selecciona un producto</option>
-            @for (p of productosFiltrados(); track p.id) {
-            <option [ngValue]="p.id">{{ etiquetaProducto(p) }}</option>
-            }
-          </select>
-          @if (!productosFiltrados().length) {
-          <small class="text-danger">No hay productos disponibles en tu catálogo para esta solicitud.</small>
-          }
-        </div>
-
-        <div class="col-md-3">
-          <label class="form-label small fw-bold text-uppercase text-muted" for="importe_ofertado">Importe ofertado</label>
-          <input id="importe_ofertado" type="number" class="form-control" formControlName="importe_ofertado" min="0"
-            [class.is-invalid]="controlInvalido('importe_ofertado') || mostrarErrorFormulario('importeNegativo')">
-          @if (controlInvalido('importe_ofertado')) {
-          @if (respuestaForm.get('importe_ofertado')?.hasError('required')) {
-          <div class="invalid-feedback d-block">El importe es obligatorio.</div>
-          }
-
-          @if (respuestaForm.get('importe_ofertado')?.hasError('min')) {
-          <div class="invalid-feedback d-block">El importe no puede ser negativo.</div>
-          }
-          }
-        </div>
-      </div>
-
-
-
-      <div class="mt-3">
-        <label class="form-label small fw-bold text-uppercase text-muted" for="modalidad">Modalidad</label>
-        <input id="modalidad" class="form-control" [value]="modalidadTexto(modalidadSeleccionada)" readonly>
-      </div>
-
-      @if (modalidadSeleccionada === 'servicio') {
-      <div class="row g-3 mt-2">
-        <div class="col-md-4">
-          <label class="form-label small fw-bold text-uppercase text-muted" for="fecha_inicio_servicio">Día de la reserva</label>
-          <input id="fecha_inicio_servicio" type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today"
-            [class.is-invalid]="controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio']) || mostrarErrorFormulario('fechaPasada', ['fecha_inicio'])">
-
-          @if (controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio'])) {
-          <div class="invalid-feedback d-block">Introduce una fecha válida para el servicio.</div>
-          }
-          @if (mostrarErrorFormulario('fechaPasada', ['fecha_inicio'])) {
-          <div class="invalid-feedback d-block">La fecha no puede ser anterior a hoy.</div>
-          }
-        </div>
-        <div class="col-md-3">
-          <label class="form-label small fw-bold text-uppercase text-muted" for="hora_inicio">Hora inicio</label>
-          <input id="hora_inicio" type="time" class="form-control" formControlName="hora_inicio"
-            [class.is-invalid]="controlInvalido('hora_inicio') || mostrarErrorFormulario('horaInicioRequerida', ['hora_inicio'])">
-
-          @if (mostrarErrorFormulario('horaInicioRequerida', ['hora_inicio'])) {
-          <div class="invalid-feedback d-block">La hora de inicio es obligatoria.</div>
-          }
-        </div>
-        <div class="col-md-3">
-          <label class="form-label small fw-bold text-uppercase text-muted" for="hora_fin">Hora fin</label>
-          <input id="hora_fin" type="time" class="form-control" formControlName="hora_fin"
-            [class.is-invalid]="controlInvalido('hora_fin') || mostrarErrorFormulario('horaFinRequerida', ['hora_fin']) || mostrarErrorFormulario('horaFinAnterior', ['fecha_inicio', 'hora_inicio', 'fecha_fin', 'hora_fin'])">
-          @if (mostrarErrorFormulario('horaFinRequerida', ['hora_fin'])) {
-          <div class="invalid-feedback d-block">La hora de fin es obligatoria.</div>
-          }
-          @if (mostrarErrorFormulario('horaFinAnterior', ['fecha_inicio', 'hora_inicio', 'fecha_fin', 'hora_fin'])) {
-          <div class="invalid-feedback d-block">La fecha/hora de fin debe ser posterior al inicio.</div>
-          }
-          @if (mostrarErrorFormulario('fechaNoDisponible', ['hora_inicio', 'hora_fin'])) {
-          <div class="invalid-feedback d-block">Ese rango ya no está disponible en tu calendario.</div>
-          }
-        </div>
-      </div>
-      }
-
-      @if (modalidadSeleccionada === 'producto') {
-      <div class="row g-3 mt-2">
-        <div class="col-md-4">
-          <label class="form-label small fw-bold text-uppercase text-muted" for="fecha_inicio_producto">Fecha inicio</label>
-          <input id="fecha_inicio_producto" type="date" class="form-control" formControlName="fecha_inicio" [attr.min]="today"
-            [class.is-invalid]="controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio']) || mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])">
-          @if (controlInvalido('fecha_inicio') || mostrarErrorFormulario('fechaInicioInvalida', ['fecha_inicio'])) {
-          <div class="invalid-feedback d-block">Introduce una fecha de inicio válida.</div>
-          }
-          @if (mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])) {
-          <div class="invalid-feedback d-block">La fecha no puede ser anterior a hoy.</div>
-          }
-        </div>
-        <div class="col-md-4">
-          <label class="form-label small fw-bold text-uppercase text-muted" for="fecha_fin">Fecha fin</label>
-          <input id="fecha_fin" type="date" class="form-control" formControlName="fecha_fin" [attr.min]="today"
-            [class.is-invalid]="controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida', ['fecha_fin']) || mostrarErrorFormulario('fechaFinAnterior', ['fecha_inicio', 'fecha_fin']) || mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])">
-          @if (controlInvalido('fecha_fin') || mostrarErrorFormulario('fechaFinInvalida', ['fecha_fin'])) {
-          <div class="invalid-feedback d-block">Introduce una fecha de fin válida.</div>
-          }
-          @if (mostrarErrorFormulario('fechaPasada', ['fecha_inicio', 'fecha_fin'])) {
-          <div class="invalid-feedback d-block">La fecha no puede ser anterior a hoy.</div>
-          }
-          @if (mostrarErrorFormulario('fechaFinAnterior', ['fecha_inicio', 'fecha_fin'])) {
-          <div class="invalid-feedback d-block">La fecha de fin no puede ser anterior a la fecha de inicio.</div>
-          }
-          @if (mostrarErrorFormulario('fechaNoDisponible', ['fecha_inicio', 'fecha_fin', 'hora_inicio', 'hora_fin'])) {
-          <div class="invalid-feedback d-block">Ese rango ya no está disponible en tu calendario.</div>
-          }
-        </div>
-      </div>
-      }
-
-      @if (tipoNoDisponible()) {
-      <div class="alert alert-warning mt-3">
-        El tipo solicitado no existe en tu catalogo. Puedes proponer un producto alternativo.
-      </div>
-      }
-
-      <div class="mt-3">
-        <label class="form-label small fw-bold text-uppercase text-muted" for="comentario_empresa">Comentario</label>
-        <textarea id="comentario_empresa" class="form-control" rows="3" formControlName="comentario_empresa"
-          [class.is-invalid]="controlInvalido('comentario_empresa')">
-        </textarea>
-
-        @if (controlInvalido('comentario_empresa')) {
-
-        @if (respuestaForm.get('comentario_empresa')?.hasError('required')) {
-        <div class="invalid-feedback d-block">
-          El comentario es obligatorio.
-        </div>
-        }
-
-        @if (respuestaForm.get('comentario_empresa')?.hasError('minlength')) {
-        <div class="invalid-feedback d-block">
-          El comentario debe tener al menos 10 caracteres.
-        </div>
-        }
-
-        @if (respuestaForm.get('comentario_empresa')?.hasError('maxlength')) {
-        <div class="invalid-feedback d-block">
-          El comentario no puede superar los 500 caracteres.
-        </div>
-        }
-
-        }
-      </div>
-
-      @if (resumenPropuesta(); as resumen) {
-      <div class="proposal-summary mt-3">
-        <div class="proposal-summary__title">Resumen de propuesta</div>
-        <div class="proposal-summary__row">
-          <span class="proposal-summary__label">Producto/servicio:</span>
-          <span>{{ resumen.productoNombre }} ({{ modalidadTexto(resumen.modalidad) }})</span>
-        </div>
-        <div class="proposal-summary__row">
-          <span class="proposal-summary__label">Fecha inicio:</span>
-          <span>{{ resumen.fechaInicio || 'Pendiente' }}</span>
-        </div>
-        <div class="proposal-summary__row">
-          <span class="proposal-summary__label">Fecha fin:</span>
-          <span>{{ resumen.fechaFin || (resumen.modalidad === 'producto' ? resumen.fechaInicio : 'Pendiente') }}</span>
-        </div>
-        <div class="proposal-summary__row">
-          <span class="proposal-summary__label">Importe:</span>
-          <span>
-            @if (resumen.importe != null) { {{ resumen.importe | currency:'EUR':'symbol':'1.0-0':'es' }} }
-            @else { Pendiente }
-          </span>
-        </div>
-      </div>
-      }
-
-      @if (respuestaError()) {
-      <div class="alert alert-danger mt-3">{{ respuestaError() }}</div>
-      }
-
-      @if (respuestaOk()) {
-      <div class="alert alert-success mt-3">{{ respuestaOk() }}</div>
-      }
-
-      <div class="d-flex justify-content-end mt-3">
-        <button class="btn btn-primary" type="submit" [disabled]="enviandoRespuesta() || !puedeResponderSolicitud()">Enviar propuesta</button>
-      </div>
-    </form>
-  </article>
   } @else {
-  <article class="detail-card detail-card--empty">
-    <h2>Solicitud no disponible</h2>
-    <p>No hemos podido cargar la informacion de esta solicitud.</p>
-  </article>
+    <article class="detail-card detail-card--empty">
+      <h2>Solicitud no disponible</h2>
+      <p>No hemos podido cargar la información de esta solicitud. Inténtalo de nuevo más tarde.</p>
+    </article>
   }
 </section>

@@ -22,12 +22,13 @@ export class AdminSolicitudesPanelComponent {
 
   arrayInfoPresupuestos = signal<PedirPresupuestoInfo[] | null>(null);
   idEmpresa = signal<string>(localStorage.getItem('idEmpresa')!);
-  displayedColumns: string[] = ['fecha', 'importe', 'estado', 'email', 'acciones'];
+  displayedColumns: string[] = ['cliente', 'fecha', 'importe', 'estado', 'acciones'];
 
   totalSolicitudes = computed(() => this.arrayInfoPresupuestos()?.length ?? 0);
-  totalAceptadas = computed(() => this.contarPorEstado('aceptada'));
-  totalRechazadas = computed(() => this.contarPorEstado('rechazada'));
-  totalPendientes = computed(() => this.contarPorEstado('pendiente'));
+  totalAceptadas   = computed(() => this.contarPorEstado('aceptada'));
+  totalRechazadas  = computed(() => this.contarPorEstado('rechazada'));
+  totalPendientes  = computed(() => this.contarPorEstado('pendiente'));
+  totalEnRevision  = computed(() => this.contarPorEstado('en_revision'));
 
   ngOnInit() {
     this.getPedirPresupuestoEmpresa();
@@ -42,11 +43,8 @@ export class AdminSolicitudesPanelComponent {
       this.arrayInfoPresupuestos.set([]);
       return;
     }
-
     this.pedirPresupuestosctx.getEmpresaPedirPresupuesto(idEmpresa).subscribe({
-      next: (value) => {
-        this.arrayInfoPresupuestos.set(value ?? []);
-      },
+      next: (value) => this.arrayInfoPresupuestos.set(value ?? []),
     });
   }
 
@@ -55,13 +53,18 @@ export class AdminSolicitudesPanelComponent {
     return fecha.split('T')[0];
   }
 
+  formatImporte(importe?: number | null): string {
+    if (!importe && importe !== 0) return '-';
+    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(importe);
+  }
+
   estadoVisual(estado?: unknown): EstadoVisual {
     const value = this.normalizarEstado(estado);
 
-    if (['aceptada', 'aceptado', 'aprobada', 'confirmada', 'confirmado'].includes(value)) {
+    if (['aceptada', 'aceptado', 'aprobada', 'confirmada', 'confirmado', 'aceptado_usuario', 'aceptado_empresa'].includes(value)) {
       return 'aceptada';
     }
-    if (['rechazada', 'rechazado', 'cancelada', 'cancelado', 'denegada'].includes(value)) {
+    if (['rechazada', 'rechazado', 'cancelada', 'cancelado', 'denegada', 'rechazado_usuario', 'rechazado_empresa'].includes(value)) {
       return 'rechazada';
     }
     if (['pendiente', 'pending', 'nueva', 'nuevo'].includes(value)) {
@@ -71,12 +74,22 @@ export class AdminSolicitudesPanelComponent {
     return 'en_revision';
   }
 
-  estadoLabel(estado?: unknown) {
+  estadoLabel(estado?: unknown): string {
+    const value = this.normalizarEstado(estado);
+    if (value === 'aceptado_usuario')  return 'Aceptado · pagado';
+    if (value === 'rechazado_usuario') return 'Rechazado por cliente';
+    if (value === 'rechazado_empresa') return 'Rechazado';
+    if (value === 'pendiente_usuario') return 'Esperando cliente';
+
     const visual = this.estadoVisual(estado);
-    if (visual === 'aceptada') return 'Aceptada';
-    if (visual === 'rechazada') return 'Rechazada';
-    if (visual === 'pendiente') return 'Pendiente';
+    if (visual === 'aceptada')   return 'Aceptada';
+    if (visual === 'rechazada')  return 'Rechazada';
+    if (visual === 'pendiente')  return 'Pendiente';
     return 'En revisión';
+  }
+
+  puedeResponder(estado?: unknown): boolean {
+    return this.normalizarEstado(estado) === 'pendiente';
   }
 
   private normalizarEstado(estado: unknown): string {
