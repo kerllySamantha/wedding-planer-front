@@ -5,6 +5,8 @@ export interface Perfil {
     telefono : string,
     direccion: string,
     usuario: User,
+    poblacion: { id: number, nombre: string },
+    provincia: { id: number, nombre: string },
 }
 
 

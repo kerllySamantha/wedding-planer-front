@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalDetallesPresupuestoComponent } from '../modal-detalles-presupuesto/modal-detalles-presupuesto.component';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-detalles-proveedores',
@@ -102,8 +103,20 @@ export class DetallesProveedoresComponent {
 
   abrirModal() {
     if (!this.authCtx.auth()) {
-      this.router.navigate(['/login'], {
-        queryParams: { redirect: `/proveedores/detalles/${this.empresaId}` },
+      Swal.fire({
+        icon: 'info',
+        title: 'Inicia sesión primero',
+        text: 'Debes estar logueado en la plataforma para solicitar un presupuesto.',
+        confirmButtonText: 'Ir al login',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#f76c6f',
+      }).then(result => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/login'], {
+            queryParams: { redirect: `/proveedores/detalles/${this.empresaId}` },
+          });
+        }
       });
       return;
     }
@@ -144,8 +157,20 @@ export class DetallesProveedoresComponent {
     const empresaId = this.empresa()?.id ?? this.empresaId;
 
     if (!this.puedeResenar()) {
-      this.router.navigate(['/login'], {
-        queryParams: { redirect: `/proveedores/detalles/${empresaId}/resenas/nueva` },
+      Swal.fire({
+        icon: 'info',
+        title: 'Inicia sesión primero',
+        text: 'Debes estar logueado en la plataforma para escribir una reseña.',
+        confirmButtonText: 'Ir al login',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#f76c6f',
+      }).then(result => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/login'], {
+            queryParams: { redirect: `/proveedores/detalles/${empresaId}/resenas/nueva` },
+          });
+        }
       });
       return;
     }

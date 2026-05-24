@@ -250,6 +250,9 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       return;
     }
 
+   
+
+
     this.bodaCtx.cargarBodaDelUsuario();
 
     this.perfilServiceCtx.getPerfilByUserId(userId).subscribe({
@@ -537,7 +540,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.submittedPerfil.set(true);
     this.perfilFormError.set(null);
     this.perfilFormSuccess.set(null);
-
+   
     if (this.perfilForm.invalid) {
       this.perfilForm.markAllAsTouched();
       return;
@@ -555,7 +558,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       password: this.perfilForm.controls.newPassword.value || '',
       direccion: this.perfilForm.controls.direccion.value.trim(),
       telefono: this.perfilForm.controls.telefono.value.trim(),
-      poblacion_id: 0,
+      poblacion_id: perfilActual.poblacion?.id ?? 0,
       fecha_boda: '',
     };
 
