@@ -155,19 +155,17 @@
         <section class="reviews-section mt-5">
             <div class="reviews-section__header">
                 <div>
-                    <h4 class="h4 mb-1">Resenas</h4>
+                    <h4 class="h4 mb-1">Reseñas</h4>
                     <p class="text-muted mb-0">Consulta opiniones reales antes de tomar una decision.</p>
                 </div>
-                <div class="reviews-section__stats">
-                    <button type="button" class="btn btn-sm btn-outline-dark me-2" (click)="irANuevaResenia()">Escribir resena</button>
-                    <span class="reviews-section__count">{{ resenias().length }} resenas</span>
-                    <span class="reviews-section__average">{{ puntuacionMedia().toFixed(1) }}/5</span>
-                </div>
+                <button type="button" class="btn searcher__submit" (click)="irANuevaResenia()">
+                    <i class="bi bi-pencil-square me-2"></i>Escribir reseña
+                </button>
             </div>
 
             @if (reviewCreated()) {
             <div class="alert alert-success mt-3 d-flex justify-content-between align-items-center gap-3">
-                <span>Tu resena se ha publicado correctamente.</span>
+                <span>Tu reseña se ha publicado correctamente.</span>
                 <button type="button" class="btn btn-sm btn-outline-success" (click)="cerrarMensajeReviewCreada()">
                     Cerrar
                 </button>
@@ -175,39 +173,79 @@
             }
 
             @if (reseniasLoading()) {
-            <p class="text-muted small mb-0 mt-3">Cargando resenas...</p>
+            <div class="reviews-loading mt-4">
+                <div class="spinner-border spinner-border-sm text-secondary me-2" role="status" aria-hidden="true"></div>
+                <span class="text-muted small">Cargando reseñas...</span>
+            </div>
             } @else if (reseniasError()) {
             <div class="alert alert-danger mt-3">{{ reseniasError() }}</div>
             } @else if (!resenias().length) {
-            <div class="reviews-section__empty mt-3">
-                <div class="reviews-section__empty-icon">0</div>
+            <div class="reviews-section__empty mt-4">
+                <div class="reviews-section__empty-icon">
+                    <i class="bi bi-chat-square-text"></i>
+                </div>
                 <div>
-                    <strong>Aun no hay resenas publicadas para este proveedor.</strong>
+                    <strong>Aun no hay reseñas para este proveedor.</strong>
                     <p class="mb-3 small text-muted">
                         Cuando una pareja comparta su experiencia, aparecera aqui. Si ya trabajaste con esta empresa,
-                        puedes crear la primera resena desde un formulario completo con fotos.
+                        puedes crear la primera reseña desde un formulario completo con fotos.
                     </p>
                     <button type="button" class="btn btn-dark" (click)="irANuevaResenia()">
-                        Escribir la primera resena
+                        Escribir la primera reseña
                     </button>
                 </div>
             </div>
             } @else {
+
+            <div class="reviews-summary mt-4">
+                <div class="reviews-summary__score">
+                    <span class="reviews-summary__number">{{ puntuacionMedia().toFixed(1) }}</span>
+                    <div class="reviews-summary__stars">
+                        @for (_s of estrellas(puntuacionMedia()); track $index) {
+                        <i class="bi bi-star-fill"></i>
+                        }
+                        @for (_s of estrellasVacias(puntuacionMedia()); track $index) {
+                        <i class="bi bi-star"></i>
+                        }
+                    </div>
+                    <span class="reviews-summary__total">{{ resenias().length }} {{ resenias().length === 1 ? 'reseña' : 'reseñas' }}</span>
+                </div>
+
+                @if (estadisticasOrdenadas().length) {
+                <div class="reviews-summary__bars">
+                    @for (estrella of estadisticasOrdenadas(); track estrella.rating) {
+                    <div class="reviews-summary__bar-row">
+                        <span class="reviews-summary__bar-label">{{ estrella.rating }}<i class="bi bi-star-fill ms-1"></i></span>
+                        <div class="reviews-summary__bar-track">
+                            <div class="reviews-summary__bar-fill" [style.width.%]="estrella.porcentaje"></div>
+                        </div>
+                        <span class="reviews-summary__bar-count">{{ estrella.total }}</span>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
             <div class="reviews-list mt-4">
                 @for (resenia of resenias(); track resenia.id) {
                 <article class="reviews-list__item">
-                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
-                        <div>
-                            <strong class="d-block">{{ resenia.usuario.name }}</strong>
-                            <span class="small text-muted">{{ resenia.empresa.nombre }}</span>
+                    <div class="reviews-list__item-header">
+                        <div class="reviews-list__avatar" [style.background]="colorAvatar(resenia.usuario.name)">
+                            {{ inicialesUsuario(resenia.usuario.name) }}
                         </div>
-                        <span class="reviews-list__stars">
-                            @for (_star of estrellas(resenia.puntuacion); track $index) {
-                            <i class="bi bi-star-fill"></i>
-                            }
-                        </span>
+                        <div class="reviews-list__meta">
+                            <strong>{{ resenia.usuario.name }}</strong>
+                            <div class="reviews-list__stars">
+                                @for (_s of estrellas(resenia.puntuacion); track $index) {
+                                <i class="bi bi-star-fill"></i>
+                                }
+                                @for (_s of estrellasVacias(resenia.puntuacion); track $index) {
+                                <i class="bi bi-star"></i>
+                                }
+                            </div>
+                        </div>
                     </div>
-                    <p class="mb-0 text-muted small">{{ resenia.comentario }}</p>
+                    <p class="reviews-list__comment">{{ resenia.comentario }}</p>
 
                     @if ((resenia.fotos?.length ?? 0) > 0) {
                     <div class="reviews-list__gallery">
@@ -225,8 +263,8 @@
                     <strong>Quieres compartir tu experiencia?</strong>
                     <p class="mb-0 small text-muted">Te llevamos a un formulario mas completo donde tambien puedes adjuntar fotos.</p>
                 </div>
-                <button type="button" class="btn btn-outline-dark" (click)="irANuevaResenia()">
-                    Anadir una resena
+                <button type="button" class="btn searcher__submit" (click)="irANuevaResenia()">
+                    Anadir una reseña
                 </button>
             </div>
             }

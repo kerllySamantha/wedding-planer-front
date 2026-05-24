@@ -2,7 +2,7 @@
   <div class="section-header">
     <div class="mb-4">
       <p class="section-kicker mb-2">Indicadores positivos</p>
-      <h2 class="block-title ">Resenas mejor valoradas</h2>
+      <h2 class="block-title ">Reseñas mejor valoradas</h2>
     </div>
     <span class="badge-total">{{ reseniasPositivas() === null ? '--' : (reseniasPositivas()?.length ?? 0) }}</span>
   </div>
@@ -26,7 +26,7 @@
   </div>
   } @else if ((reseniasPositivas()?.length ?? 0) === 0) {
   <div class="empty-state text-center p-3 p-md-4">
-    <h5 class="mb-1">Sin resenas destacadas</h5>
+    <h5 class="mb-1">Sin reseñas destacadas</h5>
     <p class="mb-1">Aun no hay valoraciones positivas registradas.</p>
     <small>Cuando lleguen nuevas, apareceran aqui.</small>
   </div>
@@ -45,7 +45,7 @@
   <div class="section-header">
     <div class="mb-4">
       <p class="section-kicker mb-2">Incidencias de calidad</p>
-      <h2 class="block-title">Resenas con baja puntuación</h2>
+      <h2 class="block-title">Reseñas con baja puntuación</h2>
     </div>
     <span class="badge-total">{{ reseniasNegativas() === null ? '--' : (reseniasNegativas()?.length ?? 0) }}</span>
   </div>
@@ -71,7 +71,7 @@
   <div class="empty-state text-center p-3 p-md-4">
     <img src="assets/images/sin-valoraciones.png" alt="sin-valoraciones" class="mb-2 img-fluid" id="img-valoraciones" />
     <h5 class="mb-1">Todo limpio</h5>
-    <p class="mb-1">No se encontraron resenas negativas por ahora.</p>
+    <p class="mb-1">No se encontraron reseñas negativas por ahora.</p>
     <small>Cuando aparezcan nuevas, las veras aqui.</small>
   </div>
   } @else {

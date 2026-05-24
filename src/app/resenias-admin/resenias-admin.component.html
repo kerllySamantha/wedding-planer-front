@@ -1,13 +1,13 @@
 <section class="reviews-shell">
   <header class="page-header">
     <p class="page-kicker">Panel admin</p>
-    <h1>Centro de resenas</h1>
+    <h1>Centro de reseñas</h1>
     <p class="page-subtitle">Vista general de reputacion, puntuaciones y comentarios de clientes.</p>
   </header>
 
   <section class="overview-grid">
     <div class="kpi-grid">
-      <app-dashboard-cards-resenias-admin title="Total de resenas" [centered]="true"
+      <app-dashboard-cards-resenias-admin title="Total de reseñas" [centered]="true"
         [skeleton]="loading() || !resenias()">
         @if (!loading() && resenias()) {
         <div class="kpi-content">
@@ -73,7 +73,7 @@
     <div class="section-header">
       <div>
         <p class="section-kicker">Gestion de opiniones</p>
-        <h2 class="block-title">Historial de resenas</h2>
+        <h2 class="block-title">Historial de reseñas</h2>
       </div>
       <span class="badge-total">{{ loading() ? '--' : (arrayResenias()?.length ?? 0) }}</span>
     </div>

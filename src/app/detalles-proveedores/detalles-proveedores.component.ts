@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { Empresa } from '../Interfaces/Empresa';
-import { Foto, Resenia } from '../Interfaces/Resenia';
+import { Estadistica, Foto, Resenia } from '../Interfaces/Resenia';
 import { ProductoEmpresa } from '../Interfaces/Producto';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
@@ -29,12 +29,16 @@ export class DetallesProveedoresComponent {
   private fotosConRatio = signal<{ foto: Foto; ratio: number }[]>([]);
   productos = signal<ProductoEmpresa[]>([]);
   resenias = signal<Resenia[]>([]);
+  estadisticas = signal<Estadistica | null>(null);
   reseniasLoading = signal(false);
   reseniasError = signal<string | null>(null);
   reviewCreated = signal(this.route.snapshot.queryParamMap.get('review') === 'created');
 
   fotoPrincipal = computed(() => this.fotosOrdenadas()[0] || null);
   puedeResenar = computed(() => this.authCtx.auth() && this.authCtx.rol() === 'usuario');
+  estadisticasOrdenadas = computed(() =>
+    [...(this.estadisticas()?.estrellas ?? [])].sort((a, b) => b.rating - a.rating)
+  );
   puntuacionMedia = computed(() => {
     const listado = this.resenias();
     if (!listado.length) return 0;
@@ -117,8 +121,23 @@ export class DetallesProveedoresComponent {
   }
 
   estrellas(puntuacion: string | number | null | undefined): number[] {
-    const total = Math.max(0, Math.min(5, Number(puntuacion) || 0));
+    const total = Math.max(0, Math.min(5, Math.floor(Number(puntuacion) || 0)));
     return Array.from({ length: total }, (_, index) => index);
+  }
+
+  estrellasVacias(puntuacion: string | number | null | undefined): number[] {
+    const total = Math.max(0, Math.min(5, Math.floor(Number(puntuacion) || 0)));
+    return Array.from({ length: 5 - total }, (_, index) => index);
+  }
+
+  inicialesUsuario(name: string): string {
+    return name.split(' ').slice(0, 2).map(w => w[0]?.toUpperCase() ?? '').join('');
+  }
+
+  colorAvatar(name: string): string {
+    const palette = ['#c0737e', '#7b9ec4', '#7baa8a', '#a07bc4', '#c4997b', '#7bbac4'];
+    const index = [...name].reduce((sum, c) => sum + c.charCodeAt(0), 0) % palette.length;
+    return palette[index];
   }
 
   irANuevaResenia(): void {
@@ -131,7 +150,7 @@ export class DetallesProveedoresComponent {
       return;
     }
 
-    this.router.navigate(['/proveedores/detalles', empresaId, 'resenas', 'nueva']);
+    this.router.navigate(['/proveedores/detalles', empresaId, 'reseñas', 'nueva']);
   }
 
   cerrarMensajeReviewCreada(): void {
@@ -147,6 +166,7 @@ export class DetallesProveedoresComponent {
     this.reseniasService.getReseniaByEmpresa(idEmpresa).subscribe({
       next: (response) => {
         this.resenias.set(response?.data ?? []);
+        this.estadisticas.set(response?.estadisticas ?? null);
         this.reseniasLoading.set(false);
       },
       error: (error: { error?: { message?: string; mensaje?: string } }) => {
@@ -154,7 +174,7 @@ export class DetallesProveedoresComponent {
         this.reseniasError.set(
           error?.error?.message ??
           error?.error?.mensaje ??
-          'No se pudieron cargar las resenas.',
+          'No se pudieron cargar las reseñas.',
         );
       },
     });
