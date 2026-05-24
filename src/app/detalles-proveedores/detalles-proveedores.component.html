@@ -30,17 +30,23 @@
                                 }
                                 }
                             </div>
-                            <div class="col-12 p-0 pt-2">
+                            <div class="col-12 p-0 pt-2 img-ultima-wrapper">
                                 @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
                                 @if (idx === 3) {
                                 <img [src]="foto.url" class="img-fluid w-100 img-derecha-bottom" />
                                 }
+                                }
+                                @if (fotosOrdenadas().length > 3) {
+                                <button class="btn btn-ver-fotos" type="button" (click)="abrirGaleriaFotos()">
+                                    <i class="bi bi-images me-2"></i>Ver todas las fotos
+                                </button>
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
 
         <div class="col-lg-4 ps-lg-5 pt-4 mt-4 col-12">

@@ -9,6 +9,7 @@ import { ProductoEmpresa } from '../Interfaces/Producto';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDetallesPresupuestoComponent } from '../modal-detalles-presupuesto/modal-detalles-presupuesto.component';
+import { ModalGaleriaFotosComponent } from '../modal-galeria-fotos/modal-galeria-fotos.component';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
 import Swal from 'sweetalert2';
@@ -98,6 +99,22 @@ export class DetallesProveedoresComponent {
           this.fotosConRatio.set(resultados);
         }
       };
+    });
+  }
+
+  abrirGaleriaFotos(): void {
+    const fotos = this.fotosOrdenadas();
+    if (!fotos.length) return;
+
+    this.dialog.open(ModalGaleriaFotosComponent, {
+      data: {
+        fotos,
+        indiceInicial: 0,
+        nombreEmpresa: this.empresa()?.nombre_empresa,
+      },
+      panelClass: 'galeria-dialog',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
     });
   }
 
