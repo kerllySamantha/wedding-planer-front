@@ -36,45 +36,41 @@
     <!-- Cuadrado 1 -->
     <div
         class="col-xl-2 col-lg-4 col-md-4 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-2">
-        <div class="stat-icon-wrap icon-pink">
-            <img class="img-see" src="assets/images/pendientes_novia.png" alt="Servicios contratados" />
+        <div class="stat-icon-wrap">
+            <img class="stat-img" src="assets/images/pendientes_novia.png" alt="Servicios contratados" />
+            <span class="stat-badge badge-pink">{{ serviciosContratados() }}</span>
         </div>
-        <span class="stat-value">{{ serviciosContratados() }}</span>
         <span class="stat-label">Servicios contratados</span>
-        <div class="stat-bar bar-pink"></div>
     </div>
 
     <!-- Cuadrado 2 -->
     <div
         class="col-xl-2 col-lg-4 col-md-4 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-3">
-        <div class="stat-icon-wrap icon-teal">
-            <img class="img-see" src="assets/images/lista_tareas.png" alt="Tareas completadas" />
+        <div class="stat-icon-wrap">
+            <img class="stat-img" src="assets/images/lista_tareas.png" alt="Tareas completadas" />
+            <span class="stat-badge badge-teal">{{ tareasCompletadas() }}</span>
         </div>
-        <span class="stat-value">{{ tareasCompletadas() }}</span>
         <span class="stat-label">Tareas completadas</span>
-        <div class="stat-bar bar-teal"></div>
     </div>
 
     <!-- Cuadrado 3 -->
     <div
         class="col-xl-2 col-lg-4 col-md-4 col-sm-6 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-4">
-        <div class="stat-icon-wrap icon-purple">
-            <img class="img-see" src="assets/images/perfil_usuario.png" alt="Invitados confirmados" />
+        <div class="stat-icon-wrap">
+            <img class="stat-img" src="assets/images/perfil_usuario.png" alt="Invitados confirmados" />
+            <span class="stat-badge badge-purple">—</span>
         </div>
-        <span class="stat-value">—</span>
         <span class="stat-label">Invitados confirmados</span>
-        <div class="stat-bar bar-purple"></div>
     </div>
 
     <!-- Cuadrado 4 -->
     <div
         class="col-xl-4 col-lg-4 col-md-4 col-sm-6 boda-style secundaria d-flex flex-column align-items-center justify-content-center order-md-5">
-        <div class="stat-icon-wrap icon-amber">
-            <img class="img-see" src="assets/images/editar_presupuesto.png" alt="Presupuesto gastado" />
+        <div class="stat-icon-wrap">
+            <img class="stat-img" src="assets/images/editar_presupuesto.png" alt="Presupuesto gastado" />
+            <span class="stat-badge badge-amber">{{ formatearMoneda(presupuestoGastado()) }}</span>
         </div>
-        <span class="stat-value">{{ formatearMoneda(presupuestoGastado()) }}</span>
         <span class="stat-label">Presupuesto gastado</span>
-        <div class="stat-bar bar-amber"></div>
     </div>
 
 </div>

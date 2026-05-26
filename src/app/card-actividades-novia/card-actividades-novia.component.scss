@@ -106,52 +106,57 @@
     /* ancho máximo */
   
 }
-// Icono con fondo de color
+// Contenedor solo para posicionar el badge
 .stat-icon-wrap {
-    width: 52px;
-    height: 52px;
-    border-radius: 12px;
+    position: relative;
+    display: inline-flex;
+    margin-bottom: 10px;
+}
+
+// Icono grande sin fondo
+.stat-img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+}
+
+// Badge con valor
+.stat-badge {
+    position: absolute;
+    top: -7px;
+    right: -10px;
+    min-width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    padding: 0 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
-
-    .img-see {
-        width: 28px;
-        height: 28px;
-        object-fit: contain;
-        margin-bottom: 0; // anula el mb-2 del HTML si lo dejas
-    }
-}
-
-// Colores de fondo por card
-.icon-pink   { background-color: #FBEAF0; }
-.icon-teal   { background-color: #E1F5EE; }
-.icon-purple { background-color: #EEEDFE; }
-.icon-amber  { background-color: #FAEEDA; }
-
-// Valor principal (número grande)
-.stat-value {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #1a1a1a;
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: #fff;
+    border: 2px solid #fff;
+    white-space: nowrap;
     line-height: 1;
-    margin-bottom: 4px;
-    text-align: center;
 }
+
+.badge-pink   { background-color: #D4537E; }
+.badge-teal   { background-color: #1D9E75; }
+.badge-purple { background-color: #7F77DD; }
+.badge-amber  { background-color: #BA7517; }
 
 // Etiqueta descriptiva
 .stat-label {
-    font-size: 0.72rem;
+    font-size: 0.75rem;
+    font-weight: 500;
     color: #6c757d;
     text-align: center;
-    line-height: 1.35;
-    letter-spacing: 0.02em;
+    line-height: 1.4;
 }
 
 // Barra de acento inferior
 .stat-bar {
-    width: 28px;
+    width: 36px;
     height: 3px;
     border-radius: 2px;
     margin-top: 10px;

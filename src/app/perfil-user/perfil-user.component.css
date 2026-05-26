@@ -47,12 +47,12 @@
   cursor: pointer;
 }
 .pf-hero__avatar-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 76px;
+  height: 76px;
   -o-object-fit: cover;
      object-fit: cover;
+  display: block;
+  flex-shrink: 0;
   border-radius: 50%;
 }
 .pf-hero__avatar-overlay {
@@ -315,6 +315,15 @@
 .pf-btn--primary:hover:not(:disabled) {
   background: rgb(244.8941935484, 69.3058064516, 73.095483871);
   border-color: rgb(244.8941935484, 69.3058064516, 73.095483871);
+}
+.pf-btn--secondary {
+  background: #fce8ec;
+  color: #c0505a;
+  border-color: #f5c0c8;
+}
+.pf-btn--secondary:hover:not(:disabled) {
+  background: #f9d0d7;
+  border-color: #f0a0ac;
 }
 .pf-btn--outline {
   background: transparent;
