@@ -13,6 +13,9 @@ import { Notificacion } from '../Interfaces/Notificacion';
 import { PedirPresupuestoInfo } from '../Interfaces/PedirPresupuesto';
 import { EchoService } from '../Services/Echo/echo.service';
 import { filter } from 'rxjs';
+import { PerfilResponse } from '../Interfaces/Perfil';
+import { PerfilServiceServiceService } from '../Services/Perfiles/perfil-service-service.service';
+import { User } from '../Interfaces/User';
 
 @Component({
   selector: 'app-navbar',
@@ -34,8 +37,10 @@ import { filter } from 'rxjs';
 export class NavbarComponent implements OnInit, OnDestroy {
   readonly autServicectx = inject(AuthenticationService);
   private readonly notificacionesCtx = inject(NotificacionesService);
+    private readonly perfilServiceCtx = inject(PerfilServiceServiceService);
   private readonly echoSvc = inject(EchoService);
   private readonly router = inject(Router);
+  readonly perfil = signal<PerfilResponse | null>(null);
 
   readonly nombreU = signal<string | null>(null);
   readonly rolAuth = computed(() => !!this.autServicectx.rol());
@@ -101,6 +106,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.nombreU.set(inicial);
   }
 
+    cargarPerfil(userId: number): void {
+    this.perfilServiceCtx.getPerfilByUserId(userId).subscribe({
+      next: (res) => {
+        this.perfil.set(res);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error al cargar perfil:', err);
+      },
+    });
+  }
+
   logout(event?: Event): void {
     event?.preventDefault();
     this.autServicectx.logout().subscribe({
@@ -144,6 +160,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   estaExpandida(notif: Notificacion): boolean {
     return this.expandedNotifId() === (notif?.id ?? null);
   }
+
+   readonly fotoPerfilUrl = computed(() => {
+    const user = this.perfil()?.data?.usuario as  User;
+    return (user?.fotoPerfil || user?.fotoPerfil || null) as string | null;
+  });
 
   irADetalleDesdeNotificacion(notif: Notificacion, event?: Event): void {
     event?.stopPropagation();

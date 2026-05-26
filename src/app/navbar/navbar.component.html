@@ -107,7 +107,13 @@
         <!-- Avatar -->
         <button class="p-0 avatar-button" [matMenuTriggerFor]="userMenuHome">
           <div class="d-flex justify-content-center align-items-center avatar-circle">
+
+            @if (fotoPerfilUrl()) {
+            <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="avatar-img">
+            } @else {
             {{ nombreU() }}
+            }
+
           </div>
         </button>
 
@@ -315,9 +321,7 @@
           {{ notificacionesLoading() ? 'Actualizando...' : 'Recargar' }}
         </button>
 
-        <button
-          class="notif-action-btn notif-action-btn--soft"
-          (click)="marcarTodasLeidas()"
+        <button class="notif-action-btn notif-action-btn--soft" (click)="marcarTodasLeidas()"
           [disabled]="notificacionesLoading() || notificaciones().length === 0">
           Marcar todas
         </button>
@@ -329,59 +333,55 @@
     </div>
 
     @if (mensajeAccion()) {
-      <div class="notif-info">{{ mensajeAccion() }}</div>
+    <div class="notif-info">{{ mensajeAccion() }}</div>
     }
 
     @if (notificacionesLoading()) {
-      <div class="notif-empty">Cargando notificaciones...</div>
+    <div class="notif-empty">Cargando notificaciones...</div>
 
     } @else if (notificacionesError()) {
-      <div class="notif-error">{{ notificacionesError() }}</div>
+    <div class="notif-error">{{ notificacionesError() }}</div>
 
     } @else if (notificaciones().length === 0) {
-      <div class="notif-empty">
-        <span class="notif-empty-icon">🔔</span>
-        No tienes notificaciones pendientes.
-      </div>
+    <div class="notif-empty">
+      <span class="notif-empty-icon">🔔</span>
+      No tienes notificaciones pendientes.
+    </div>
 
     } @else {
-      <div class="notif-list">
-        @for (notif of notificaciones(); track notif.id) {
-          <article class="notif-item">
-            <div class="notif-item-body" (click)="irADetalleDesdeNotificacion(notif, $event)">
-              <div class="notif-item-top">
-                <div class="notif-item-title-wrap">
-                  <div class="notif-item-title">
-                    {{ notif.titulo || 'Notificación' }}
-                  </div>
-
-                  @if (!esLeida(notif)) {
-                    <span class="notif-pill">Nueva</span>
-                  }
-                </div>
+    <div class="notif-list">
+      @for (notif of notificaciones(); track notif.id) {
+      <article class="notif-item">
+        <div class="notif-item-body" (click)="irADetalleDesdeNotificacion(notif, $event)">
+          <div class="notif-item-top">
+            <div class="notif-item-title-wrap">
+              <div class="notif-item-title">
+                {{ notif.titulo || 'Notificación' }}
               </div>
 
-              <div class="notif-item-message">
-                {{ notif.mensaje }}
-              </div>
+              @if (!esLeida(notif)) {
+              <span class="notif-pill">Nueva</span>
+              }
             </div>
+          </div>
 
-            <div class="notif-item-actions">
-              <button class="notif-link" type="button" (click)="irADetalleDesdeNotificacion(notif, $event)">
-                Abrir
-              </button>
+          <div class="notif-item-message">
+            {{ notif.mensaje }}
+          </div>
+        </div>
 
-              <button
-                class="notif-mark-read"
-                type="button"
-                (click)="marcarLeida(notif, $event)"
-                title="Marcar como leída">
-                ✓
-              </button>
-            </div>
-          </article>
-        }
-      </div>
+        <div class="notif-item-actions">
+          <button class="notif-link" type="button" (click)="irADetalleDesdeNotificacion(notif, $event)">
+            Abrir
+          </button>
+
+          <button class="notif-mark-read" type="button" (click)="marcarLeida(notif, $event)" title="Marcar como leída">
+            ✓
+          </button>
+        </div>
+      </article>
+      }
+    </div>
     }
   </div>
 </ng-template>
