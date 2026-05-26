@@ -15,11 +15,11 @@ export class MenuMiBodaComponent {
   readonly menuItems: ReadonlyArray<{ label: string; icon: string; route: string; fragment?: string }> = [
     { label: 'Mi boda', icon: 'assets/images/anillos.svg', route: `/${APP_PATHS.userWedding}` },
     { label: 'Tareas', icon: 'assets/images/provedor1.svg', route: `/${APP_PATHS.userWedding}`, fragment: 'actividades' },
-    { label: 'Proveedores', icon: 'assets/images/provedor2.svg', route: `/${APP_PATHS.publicSuppliers}` },
-    { label: 'Invitados', icon: 'assets/images/1.png', route: `/${APP_PATHS.userProfile}` },
-    { label: 'Mesas', icon: 'assets/images/2.png', route: `/${APP_PATHS.budgetTool}` },
+    { label: 'Proveedores', icon: 'assets/images/provedor2.svg', route: `/${APP_PATHS.userWedding}`, fragment: 'proveedores' },
+    { label: 'Invitados', icon: 'assets/images/1.png', route: `/${APP_PATHS.userWedding}`, fragment: 'invitados' },
+    { label: 'Mesas', icon: 'assets/images/2.png', route: `/${APP_PATHS.userWedding}`, fragment: 'mesas' },
     { label: 'Presupuesto', icon: 'assets/images/3.png', route: `/${APP_PATHS.budgetTool}` },
-    { label: 'Vestidos', icon: 'assets/images/4.png', route: `/${APP_PATHS.userProfile}` },
+    { label: 'Vestidos', icon: 'assets/images/4.png', route: `/${APP_PATHS.userWedding}`, fragment: 'vestidos' },
   ] as const;
 
   constructor(public router: Router) {

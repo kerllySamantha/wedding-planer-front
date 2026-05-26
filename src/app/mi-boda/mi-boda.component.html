@@ -3,7 +3,9 @@
 <app-menu-mi-boda></app-menu-mi-boda>
 
 <div class="container-fluid">
-    <app-actividades-mi-boda></app-actividades-mi-boda>
+    <section id="actividades">
+        <app-actividades-mi-boda></app-actividades-mi-boda>
+    </section>
 
     <div class="row">
         <h1>Crea tu equipo soñado</h1>
@@ -30,7 +32,7 @@
     </div>
 </div>
 
-<div class="personal-container">
+<div class="personal-container" id="proveedores">
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
         @for (empresa of companies(); track empresa.id) {
@@ -39,4 +41,47 @@
 
     </div>
 
+</div>
+
+<div class="container planners py-4">
+    <div class="row g-4">
+        <div class="col-12 col-lg-4" id="invitados">
+            <h3>Invitados</h3>
+            <div class="input-group mb-2">
+                <input class="form-control" [(ngModel)]="nuevoInvitado" placeholder="Nombre del invitado">
+                <button class="btn btn-dark" (click)="addInvitado()">Añadir</button>
+            </div>
+            <ul class="list-group">
+                @for (item of invitados; track $index) {
+                <li class="list-group-item d-flex justify-content-between align-items-center">{{ item }} <button class="btn btn-sm btn-outline-danger" (click)="removeItem('invitados', $index)">Quitar</button></li>
+                }
+            </ul>
+        </div>
+
+        <div class="col-12 col-lg-4" id="mesas">
+            <h3>Mesas</h3>
+            <div class="input-group mb-2">
+                <input class="form-control" [(ngModel)]="nuevaMesa" placeholder="Ej: Mesa familia novia (8)">
+                <button class="btn btn-dark" (click)="addMesa()">Añadir</button>
+            </div>
+            <ul class="list-group">
+                @for (item of mesas; track $index) {
+                <li class="list-group-item d-flex justify-content-between align-items-center">{{ item }} <button class="btn btn-sm btn-outline-danger" (click)="removeItem('mesas', $index)">Quitar</button></li>
+                }
+            </ul>
+        </div>
+
+        <div class="col-12 col-lg-4" id="vestidos">
+            <h3>Vestidos</h3>
+            <div class="input-group mb-2">
+                <input class="form-control" [(ngModel)]="nuevoVestido" placeholder="Ej: Vestido ceremonia">
+                <button class="btn btn-dark" (click)="addVestido()">Añadir</button>
+            </div>
+            <ul class="list-group">
+                @for (item of vestidos; track $index) {
+                <li class="list-group-item d-flex justify-content-between align-items-center">{{ item }} <button class="btn btn-sm btn-outline-danger" (click)="removeItem('vestidos', $index)">Quitar</button></li>
+                }
+            </ul>
+        </div>
+    </div>
 </div>
