@@ -38,6 +38,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
 
   readonly nombreU = signal<string | null>(null);
+  readonly fotoPerfil = signal<string | null>(null);
   readonly rolAuth = computed(() => !!this.autServicectx.rol());
   readonly toastMessage = signal<string | null>(null);
   readonly mensajeAccion = signal<string | null>(null);
@@ -66,7 +67,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.letraNombre();
+    this.cargarDatosUsuarioNav();
     this.cargarNotificaciones();
     this.iniciarEscuchaNotificaciones();
   }
@@ -96,9 +97,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
     return this.rutaActiva.includes(ruta);
   }
 
-  letraNombre(): void {
+  cargarDatosUsuarioNav(): void {
     const inicial = localStorage.getItem('nombre')?.charAt(0) ?? null;
+    const foto = localStorage.getItem('fotoPerfil') ?? localStorage.getItem('foto_perfil');
+
     this.nombreU.set(inicial);
+    this.fotoPerfil.set(foto && foto.trim().length > 0 ? foto : null);
   }
 
   logout(event?: Event): void {

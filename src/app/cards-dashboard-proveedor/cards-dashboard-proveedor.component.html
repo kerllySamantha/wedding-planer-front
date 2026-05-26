@@ -38,3 +38,24 @@
 
 
 </div>
+
+
+<section class="charts-section mt-4">
+  <h4 class="mb-3">Estado de reservas del mes</h4>
+
+  @if (!loading() && !error()) {
+  <div class="chart-list">
+    @for (item of resumenEstados(); track item.key) {
+    <div class="chart-row">
+      <div class="chart-meta">
+        <span>{{ item.key }}</span>
+        <strong>{{ item.cantidad }}</strong>
+      </div>
+      <div class="chart-bar">
+        <span class="chart-fill" [style.width.%]="item.porcentaje" [style.background]="item.color"></span>
+      </div>
+    </div>
+    }
+  </div>
+  }
+</section>

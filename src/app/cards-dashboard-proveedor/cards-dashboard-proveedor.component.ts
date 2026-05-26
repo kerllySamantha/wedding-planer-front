@@ -123,6 +123,23 @@ export class CardsDashboardProveedorComponent {
     this.reservasMes().filter(r => r.estado === 'rechazada')
   );
 
+
+  readonly resumenEstados = computed(() => {
+    const total = this.reservasMes().length;
+    const estados = [
+      { key: 'Confirmadas', cantidad: this.reservasCompletadas().length, color: '#4caf50' },
+      { key: 'Pendientes', cantidad: this.reservasPendientes().length, color: '#ffb300' },
+      { key: 'Canceladas', cantidad: this.reservasCanceladas().length, color: '#ef5350' },
+      { key: 'Bloqueadas', cantidad: this.reservasBloqueadas().length, color: '#5c6bc0' },
+      { key: 'Rechazadas', cantidad: this.reservasRechazadas().length, color: '#8e24aa' },
+    ];
+
+    return estados.map((e) => ({
+      ...e,
+      porcentaje: total > 0 ? Math.round((e.cantidad / total) * 100) : 0,
+    }));
+  });
+
   ngOnInit() {
     this.cargarReservas();
   }

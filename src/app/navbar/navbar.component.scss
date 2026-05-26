@@ -498,3 +498,12 @@ h1 {
     max-width: none;
   }
 }
+
+.avatar-image {
+  width: 2.55rem;
+  height: 2.55rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 10px 22px rgba(247, 108, 111, 0.28);
+}
