@@ -48,6 +48,20 @@ export interface Empresa extends EmpresaBase {
 
 
 
+export interface EstadisticasEmpresa {
+  status: string;
+  data: {
+    reservasPorEstado:        { estado: string;   total: number }[];
+    reservasPorMes:           { mes: string;      total: number }[];
+    topProductos:             { nombre: string;   total: number }[];
+    distribucionValoraciones: { estrella: number; total: number }[];
+    mediaValoracion:          number;
+    totalReservas:            number;
+    totalResenias:            number;
+    totalProductos:           number;
+  };
+}
+
 export interface CreateEmpresa  {
  
   nombre_empresa: string,

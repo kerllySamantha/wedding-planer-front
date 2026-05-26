@@ -36,6 +36,7 @@ import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-ser
 import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { PresupuestoHttpService } from '../Services/Presupuesto/presupuesto-http-service.service';
+import { AuthenticationService } from '../Services/Autentication/authenticationService';
 
 type PerfilUsuarioForm = {
   name: FormControl<string>;
@@ -77,6 +78,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   private readonly empresasService = inject(EmpresasServiceServiceService);
   private readonly presupuestoService = inject(PresupuestoHttpService);
   private readonly empresasApiSvc = inject(EmpresasApiServiceService);
+  private readonly authSvc = inject(AuthenticationService);
   private readonly router = inject(Router);
 
   readonly perfil = signal<PerfilResponse | null>(null);
@@ -268,6 +270,9 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     this.perfilServiceCtx.getPerfilByUserId(userId).subscribe({
       next: (res) => {
         this.perfil.set(res);
+        const u = res?.data?.usuario as any;
+        const foto = u?.fotoPerfil || u?.foto_perfil;
+        if (foto) this.authSvc.updateAuthUser({ fotoPerfil: foto });
         this.cargarNotificaciones();
         this.cargarReseniasDeLaBoda(userId);
         this.cargarEmpresasParaResenia();
@@ -336,13 +341,20 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
                   ...current,
                   data: {
                     ...current.data,
-                    usuario: {
-                      ...current.data.usuario,
-                      fotoPerfil: url,
-                    },
+                    usuario: { ...current.data.usuario, fotoPerfil: url },
                   },
                 };
               });
+              // Actualiza el signal de auth y localStorage para que el navbar refleje la foto
+              this.authSvc.auth.update(u => u ? { ...u, fotoPerfil: url } : u);
+              try {
+                const stored = localStorage.getItem('user');
+                if (stored) {
+                  const parsed = JSON.parse(stored);
+                  parsed.fotoPerfil = url;
+                  localStorage.setItem('user', JSON.stringify(parsed));
+                }
+              } catch {}
             },
             error: (err) => {
               console.error('[foto] editarPerfil ERROR:', err);

@@ -38,6 +38,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
 
   readonly nombreU = signal<string | null>(null);
+  readonly fotoU = computed(() => this.autServicectx.fotoUrl());
   readonly rolAuth = computed(() => !!this.autServicectx.rol());
   readonly toastMessage = signal<string | null>(null);
   readonly mensajeAccion = signal<string | null>(null);
