@@ -1,7 +1,6 @@
 <div class="container boda py-5">
   <div class="row g-0 align-items-start justify-content-center boda">
 
-    <!-- Columna izquierda -->
     <div class="col-10 col-md-10 col-lg-3 col-xl-3 fondo-imagen position-relative rounded-4">
       <div class="boda-bg w-100 h-100 position-absolute"></div>
 
@@ -27,7 +26,6 @@
       </div>
     </div>
 
-    <!-- Columna derecha -->
     <div class="col-12 col-lg-9 col-xl-9">
       <div class="card-body text-center ">
 
@@ -35,55 +33,57 @@
           {{ formatearNombrePareja(bodaEncontrada()?.nombre_pareja) }}
         </h5>
 
-        <p class="card-text">
+        <p class="card-text text-highlight">
           {{fechaFormateada()}}
         </p>
 
-        <!-- Tarjetas secundarias -->
-        <div class="row g-3 justify-content-center  stats-grid">
+        <div class="row g-3 justify-content-center stats-grid">
 
           <div class="col-6 col-md-3">
-            <div class="boda-style card stats-card d-flex flex-column align-items-center justify-content-center text-center">
-              <div class="stat-icon-wrap">
-                <img class="stat-img" src="assets/images/pendientes_novia.png" alt="Servicios contratados" />
+            <div class="boda-style card stats-card stats-card--rose d-flex flex-column align-items-center justify-content-center text-center">
+              <div class="stat-icon-wrap" aria-hidden="true">
+                <span class="stat-icon">SC</span>
                 <span class="stat-badge badge-pink">{{ serviciosContratados() }}</span>
               </div>
-              <span class="stat-label">Servicios contratados</span>
+              <span class="stat-title">Servicios</span>
+              <span class="stat-label">Contratados</span>
             </div>
           </div>
 
           <div class="col-6 col-md-3">
-            <div class="boda-style card stats-card d-flex flex-column align-items-center justify-content-center text-center">
-              <div class="stat-icon-wrap">
-                <img class="stat-img" src="assets/images/lista_tareas.png" alt="Tareas completadas" />
+            <div class="boda-style card stats-card stats-card--mint d-flex flex-column align-items-center justify-content-center text-center">
+              <div class="stat-icon-wrap" aria-hidden="true">
+                <span class="stat-icon">TC</span>
                 <span class="stat-badge badge-teal">{{ tareasCompletadas() }}</span>
               </div>
-              <span class="stat-label">Tareas completadas</span>
+              <span class="stat-title">Tareas</span>
+              <span class="stat-label">Completadas</span>
             </div>
           </div>
 
           <div class="col-6 col-md-3">
-            <div class="boda-style card stats-card d-flex flex-column align-items-center justify-content-center text-center">
-              <div class="stat-icon-wrap">
-                <img class="stat-img" src="assets/images/perfil_usuario.png" alt="Invitados confirmados" />
+            <div class="boda-style card stats-card stats-card--violet d-flex flex-column align-items-center justify-content-center text-center">
+              <div class="stat-icon-wrap" aria-hidden="true">
+                <span class="stat-icon">IC</span>
                 <span class="stat-badge badge-purple">—</span>
               </div>
-              <span class="stat-label">Invitados confirmados</span>
+              <span class="stat-title">Invitados</span>
+              <span class="stat-label">Confirmados</span>
             </div>
           </div>
 
           <div class="col-6 col-md-3">
-            <div class="boda-style card stats-card d-flex flex-column align-items-center justify-content-center text-center">
-              <div class="stat-icon-wrap">
-                <img class="stat-img" src="assets/images/editar_presupuesto.png" alt="Presupuesto gastado" />
-                <span class="stat-badge badge-amber">{{ formatearMoneda(presupuestoGastado()) }}</span>
+            <div class="boda-style card stats-card stats-card--gold d-flex flex-column align-items-center justify-content-center text-center">
+              <div class="stat-icon-wrap" aria-hidden="true">
+                <span class="stat-icon">PG</span>
+                <span class="stat-badge badge-amber">€</span>
               </div>
-              <span class="stat-label">Presupuesto gastado</span>
+              <span class="stat-title">Presupuesto</span>
+              <span class="stat-label stat-label--amount">{{ formatearMoneda(presupuestoGastado()) }}</span>
             </div>
           </div>
 
         </div>
-        <!-- Fin stats-grid -->
 
       </div>
     </div>
