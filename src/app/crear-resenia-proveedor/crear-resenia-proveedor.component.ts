@@ -49,6 +49,7 @@ export class CrearReseniaProveedorComponent implements OnDestroy {
   readonly generalError = signal<string | null>(null);
   readonly fotosError = signal<string | null>(null);
   readonly fotosSeleccionadas = signal<FotoSeleccionada[]>([]);
+  readonly hoveredStar = signal(0);
 
   readonly empresaRoute = toSignal(
     this.route.data.pipe(
@@ -138,6 +139,11 @@ export class CrearReseniaProveedorComponent implements OnDestroy {
     }
 
     input.value = '';
+  }
+
+  setPuntuacion(star: number): void {
+    this.form.controls.puntuacion.setValue(String(star));
+    this.form.controls.puntuacion.markAsTouched();
   }
 
   eliminarFoto(index: number): void {

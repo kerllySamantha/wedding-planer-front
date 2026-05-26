@@ -39,21 +39,34 @@
           </div>
 
           <div class="row g-3 mt-1">
-            <div class="col-md-4">
-              <label class="form-label" for="puntuacion">Puntuacion</label>
-              <select id="puntuacion" class="form-select" formControlName="puntuacion"
-                [class.is-invalid]="isInvalid('puntuacion')">
-                <option value="">Selecciona una puntuacion</option>
-                @for (puntuacion of [5, 4, 3, 2, 1]; track puntuacion) {
-                <option [value]="puntuacion">{{ puntuacion }} estrella(s)</option>
+            <div class="col-12">
+              <label class="form-label">Puntuacion</label>
+              <div class="star-rating" [class.star-rating--invalid]="isInvalid('puntuacion')">
+                @for (star of [1,2,3,4,5]; track star) {
+                <button type="button"
+                  class="star-rating__btn"
+                  [class.star-rating__btn--active]="star <= (hoveredStar() || +form.controls.puntuacion.value)"
+                  (click)="setPuntuacion(star)"
+                  (mouseenter)="hoveredStar.set(star)"
+                  (mouseleave)="hoveredStar.set(0)"
+                  [attr.aria-label]="star + (star === 1 ? ' estrella' : ' estrellas')">
+                  ★
+                </button>
                 }
-              </select>
+              </div>
+              <p class="star-rating__label">
+                @if (form.controls.puntuacion.value) {
+                  {{ +form.controls.puntuacion.value }} de 5 estrellas
+                } @else {
+                  Toca una estrella para valorar
+                }
+              </p>
               @if (isInvalid('puntuacion')) {
               <div class="invalid-feedback d-block">{{ getError('puntuacion') }}</div>
               }
             </div>
 
-            <div class="col-md-8">
+            <div class="col-12">
               <label class="form-label" for="comentario">Comentario</label>
               <textarea id="comentario" rows="6" class="form-control" formControlName="comentario"
                 [class.is-invalid]="isInvalid('comentario')"
@@ -87,8 +100,8 @@
               @for (foto of fotosSeleccionadas(); track foto.previewUrl; let idx = $index) {
               <article class="upload-panel__item">
                 <img [src]="foto.previewUrl" [alt]="'Vista previa ' + idx">
-                <button type="button" class="btn btn-sm btn-light upload-panel__remove" (click)="eliminarFoto(idx)">
-                  Quitar
+                <button type="button" class="upload-panel__remove" (click)="eliminarFoto(idx)" aria-label="Eliminar foto">
+                  ×
                 </button>
               </article>
               }

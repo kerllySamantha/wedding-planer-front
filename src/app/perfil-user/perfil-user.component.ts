@@ -34,6 +34,7 @@ import { Boda, CreateBoda } from '../Interfaces/Boda';
 import { CreateResenia, Resenia } from '../Interfaces/Resenia';
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
 import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
+import { PresupuestoHttpService } from '../Services/Presupuesto/presupuesto-http-service.service';
 
 type PerfilUsuarioForm = {
   name: FormControl<string>;
@@ -73,6 +74,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   private readonly regionesServer = inject(RegionsServer);
   private readonly reseniasService = inject(ReseniasServiceServiceService);
   private readonly empresasService = inject(EmpresasServiceServiceService);
+  private readonly presupuestoService = inject(PresupuestoHttpService)
   private readonly router = inject(Router);
 
   readonly perfil = signal<PerfilResponse | null>(null);
@@ -283,6 +285,35 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
     });
   }
 
+descargarPdf() {
+
+  const bodaActual = this.boda();
+
+  if (!bodaActual?.id) {
+    console.error('No existe una boda válida');
+    return;
+  }
+
+  this.presupuestoService
+    .descargarPdfBoda(bodaActual.id)
+    .subscribe({
+
+      next: (blob) => {
+
+        const url = URL.createObjectURL(blob);
+
+        window.open(url);
+
+        URL.revokeObjectURL(url);
+      },
+
+      error: (error) => {
+
+        console.error('Error al descargar PDF', error);
+      }
+    });
+}
+
   isInvalidBodaField<K extends keyof BodaProfileForm>(field: K): boolean {
     const control = this.bodaForm.controls[field];
     return control.invalid && (control.dirty || control.touched || this.submittedBoda());
@@ -425,6 +456,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   }
 
   activarEdicionBoda(): void {
+    this.pestanaActiva.set('boda');
     this.editandoBoda.set(true);
     this.submittedBoda.set(false);
     this.bodaFormError.set(null);

@@ -6,9 +6,19 @@
   <header class="pf-hero">
     <div class="pf-hero__cover"></div>
     <div class="pf-hero__body">
-      <div class="pf-hero__avatar"
-           [attr.aria-label]="'Avatar de ' + (perfil()?.data?.usuario?.name || 'usuario')">
+      <div class="pf-hero__avatar" [attr.aria-label]="'Avatar de ' + (perfil()?.data?.usuario?.name || 'usuario')">
+
+        @if (perfil()?.data?.usuario?.fotoPerfil) {
+
+        <img [src]="perfil()?.data?.usuario?.fotoPerfil" [alt]="perfil()?.data?.usuario?.name"
+          class="pf-hero__avatar-image">
+
+        } @else {
+
         {{ (perfil()?.data?.usuario?.name || '?').charAt(0).toUpperCase() }}
+
+        }
+
       </div>
       <div class="pf-hero__info">
         <p class="pf-hero__eyebrow">Perfil de usuario</p>
@@ -86,8 +96,11 @@
           <button type="button" class="pf-btn pf-btn--primary" (click)="activarEdicionBoda()">
             <i class="bi bi-pencil-square"></i> Editar mi boda
           </button>
-          <button type="button" class="pf-btn pf-btn--ghost" (click)="irAPublicarBoda()">
+          <button type="button" class="pf-btn pf-btn--secondary" (click)="irAPublicarBoda()">
             <i class="bi bi-grid"></i> Mi panel de boda
+          </button>
+          <button type="button" class="pf-btn pf-btn--ghost" (click)="descargarPdf()">
+          <i class="bi bi-filetype-pdf"></i> Informe Pagos
           </button>
         </div>
       </article>
@@ -131,8 +144,7 @@
           <i class="bi bi-person-circle"></i>
           <span>Mi perfil</span>
         </button>
-        <button class="pf-tab" [class.pf-tab--active]="pestanaActiva() === 'boda'"
-          (click)="seleccionarPestana('boda')">
+        <button class="pf-tab" [class.pf-tab--active]="pestanaActiva() === 'boda'" (click)="seleccionarPestana('boda')">
           <i class="bi bi-calendar-heart"></i>
           <span>Mi boda</span>
         </button>
@@ -141,7 +153,7 @@
           <i class="bi bi-file-earmark-text"></i>
           <span>Solicitudes</span>
           @if (solicitudesNoLeidas() > 0) {
-            <span class="pf-tab__badge">{{ solicitudesNoLeidas() }}</span>
+          <span class="pf-tab__badge">{{ solicitudesNoLeidas() }}</span>
           }
         </button>
         <button class="pf-tab" [class.pf-tab--active]="pestanaActiva() === 'notificaciones'"
@@ -149,7 +161,7 @@
           <i class="bi bi-bell"></i>
           <span>Notificaciones</span>
           @if (notificacionesGeneralesNoLeidas() > 0) {
-            <span class="pf-tab__badge">{{ notificacionesGeneralesNoLeidas() }}</span>
+          <span class="pf-tab__badge">{{ notificacionesGeneralesNoLeidas() }}</span>
           }
         </button>
         <button class="pf-tab" [class.pf-tab--active]="pestanaActiva() === 'resenias'"
@@ -157,534 +169,531 @@
           <i class="bi bi-chat-square-heart"></i>
           <span>Reseñas</span>
           @if (reseniasBoda().length > 0) {
-            <span class="pf-tab__badge pf-tab__badge--neutral">{{ reseniasBoda().length }}</span>
+          <span class="pf-tab__badge pf-tab__badge--neutral">{{ reseniasBoda().length }}</span>
           }
         </button>
       </nav>
 
       <!-- ── Tab: Mi perfil ────────────────────────────────── -->
       @if (pestanaActiva() === 'perfil') {
-        <div class="pf-tab-content">
+      <div class="pf-tab-content">
 
-          @if (!editandoPerfil()) {
-            <div class="pf-section-head">
-              <div>
-                <h2 class="pf-section-title">Información personal</h2>
-                <p class="pf-section-sub">Tus datos de contacto y acceso</p>
-              </div>
-              <button type="button" class="pf-btn pf-btn--outline" (click)="activarEdicionPerfil()">
-                <i class="bi bi-pencil me-1"></i>Editar perfil
-              </button>
-            </div>
-
-            <div class="pf-profile-grid">
-              <article class="pf-profile-stat">
-                <span class="pf-profile-stat__label"><i class="bi bi-person me-1"></i>Nombre</span>
-                <strong>{{ perfil()?.data?.usuario?.name || '—' }}</strong>
-              </article>
-              <article class="pf-profile-stat">
-                <span class="pf-profile-stat__label"><i class="bi bi-envelope me-1"></i>Correo electrónico</span>
-                <strong>{{ perfil()?.data?.usuario?.email || '—' }}</strong>
-              </article>
-              <article class="pf-profile-stat">
-                <span class="pf-profile-stat__label"><i class="bi bi-telephone me-1"></i>Teléfono</span>
-                <strong>{{ perfil()?.data?.telefono || 'Sin registrar' }}</strong>
-              </article>
-              <article class="pf-profile-stat">
-                <span class="pf-profile-stat__label"><i class="bi bi-geo-alt me-1"></i>Dirección</span>
-                <strong>{{ perfil()?.data?.direccion || 'Sin registrar' }}</strong>
-              </article>
-            </div>
-
-            @if (perfilFormSuccess() && !editandoPerfil()) {
-              <div class="pf-notice pf-notice--ok">{{ perfilFormSuccess() }}</div>
-            }
-
-          } @else {
-
-            <div class="pf-section-head">
-              <div>
-                <h2 class="pf-section-title">Editar perfil</h2>
-                <p class="pf-section-sub">Actualiza tus datos personales</p>
-              </div>
-            </div>
-
-            <form class="pf-form" [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
-              <div class="pf-form__row">
-                <div class="pf-form__field">
-                  <label class="pf-label" for="perfilName">Nombre completo</label>
-                  <input id="perfilName" type="text" class="pf-input" formControlName="name"
-                    [class.pf-input--error]="isInvalidPerfilField('name')">
-                  @if (isInvalidPerfilField('name')) {
-                    <span class="pf-error">{{ getPerfilFieldError('name') }}</span>
-                  }
-                </div>
-                <div class="pf-form__field">
-                  <label class="pf-label" for="perfilTelefono">Teléfono</label>
-                  <input id="perfilTelefono" type="tel" class="pf-input" formControlName="telefono"
-                    placeholder="+34 600 000 000"
-                    [class.pf-input--error]="isInvalidPerfilField('telefono')">
-                  @if (isInvalidPerfilField('telefono')) {
-                    <span class="pf-error">{{ getPerfilFieldError('telefono') }}</span>
-                  }
-                </div>
-              </div>
-              <div class="pf-form__field">
-                <label class="pf-label" for="perfilDireccion">Dirección</label>
-                <input id="perfilDireccion" type="text" class="pf-input" formControlName="direccion"
-                  placeholder="Calle, número, ciudad..."
-                  [class.pf-input--error]="isInvalidPerfilField('direccion')">
-                @if (isInvalidPerfilField('direccion')) {
-                  <span class="pf-error">{{ getPerfilFieldError('direccion') }}</span>
-                }
-              </div>
-              <div class="pf-form__field">
-                <label class="pf-label" for="perfilPassword">Nueva contraseña <span class="pf-label--optional">(opcional)</span></label>
-                <input id="perfilPassword" type="password" class="pf-input" formControlName="newPassword"
-                  placeholder="Déjalo vacío para no cambiarla"
-                  [class.pf-input--error]="isInvalidPerfilField('newPassword')">
-                @if (isInvalidPerfilField('newPassword')) {
-                  <span class="pf-error">{{ getPerfilFieldError('newPassword') }}</span>
-                }
-              </div>
-
-              @if (perfilFormError()) {
-                <div class="pf-notice pf-notice--error">{{ perfilFormError() }}</div>
-              }
-              @if (perfilFormSuccess()) {
-                <div class="pf-notice pf-notice--ok">{{ perfilFormSuccess() }}</div>
-              }
-
-              <div class="pf-form__actions">
-                <button type="submit" class="pf-btn pf-btn--primary" [disabled]="guardandoPerfil()">
-                  {{ guardandoPerfil() ? 'Guardando...' : 'Guardar cambios' }}
-                </button>
-                <button type="button" class="pf-btn pf-btn--ghost" (click)="cancelarEdicionPerfil()"
-                  [disabled]="guardandoPerfil()">
-                  Cancelar
-                </button>
-              </div>
-            </form>
-          }
+        @if (!editandoPerfil()) {
+        <div class="pf-section-head">
+          <div>
+            <h2 class="pf-section-title">Información personal</h2>
+            <p class="pf-section-sub">Tus datos de contacto y acceso</p>
+          </div>
+          <button type="button" class="pf-btn pf-btn--outline" (click)="activarEdicionPerfil()">
+            <i class="bi bi-pencil me-1"></i>Editar perfil
+          </button>
         </div>
+
+        <div class="pf-profile-grid">
+          <article class="pf-profile-stat">
+            <span class="pf-profile-stat__label"><i class="bi bi-person me-1"></i>Nombre</span>
+            <strong>{{ perfil()?.data?.usuario?.name || '—' }}</strong>
+          </article>
+          <article class="pf-profile-stat">
+            <span class="pf-profile-stat__label"><i class="bi bi-envelope me-1"></i>Correo electrónico</span>
+            <strong>{{ perfil()?.data?.usuario?.email || '—' }}</strong>
+          </article>
+          <article class="pf-profile-stat">
+            <span class="pf-profile-stat__label"><i class="bi bi-telephone me-1"></i>Teléfono</span>
+            <strong>{{ perfil()?.data?.telefono || 'Sin registrar' }}</strong>
+          </article>
+          <article class="pf-profile-stat">
+            <span class="pf-profile-stat__label"><i class="bi bi-geo-alt me-1"></i>Dirección</span>
+            <strong>{{ perfil()?.data?.direccion || 'Sin registrar' }}</strong>
+          </article>
+        </div>
+
+        @if (perfilFormSuccess() && !editandoPerfil()) {
+        <div class="pf-notice pf-notice--ok">{{ perfilFormSuccess() }}</div>
+        }
+
+        } @else {
+
+        <div class="pf-section-head">
+          <div>
+            <h2 class="pf-section-title">Editar perfil</h2>
+            <p class="pf-section-sub">Actualiza tus datos personales</p>
+          </div>
+        </div>
+
+        <form class="pf-form" [formGroup]="perfilForm" (ngSubmit)="guardarPerfil()">
+          <div class="pf-form__row">
+            <div class="pf-form__field">
+              <label class="pf-label" for="perfilName">Nombre completo</label>
+              <input id="perfilName" type="text" class="pf-input" formControlName="name"
+                [class.pf-input--error]="isInvalidPerfilField('name')">
+              @if (isInvalidPerfilField('name')) {
+              <span class="pf-error">{{ getPerfilFieldError('name') }}</span>
+              }
+            </div>
+            <div class="pf-form__field">
+              <label class="pf-label" for="perfilTelefono">Teléfono</label>
+              <input id="perfilTelefono" type="tel" class="pf-input" formControlName="telefono"
+                placeholder="+34 600 000 000" [class.pf-input--error]="isInvalidPerfilField('telefono')">
+              @if (isInvalidPerfilField('telefono')) {
+              <span class="pf-error">{{ getPerfilFieldError('telefono') }}</span>
+              }
+            </div>
+          </div>
+          <div class="pf-form__field">
+            <label class="pf-label" for="perfilDireccion">Dirección</label>
+            <input id="perfilDireccion" type="text" class="pf-input" formControlName="direccion"
+              placeholder="Calle, número, ciudad..." [class.pf-input--error]="isInvalidPerfilField('direccion')">
+            @if (isInvalidPerfilField('direccion')) {
+            <span class="pf-error">{{ getPerfilFieldError('direccion') }}</span>
+            }
+          </div>
+          <div class="pf-form__field">
+            <label class="pf-label" for="perfilPassword">Nueva contraseña <span
+                class="pf-label--optional">(opcional)</span></label>
+            <input id="perfilPassword" type="password" class="pf-input" formControlName="newPassword"
+              placeholder="Déjalo vacío para no cambiarla"
+              [class.pf-input--error]="isInvalidPerfilField('newPassword')">
+            @if (isInvalidPerfilField('newPassword')) {
+            <span class="pf-error">{{ getPerfilFieldError('newPassword') }}</span>
+            }
+          </div>
+
+          @if (perfilFormError()) {
+          <div class="pf-notice pf-notice--error">{{ perfilFormError() }}</div>
+          }
+          @if (perfilFormSuccess()) {
+          <div class="pf-notice pf-notice--ok">{{ perfilFormSuccess() }}</div>
+          }
+
+          <div class="pf-form__actions">
+            <button type="submit" class="pf-btn pf-btn--primary" [disabled]="guardandoPerfil()">
+              {{ guardandoPerfil() ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+            <button type="button" class="pf-btn pf-btn--ghost" (click)="cancelarEdicionPerfil()"
+              [disabled]="guardandoPerfil()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+        }
+      </div>
       }
 
       <!-- ── Tab: Mi boda ────────────────────────────────── -->
       @if (pestanaActiva() === 'boda') {
-        <div class="pf-tab-content">
+      <div class="pf-tab-content">
 
-          @if (!editandoBoda()) {
-            <div class="pf-section-head">
-              <div>
-                <h2 class="pf-section-title">Información de la boda</h2>
-                <p class="pf-section-sub">Datos principales de vuestro evento</p>
-              </div>
-              <button type="button" class="pf-btn pf-btn--outline" (click)="activarEdicionBoda()">
-                <i class="bi bi-pencil me-1"></i>Modificar
-              </button>
-            </div>
+        @if (!editandoBoda()) {
+        <div class="pf-section-head">
+          <div>
+            <h2 class="pf-section-title">Información de la boda</h2>
+            <p class="pf-section-sub">Datos principales de vuestro evento</p>
+          </div>
+          <button type="button" class="pf-btn pf-btn--outline" (click)="activarEdicionBoda()">
+            <i class="bi bi-pencil me-1"></i>Modificar
+          </button>
+        </div>
 
-            <div class="pf-boda-grid">
-              <article class="pf-boda-stat">
-                <span class="pf-boda-stat__label">Pareja</span>
-                <strong>{{ boda()?.nombre_pareja || '—' }}</strong>
-              </article>
-              <article class="pf-boda-stat">
-                <span class="pf-boda-stat__label">Fecha</span>
-                <strong>{{ fechaFormateada() || '—' }}</strong>
-              </article>
-              <article class="pf-boda-stat">
-                <span class="pf-boda-stat__label">Ubicación</span>
-                <strong>{{ boda()?.ubicacion || '—' }}</strong>
-              </article>
-              <article class="pf-boda-stat">
-                <span class="pf-boda-stat__label">Notas</span>
-                <strong>{{ boda()?.notas || 'Sin notas registradas' }}</strong>
-              </article>
-            </div>
+        <div class="pf-boda-grid">
+          <article class="pf-boda-stat">
+            <span class="pf-boda-stat__label">Pareja</span>
+            <strong>{{ boda()?.nombre_pareja || '—' }}</strong>
+          </article>
+          <article class="pf-boda-stat">
+            <span class="pf-boda-stat__label">Fecha</span>
+            <strong>{{ fechaFormateada() || '—' }}</strong>
+          </article>
+          <article class="pf-boda-stat">
+            <span class="pf-boda-stat__label">Ubicación</span>
+            <strong>{{ boda()?.ubicacion || '—' }}</strong>
+          </article>
+          <article class="pf-boda-stat">
+            <span class="pf-boda-stat__label">Notas</span>
+            <strong>{{ boda()?.notas || 'Sin notas registradas' }}</strong>
+          </article>
+        </div>
 
-            @if (bodaFormSuccess() && !editandoBoda()) {
-              <div class="pf-notice pf-notice--ok">{{ bodaFormSuccess() }}</div>
-            }
+        @if (bodaFormSuccess() && !editandoBoda()) {
+        <div class="pf-notice pf-notice--ok">{{ bodaFormSuccess() }}</div>
+        }
 
-            @if ((boda()?.fotos?.length ?? 0) > 0) {
-              <div class="pf-section-head pf-section-head--mt">
-                <h3 class="pf-section-title pf-section-title--sm">Así quedó la boda</h3>
-              </div>
-              <div class="pf-photos">
-                @for (foto of fotosResultado(); track foto.path ?? foto.url ?? $index) {
-                  <img [src]="foto.url || foto.path" class="pf-photos__img" alt="Foto final boda">
-                }
-              </div>
-            }
-
-          } @else {
-
-            <div class="pf-section-head">
-              <div>
-                <h2 class="pf-section-title">Editar información de la boda</h2>
-                <p class="pf-section-sub">Actualiza los datos de vuestro evento</p>
-              </div>
-            </div>
-
-            <form class="pf-form" [formGroup]="bodaForm" (ngSubmit)="guardarBoda()">
-              <div class="pf-form__row">
-                <div class="pf-form__field">
-                  <label class="pf-label" for="nombrePareja">Nombre de la pareja</label>
-                  <input id="nombrePareja" type="text" class="pf-input" formControlName="nombrePareja"
-                    [class.pf-input--error]="isInvalidBodaField('nombrePareja')">
-                  @if (isInvalidBodaField('nombrePareja')) {
-                    <span class="pf-error">{{ getBodaFieldError('nombrePareja') }}</span>
-                  }
-                </div>
-                <div class="pf-form__field">
-                  <label class="pf-label" for="weddingDate">Fecha de la boda</label>
-                  <input id="weddingDate" type="date" class="pf-input" formControlName="weddingDate"
-                    [class.pf-input--error]="isInvalidBodaField('weddingDate')">
-                  @if (isInvalidBodaField('weddingDate')) {
-                    <span class="pf-error">{{ getBodaFieldError('weddingDate') }}</span>
-                  }
-                </div>
-              </div>
-
-              <div class="pf-form__field">
-                <label class="pf-label" for="ubicacionBoda">Ubicación</label>
-                <input id="ubicacionBoda" type="text" class="pf-input" formControlName="ubicacion"
-                  [class.pf-input--error]="isInvalidBodaField('ubicacion')">
-                @if (isInvalidBodaField('ubicacion')) {
-                  <span class="pf-error">{{ getBodaFieldError('ubicacion') }}</span>
-                }
-              </div>
-
-              <div class="pf-form__row">
-                <div class="pf-form__field">
-                  <label class="pf-label" for="provinciaId">Provincia</label>
-                  <select id="provinciaId" class="pf-input pf-input--select" formControlName="provinciaId"
-                    [class.pf-input--error]="isInvalidBodaField('provinciaId')">
-                    <option [ngValue]="null">Selecciona una provincia</option>
-                    @for (provincia of provincias$ | async; track provincia.id) {
-                      <option [ngValue]="provincia.id">{{ provincia.nombre }}</option>
-                    }
-                  </select>
-                  @if (isInvalidBodaField('provinciaId')) {
-                    <span class="pf-error">{{ getBodaFieldError('provinciaId') }}</span>
-                  }
-                </div>
-                <div class="pf-form__field">
-                  <label class="pf-label" for="poblacionId">Población</label>
-                  <select id="poblacionId" class="pf-input pf-input--select" formControlName="poblacionId"
-                    [class.pf-input--error]="isInvalidBodaField('poblacionId')">
-                    <option [ngValue]="null">Selecciona una población</option>
-                    @for (poblacion of poblaciones$ | async; track poblacion.id) {
-                      <option [ngValue]="poblacion.id">{{ poblacion.nombre }}</option>
-                    }
-                  </select>
-                  @if (isInvalidBodaField('poblacionId')) {
-                    <span class="pf-error">{{ getBodaFieldError('poblacionId') }}</span>
-                  }
-                </div>
-              </div>
-
-              <div class="pf-form__field">
-                <label class="pf-label" for="notasBoda">Notas</label>
-                <textarea id="notasBoda" rows="4" class="pf-input pf-input--textarea"
-                  formControlName="notas"
-                  [class.pf-input--error]="isInvalidBodaField('notas')"
-                  placeholder="Detalles que quieras recordar sobre el evento"></textarea>
-                @if (isInvalidBodaField('notas')) {
-                  <span class="pf-error">{{ getBodaFieldError('notas') }}</span>
-                }
-              </div>
-
-              @if (bodaFormError()) {
-                <div class="pf-notice pf-notice--error">{{ bodaFormError() }}</div>
-              }
-              @if (bodaFormSuccess()) {
-                <div class="pf-notice pf-notice--ok">{{ bodaFormSuccess() }}</div>
-              }
-
-              <div class="pf-form__actions">
-                <button type="submit" class="pf-btn pf-btn--primary" [disabled]="guardandoBoda()">
-                  {{ guardandoBoda() ? 'Guardando...' : 'Guardar cambios' }}
-                </button>
-                <button type="button" class="pf-btn pf-btn--ghost" (click)="cancelarEdicionBoda()"
-                  [disabled]="guardandoBoda()">
-                  Cancelar
-                </button>
-              </div>
-            </form>
+        @if ((boda()?.fotos?.length ?? 0) > 0) {
+        <div class="pf-section-head pf-section-head--mt">
+          <h3 class="pf-section-title pf-section-title--sm">Así quedó la boda</h3>
+        </div>
+        <div class="pf-photos">
+          @for (foto of fotosResultado(); track foto.path ?? foto.url ?? $index) {
+          <img [src]="foto.url || foto.path" class="pf-photos__img" alt="Foto final boda">
           }
         </div>
+        }
+
+        } @else {
+
+        <div class="pf-section-head">
+          <div>
+            <h2 class="pf-section-title">Editar información de la boda</h2>
+            <p class="pf-section-sub">Actualiza los datos de vuestro evento</p>
+          </div>
+        </div>
+
+        <form class="pf-form" [formGroup]="bodaForm" (ngSubmit)="guardarBoda()">
+          <div class="pf-form__row">
+            <div class="pf-form__field">
+              <label class="pf-label" for="nombrePareja">Nombre de la pareja</label>
+              <input id="nombrePareja" type="text" class="pf-input" formControlName="nombrePareja"
+                [class.pf-input--error]="isInvalidBodaField('nombrePareja')">
+              @if (isInvalidBodaField('nombrePareja')) {
+              <span class="pf-error">{{ getBodaFieldError('nombrePareja') }}</span>
+              }
+            </div>
+            <div class="pf-form__field">
+              <label class="pf-label" for="weddingDate">Fecha de la boda</label>
+              <input id="weddingDate" type="date" class="pf-input" formControlName="weddingDate"
+                [class.pf-input--error]="isInvalidBodaField('weddingDate')">
+              @if (isInvalidBodaField('weddingDate')) {
+              <span class="pf-error">{{ getBodaFieldError('weddingDate') }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="pf-form__field">
+            <label class="pf-label" for="ubicacionBoda">Ubicación</label>
+            <input id="ubicacionBoda" type="text" class="pf-input" formControlName="ubicacion"
+              [class.pf-input--error]="isInvalidBodaField('ubicacion')">
+            @if (isInvalidBodaField('ubicacion')) {
+            <span class="pf-error">{{ getBodaFieldError('ubicacion') }}</span>
+            }
+          </div>
+
+          <div class="pf-form__row">
+            <div class="pf-form__field">
+              <label class="pf-label" for="provinciaId">Provincia</label>
+              <select id="provinciaId" class="pf-input pf-input--select" formControlName="provinciaId"
+                [class.pf-input--error]="isInvalidBodaField('provinciaId')">
+                <option [ngValue]="null">Selecciona una provincia</option>
+                @for (provincia of provincias$ | async; track provincia.id) {
+                <option [ngValue]="provincia.id">{{ provincia.nombre }}</option>
+                }
+              </select>
+              @if (isInvalidBodaField('provinciaId')) {
+              <span class="pf-error">{{ getBodaFieldError('provinciaId') }}</span>
+              }
+            </div>
+            <div class="pf-form__field">
+              <label class="pf-label" for="poblacionId">Población</label>
+              <select id="poblacionId" class="pf-input pf-input--select" formControlName="poblacionId"
+                [class.pf-input--error]="isInvalidBodaField('poblacionId')">
+                <option [ngValue]="null">Selecciona una población</option>
+                @for (poblacion of poblaciones$ | async; track poblacion.id) {
+                <option [ngValue]="poblacion.id">{{ poblacion.nombre }}</option>
+                }
+              </select>
+              @if (isInvalidBodaField('poblacionId')) {
+              <span class="pf-error">{{ getBodaFieldError('poblacionId') }}</span>
+              }
+            </div>
+          </div>
+
+          <div class="pf-form__field">
+            <label class="pf-label" for="notasBoda">Notas</label>
+            <textarea id="notasBoda" rows="4" class="pf-input pf-input--textarea" formControlName="notas"
+              [class.pf-input--error]="isInvalidBodaField('notas')"
+              placeholder="Detalles que quieras recordar sobre el evento"></textarea>
+            @if (isInvalidBodaField('notas')) {
+            <span class="pf-error">{{ getBodaFieldError('notas') }}</span>
+            }
+          </div>
+
+          @if (bodaFormError()) {
+          <div class="pf-notice pf-notice--error">{{ bodaFormError() }}</div>
+          }
+          @if (bodaFormSuccess()) {
+          <div class="pf-notice pf-notice--ok">{{ bodaFormSuccess() }}</div>
+          }
+
+          <div class="pf-form__actions">
+            <button type="submit" class="pf-btn pf-btn--primary" [disabled]="guardandoBoda()">
+              {{ guardandoBoda() ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+            <button type="button" class="pf-btn pf-btn--ghost" (click)="cancelarEdicionBoda()"
+              [disabled]="guardandoBoda()">
+              Cancelar
+            </button>
+          </div>
+        </form>
+        }
+      </div>
       }
 
       <!-- ── Tab: Solicitudes ────────────────────────────── -->
       @if (pestanaActiva() === 'solicitudes') {
-        <div class="pf-tab-content">
-          <div class="pf-section-head">
-            <div>
-              <h2 class="pf-section-title">Actividad y solicitudes</h2>
-              <p class="pf-section-sub">Estado de cada solicitud enviada a los proveedores</p>
-            </div>
-            <div class="pf-section-head__actions">
-              <span class="pf-badge-count">
-                <i class="bi bi-bell-fill me-1"></i>{{ solicitudesNoLeidas() }} pendientes
-              </span>
-              <button class="pf-btn pf-btn--ghost pf-btn--sm" (click)="cargarNotificaciones()"
-                [disabled]="notificacionesLoading()">
-                <i class="bi bi-arrow-clockwise me-1"></i>Recargar
-              </button>
-            </div>
+      <div class="pf-tab-content">
+        <div class="pf-section-head">
+          <div>
+            <h2 class="pf-section-title">Actividad y solicitudes</h2>
+            <p class="pf-section-sub">Estado de cada solicitud enviada a los proveedores</p>
           </div>
+          <div class="pf-section-head__actions">
+            <span class="pf-badge-count">
+              <i class="bi bi-bell-fill me-1"></i>{{ solicitudesNoLeidas() }} pendientes
+            </span>
+            <button class="pf-btn pf-btn--ghost pf-btn--sm" (click)="cargarNotificaciones()"
+              [disabled]="notificacionesLoading()">
+              <i class="bi bi-arrow-clockwise me-1"></i>Recargar
+            </button>
+          </div>
+        </div>
 
-          @if (mensajeAccion()) {
-            <div class="pf-notice pf-notice--info">
-              <i class="bi bi-info-circle-fill me-2"></i>{{ mensajeAccion() }}
-            </div>
-          }
+        @if (mensajeAccion()) {
+        <div class="pf-notice pf-notice--info">
+          <i class="bi bi-info-circle-fill me-2"></i>{{ mensajeAccion() }}
+        </div>
+        }
 
-          @if (notificacionesLoading()) {
-            <div class="pf-state pf-state--loading">
-              <i class="bi bi-arrow-repeat pf-spin me-2"></i>Cargando solicitudes...
-            </div>
-          } @else if (notificacionesError()) {
-            <div class="pf-notice pf-notice--error">{{ notificacionesError() }}</div>
-          } @else if (solicitudesReales().length === 0) {
-            <div class="pf-state pf-state--empty">
-              <i class="bi bi-bell-slash pf-state__icon"></i>
-              <strong>No tienes solicitudes enviadas</strong>
-              <p>Cuando envíes una solicitud a un proveedor aparecerá aquí.</p>
-            </div>
-          } @else {
-            <div class="pf-request-list">
-              @for (notif of solicitudesReales(); track notif.id) {
-                <article class="pf-request" [class.pf-request--read]="esLeida(notif)">
-                  <div class="pf-request__main">
-                    <div class="pf-request__head">
-                      <h3 class="pf-request__title">{{ notif.titulo || 'Notificación' }}</h3>
-                      @if (!esLeida(notif)) {
-                        <span class="pf-request__new">
-                          <i class="bi bi-circle-fill" style="font-size:0.45rem"></i> Nueva
-                        </span>
-                      }
-                    </div>
-                    <p class="pf-request__message">{{ notif.mensaje }}</p>
-                    <div class="pf-request__meta">
-                      <span class="pf-request__status">{{ estadoPresupuestoTexto(notif) }}</span>
-                      <span class="pf-request__detail">
-                        <i class="bi bi-building me-1"></i>{{ nombreProveedor(notif) }}
-                      </span>
-                      <span class="pf-request__detail">
-                        <i class="bi bi-box-seam me-1"></i>{{ productoServicioTexto(notif) }}
-                      </span>
-                      @if (importeOfertado(notif) != null) {
-                        <span class="pf-request__price">
-                          <i class="bi bi-currency-euro me-1"></i>
-                          {{ importeOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}
-                        </span>
-                      }
-                    </div>
+        @if (notificacionesLoading()) {
+        <div class="pf-state pf-state--loading">
+          <i class="bi bi-arrow-repeat pf-spin me-2"></i>Cargando solicitudes...
+        </div>
+        } @else if (notificacionesError()) {
+        <div class="pf-notice pf-notice--error">{{ notificacionesError() }}</div>
+        } @else if (solicitudesReales().length === 0) {
+        <div class="pf-state pf-state--empty">
+          <i class="bi bi-bell-slash pf-state__icon"></i>
+          <strong>No tienes solicitudes enviadas</strong>
+          <p>Cuando envíes una solicitud a un proveedor aparecerá aquí.</p>
+        </div>
+        } @else {
+        <div class="pf-request-list">
+          @for (notif of solicitudesReales(); track notif.id) {
+          <article class="pf-request" [class.pf-request--read]="esLeida(notif)">
+            <div class="pf-request__main">
+              <div class="pf-request__head">
+                <h3 class="pf-request__title">{{ notif.titulo || 'Notificación' }}</h3>
+                @if (!esLeida(notif)) {
+                <span class="pf-request__new">
+                  <i class="bi bi-circle-fill" style="font-size:0.45rem"></i> Nueva
+                </span>
+                }
+              </div>
+              <p class="pf-request__message">{{ notif.mensaje }}</p>
+              <div class="pf-request__meta">
+                <span class="pf-request__status">{{ estadoPresupuestoTexto(notif) }}</span>
+                <span class="pf-request__detail">
+                  <i class="bi bi-building me-1"></i>{{ nombreProveedor(notif) }}
+                </span>
+                <span class="pf-request__detail">
+                  <i class="bi bi-box-seam me-1"></i>{{ productoServicioTexto(notif) }}
+                </span>
+                @if (importeOfertado(notif) != null) {
+                <span class="pf-request__price">
+                  <i class="bi bi-currency-euro me-1"></i>
+                  {{ importeOfertado(notif) | currency:'EUR':'symbol':'1.0-0':'es' }}
+                </span>
+                }
+              </div>
 
-                    @if (mostrarDetalleAceptada(notif)) {
-                      <div class="pf-request__extra">
-                        @if (notif.referencia?.fecha_inicio) {
-                          <div><i class="bi bi-calendar-plus me-1"></i>
-                            <strong>Fecha inicio:</strong>
-                            {{ notif.referencia?.fecha_inicio | date:'dd/MM/yyyy HH:mm' }}
-                          </div>
-                        }
-                        @if (notif.referencia?.fecha_fin) {
-                          <div><i class="bi bi-calendar-minus me-1"></i>
-                            <strong>Fecha fin:</strong>
-                            {{ notif.referencia?.fecha_fin | date:'dd/MM/yyyy HH:mm' }}
-                          </div>
-                        }
-                        @if (notif.referencia?.modalidad) {
-                          <div><i class="bi bi-sliders me-1"></i>
-                            <strong>Modalidad:</strong> {{ notif.referencia?.modalidad }}
-                          </div>
-                        }
-                        @if (estadoReservaSolicitud(notif)) {
-                          <div><i class="bi bi-bookmark-check me-1"></i>
-                            <strong>Estado reserva:</strong> {{ estadoReservaSolicitud(notif) }}
-                          </div>
-                        }
-                        @if (notif.referencia?.comentario_empresa) {
-                          <div><i class="bi bi-chat-left-text me-1"></i>
-                            <strong>Comentario:</strong> {{ notif.referencia?.comentario_empresa }}
-                          </div>
-                        }
-                      </div>
-                    }
-                  </div>
-                  <div class="pf-request__actions">
-                    <button class="pf-btn pf-btn--ghost pf-btn--sm" (click)="abrirNotificacion(notif)">
-                      <i class="bi bi-eye me-1"></i>Ver solicitud
-                    </button>
-                  </div>
-                </article>
+              @if (mostrarDetalleAceptada(notif)) {
+              <div class="pf-request__extra">
+                @if (notif.referencia?.fecha_inicio) {
+                <div><i class="bi bi-calendar-plus me-1"></i>
+                  <strong>Fecha inicio:</strong>
+                  {{ notif.referencia?.fecha_inicio | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+                }
+                @if (notif.referencia?.fecha_fin) {
+                <div><i class="bi bi-calendar-minus me-1"></i>
+                  <strong>Fecha fin:</strong>
+                  {{ notif.referencia?.fecha_fin | date:'dd/MM/yyyy HH:mm' }}
+                </div>
+                }
+                @if (notif.referencia?.modalidad) {
+                <div><i class="bi bi-sliders me-1"></i>
+                  <strong>Modalidad:</strong> {{ notif.referencia?.modalidad }}
+                </div>
+                }
+                @if (estadoReservaSolicitud(notif)) {
+                <div><i class="bi bi-bookmark-check me-1"></i>
+                  <strong>Estado reserva:</strong> {{ estadoReservaSolicitud(notif) }}
+                </div>
+                }
+                @if (notif.referencia?.comentario_empresa) {
+                <div><i class="bi bi-chat-left-text me-1"></i>
+                  <strong>Comentario:</strong> {{ notif.referencia?.comentario_empresa }}
+                </div>
+                }
+              </div>
               }
             </div>
+            <div class="pf-request__actions">
+              <button class="pf-btn pf-btn--ghost pf-btn--sm" (click)="abrirNotificacion(notif)">
+                <i class="bi bi-eye me-1"></i>Ver solicitud
+              </button>
+            </div>
+          </article>
           }
         </div>
+        }
+      </div>
       }
 
       <!-- ── Tab: Notificaciones ───────────────────────────── -->
       @if (pestanaActiva() === 'notificaciones') {
-        <div class="pf-tab-content">
-          <div class="pf-section-head">
-            <div>
-              <h2 class="pf-section-title">Notificaciones</h2>
-              <p class="pf-section-sub">Actividad general y avisos del sistema</p>
-            </div>
-            @if (notificacionesGeneralesNoLeidas() > 0) {
-              <span class="pf-badge-count">
-                <i class="bi bi-bell-fill me-1"></i>{{ notificacionesGeneralesNoLeidas() }} sin leer
-              </span>
-            }
+      <div class="pf-tab-content">
+        <div class="pf-section-head">
+          <div>
+            <h2 class="pf-section-title">Notificaciones</h2>
+            <p class="pf-section-sub">Actividad general y avisos del sistema</p>
           </div>
-
-          @if (notificacionesLoading()) {
-            <div class="pf-state pf-state--loading">
-              <i class="bi bi-arrow-repeat pf-spin me-2"></i>Cargando notificaciones...
-            </div>
-          } @else if (notificacionesError()) {
-            <div class="pf-notice pf-notice--error">{{ notificacionesError() }}</div>
-          } @else if (notificacionesGenerales().length === 0) {
-            <div class="pf-state pf-state--empty">
-              <i class="bi bi-bell-slash pf-state__icon"></i>
-              <strong>No tienes notificaciones</strong>
-              <p>Aquí aparecerán los avisos y mensajes del sistema.</p>
-            </div>
-          } @else {
-            <div class="pf-notif-list">
-              @for (notif of notificacionesGenerales(); track notif.id) {
-                <article class="pf-notif" [class.pf-notif--read]="esLeida(notif)">
-                  <div class="pf-notif__icon">
-                    <i class="bi bi-bell{{ esLeida(notif) ? '' : '-fill' }}"></i>
-                  </div>
-                  <div class="pf-notif__body">
-                    <div class="pf-notif__head">
-                      <strong class="pf-notif__title">{{ notif.titulo || 'Notificación' }}</strong>
-                      @if (!esLeida(notif)) {
-                        <span class="pf-request__new">
-                          <i class="bi bi-circle-fill" style="font-size:0.45rem"></i> Nueva
-                        </span>
-                      }
-                    </div>
-                    <p class="pf-notif__message">{{ notif.mensaje }}</p>
-                  </div>
-                </article>
-              }
-            </div>
+          @if (notificacionesGeneralesNoLeidas() > 0) {
+          <span class="pf-badge-count">
+            <i class="bi bi-bell-fill me-1"></i>{{ notificacionesGeneralesNoLeidas() }} sin leer
+          </span>
           }
         </div>
+
+        @if (notificacionesLoading()) {
+        <div class="pf-state pf-state--loading">
+          <i class="bi bi-arrow-repeat pf-spin me-2"></i>Cargando notificaciones...
+        </div>
+        } @else if (notificacionesError()) {
+        <div class="pf-notice pf-notice--error">{{ notificacionesError() }}</div>
+        } @else if (notificacionesGenerales().length === 0) {
+        <div class="pf-state pf-state--empty">
+          <i class="bi bi-bell-slash pf-state__icon"></i>
+          <strong>No tienes notificaciones</strong>
+          <p>Aquí aparecerán los avisos y mensajes del sistema.</p>
+        </div>
+        } @else {
+        <div class="pf-notif-list">
+          @for (notif of notificacionesGenerales(); track notif.id) {
+          <article class="pf-notif" [class.pf-notif--read]="esLeida(notif)">
+            <div class="pf-notif__icon">
+              <i class="bi bi-bell{{ esLeida(notif) ? '' : '-fill' }}"></i>
+            </div>
+            <div class="pf-notif__body">
+              <div class="pf-notif__head">
+                <strong class="pf-notif__title">{{ notif.titulo || 'Notificación' }}</strong>
+                @if (!esLeida(notif)) {
+                <span class="pf-request__new">
+                  <i class="bi bi-circle-fill" style="font-size:0.45rem"></i> Nueva
+                </span>
+                }
+              </div>
+              <p class="pf-notif__message">{{ notif.mensaje }}</p>
+            </div>
+          </article>
+          }
+        </div>
+        }
+      </div>
       }
 
       <!-- ── Tab: Reseñas ────────────────────────────────── -->
       @if (pestanaActiva() === 'resenias') {
-        <div class="pf-tab-content">
-          <div class="pf-section-head">
-            <div>
-              <h2 class="pf-section-title">Reseñas de tu boda</h2>
-              <p class="pf-section-sub">Valora a los proveedores que participaron en tu evento</p>
-            </div>
-            <span class="pf-badge-count pf-badge-count--neutral">
-              <i class="bi bi-chat-square-heart me-1"></i>{{ reseniasBoda().length }} reseñas
-            </span>
+      <div class="pf-tab-content">
+        <div class="pf-section-head">
+          <div>
+            <h2 class="pf-section-title">Reseñas de tu boda</h2>
+            <p class="pf-section-sub">Valora a los proveedores que participaron en tu evento</p>
           </div>
+          <span class="pf-badge-count pf-badge-count--neutral">
+            <i class="bi bi-chat-square-heart me-1"></i>{{ reseniasBoda().length }} reseñas
+          </span>
+        </div>
 
-          @if (reseniasLoading()) {
-            <div class="pf-state pf-state--loading">
-              <i class="bi bi-arrow-repeat pf-spin me-2"></i>Cargando reseñas...
-            </div>
-          } @else if (reseniasError()) {
-            <div class="pf-notice pf-notice--error">{{ reseniasError() }}</div>
-          } @else if (!reseniasBoda().length) {
-            <div class="pf-state pf-state--empty">
-              <i class="bi bi-chat-square-heart pf-state__icon"></i>
-              <strong>Aún no has añadido reseñas</strong>
-              <p>Sé el primero en valorar a los proveedores de tu boda.</p>
-            </div>
-          } @else {
-            <div class="pf-review-list">
-              @for (resenia of reseniasConEmpresa(); track resenia.id) {
-                <article class="pf-review">
-                  <div class="pf-review__head">
-                    <div>
-                      <strong class="pf-review__empresa">{{ resenia.empresaNombre }}</strong>
-                      <span class="pf-review__autor">{{ resenia.usuario.name }}</span>
-                    </div>
-                    <span class="pf-review__stars">
-                      @for (_star of estrellasResenia(resenia.puntuacion); track $index) {
-                        <i class="bi bi-star-fill"></i>
-                      }
-                    </span>
-                  </div>
-                  <p class="pf-review__text">{{ resenia.comentario }}</p>
-                </article>
-              }
-            </div>
-          }
-
-          <div class="pf-review-form-wrap">
-            <div class="pf-section-head pf-section-head--mt">
-              <h3 class="pf-section-title pf-section-title--sm">Añadir reseña</h3>
-            </div>
-            <form class="pf-form" [formGroup]="reseniaForm" (ngSubmit)="enviarResenia()">
-              <div class="pf-form__row">
-                <div class="pf-form__field">
-                  <label class="pf-label" for="empresaResenia">Empresa</label>
-                  <select id="empresaResenia" class="pf-input pf-input--select" formControlName="empresaId"
-                    [class.pf-input--error]="isInvalidReseniaField('empresaId')">
-                    <option value="">Selecciona una empresa</option>
-                    @for (empresa of empresasResenia(); track empresa.id) {
-                      <option [value]="empresa.id">{{ empresa.nombre_empresa }}</option>
-                    }
-                  </select>
-                  @if (isInvalidReseniaField('empresaId')) {
-                    <span class="pf-error">{{ getReseniaFieldError('empresaId') }}</span>
-                  }
-                </div>
-                <div class="pf-form__field">
-                  <label class="pf-label" for="puntuacionResenia">Puntuación</label>
-                  <select id="puntuacionResenia" class="pf-input pf-input--select" formControlName="puntuacion"
-                    [class.pf-input--error]="isInvalidReseniaField('puntuacion')">
-                    <option value="">Selecciona una puntuación</option>
-                    @for (puntuacion of [5, 4, 3, 2, 1]; track puntuacion) {
-                      <option [value]="puntuacion">{{ puntuacion }} estrella(s)</option>
-                    }
-                  </select>
-                  @if (isInvalidReseniaField('puntuacion')) {
-                    <span class="pf-error">{{ getReseniaFieldError('puntuacion') }}</span>
-                  }
-                </div>
+        @if (reseniasLoading()) {
+        <div class="pf-state pf-state--loading">
+          <i class="bi bi-arrow-repeat pf-spin me-2"></i>Cargando reseñas...
+        </div>
+        } @else if (reseniasError()) {
+        <div class="pf-notice pf-notice--error">{{ reseniasError() }}</div>
+        } @else if (!reseniasBoda().length) {
+        <div class="pf-state pf-state--empty">
+          <i class="bi bi-chat-square-heart pf-state__icon"></i>
+          <strong>Aún no has añadido reseñas</strong>
+          <p>Sé el primero en valorar a los proveedores de tu boda.</p>
+        </div>
+        } @else {
+        <div class="pf-review-list">
+          @for (resenia of reseniasConEmpresa(); track resenia.id) {
+          <article class="pf-review">
+            <div class="pf-review__head">
+              <div>
+                <strong class="pf-review__empresa">{{ resenia.empresaNombre }}</strong>
+                <span class="pf-review__autor">{{ resenia.usuario.name }}</span>
               </div>
+              <span class="pf-review__stars">
+                @for (_star of estrellasResenia(resenia.puntuacion); track $index) {
+                <i class="bi bi-star-fill"></i>
+                }
+              </span>
+            </div>
+            <p class="pf-review__text">{{ resenia.comentario }}</p>
+          </article>
+          }
+        </div>
+        }
+
+        <div class="pf-review-form-wrap">
+          <div class="pf-section-head pf-section-head--mt">
+            <h3 class="pf-section-title pf-section-title--sm">Añadir reseña</h3>
+          </div>
+          <form class="pf-form" [formGroup]="reseniaForm" (ngSubmit)="enviarResenia()">
+            <div class="pf-form__row">
               <div class="pf-form__field">
-                <label class="pf-label" for="comentarioResenia">Comentario</label>
-                <textarea id="comentarioResenia" rows="4" class="pf-input pf-input--textarea"
-                  formControlName="comentario"
-                  [class.pf-input--error]="isInvalidReseniaField('comentario')"
-                  placeholder="Cuéntanos cómo fue tu experiencia"></textarea>
-                @if (isInvalidReseniaField('comentario')) {
-                  <span class="pf-error">{{ getReseniaFieldError('comentario') }}</span>
+                <label class="pf-label" for="empresaResenia">Empresa</label>
+                <select id="empresaResenia" class="pf-input pf-input--select" formControlName="empresaId"
+                  [class.pf-input--error]="isInvalidReseniaField('empresaId')">
+                  <option value="">Selecciona una empresa</option>
+                  @for (empresa of empresasResenia(); track empresa.id) {
+                  <option [value]="empresa.id">{{ empresa.nombre_empresa }}</option>
+                  }
+                </select>
+                @if (isInvalidReseniaField('empresaId')) {
+                <span class="pf-error">{{ getReseniaFieldError('empresaId') }}</span>
                 }
               </div>
-
-              @if (reseniaError()) {
-                <div class="pf-notice pf-notice--error">{{ reseniaError() }}</div>
-              }
-              @if (reseniaSuccess()) {
-                <div class="pf-notice pf-notice--ok">{{ reseniaSuccess() }}</div>
-              }
-
-              <div class="pf-form__actions">
-                <button type="submit" class="pf-btn pf-btn--primary" [disabled]="enviandoResenia()">
-                  {{ enviandoResenia() ? 'Guardando reseña...' : 'Añadir reseña' }}
-                </button>
+              <div class="pf-form__field">
+                <label class="pf-label" for="puntuacionResenia">Puntuación</label>
+                <select id="puntuacionResenia" class="pf-input pf-input--select" formControlName="puntuacion"
+                  [class.pf-input--error]="isInvalidReseniaField('puntuacion')">
+                  <option value="">Selecciona una puntuación</option>
+                  @for (puntuacion of [5, 4, 3, 2, 1]; track puntuacion) {
+                  <option [value]="puntuacion">{{ puntuacion }} estrella(s)</option>
+                  }
+                </select>
+                @if (isInvalidReseniaField('puntuacion')) {
+                <span class="pf-error">{{ getReseniaFieldError('puntuacion') }}</span>
+                }
               </div>
-            </form>
-          </div>
+            </div>
+            <div class="pf-form__field">
+              <label class="pf-label" for="comentarioResenia">Comentario</label>
+              <textarea id="comentarioResenia" rows="4" class="pf-input pf-input--textarea" formControlName="comentario"
+                [class.pf-input--error]="isInvalidReseniaField('comentario')"
+                placeholder="Cuéntanos cómo fue tu experiencia"></textarea>
+              @if (isInvalidReseniaField('comentario')) {
+              <span class="pf-error">{{ getReseniaFieldError('comentario') }}</span>
+              }
+            </div>
+
+            @if (reseniaError()) {
+            <div class="pf-notice pf-notice--error">{{ reseniaError() }}</div>
+            }
+            @if (reseniaSuccess()) {
+            <div class="pf-notice pf-notice--ok">{{ reseniaSuccess() }}</div>
+            }
+
+            <div class="pf-form__actions">
+              <button type="submit" class="pf-btn pf-btn--primary" [disabled]="enviandoResenia()">
+                {{ enviandoResenia() ? 'Guardando reseña...' : 'Añadir reseña' }}
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
       }
 
     </main>

@@ -90,8 +90,19 @@ export class PresupuestoApiService extends  PresupuestoHttpService {
     );
     
   }
-
-
+descargarPdfBoda(bodaId: number): Observable<Blob> {
+  return this.http.get(
+    `${this.apiUrl}/presupuestos/boda/${bodaId}/pdf`,
+    {
+      responseType: 'blob'
+    }
+  ).pipe(
+    catchError((error) => {
+      console.error('Error al descargar PDF', error);
+      return throwError(() => error);
+    })
+  );
+}
 
   
 

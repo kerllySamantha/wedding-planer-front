@@ -613,11 +613,11 @@ $blur-value: blur(18px);
 }
 
 .preview-item {
+  position: relative;
   display: grid;
   gap: 0.4rem;
   padding: 0.55rem;
   border-radius: 0.85rem;
-  text-decoration: none;
   color: inherit;
   border: 1px solid rgba(6, 90, 130, 0.1);
   background: rgba(255, 255, 255, 0.55);
@@ -640,6 +640,33 @@ $blur-value: blur(18px);
     border: 1px solid rgba(6, 90, 130, 0.08);
     background: rgba(4, 88, 127, 0.08);
   }
+
+  &__remove {
+    position: absolute;
+    top: 0.45rem;
+    right: 0.45rem;
+    width: 1.65rem;
+    height: 1.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 1.15rem;
+    line-height: 1;
+    color: #34282d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+
+    &:hover {
+      background: #e63950;
+      color: #fff;
+      transform: scale(1.12);
+    }
+  }
 }
 
 .preview-overlay {
@@ -647,6 +674,11 @@ $blur-value: blur(18px);
   font-size: 0.72rem;
   font-weight: 800;
   color: $color-accent;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 /* ---------- Botones Bootstrap adaptados ---------- */

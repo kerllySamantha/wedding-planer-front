@@ -14,5 +14,6 @@ export abstract class PresupuestoHttpService {
   abstract editarPresupuesto(idPresupuesto: number | null, presupuesto: PresupuestoCreate): Observable<Object | null>;
   abstract deletePresupuesto(idPresupuesto: bigint): Observable<Object | null>;
   abstract getPresupuestosByBoda(bodaId: number):Observable<PresupuestosBoda| null>
+  abstract descargarPdfBoda(bodaId: number):Observable<Blob>
 
 }
