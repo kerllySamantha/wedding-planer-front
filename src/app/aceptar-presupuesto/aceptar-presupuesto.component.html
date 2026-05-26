@@ -133,7 +133,7 @@
                 @if (esReservaConfirmada()) {
                 El pago se ha registrado y la reserva está confirmada.
                 } @else if (puedeConfirmarReserva()) {
-                La fecha está bloqueada. Falta realizar el pago simulado para confirmar la reserva.
+                La fecha está bloqueada. Realiza el pago para confirmar la reserva.
                 } @else {
                 Este paso se activará después de aceptar el presupuesto.
                 }
@@ -142,6 +142,37 @@
           </article>
         </div>
       </section>
+
+      @if (puedeConfirmarReserva() && mostrandoFormaPago()) {
+      <section class="stripe-panel">
+        <h2>Datos de pago</h2>
+        <p class="stripe-hint">Introduce los datos de tu tarjeta de forma segura.</p>
+
+        <div id="card-element" class="stripe-card-element"></div>
+
+        @if (errorPago()) {
+        <p class="stripe-error">{{ errorPago() }}</p>
+        }
+
+        <div class="stripe-actions">
+          <button class="btn-success" (click)="pagarYConfirmar()" [disabled]="procesandoPago()">
+            {{ procesandoPago() ? 'Procesando...' : 'Confirmar pago · ' + (p.importe_ofertado | currency:'EUR':'symbol':'1.0-0':'es') }}
+          </button>
+          <button class="btn-secondary" (click)="cancelarPago()" [disabled]="procesandoPago()">
+            Cancelar
+          </button>
+        </div>
+
+        <p class="stripe-secure">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Pago seguro procesado por Stripe
+        </p>
+      </section>
+      }
 
       <footer class="actions-row">
         <button class="btn-secondary" [routerLink]="['/perfil-user']">
@@ -161,9 +192,9 @@
         </button>
         }
 
-        @if (puedeConfirmarReserva()) {
-        <button class="btn-success" (click)="simularPagoYConfirmarReserva()" [disabled]="procesandoPago()">
-          {{ procesandoPago() ? 'Confirmando...' : 'Pagar y confirmar reserva' }}
+        @if (puedeConfirmarReserva() && !mostrandoFormaPago()) {
+        <button class="btn-success" (click)="mostrarFormaPago()" [disabled]="procesandoPago()">
+          Pagar y confirmar reserva
         </button>
         }
 

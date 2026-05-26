@@ -8,6 +8,7 @@ import { MiBodaComponent } from './mi-boda/mi-boda.component';
 import { PerfilUserComponent } from './perfil-user/perfil-user.component';
 import { DashboardProveedoresComponent } from './dashboard-proveedores/dashboard-proveedores.component';
 import { DetallesProveedoresComponent } from './detalles-proveedores/detalles-proveedores.component';
+import { CrearReseniaProveedorComponent } from './crear-resenia-proveedor/crear-resenia-proveedor.component';
 import { empresaResolver } from './Resolver/company.resolver';
 import { ContenedorProveedoresComponent } from './contenedor-proveedores/contenedor-proveedores.component';
 import { AdminDashboardProveedoresComponent } from './admin-dashboard-proveedores/admin-dashboard-proveedores.component';
@@ -43,6 +44,16 @@ const publicRoutes: Routes = [
   {
     path: APP_PATHS.publicSuppliers,
     component: DashboardProveedoresComponent,
+  },
+  {
+    path: APP_PATHS.supplierDetails,
+    redirectTo: APP_PATHS.publicSuppliers,
+    pathMatch: 'full',
+  },
+  {
+    path: `${APP_PATHS.supplierDetails}/:id/resenas/nueva`,
+    component: CrearReseniaProveedorComponent,
+    resolve: { proveedor: empresaResolver },
   },
   {
     path: `${APP_PATHS.supplierDetails}/:id`,

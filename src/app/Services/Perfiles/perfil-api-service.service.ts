@@ -67,22 +67,45 @@ export class PerfilApiServiceService extends PerfilServiceServiceService {
     ).pipe(tap(value => {console.log(value); console.log('poblacion_id enviado:', perfil.poblacion_id);}));
   }
 
-  override editarPerfil(
-    idPerfil: string,
-    perfil: CreatePerfilUsuario,
-  ): Observable<Object | null> {
-    const putObject = {
-      name: `${perfil.name}`,
-      email: `${perfil.email}`,
-      password: `${perfil.password}`,
-      rol: 'usuario',
-      direccion: `${perfil.direccion}`,
-      telefono: `${perfil.telefono}`,
-      poblacion_id: perfil.poblacion_id,
-      fecha_boda: perfil.fecha_boda,
-    };
-    return this.http.put(`${this.apiUrl}/perfiles/${idPerfil}`, putObject);
+override editarPerfil(
+  idPerfil: string,
+  perfil: CreatePerfilUsuario,
+): Observable<Object | null> {
+
+  const putObject: Record<string, unknown> = {
+    name: perfil.name,
+    email: perfil.email,
+    password: perfil.password,
+    rol: 'usuario',
+    direccion: perfil.direccion,
+    telefono: perfil.telefono,
+    poblacion_id: perfil.poblacion_id,
+    fecha_boda: perfil.fecha_boda,
+  };
+  if (perfil.foto_perfil !== undefined) {
+    putObject['foto_perfil'] = perfil.foto_perfil;
   }
+
+  return this.http.put(`${this.apiUrl}/perfiles/${idPerfil}`, putObject).pipe(
+
+    tap(response => {
+      console.log('SUCCESS', response);
+    }),
+
+    catchError(error => {
+
+      console.error('ERROR COMPLETO', error);
+
+      console.error('STATUS', error.status);
+
+      console.error('BODY', error.error);
+
+      console.error('VALIDATION', error.error.errors);
+
+      return throwError(() => error);
+    })
+  );
+}
 
   override deletePresupuesto(idPerfil: bigint): Observable<Object | null> {
     return this.http.delete(`${this.apiUrl}/perfiles/${idPerfil.toString()}`);

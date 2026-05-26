@@ -1,0 +1,75 @@
+.paginador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+.paginador__nav {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(247, 108, 111, 0.25);
+  background: #fff;
+  color: #f76c6f;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+.paginador__nav:hover:not(:disabled) {
+  background: #fff4f6;
+  border-color: #f76c6f;
+}
+.paginador__nav:disabled {
+  color: #ccc;
+  border-color: #eee;
+  cursor: not-allowed;
+}
+.paginador__num {
+  min-width: 38px;
+  height: 38px;
+  padding: 0 0.5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(247, 108, 111, 0.2);
+  background: #fff;
+  color: #0e3654;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+.paginador__num:hover:not(.paginador__num--active) {
+  background: #fff4f6;
+  border-color: #f76c6f;
+  color: #f76c6f;
+}
+.paginador__num--active {
+  background: #f76c6f;
+  border-color: #f76c6f;
+  color: #fff;
+  cursor: default;
+}
+.paginador__ellipsis {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.paginador__info {
+  text-align: center;
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+  color: #9aa0b4;
+}/*# sourceMappingURL=paginador.component.css.map */

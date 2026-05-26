@@ -534,6 +534,10 @@ export class ConfiguracionAdminComponent {
     });
   }
 
+  eliminarFoto(url: string): void {
+    this.galeriaUrls.update(fotos => fotos.filter(f => f.url !== url));
+  }
+
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];

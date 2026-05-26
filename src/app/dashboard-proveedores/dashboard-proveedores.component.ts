@@ -15,14 +15,15 @@ import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
 import { VisualizadorProveedoresCardsComponent } from "../visualizador-proveedores-cards/visualizador-proveedores-cards.component";
 import { HorizontalCardProveedoresComponent } from "../horizontal-card-proveedores/horizontal-card-proveedores.component";
 import { RouterOutlet } from '@angular/router';
+import { PaginadorComponent } from '../paginador/paginador.component';
 
 
 @Component({
   selector: 'app-dashboard-proveedores',
   imports: [NavbarComponent, CardProveedoresComponent, BuscadorComponent, FiltroProveedoresComponent,
     VisualizadorProveedoresCardsComponent, HorizontalCardProveedoresComponent,
-    RouterOutlet
-   ],
+    RouterOutlet, PaginadorComponent
+  ],
   templateUrl: './dashboard-proveedores.component.html',
   styleUrl: './dashboard-proveedores.component.scss'
 })
@@ -44,6 +45,7 @@ export class DashboardProveedoresComponent {
   bodas = signal<Boda[]>([]);
 
   modo = signal<'listado' | 'imagenes' | 'mapa'>('listado');
+  readonly skeletonItems = Array.from({ length: 8 }, (_, i) => i);
 
  
 

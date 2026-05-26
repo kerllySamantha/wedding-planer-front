@@ -114,6 +114,19 @@ body {
     margin: 0;
     font-family:  PlayWrite;
 }
+
+.galeria-dialog .mat-mdc-dialog-container {
+    background: #fff;
+    border-radius: 1.25rem;
+    padding: 0;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.14);
+
+    .mdc-dialog__surface {
+        background: transparent;
+        border-radius: 1.25rem;
+        overflow: hidden;
+    }
+}
 h2, h1{
     font-family:   PlayWrite !important;
 }

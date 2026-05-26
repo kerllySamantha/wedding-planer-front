@@ -1,6 +1,6 @@
 @charset "UTF-8";
 /* ============================================================
-   Settings Proveedor — UX limpio con paleta azul
+   Settings Proveedor — paleta petrol (#04587f / #0e3654)
    ============================================================ */
 /* ---------- Shell ---------- */
 .settings-shell {
@@ -20,8 +20,9 @@
   max-width: 760px;
   font-size: clamp(1.55rem, 1.2vw + 1.1rem, 2.1rem);
   font-weight: 750;
-  color: #0f2d47;
+  color: #0e3654;
   line-height: 1.2;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.5);
 }
 
 .settings-kicker {
@@ -30,14 +31,14 @@
   font-weight: 800;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: rgba(20, 63, 102, 0.58);
+  color: rgba(4, 88, 127, 0.65);
 }
 
 .settings-subtitle {
   margin: 0;
   max-width: 54rem;
   font-size: 0.9rem;
-  color: rgba(20, 63, 102, 0.64);
+  color: rgba(4, 88, 127, 0.65);
   line-height: 1.6;
 }
 
@@ -86,13 +87,14 @@
 .settings-card {
   display: grid;
   gap: 1rem;
-  padding: 1.25rem;
+  padding: 1.4rem 1.5rem;
   border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.65);
-  box-shadow: 0 2px 8px rgba(15, 45, 71, 0.06), 0 18px 40px rgba(15, 45, 71, 0.07);
+  box-shadow: 0 8px 32px rgba(6, 90, 130, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.75);
   background: rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 .settings-card--full {
   grid-column: 1/-1;
@@ -105,15 +107,15 @@
   align-items: center;
   margin: 0;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(20, 63, 102, 0.1);
+  border-bottom: 1px solid rgba(6, 90, 130, 0.1);
   font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.075em;
   text-transform: uppercase;
-  color: rgba(20, 63, 102, 0.58);
+  color: rgba(4, 88, 127, 0.75);
 }
 .settings-card h2 i {
-  color: #2f5d86;
+  color: #04587f;
   font-size: 0.9rem;
 }
 
@@ -143,13 +145,13 @@
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(20, 63, 102, 0.45);
+  color: rgba(4, 88, 127, 0.5);
 }
 .settings-list dd {
   margin: 0;
   font-size: 0.92rem;
   font-weight: 600;
-  color: #0f2d47;
+  color: #0e3654;
   line-height: 1.45;
   word-break: break-word;
 }
@@ -158,7 +160,7 @@
 }
 .settings-list__full dd {
   font-weight: 500;
-  color: rgba(15, 45, 71, 0.82);
+  color: rgba(14, 54, 84, 0.82);
 }
 
 /* ---------- Formulario ---------- */
@@ -175,7 +177,7 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgba(20, 63, 102, 0.58);
+  color: rgba(4, 88, 127, 0.65);
 }
 .form-grid label span {
   display: inline-flex;
@@ -183,7 +185,7 @@
   gap: 0.25rem;
 }
 .form-grid label i {
-  color: rgba(47, 93, 134, 0.75);
+  color: rgba(4, 88, 127, 0.75);
   font-size: 0.78rem;
 }
 .form-grid .form-control {
@@ -191,14 +193,14 @@
   border-radius: 0.7rem;
   font-size: 0.92rem;
   font-weight: 600;
-  border-color: rgba(20, 63, 102, 0.16);
-  color: #0f2d47;
+  border-color: rgba(6, 90, 130, 0.18);
+  color: #0e3654;
   background-color: rgba(255, 255, 255, 0.72);
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 .form-grid .form-control:focus {
-  border-color: #2f5d86;
-  box-shadow: 0 0 0 3px rgba(47, 93, 134, 0.14);
+  border-color: #04587f;
+  box-shadow: 0 0 0 3px rgba(4, 88, 127, 0.15);
   background-color: rgba(255, 255, 255, 0.95);
 }
 
@@ -212,11 +214,11 @@
   gap: 0.75rem;
   padding: 0.95rem 1rem;
   border-radius: 0.85rem;
-  background: rgba(20, 63, 102, 0.06);
-  border-left: 3px solid #2f5d86;
+  background: rgba(4, 88, 127, 0.06);
+  border-left: 3px solid #04587f;
 }
 .catalog-info i {
-  color: #2f5d86;
+  color: #04587f;
   font-size: 1rem;
   margin-top: 0.15rem;
 }
@@ -224,7 +226,7 @@
   margin: 0;
   font-size: 0.85rem;
   line-height: 1.55;
-  color: rgba(20, 63, 102, 0.72);
+  color: rgba(4, 88, 127, 0.75);
 }
 
 .catalog-selector {
@@ -237,19 +239,24 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: rgba(20, 63, 102, 0.58);
+  color: rgba(4, 88, 127, 0.65);
 }
 .catalog-selector .form-select {
   min-height: 44px;
   border-radius: 0.7rem;
-  border-color: rgba(20, 63, 102, 0.18);
-  color: #0f2d47;
+  border-color: rgba(6, 90, 130, 0.18);
+  color: #0e3654;
   font-weight: 700;
   background-color: rgba(255, 255, 255, 0.72);
 }
 .catalog-selector .form-select:focus {
-  border-color: #2f5d86;
-  box-shadow: 0 0 0 3px rgba(47, 93, 134, 0.14);
+  border-color: #04587f;
+  box-shadow: 0 0 0 3px rgba(4, 88, 127, 0.15);
+}
+.catalog-selector .form-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgba(255, 255, 255, 0.45);
 }
 
 .catalog-section {
@@ -272,104 +279,18 @@
   font-weight: 850;
   text-transform: uppercase;
   letter-spacing: 0.075em;
-  color: rgba(20, 63, 102, 0.58);
+  color: rgba(4, 88, 127, 0.6);
 }
 .catalog-category__title::after {
   content: "";
   height: 1px;
   flex: 1;
-  background: rgba(20, 63, 102, 0.12);
+  background: rgba(6, 90, 130, 0.12);
 }
 
 .catalog-types {
   display: grid;
   gap: 0.7rem;
-}
-
-.catalog-type-card {
-  border-radius: 0.9rem;
-  border: 1px solid rgba(20, 63, 102, 0.12);
-  background: rgba(255, 255, 255, 0.48);
-  overflow: hidden;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-.catalog-type-card[open] {
-  border-color: rgba(47, 93, 134, 0.26);
-  box-shadow: 0 8px 22px rgba(15, 45, 71, 0.07);
-}
-
-.catalog-type-card__summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.95rem 1rem;
-  cursor: pointer;
-  list-style: none;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
-}
-.catalog-type-card__summary::-webkit-details-marker {
-  display: none;
-}
-.catalog-type-card__summary h3 {
-  margin: 0;
-  font-size: 0.96rem;
-  font-weight: 800;
-  color: #0f2d47;
-}
-.catalog-type-card__summary p {
-  margin: 0.15rem 0 0;
-  font-size: 0.78rem;
-  color: rgba(20, 63, 102, 0.58);
-}
-.catalog-type-card__summary .btn {
-  border-radius: 0.65rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.catalog-type-card__body {
-  display: grid;
-  gap: 0.75rem;
-  padding: 0.9rem 1rem 1rem;
-  border-top: 1px solid rgba(20, 63, 102, 0.1);
-  background: rgba(255, 255, 255, 0.32);
-}
-
-/* ---------- Productos editables ---------- */
-.product-edit-card {
-  display: grid;
-  grid-template-columns: 1.15fr 1.35fr 0.75fr 0.75fr auto;
-  gap: 0.55rem;
-  align-items: center;
-  padding: 0.75rem;
-  border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(20, 63, 102, 0.1);
-}
-.product-edit-card .form-control {
-  min-height: 38px;
-  border-radius: 0.58rem;
-  border-color: rgba(20, 63, 102, 0.16);
-  color: #0f2d47;
-  font-size: 0.82rem;
-  font-weight: 600;
-  background-color: rgba(255, 255, 255, 0.82);
-}
-.product-edit-card .form-control:focus {
-  border-color: #2f5d86;
-  box-shadow: 0 0 0 3px rgba(47, 93, 134, 0.14);
-}
-.product-edit-card--new {
-  border-style: dashed;
-  background: rgba(47, 93, 134, 0.055);
-}
-
-.product-edit-card__remove {
-  white-space: nowrap;
-  border-radius: 0.58rem;
 }
 
 /* ---------- Chips lectura ---------- */
@@ -385,18 +306,163 @@
   gap: 0.35rem;
   max-width: 100%;
   padding: 0.45rem 0.75rem;
-  border: 1px solid rgba(20, 63, 102, 0.1);
+  border: 1px solid rgba(6, 90, 130, 0.12);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.62);
   font-size: 0.82rem;
-  box-shadow: 0 4px 14px rgba(15, 45, 71, 0.04);
+  box-shadow: 0 4px 14px rgba(6, 90, 130, 0.06);
 }
 .type-chip strong {
   font-weight: 750;
-  color: #143f66;
+  color: #0e3654;
 }
 .type-chip small {
-  color: rgba(20, 63, 102, 0.58);
+  color: rgba(4, 88, 127, 0.65);
+}
+
+/* ---------- Tipo de producto card ---------- */
+.catalog-type-card {
+  border-radius: 0.9rem;
+  border: 1px solid rgba(6, 90, 130, 0.12);
+  background: rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+.catalog-type-card[open] {
+  border-color: rgba(6, 90, 130, 0.25);
+  box-shadow: 0 10px 28px rgba(6, 90, 130, 0.08);
+}
+
+.catalog-type-card__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  list-style: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.catalog-type-card__summary::-webkit-details-marker {
+  display: none;
+}
+.catalog-type-card__summary .btn {
+  border-radius: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.catalog-type-card__info {
+  min-width: 0;
+}
+.catalog-type-card__info h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 750;
+  color: #0e3654;
+}
+.catalog-type-card__info p {
+  margin: 0.15rem 0 0;
+  font-size: 0.82rem;
+  color: rgba(4, 88, 127, 0.65);
+}
+
+.catalog-type-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.catalog-type-card__chevron {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(4, 88, 127, 0.06);
+  color: #0e3654;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.catalog-type-card__chevron i {
+  font-size: 0.9rem;
+}
+
+.catalog-type-card[open] .catalog-type-card__chevron {
+  transform: rotate(180deg);
+  background: rgba(4, 88, 127, 0.12);
+}
+
+.catalog-type-card__body {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem 1rem;
+  border-top: 1px solid rgba(6, 90, 130, 0.08);
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* ---------- Empty state del cuerpo de tipo ---------- */
+.catalog-body-empty {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.83rem;
+  color: rgba(4, 88, 127, 0.65);
+  border-radius: 0.65rem;
+  background: rgba(4, 88, 127, 0.04);
+  border: 1px dashed rgba(4, 88, 127, 0.2);
+  text-align: center;
+}
+.catalog-body-empty strong {
+  color: #04587f;
+  font-weight: 700;
+}
+
+/* ---------- Productos editables ---------- */
+.product-edit-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(6, 90, 130, 0.1);
+}
+.product-edit-card .form-control {
+  min-height: 38px;
+  border-radius: 0.58rem;
+  border-color: rgba(6, 90, 130, 0.16);
+  color: #0e3654;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.82);
+}
+.product-edit-card .form-control:focus {
+  border-color: #04587f;
+  box-shadow: 0 0 0 3px rgba(4, 88, 127, 0.15);
+}
+.product-edit-card--new {
+  border-style: dashed;
+  background: rgba(4, 88, 127, 0.04);
+  border-color: rgba(4, 88, 127, 0.2);
+}
+
+.product-description {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.5;
+  padding-top: 0.7rem;
+}
+
+.product-description,
+.product-edit-card .row,
+.product-edit-card__remove {
+  grid-column: 1/-1;
+}
+
+.product-edit-card__remove {
+  white-space: nowrap;
+  border-radius: 0.58rem;
 }
 
 /* ---------- Galería ---------- */
@@ -411,16 +477,16 @@
   align-items: center;
   gap: 0.55rem;
   padding: 1.7rem 1.25rem;
-  border: 1.5px dashed rgba(47, 93, 134, 0.32);
+  border: 1.5px dashed rgba(4, 88, 127, 0.32);
   border-radius: 0.9rem;
-  background: rgba(47, 93, 134, 0.055);
+  background: rgba(4, 88, 127, 0.05);
   cursor: pointer;
   transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
   text-align: center;
 }
 .gallery-upload-zone:hover {
-  border-color: rgba(47, 93, 134, 0.58);
-  background: rgba(47, 93, 134, 0.08);
+  border-color: rgba(4, 88, 127, 0.58);
+  background: rgba(4, 88, 127, 0.08);
   transform: translateY(-1px);
 }
 .gallery-upload-zone .form-control {
@@ -439,19 +505,19 @@
   height: 46px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.72);
-  color: #2f5d86;
+  color: #04587f;
   font-size: 1.4rem;
 }
 .gallery-upload-zone__label {
   margin: 0;
   font-size: 0.9rem;
   font-weight: 800;
-  color: #143f66;
+  color: #0e3654;
 }
 .gallery-upload-zone__hint {
   margin: 0;
   font-size: 0.76rem;
-  color: rgba(20, 63, 102, 0.48);
+  color: rgba(4, 88, 127, 0.5);
 }
 
 .gallery-preview {
@@ -461,19 +527,19 @@
 }
 
 .preview-item {
+  position: relative;
   display: grid;
   gap: 0.4rem;
   padding: 0.55rem;
   border-radius: 0.85rem;
-  text-decoration: none;
   color: inherit;
-  border: 1px solid rgba(20, 63, 102, 0.1);
+  border: 1px solid rgba(6, 90, 130, 0.1);
   background: rgba(255, 255, 255, 0.55);
   transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 .preview-item:hover {
-  border-color: rgba(47, 93, 134, 0.32);
-  box-shadow: 0 8px 18px rgba(15, 45, 71, 0.08);
+  border-color: rgba(4, 88, 127, 0.32);
+  box-shadow: 0 8px 18px rgba(6, 90, 130, 0.1);
   transform: translateY(-1px);
 }
 .preview-item img {
@@ -482,45 +548,74 @@
   -o-object-fit: cover;
      object-fit: cover;
   border-radius: 0.65rem;
-  border: 1px solid rgba(20, 63, 102, 0.08);
-  background: rgba(20, 63, 102, 0.08);
+  border: 1px solid rgba(6, 90, 130, 0.08);
+  background: rgba(4, 88, 127, 0.08);
+}
+.preview-item__remove {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  width: 1.65rem;
+  height: 1.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: #34282d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+  transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+.preview-item__remove:hover {
+  background: #e63950;
+  color: #fff;
+  transform: scale(1.12);
 }
 
 .preview-overlay {
   justify-self: start;
   font-size: 0.72rem;
   font-weight: 800;
-  color: #2f5d86;
+  color: #04587f;
+  text-decoration: none;
+}
+.preview-overlay:hover {
+  text-decoration: underline;
 }
 
 /* ---------- Botones Bootstrap adaptados ---------- */
 .btn-primary {
-  background-color: #2f5d86;
-  border-color: #2f5d86;
+  background-color: #04587f;
+  border-color: #04587f;
 }
 .btn-primary:hover, .btn-primary:focus {
-  background-color: #143f66;
-  border-color: #143f66;
+  background-color: #033d59;
+  border-color: #033d59;
 }
 
 .btn-outline-primary {
-  color: #2f5d86;
-  border-color: rgba(47, 93, 134, 0.38);
+  color: #04587f;
+  border-color: rgba(4, 88, 127, 0.38);
 }
 .btn-outline-primary:hover, .btn-outline-primary:focus {
-  background-color: #2f5d86;
-  border-color: #2f5d86;
+  background-color: #04587f;
+  border-color: #04587f;
   color: #fff;
 }
 
 .btn-outline-secondary {
-  color: #143f66;
-  border-color: rgba(20, 63, 102, 0.24);
+  color: #0e3654;
+  border-color: rgba(6, 90, 130, 0.24);
 }
 .btn-outline-secondary:hover, .btn-outline-secondary:focus {
-  background-color: rgba(20, 63, 102, 0.08);
-  border-color: rgba(20, 63, 102, 0.36);
-  color: #0f2d47;
+  background-color: rgba(6, 90, 130, 0.08);
+  border-color: rgba(6, 90, 130, 0.36);
+  color: #0e3654;
 }
 
 /* ---------- Barra de acciones sticky ---------- */
@@ -533,13 +628,13 @@
   padding: 0.85rem 1.1rem;
   border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 8px 26px rgba(15, 45, 71, 0.12);
+  box-shadow: 0 8px 26px rgba(6, 90, 130, 0.12);
   position: sticky;
   bottom: 0.75rem;
   z-index: 20;
   background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
 }
 .actions-row__status {
   display: flex;
@@ -549,7 +644,7 @@
   min-width: 220px;
   font-size: 0.82rem;
   font-weight: 600;
-  color: rgba(20, 63, 102, 0.58);
+  color: rgba(4, 88, 127, 0.65);
 }
 .actions-row__status-dot {
   width: 8px;
@@ -604,6 +699,13 @@
   .catalog-type-card__summary .btn {
     width: 100%;
   }
+  .catalog-type-card__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .catalog-type-card__actions .btn {
+    flex: 1;
+  }
   .product-edit-card {
     grid-template-columns: 1fr;
   }
@@ -620,112 +722,5 @@
   }
   .actions-row .btn {
     flex: 1 1 auto;
-  }
-}
-.catalog-type-card {
-  border-radius: 0.9rem;
-  border: 1px solid rgba(20, 63, 102, 0.12);
-  background: rgba(255, 255, 255, 0.5);
-  overflow: hidden;
-  transition: all 0.2s ease;
-}
-.catalog-type-card[open] {
-  box-shadow: 0 10px 28px rgba(15, 45, 71, 0.08);
-  border-color: rgba(47, 93, 134, 0.25);
-}
-
-.catalog-type-card__summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.1rem;
-  cursor: pointer;
-  list-style: none;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
-}
-.catalog-type-card__summary::-webkit-details-marker {
-  display: none;
-}
-
-.catalog-type-card__info {
-  min-width: 0;
-}
-.catalog-type-card__info h3 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 750;
-  color: #0f2d47;
-}
-.catalog-type-card__info p {
-  margin: 0.15rem 0 0;
-  font-size: 0.82rem;
-  color: rgba(20, 63, 102, 0.58);
-}
-
-.catalog-type-card__actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.catalog-type-card__chevron {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  background: rgba(20, 63, 102, 0.06);
-  color: #143f66;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-.catalog-type-card__chevron i {
-  font-size: 0.9rem;
-}
-
-.catalog-type-card[open] .catalog-type-card__chevron {
-  transform: rotate(180deg);
-  background: rgba(47, 93, 134, 0.12);
-}
-
-.catalog-type-card__body {
-  padding: 1rem;
-  border-top: 1px solid rgba(20, 63, 102, 0.08);
-  background: rgba(255, 255, 255, 0.32);
-}
-
-.product-description {
-  resize: vertical;
-  min-height: 90px;
-  line-height: 1.5;
-  padding-top: 0.7rem;
-}
-
-.product-edit-card {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
-.product-description,
-.product-edit-card .row,
-.product-edit-card__remove {
-  grid-column: 1/-1;
-}
-
-/* móvil */
-@media (max-width: 767.98px) {
-  .catalog-type-card__summary {
-    align-items: stretch;
-    flex-direction: column;
-  }
-  .catalog-type-card__actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .catalog-type-card__actions .btn {
-    flex: 1;
   }
 }/*# sourceMappingURL=configuracion-admin.component.css.map */

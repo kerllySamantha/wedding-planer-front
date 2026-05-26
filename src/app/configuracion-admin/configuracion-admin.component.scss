@@ -1,30 +1,30 @@
 /* ============================================================
-   Settings Proveedor — UX limpio con paleta azul
+   Settings Proveedor — paleta petrol (#04587f / #0e3654)
    ============================================================ */
 
-$color-primary: #0f2d47;
-$color-secondary: #143f66;
-$color-accent: #2f5d86;
-$color-muted: rgba(20, 63, 102, 0.58);
-$color-soft: rgba(20, 63, 102, 0.06);
-$color-border: rgba(20, 63, 102, 0.12);
+$color-primary: #0e3654;
+$color-secondary: #0e3654;
+$color-accent: #04587f;
+$color-muted: rgba(4, 88, 127, 0.65);
+$color-soft: rgba(4, 88, 127, 0.06);
+$color-border: rgba(6, 90, 130, 0.12);
 $color-border-light: rgba(255, 255, 255, 0.65);
 
 $radius-main: 1rem;
 $radius-sm: 0.7rem;
 
 $glass-bg: rgba(255, 255, 255, 0.58);
-$blur-value: blur(14px);
+$blur-value: blur(18px);
 
 @mixin glass-effect($bg: $glass-bg, $blur: $blur-value) {
   background: $bg;
-  backdrop-filter: $blur;
-  -webkit-backdrop-filter: $blur;
+  backdrop-filter: $blur saturate(180%);
+  -webkit-backdrop-filter: $blur saturate(180%);
 }
 
 @mixin focus-ring {
   border-color: $color-accent;
-  box-shadow: 0 0 0 3px rgba(47, 93, 134, 0.14);
+  box-shadow: 0 0 0 3px rgba(4, 88, 127, 0.15);
 }
 
 /* ---------- Shell ---------- */
@@ -49,6 +49,7 @@ $blur-value: blur(14px);
     font-weight: 750;
     color: $color-primary;
     line-height: 1.2;
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.5);
   }
 }
 
@@ -65,7 +66,7 @@ $blur-value: blur(14px);
   margin: 0;
   max-width: 54rem;
   font-size: 0.9rem;
-  color: rgba(20, 63, 102, 0.64);
+  color: rgba(4, 88, 127, 0.65);
   line-height: 1.6;
 }
 
@@ -121,13 +122,14 @@ $blur-value: blur(14px);
 .settings-card {
   display: grid;
   gap: 1rem;
-  padding: 1.25rem;
+  padding: 1.4rem 1.5rem;
   border-radius: $radius-main;
   border: 1px solid $color-border-light;
   box-shadow:
-    0 2px 8px rgba(15, 45, 71, 0.06),
-    0 18px 40px rgba(15, 45, 71, 0.07);
+    0 8px 32px rgba(6, 90, 130, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
   @include glass-effect();
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 
   &--full {
     grid-column: 1 / -1;
@@ -142,12 +144,12 @@ $blur-value: blur(14px);
     align-items: center;
     margin: 0;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid rgba(20, 63, 102, 0.1);
+    border-bottom: 1px solid rgba(6, 90, 130, 0.1);
     font-size: 0.76rem;
     font-weight: 800;
     letter-spacing: 0.075em;
     text-transform: uppercase;
-    color: rgba(20, 63, 102, 0.58);
+    color: rgba(4, 88, 127, 0.75);
 
     i {
       color: $color-accent;
@@ -185,7 +187,7 @@ $blur-value: blur(14px);
     font-weight: 800;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(20, 63, 102, 0.45);
+    color: rgba(4, 88, 127, 0.5);
   }
 
   dd {
@@ -202,7 +204,7 @@ $blur-value: blur(14px);
 
     dd {
       font-weight: 500;
-      color: rgba(15, 45, 71, 0.82);
+      color: rgba(14, 54, 84, 0.82);
     }
   }
 }
@@ -231,7 +233,7 @@ $blur-value: blur(14px);
     }
 
     i {
-      color: rgba(47, 93, 134, 0.75);
+      color: rgba(4, 88, 127, 0.75);
       font-size: 0.78rem;
     }
   }
@@ -241,7 +243,7 @@ $blur-value: blur(14px);
     border-radius: $radius-sm;
     font-size: 0.92rem;
     font-weight: 600;
-    border-color: rgba(20, 63, 102, 0.16);
+    border-color: rgba(6, 90, 130, 0.18);
     color: $color-primary;
     background-color: rgba(255, 255, 255, 0.72);
     transition:
@@ -267,7 +269,7 @@ $blur-value: blur(14px);
   gap: 0.75rem;
   padding: 0.95rem 1rem;
   border-radius: 0.85rem;
-  background: rgba(20, 63, 102, 0.06);
+  background: rgba(4, 88, 127, 0.06);
   border-left: 3px solid $color-accent;
 
   i {
@@ -280,7 +282,7 @@ $blur-value: blur(14px);
     margin: 0;
     font-size: 0.85rem;
     line-height: 1.55;
-    color: rgba(20, 63, 102, 0.72);
+    color: rgba(4, 88, 127, 0.75);
   }
 }
 
@@ -300,13 +302,19 @@ $blur-value: blur(14px);
   .form-select {
     min-height: 44px;
     border-radius: $radius-sm;
-    border-color: rgba(20, 63, 102, 0.18);
+    border-color: rgba(6, 90, 130, 0.18);
     color: $color-primary;
     font-weight: 700;
     background-color: rgba(255, 255, 255, 0.72);
 
     &:focus {
       @include focus-ring;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: rgba(255, 255, 255, 0.45);
     }
   }
 }
@@ -331,114 +339,20 @@ $blur-value: blur(14px);
     font-weight: 850;
     text-transform: uppercase;
     letter-spacing: 0.075em;
-    color: rgba(20, 63, 102, 0.58);
+    color: rgba(4, 88, 127, 0.6);
   }
 
   &::after {
     content: "";
     height: 1px;
     flex: 1;
-    background: rgba(20, 63, 102, 0.12);
+    background: rgba(6, 90, 130, 0.12);
   }
 }
 
 .catalog-types {
   display: grid;
   gap: 0.7rem;
-}
-
-.catalog-type-card {
-  border-radius: 0.9rem;
-  border: 1px solid rgba(20, 63, 102, 0.12);
-  background: rgba(255, 255, 255, 0.48);
-  overflow: hidden;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
-
-  &[open] {
-    border-color: rgba(47, 93, 134, 0.26);
-    box-shadow: 0 8px 22px rgba(15, 45, 71, 0.07);
-  }
-}
-
-.catalog-type-card__summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.95rem 1rem;
-  cursor: pointer;
-  list-style: none;
-  user-select: none;
-
-  &::-webkit-details-marker {
-    display: none;
-  }
-
-  h3 {
-    margin: 0;
-    font-size: 0.96rem;
-    font-weight: 800;
-    color: $color-primary;
-  }
-
-  p {
-    margin: 0.15rem 0 0;
-    font-size: 0.78rem;
-    color: $color-muted;
-  }
-
-  .btn {
-    border-radius: 0.65rem;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-}
-
-.catalog-type-card__body {
-  display: grid;
-  gap: 0.75rem;
-  padding: 0.9rem 1rem 1rem;
-  border-top: 1px solid rgba(20, 63, 102, 0.1);
-  background: rgba(255, 255, 255, 0.32);
-}
-
-/* ---------- Productos editables ---------- */
-
-.product-edit-card {
-  display: grid;
-  grid-template-columns: 1.15fr 1.35fr 0.75fr 0.75fr auto;
-  gap: 0.55rem;
-  align-items: center;
-  padding: 0.75rem;
-  border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(20, 63, 102, 0.1);
-
-  .form-control {
-    min-height: 38px;
-    border-radius: 0.58rem;
-    border-color: rgba(20, 63, 102, 0.16);
-    color: $color-primary;
-    font-size: 0.82rem;
-    font-weight: 600;
-    background-color: rgba(255, 255, 255, 0.82);
-
-    &:focus {
-      @include focus-ring;
-    }
-  }
-
-  &--new {
-    border-style: dashed;
-    background: rgba(47, 93, 134, 0.055);
-  }
-}
-
-.product-edit-card__remove {
-  white-space: nowrap;
-  border-radius: 0.58rem;
 }
 
 /* ---------- Chips lectura ---------- */
@@ -455,11 +369,11 @@ $blur-value: blur(14px);
   gap: 0.35rem;
   max-width: 100%;
   padding: 0.45rem 0.75rem;
-  border: 1px solid rgba(20, 63, 102, 0.1);
+  border: 1px solid rgba(6, 90, 130, 0.12);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.62);
   font-size: 0.82rem;
-  box-shadow: 0 4px 14px rgba(15, 45, 71, 0.04);
+  box-shadow: 0 4px 14px rgba(6, 90, 130, 0.06);
 
   strong {
     font-weight: 750;
@@ -469,6 +383,163 @@ $blur-value: blur(14px);
   small {
     color: $color-muted;
   }
+}
+
+/* ---------- Tipo de producto card ---------- */
+
+.catalog-type-card {
+  border-radius: 0.9rem;
+  border: 1px solid rgba(6, 90, 130, 0.12);
+  background: rgba(255, 255, 255, 0.50);
+  overflow: hidden;
+  transition: all 0.2s ease;
+
+  &[open] {
+    border-color: rgba(6, 90, 130, 0.25);
+    box-shadow: 0 10px 28px rgba(6, 90, 130, 0.08);
+  }
+}
+
+.catalog-type-card__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  .btn {
+    border-radius: 0.65rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+}
+
+.catalog-type-card__info {
+  min-width: 0;
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 750;
+    color: $color-primary;
+  }
+
+  p {
+    margin: 0.15rem 0 0;
+    font-size: 0.82rem;
+    color: $color-muted;
+  }
+}
+
+.catalog-type-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.catalog-type-card__chevron {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgba(4, 88, 127, 0.06);
+  color: $color-secondary;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+.catalog-type-card[open] .catalog-type-card__chevron {
+  transform: rotate(180deg);
+  background: rgba(4, 88, 127, 0.12);
+}
+
+.catalog-type-card__body {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem 1rem;
+  border-top: 1px solid rgba(6, 90, 130, 0.08);
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* ---------- Empty state del cuerpo de tipo ---------- */
+
+.catalog-body-empty {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.83rem;
+  color: $color-muted;
+  border-radius: 0.65rem;
+  background: rgba(4, 88, 127, 0.04);
+  border: 1px dashed rgba(4, 88, 127, 0.2);
+  text-align: center;
+
+  strong {
+    color: $color-accent;
+    font-weight: 700;
+  }
+}
+
+/* ---------- Productos editables ---------- */
+
+.product-edit-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(6, 90, 130, 0.1);
+
+  .form-control {
+    min-height: 38px;
+    border-radius: 0.58rem;
+    border-color: rgba(6, 90, 130, 0.16);
+    color: $color-primary;
+    font-size: 0.82rem;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.82);
+
+    &:focus {
+      @include focus-ring;
+    }
+  }
+
+  &--new {
+    border-style: dashed;
+    background: rgba(4, 88, 127, 0.04);
+    border-color: rgba(4, 88, 127, 0.2);
+  }
+}
+
+.product-description {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.5;
+  padding-top: 0.7rem;
+}
+
+.product-description,
+.product-edit-card .row,
+.product-edit-card__remove {
+  grid-column: 1 / -1;
+}
+
+.product-edit-card__remove {
+  white-space: nowrap;
+  border-radius: 0.58rem;
 }
 
 /* ---------- Galería ---------- */
@@ -484,9 +555,9 @@ $blur-value: blur(14px);
   align-items: center;
   gap: 0.55rem;
   padding: 1.7rem 1.25rem;
-  border: 1.5px dashed rgba(47, 93, 134, 0.32);
+  border: 1.5px dashed rgba(4, 88, 127, 0.32);
   border-radius: 0.9rem;
-  background: rgba(47, 93, 134, 0.055);
+  background: rgba(4, 88, 127, 0.05);
   cursor: pointer;
   transition:
     border-color 0.15s ease,
@@ -495,8 +566,8 @@ $blur-value: blur(14px);
   text-align: center;
 
   &:hover {
-    border-color: rgba(47, 93, 134, 0.58);
-    background: rgba(47, 93, 134, 0.08);
+    border-color: rgba(4, 88, 127, 0.58);
+    background: rgba(4, 88, 127, 0.08);
     transform: translateY(-1px);
   }
 
@@ -531,7 +602,7 @@ $blur-value: blur(14px);
   &__hint {
     margin: 0;
     font-size: 0.76rem;
-    color: rgba(20, 63, 102, 0.48);
+    color: rgba(4, 88, 127, 0.5);
   }
 }
 
@@ -542,13 +613,13 @@ $blur-value: blur(14px);
 }
 
 .preview-item {
+  position: relative;
   display: grid;
   gap: 0.4rem;
   padding: 0.55rem;
   border-radius: 0.85rem;
-  text-decoration: none;
   color: inherit;
-  border: 1px solid rgba(20, 63, 102, 0.1);
+  border: 1px solid rgba(6, 90, 130, 0.1);
   background: rgba(255, 255, 255, 0.55);
   transition:
     border-color 0.15s ease,
@@ -556,8 +627,8 @@ $blur-value: blur(14px);
     transform 0.15s ease;
 
   &:hover {
-    border-color: rgba(47, 93, 134, 0.32);
-    box-shadow: 0 8px 18px rgba(15, 45, 71, 0.08);
+    border-color: rgba(4, 88, 127, 0.32);
+    box-shadow: 0 8px 18px rgba(6, 90, 130, 0.1);
     transform: translateY(-1px);
   }
 
@@ -566,8 +637,35 @@ $blur-value: blur(14px);
     aspect-ratio: 4 / 3;
     object-fit: cover;
     border-radius: 0.65rem;
-    border: 1px solid rgba(20, 63, 102, 0.08);
-    background: rgba(20, 63, 102, 0.08);
+    border: 1px solid rgba(6, 90, 130, 0.08);
+    background: rgba(4, 88, 127, 0.08);
+  }
+
+  &__remove {
+    position: absolute;
+    top: 0.45rem;
+    right: 0.45rem;
+    width: 1.65rem;
+    height: 1.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 1.15rem;
+    line-height: 1;
+    color: #34282d;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+
+    &:hover {
+      background: #e63950;
+      color: #fff;
+      transform: scale(1.12);
+    }
   }
 }
 
@@ -576,6 +674,11 @@ $blur-value: blur(14px);
   font-size: 0.72rem;
   font-weight: 800;
   color: $color-accent;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 /* ---------- Botones Bootstrap adaptados ---------- */
@@ -586,14 +689,14 @@ $blur-value: blur(14px);
 
   &:hover,
   &:focus {
-    background-color: $color-secondary;
-    border-color: $color-secondary;
+    background-color: #033d59;
+    border-color: #033d59;
   }
 }
 
 .btn-outline-primary {
   color: $color-accent;
-  border-color: rgba(47, 93, 134, 0.38);
+  border-color: rgba(4, 88, 127, 0.38);
 
   &:hover,
   &:focus {
@@ -605,12 +708,12 @@ $blur-value: blur(14px);
 
 .btn-outline-secondary {
   color: $color-secondary;
-  border-color: rgba(20, 63, 102, 0.24);
+  border-color: rgba(6, 90, 130, 0.24);
 
   &:hover,
   &:focus {
-    background-color: rgba(20, 63, 102, 0.08);
-    border-color: rgba(20, 63, 102, 0.36);
+    background-color: rgba(6, 90, 130, 0.08);
+    border-color: rgba(6, 90, 130, 0.36);
     color: $color-primary;
   }
 }
@@ -626,7 +729,7 @@ $blur-value: blur(14px);
   padding: 0.85rem 1.1rem;
   border-radius: $radius-main;
   border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 8px 26px rgba(15, 45, 71, 0.12);
+  box-shadow: 0 8px 26px rgba(6, 90, 130, 0.12);
   position: sticky;
   bottom: 0.75rem;
   z-index: 20;
@@ -710,6 +813,15 @@ $blur-value: blur(14px);
     }
   }
 
+  .catalog-type-card__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .catalog-type-card__actions .btn {
+    flex: 1;
+  }
+
   .product-edit-card {
     grid-template-columns: 1fr;
   }
@@ -730,120 +842,5 @@ $blur-value: blur(14px);
     .btn {
       flex: 1 1 auto;
     }
-  }
-}
-
-.catalog-type-card {
-  border-radius: 0.9rem;
-  border: 1px solid rgba(20, 63, 102, 0.12);
-  background: rgba(255, 255, 255, 0.5);
-  overflow: hidden;
-  transition: all 0.2s ease;
-
-  &[open] {
-    box-shadow: 0 10px 28px rgba(15, 45, 71, 0.08);
-    border-color: rgba(47, 93, 134, 0.25);
-  }
-}
-
-.catalog-type-card__summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.1rem;
-  cursor: pointer;
-  list-style: none;
-  user-select: none;
-
-  &::-webkit-details-marker {
-    display: none;
-  }
-}
-
-.catalog-type-card__info {
-  min-width: 0;
-
-  h3 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 750;
-    color: $color-primary;
-  }
-
-  p {
-    margin: 0.15rem 0 0;
-    font-size: 0.82rem;
-    color: $color-muted;
-  }
-}
-
-.catalog-type-card__actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.catalog-type-card__chevron {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  background: rgba(20, 63, 102, 0.06);
-  color: $color-secondary;
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease;
-
-  i {
-    font-size: 0.9rem;
-  }
-}
-
-.catalog-type-card[open] .catalog-type-card__chevron {
-  transform: rotate(180deg);
-  background: rgba(47, 93, 134, 0.12);
-}
-
-.catalog-type-card__body {
-  padding: 1rem;
-  border-top: 1px solid rgba(20, 63, 102, 0.08);
-  background: rgba(255, 255, 255, 0.32);
-}
-
-.product-description {
-  resize: vertical;
-  min-height: 90px;
-  line-height: 1.5;
-  padding-top: 0.7rem;
-}
-
-.product-edit-card {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
-
-.product-description,
-.product-edit-card .row,
-.product-edit-card__remove {
-  grid-column: 1 / -1;
-}
-
-/* móvil */
-@media (max-width: 767.98px) {
-  .catalog-type-card__summary {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .catalog-type-card__actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .catalog-type-card__actions .btn {
-    flex: 1;
   }
 }

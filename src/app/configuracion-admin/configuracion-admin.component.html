@@ -238,7 +238,8 @@
       </label>
 
       <select id="categoria-activa-select" class="form-select" [value]="categoriaSeleccionadaId()?.toString() ?? ''"
-        (change)="onCategoriaSeleccionada(+$any($event.target).value)">
+        (change)="onCategoriaSeleccionada(+$any($event.target).value)"
+        [disabled]="!categoriasEmpresa().length">
         @for (categoria of categoriasEmpresa(); track categoria.id) {
         <option [value]="categoria.id.toString()">
           {{ categoria.nombre }}
@@ -281,6 +282,10 @@
             </summary>
 
             <div class="catalog-type-card__body">
+
+              @if (!(productosPersonalizados()[tipoPermitido.tipoId]?.length) && !(nuevosProductosPorTipo()[tipoPermitido.tipoId]?.length)) {
+                <p class="catalog-body-empty">Sin productos añadidos. Pulsa <strong>Añadir</strong> para incluir uno.</p>
+              }
 
               @for (personalizado of (productosPersonalizados()[tipoPermitido.tipoId]); track personalizado.id; let idx
               = $index) {
@@ -397,10 +402,13 @@
 
     <div class="gallery-preview mt-3">
       @for (imagen of galeriaUrls(); track imagen.url) {
-      <a class="preview-item" [href]="imagen.url" target="_blank" rel="noopener">
+      <div class="preview-item">
         <img [src]="imagen.url" alt="Vista previa de foto subida">
-        <span class="preview-overlay">Ver imagen &nearr;</span>
-      </a>
+        <a class="preview-overlay" [href]="imagen.url" target="_blank" rel="noopener">Ver imagen &nearr;</a>
+        <button type="button" class="preview-item__remove" (click)="eliminarFoto(imagen.url)" aria-label="Eliminar imagen">
+          ×
+        </button>
+      </div>
       } @empty {
       <p class="text-muted m-0 small">
         Sin imágenes nuevas en esta sesión.

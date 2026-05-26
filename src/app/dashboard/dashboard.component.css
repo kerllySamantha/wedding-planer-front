@@ -63,4 +63,133 @@ h1 {
   .personal-container {
     margin: 0 1rem;
   }
+}
+.empresas-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3.5rem 2rem;
+  margin: 1rem 0 2rem;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid rgba(247, 108, 111, 0.15);
+  box-shadow: 0 4px 24px rgba(82, 63, 105, 0.08);
+}
+.empresas-empty__circle {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff4f6 0%, #fce8ec 100%);
+  border: 1px solid rgba(247, 108, 111, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.9rem;
+  color: #f76c6f;
+  margin-bottom: 1.25rem;
+  flex-shrink: 0;
+}
+.empresas-empty__heart {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  font-size: 0.85rem;
+  color: #f76c6f;
+  background: #fff;
+  border-radius: 50%;
+  padding: 2px;
+  border: 1px solid rgba(247, 108, 111, 0.2);
+}
+.empresas-empty__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0e3654;
+  margin: 0 0 0.5rem;
+}
+.empresas-empty__text {
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0 0 0.3rem;
+  max-width: 300px;
+}
+.empresas-empty__hint {
+  color: #9aa0b4;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.empresas-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2.5rem;
+  color: #9aa0b4;
+  font-size: 0.9rem;
+}
+.empresas-loading__spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(247, 108, 111, 0.25);
+  border-top-color: #f76c6f;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.sk-boda {
+  max-width: 22rem;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0.5rem 0.5rem 1rem rgba(144, 134, 134, 0.2);
+  background: #fff;
+}
+.sk-boda__img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  background-color: #e8d5d7;
+}
+.sk-boda__thumbs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.5rem 0;
+}
+.sk-boda__thumb {
+  display: block;
+  width: 75px;
+  height: 60px;
+  background-color: #e8d5d7;
+  border-radius: 0.25rem;
+}
+.sk-boda__body {
+  padding: 0.75rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+.sk-boda__titulo {
+  display: block;
+  width: 55%;
+  height: 1rem;
+  background-color: #e8d5d7;
+  border-radius: 0.3rem;
+}
+.sk-boda__subtitulo {
+  display: block;
+  width: 70%;
+  height: 0.75rem;
+  background-color: #e8d5d7;
+  border-radius: 0.3rem;
 }/*# sourceMappingURL=dashboard.component.css.map */

@@ -236,6 +236,76 @@
   cursor: not-allowed;
 }
 
+.stripe-panel {
+  border-radius: 24px;
+  border: 1px solid #efdee4;
+  background: #fff;
+  padding: 1.5rem;
+  margin-top: 1rem;
+
+  h2 {
+    font-family: "Merriweather";
+    margin-bottom: 0.25rem;
+  }
+}
+
+.stripe-hint {
+  color: #6e5560;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.stripe-card-element {
+  border: 1px solid #ddd0d5;
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  background: #fdf9fb;
+  transition: border-color 0.2s;
+
+  &:focus-within {
+    border-color: #c44e74;
+  }
+}
+
+.stripe-error {
+  color: #982949;
+  font-size: 0.875rem;
+  margin-top: 0.6rem;
+}
+
+.stripe-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+
+  button {
+    border: none;
+    border-radius: 999px;
+    padding: 0.9rem 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.stripe-secure {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #8b7580;
+  font-size: 0.8rem;
+  margin-top: 0.9rem;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .budget-card {
     padding: 1.25rem;

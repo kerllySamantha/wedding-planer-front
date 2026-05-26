@@ -1,6 +1,6 @@
 .requests-shell {
     display: grid;
-    gap: 1rem;
+    gap: 1.25rem;
     max-width: 1280px;
 }
 
@@ -11,28 +11,25 @@
 
 .requests-kicker {
     margin: 0;
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
+    font-size: 0.78rem;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: #2f5d86;
+    color: rgba(47, 93, 134, 0.85);
     font-weight: 700;
 }
 
 .requests-header h1 {
     margin: 0;
-    color: #143f66;
+    color: #0f1e40;
     font-size: clamp(1.8rem, 1vw + 1.4rem, 2.4rem);
+    text-shadow: 0 1px 4px rgba(255, 255, 255, 0.5);
 }
 
 .requests-subtitle {
     margin: 0;
-    color: rgba(20, 63, 102, 0.76);
+    color: rgba(20, 63, 102, 0.72);
 }
 
 .requests-table {
-    padding: 1rem;
-    border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.88);
-    border: 1px solid rgba(20, 63, 102, 0.12);
-    box-shadow: 0 16px 34px rgba(16, 39, 63, 0.1);
+    // el panel ya tiene glass — solo espaciado
 }

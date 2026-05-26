@@ -5,6 +5,8 @@ export interface Perfil {
     telefono : string,
     direccion: string,
     usuario: User,
+    poblacion: { id: number, nombre: string },
+    provincia: { id: number, nombre: string },
 }
 
 
@@ -23,5 +25,6 @@ export interface CreatePerfilUsuario extends CreateUser {
     direccion: string;
     telefono: string;
     poblacion_id: number,
-    fecha_boda: string
+    fecha_boda: string,
+    foto_perfil?: string,
 }

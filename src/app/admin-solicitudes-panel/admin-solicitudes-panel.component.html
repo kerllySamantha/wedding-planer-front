@@ -8,31 +8,70 @@
   </header>
 
   <div class="resumen-grid">
-    <article class="resumen-card aceptada">
-      <span>Aceptadas</span>
-      <strong>{{ totalAceptadas() }}</strong>
-    </article>
     <article class="resumen-card pendiente">
-      <span>Pendientes</span>
-      <strong>{{ totalPendientes() }}</strong>
+      <div class="resumen-icon">
+        <mat-icon>inbox</mat-icon>
+      </div>
+      <div class="resumen-info">
+        <span>Pendientes</span>
+        <strong>{{ totalPendientes() }}</strong>
+      </div>
+    </article>
+    <article class="resumen-card en_revision">
+      <div class="resumen-icon">
+        <mat-icon>hourglass_top</mat-icon>
+      </div>
+      <div class="resumen-info">
+        <span>En espera</span>
+        <strong>{{ totalEnRevision() }}</strong>
+      </div>
+    </article>
+    <article class="resumen-card aceptada">
+      <div class="resumen-icon">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div class="resumen-info">
+        <span>Aceptadas</span>
+        <strong>{{ totalAceptadas() }}</strong>
+      </div>
     </article>
     <article class="resumen-card rechazada">
-      <span>Rechazadas</span>
-      <strong>{{ totalRechazadas() }}</strong>
+      <div class="resumen-icon">
+        <mat-icon>cancel</mat-icon>
+      </div>
+      <div class="resumen-info">
+        <span>Rechazadas</span>
+        <strong>{{ totalRechazadas() }}</strong>
+      </div>
     </article>
   </div>
 
   @if ((arrayInfoPresupuestos() ?? []).length > 0) {
     <div class="table-wrapper">
       <table mat-table [dataSource]="arrayInfoPresupuestos() ?? []" class="solicitudes-table">
+
+        <ng-container matColumnDef="cliente">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let presupuesto">
+            <div class="cliente-cell">
+              <span class="cliente-nombre">{{ presupuesto.nombre || presupuesto.email }}</span>
+              @if (presupuesto.nombre && presupuesto.email) {
+                <span class="cliente-email">{{ presupuesto.email }}</span>
+              }
+            </div>
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="fecha">
-          <th mat-header-cell *matHeaderCellDef>Evento</th>
+          <th mat-header-cell *matHeaderCellDef>Fecha evento</th>
           <td mat-cell *matCellDef="let presupuesto">{{ formaterFecha(presupuesto.fecha) }}</td>
         </ng-container>
 
         <ng-container matColumnDef="importe">
-          <th mat-header-cell *matHeaderCellDef>Precio</th>
-          <td mat-cell *matCellDef="let presupuesto">{{ presupuesto.importe_ofertado || '-' }}</td>
+          <th mat-header-cell *matHeaderCellDef>Precio ofertado</th>
+          <td mat-cell *matCellDef="let presupuesto">
+            <span class="importe-valor">{{ formatImporte(presupuesto.importe_ofertado) }}</span>
+          </td>
         </ng-container>
 
         <ng-container matColumnDef="estado">
@@ -44,23 +83,28 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef>Email</th>
-          <td mat-cell *matCellDef="let presupuesto">{{ presupuesto.email || '-' }}</td>
-        </ng-container>
-
         <ng-container matColumnDef="acciones">
           <th mat-header-cell *matHeaderCellDef>Acciones</th>
           <td mat-cell *matCellDef="let presupuesto">
             <div class="acciones-container">
-              <button
-                mat-icon-button
-                class="btn-icon btn-edit d-flex justify-content-center"
+              <a
+                class="btn-accion btn-ver"
                 [routerLink]="['/proveedor-dashboard', 'solicitudes', presupuesto.id]"
-                aria-label="Ver solicitud"
+                title="Ver detalles"
               >
                 <mat-icon>visibility</mat-icon>
-              </button>
+                <span>Ver</span>
+              </a>
+              @if (puedeResponder(presupuesto.estado)) {
+                <a
+                  class="btn-accion btn-responder"
+                  [routerLink]="['/proveedor-dashboard', 'solicitudes', presupuesto.id, 'responder']"
+                  title="Responder solicitud"
+                >
+                  <mat-icon>edit_note</mat-icon>
+                  <span>Responder</span>
+                </a>
+              }
             </div>
           </td>
         </ng-container>
@@ -69,11 +113,17 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
-  } @else {
+  } @else if (arrayInfoPresupuestos() !== null) {
     <div class="empty-state">
       <mat-icon>mail_outline</mat-icon>
       <h3>Sin solicitudes por el momento</h3>
       <p>Cuando recibas solicitudes nuevas de clientes aparecerán aquí con su estado.</p>
+    </div>
+  } @else {
+    <div class="loading-state">
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
     </div>
   }
 </section>

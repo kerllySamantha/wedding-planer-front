@@ -1,0 +1,132 @@
+<app-navbar></app-navbar>
+
+<section class="review-page">
+  <div class="review-page__shell">
+    <div class="review-page__intro card border-0">
+      <div class="review-page__eyebrow">Nueva reseña</div>
+      <h1>Comparte tu experiencia con este proveedor</h1>
+      <p class="text-muted mb-0">
+        Tu opinion ayuda a otras parejas a decidir con mas confianza y deja constancia de como fue el servicio.
+      </p>
+    </div>
+
+    <div class="review-page__layout">
+      <aside class="review-page__company card border-0">
+        @if (empresa()?.fotos?.length) {
+        <img [src]="empresa()?.fotos?.[0]?.url" [alt]="empresa()?.nombre_empresa" class="review-page__cover">
+        }
+        <div class="review-page__company-body">
+          <span class="review-page__label">Proveedor</span>
+          <h2>{{ empresa()?.nombre_empresa }}</h2>
+          <p class="mb-2 text-muted">{{ empresa()?.tipo_servicio }}</p>
+          <p class="mb-0 small text-muted">
+            {{ empresa()?.poblacion?.nombre }}, {{ empresa()?.provincia?.nombre }}
+          </p>
+        </div>
+      </aside>
+
+      <div class="review-page__form-wrap card border-0">
+        @if (!usuarioAutorizado()) {
+        <div class="alert alert-warning">
+          Debes iniciar sesion como usuario para publicar una reseña.
+        </div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit($event)" novalidate>
+          <div class="form-section">
+            <h3>Valoracion</h3>
+            <p class="text-muted small mb-0">Selecciona una puntuacion y describe tu experiencia con detalle.</p>
+          </div>
+
+          <div class="row g-3 mt-1">
+            <div class="col-12">
+              <label class="form-label">Puntuacion</label>
+              <div class="star-rating" [class.star-rating--invalid]="isInvalid('puntuacion')">
+                @for (star of [1,2,3,4,5]; track star) {
+                <button type="button"
+                  class="star-rating__btn"
+                  [class.star-rating__btn--active]="star <= (hoveredStar() || +form.controls.puntuacion.value)"
+                  (click)="setPuntuacion(star)"
+                  (mouseenter)="hoveredStar.set(star)"
+                  (mouseleave)="hoveredStar.set(0)"
+                  [attr.aria-label]="star + (star === 1 ? ' estrella' : ' estrellas')">
+                  ★
+                </button>
+                }
+              </div>
+              <p class="star-rating__label">
+                @if (form.controls.puntuacion.value) {
+                  {{ +form.controls.puntuacion.value }} de 5 estrellas
+                } @else {
+                  Toca una estrella para valorar
+                }
+              </p>
+              @if (isInvalid('puntuacion')) {
+              <div class="invalid-feedback d-block">{{ getError('puntuacion') }}</div>
+              }
+            </div>
+
+            <div class="col-12">
+              <label class="form-label" for="comentario">Comentario</label>
+              <textarea id="comentario" rows="6" class="form-control" formControlName="comentario"
+                [class.is-invalid]="isInvalid('comentario')"
+                placeholder="Explica como fue el trato, la calidad del servicio, la puntualidad y cualquier detalle que te parezca importante"></textarea>
+              @if (isInvalid('comentario')) {
+              <div class="invalid-feedback d-block">{{ getError('comentario') }}</div>
+              }
+            </div>
+          </div>
+
+          <div class="form-section mt-4">
+            <h3>Fotos de apoyo</h3>
+            <p class="text-muted small mb-0">
+              Puedes subir hasta 6 imagenes para acompanar la reseña. Formatos permitidos: JPG, PNG, WEBP o GIF.
+            </p>
+          </div>
+
+          <div class="upload-panel mt-3">
+            <label for="reviewPhotos" class="upload-panel__dropzone">
+              <span class="upload-panel__title">Seleccionar fotos</span>
+              <span class="upload-panel__hint">Arrastra imagenes o haz clic para buscarlas</span>
+            </label>
+            <input id="reviewPhotos" type="file" accept="image/*" multiple class="d-none" (change)="onFilesSelected($event)">
+
+            @if (fotosError()) {
+            <div class="alert alert-danger mt-3 mb-0">{{ fotosError() }}</div>
+            }
+
+            @if (fotosSeleccionadas().length) {
+            <div class="upload-panel__grid mt-3">
+              @for (foto of fotosSeleccionadas(); track foto.previewUrl; let idx = $index) {
+              <article class="upload-panel__item">
+                <img [src]="foto.previewUrl" [alt]="'Vista previa ' + idx">
+                <button type="button" class="upload-panel__remove" (click)="eliminarFoto(idx)" aria-label="Eliminar foto">
+                  ×
+                </button>
+              </article>
+              }
+            </div>
+            }
+          </div>
+
+          @if (generalError()) {
+          <div class="alert alert-danger mt-4 mb-0">{{ generalError() }}</div>
+          }
+
+          <div class="review-page__actions">
+            <button type="button" class="btn btn-outline-secondary" (click)="volverAFicha()" [disabled]="uploading()">
+              Volver a la ficha
+            </button>
+            <button type="submit" class="btn btn-dark" [disabled]="uploading()">
+              @if (uploading()) {
+              Publicando...
+              } @else {
+              Publicar reseña
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

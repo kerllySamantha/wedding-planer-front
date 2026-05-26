@@ -1,0 +1,53 @@
+<div class="galeria-modal">
+  <div class="galeria-modal__header" mat-dialog-title>
+    <span class="galeria-modal__titulo">{{ data.nombreEmpresa ?? 'Galería de fotos' }}</span>
+    <span class="galeria-modal__contador">{{ indiceActual() + 1 }} / {{ totalFotos() }}</span>
+    <button mat-icon-button class="galeria-modal__cerrar" (click)="cerrar()" aria-label="Cerrar galería">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="galeria-modal__contenido">
+    <button
+      mat-icon-button
+      class="galeria-modal__nav galeria-modal__nav--prev"
+      (click)="anterior()"
+      [disabled]="totalFotos() <= 1"
+      aria-label="Foto anterior"
+    >
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+
+    <div class="galeria-modal__imagen-wrapper">
+      <img
+        [src]="fotoActual().url"
+        [alt]="'Foto ' + (indiceActual() + 1) + ' de ' + totalFotos()"
+        class="galeria-modal__imagen"
+      />
+    </div>
+
+    <button
+      mat-icon-button
+      class="galeria-modal__nav galeria-modal__nav--next"
+      (click)="siguiente()"
+      [disabled]="totalFotos() <= 1"
+      aria-label="Foto siguiente"
+    >
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+  </mat-dialog-content>
+
+  @if (data.fotos.length > 1) {
+    <mat-dialog-actions class="galeria-modal__miniaturas">
+      @for (foto of data.fotos; track foto.url; let idx = $index) {
+        <img
+          [src]="foto.url"
+          [alt]="'Miniatura ' + (idx + 1)"
+          class="galeria-modal__miniatura"
+          [class.galeria-modal__miniatura--activa]="idx === indiceActual()"
+          (click)="indiceActual.set(idx)"
+        />
+      }
+    </mat-dialog-actions>
+  }
+</div>

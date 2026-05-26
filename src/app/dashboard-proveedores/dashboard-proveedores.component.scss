@@ -73,3 +73,138 @@
 .modo-imagenes .card-proveedor:hover {
     transform: translateY(-3px);
 }
+
+// ── Estado vacío ────────────────────────────────────────
+.prov-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid rgba(247, 108, 111, 0.15);
+  box-shadow: 0 4px 24px rgba(82, 63, 105, 0.08);
+
+  &__circle {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff4f6 0%, #fce8ec 100%);
+    border: 1px solid rgba(247, 108, 111, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #f76c6f;
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  &__heart {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    font-size: 0.9rem;
+    color: #f76c6f;
+    background: #fff;
+    border-radius: 50%;
+    padding: 3px;
+    border: 1px solid rgba(247, 108, 111, 0.2);
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0e3654;
+    margin: 0 0 0.6rem;
+  }
+
+  &__text {
+    color: #555;
+    font-size: 0.925rem;
+    line-height: 1.65;
+    margin: 0 0 0.35rem;
+    max-width: 340px;
+  }
+
+  &__hint {
+    color: #9aa0b4;
+    font-size: 0.82rem;
+    margin: 0;
+  }
+}
+
+// ── Skeletons ────────────────────────────────────────────
+$sk-color: #e8d5d7;
+
+.sk-card {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06);
+  height: 18em;
+  display: flex;
+  flex-direction: column;
+
+  &__img {
+    display: block;
+    width: 100%;
+    flex: 1;
+    background-color: $sk-color;
+  }
+
+  &__body {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    background: #fff;
+  }
+
+  &__line {
+    display: block;
+    background-color: $sk-color;
+    border-radius: 0.3rem;
+    height: 0.75rem;
+
+    &--titulo { width: 60%; }
+    &--texto  { width: 85%; }
+  }
+}
+
+.sk-hcard {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f0e4e7;
+  align-items: flex-start;
+
+  &__img {
+    display: block;
+    flex-shrink: 0;
+    width: 220px;
+    height: 160px;
+    background-color: $sk-color;
+  }
+
+  &__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.25rem;
+  }
+
+  &__line {
+    display: block;
+    background-color: $sk-color;
+    border-radius: 0.3rem;
+    height: 0.8rem;
+
+    &--titulo { width: 45%; height: 1.1rem; }
+    &--texto  { width: 90%; }
+    &--corto  { width: 65%; }
+    &--medio  { width: 35%; }
+  }
+}

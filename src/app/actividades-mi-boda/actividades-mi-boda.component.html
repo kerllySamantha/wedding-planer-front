@@ -1,8 +1,8 @@
 <div class="container boda py-5">
-  <div class="row g-0 align-items-start  justify-content-center boda">
+  <div class="row g-0 align-items-start justify-content-center boda">
 
     <!-- Columna izquierda -->
-    <div class="col-10  col-md-10 col-lg-3 col-xl-3 fondo-imagen position-relative rounded-4">
+    <div class="col-10 col-md-10 col-lg-3 col-xl-3 fondo-imagen position-relative rounded-4">
       <div class="boda-bg w-100 h-100 position-absolute"></div>
 
       <div
@@ -15,6 +15,7 @@
                 {{fechaCountdown()?.days}}
               </dd>
             </div>
+
             <div class="col-3">
               <dt class="counterItem__label small text-uppercase mb-0">Horas</dt>
               <dd class="counterItem__value app-count-down-hours fs-5 fw-bold mb-0">
@@ -28,39 +29,61 @@
 
     <!-- Columna derecha -->
     <div class="col-12 col-lg-9 col-xl-9">
-      <div class="card-body text-center pt-4">
+      <div class="card-body text-center ">
 
-        <h5 class="card-title">{{ formatearNombrePareja(bodaEncontrada()?.nombre_pareja) }}</h5>
-        <p class="card-text">{{fechaFormateada()}}</p>
+        <h5 class="card-title">
+          {{ formatearNombrePareja(bodaEncontrada()?.nombre_pareja) }}
+        </h5>
+
+        <p class="card-text">
+          {{fechaFormateada()}}
+        </p>
 
         <!-- Tarjetas secundarias -->
-        <div class="row g-2 justify-content-center py-4">
+        <div class="row g-3 justify-content-center  stats-grid">
 
           <div class="col-6 col-md-3">
-            <div class="boda-style card p-2 text-center">
-              <span class="service-text">{{ serviciosContratados() }} Servicios Contratados</span>
+            <div class="boda-style card stats-card d-flex flex-column align-items-center justify-content-center text-center">
+              <div class="stat-icon-wrap">
+                <img class="stat-img" src="assets/images/pendientes_novia.png" alt="Servicios contratados" />
+                <span class="stat-badge badge-pink">{{ serviciosContratados() }}</span>
+              </div>
+              <span class="stat-label">Servicios contratados</span>
             </div>
           </div>
 
           <div class="col-6 col-md-3">
-            <div class="boda-style card p-2 text-center">
-              <span class="service-text">{{ tareasCompletadas() }} Tareas completadas</span>
+            <div class="boda-style card stats-card d-flex flex-column align-items-center justify-content-center text-center">
+              <div class="stat-icon-wrap">
+                <img class="stat-img" src="assets/images/lista_tareas.png" alt="Tareas completadas" />
+                <span class="stat-badge badge-teal">{{ tareasCompletadas() }}</span>
+              </div>
+              <span class="stat-label">Tareas completadas</span>
             </div>
           </div>
 
           <div class="col-6 col-md-3">
-            <div class="boda-style card p-2 text-center">
-              <span class="service-text">- Invitados confirmados</span>
+            <div class="boda-style card stats-card d-flex flex-column align-items-center justify-content-center text-center">
+              <div class="stat-icon-wrap">
+                <img class="stat-img" src="assets/images/perfil_usuario.png" alt="Invitados confirmados" />
+                <span class="stat-badge badge-purple">—</span>
+              </div>
+              <span class="stat-label">Invitados confirmados</span>
             </div>
           </div>
 
           <div class="col-6 col-md-3">
-            <div class="boda-style card p-2 text-center">
-              <span class="service-text">{{ formatearMoneda(presupuestoGastado()) }} Gastado</span>
+            <div class="boda-style card stats-card d-flex flex-column align-items-center justify-content-center text-center">
+              <div class="stat-icon-wrap">
+                <img class="stat-img" src="assets/images/editar_presupuesto.png" alt="Presupuesto gastado" />
+                <span class="stat-badge badge-amber">{{ formatearMoneda(presupuestoGastado()) }}</span>
+              </div>
+              <span class="stat-label">Presupuesto gastado</span>
             </div>
           </div>
 
         </div>
+        <!-- Fin stats-grid -->
 
       </div>
     </div>

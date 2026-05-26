@@ -16,10 +16,11 @@ import { CardActividadesNoviaComponent } from "../card-actividades-novia/card-ac
 import { BuscadorComponent } from "../buscador/buscador.component";
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
+import { PaginadorComponent } from '../paginador/paginador.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [NavbarComponent, CardEmpresaComponent, CardBodaComponent, CardActividadesNoviaComponent, BuscadorComponent],
+  imports: [NavbarComponent, CardEmpresaComponent, CardBodaComponent, CardActividadesNoviaComponent, BuscadorComponent, PaginadorComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -33,9 +34,11 @@ export class DashboardComponent {
   filtradoTotalServicectx = inject(ServicioFiltrado);
   empresas = computed(() => this.filtradoTotalServicectx.companiesTotalFiltered());
   bodas = signal<Boda[]>([]);
+  bodasLoading = signal(true);
 
   loading = signal(true);
   error = signal<string | null>(null);
+  readonly skeletonBodas = Array.from({ length: 4 }, (_, i) => i);
   rol = signal<string | null>(localStorage.getItem('rol')!)
 
   rolAuth = computed(() => !!this.autServicectx.rol());
@@ -75,19 +78,18 @@ export class DashboardComponent {
 
 
   cargarBodas() {
-    this.loading.set(true);
-    this.error.set(null);
+    this.bodasLoading.set(true);
     this.bodasTotalService.getBodas().subscribe({
       next: (data) => {
         const bodasPublicables = (data?.data ?? []).filter((boda) => this.esBodaPublicable(boda));
         this.bodas.set(bodasPublicables);
-        this.loading.set(false);
+        this.bodasLoading.set(false);
       },
       error: (err: Error) => {
         this.error.set(err.message);
-        this.loading.set(false);
+        this.bodasLoading.set(false);
       }
-    })
+    });
   }
 
 

@@ -4,46 +4,27 @@
 <div class="container-personal">
     <div class="row justify-content-between">
         <div class="col-lg-8 col-12">
-            <!-- <mat-grid-list cols="12" rowHeight="120px" gutterSize="8px">
-    
-        @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
-        @if (idx === 0) {
-        <mat-grid-tile colspan="5" rowspan="6">
-            <img [src]="foto.url" class="w-100 h-100 object-cover" />
-        </mat-grid-tile>
-        }
-        }
-    
-        @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
-        @if (idx === 1) {
-        <mat-grid-tile colspan="3" rowspan="3">
-            <img [src]="foto.url" class="w-100 h-100 object-cover" />
-        </mat-grid-tile>
-        }
-        }
-    
-        @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
-        @if (idx === 2) {
-        <mat-grid-tile colspan="4" rowspan="3">
-            <img [src]="foto.url" class="w-100 h-100 object-cover" />
-        </mat-grid-tile>
-        }
-        }
-    
-        @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
-        @if (idx === 3) {
-        <mat-grid-tile colspan="7" rowspan="3">
-            <img [src]="foto.url" class="w-100 h-100 object-cover" />
-        </mat-grid-tile>
-        }
-        }
-    
-    </mat-grid-list> -->
-
-
-
-
             <div class="container-imagenes">
+                @if (fotosOrdenadas().length === 0) {
+                <div class="row gx-0 w-100 sk-galeria">
+                    <div class="col-5 p-0 pe-2 d-flex">
+                        <div class="sk-galeria__izq"></div>
+                    </div>
+                    <div class="col-7 p-0">
+                        <div class="row gx-0 gy-0">
+                            <div class="col-6 p-0 pe-1">
+                                <div class="sk-galeria__pequena"></div>
+                            </div>
+                            <div class="col-6 p-0 ps-1">
+                                <div class="sk-galeria__pequena sk-galeria__pequena--end"></div>
+                            </div>
+                            <div class="col-12 p-0 pt-2">
+                                <div class="sk-galeria__bottom"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                } @else {
                 <div class="row gx-0">
                     <div class="col-5 p-0 pe-2">
                         @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
@@ -58,36 +39,41 @@
                             <div class="col-6 p-0 pe-1">
                                 @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
                                 @if (idx === 1) {
-                                <img [src]="foto.url" class="img-fluid w-100 img-pequeña" />
+                                <img [src]="foto.url" class="img-fluid w-100 img-pequena" />
                                 }
                                 }
                             </div>
                             <div class="col-6 p-0 ps-1">
                                 @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
                                 @if (idx === 2) {
-                                <img [src]="foto.url" class="img-fluid w-100 img-pequeña img-end" />
+                                <img [src]="foto.url" class="img-fluid w-100 img-pequena img-end" />
                                 }
                                 }
                             </div>
-                            <div class="col-12 p-0 pt-2">
+                            <div class="col-12 p-0 pt-2 img-ultima-wrapper">
                                 @for (foto of fotosOrdenadas(); track foto.url; let idx = $index) {
                                 @if (idx === 3) {
                                 <img [src]="foto.url" class="img-fluid w-100 img-derecha-bottom" />
                                 }
                                 }
+                                @if (fotosOrdenadas().length > 3) {
+                                <button class="btn btn-ver-fotos" type="button" (click)="abrirGaleriaFotos()">
+                                    <i class="bi bi-images me-2"></i>Ver todas las fotos
+                                </button>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
+                }
             </div>
+
         </div>
 
-        <div class="col-lg-4 ps-lg-5  pt-4 mt-4 col-12">
+        <div class="col-lg-4 ps-lg-5 pt-4 mt-4 col-12">
             <div class="sticky-container">
                 <h2 class="h2">{{empresa()?.nombre_empresa}}</h2>
                 <div class="row detalle-empresa justify-content-end">
-
-                    <!-- Dirección -->
                     <div class="detalle-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
                             stroke-width="1.5" viewBox="0 0 24 24" class="detalle-icon">
@@ -98,7 +84,6 @@
                         <span>{{empresa()?.direccion}}</span>
                     </div>
 
-                    <!-- Teléfono -->
                     <div class="detalle-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
                             stroke-width="1.5" viewBox="0 0 24 24" class="detalle-icon">
@@ -109,7 +94,6 @@
                         <span>{{empresa()?.telefono}}</span>
                     </div>
 
-                    <!-- Email -->
                     @if(empresa()?.usuario?.email){
                     <div class="detalle-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
@@ -123,7 +107,6 @@
 
                     <hr class="detalle-divider">
 
-                    <!-- Servicio -->
                     <div class="detalle-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
                             stroke-width="1.5" viewBox="0 0 24 24" class="detalle-icon">
@@ -138,7 +121,6 @@
                         </div>
                     </div>
 
-                    <!-- Ciudad -->
                     <div class="detalle-item">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
                             stroke-width="1.5" viewBox="0 0 24 24" class="detalle-icon">
@@ -153,7 +135,6 @@
                                 {{empresa()?.provincia?.nombre}}</span>
                         </div>
                     </div>
-
                 </div>
                 <div class="row d-flex justify-content-center mt-4">
                     <button class="btn searcher__submit col-9 text-center justify-content-center" type="button"
@@ -162,32 +143,27 @@
                 </div>
             </div>
         </div>
+
         <div class="row mt-4 pt-4">
-            <h4 class="h4">Información</h4>
+            <h4 class="h4">Informacion</h4>
             <div class="row">
                 <p class="text-left">
                     {{empresa()?.descripcion}}
                 </p>
             </div>
             <div class="row mt-4">
-
-                <div class="col-lg-6  col-12">
+                <div class="col-lg-6 col-12">
                     @for (producto of productos(); track producto.id; let idx = $index) {
                     <ul class="list-group list-group-flush ">
-
-
                         @if(idx === 0 || producto.categoria.nombre !== productos()[idx - 1]?.categoria?.nombre) {
                         <h4 class="h4">{{ producto.categoria.nombre }}</h4>
                         }
 
-                        @if(idx === 0 || producto.tipo_producto.nombre !== productos()[idx - 1]?.tipo_producto?.nombre)
-                        {
-
+                        @if(idx === 0 || producto.tipo_producto.nombre !== productos()[idx - 1]?.tipo_producto?.nombre) {
                         <div>
                             {{ producto.tipo_producto.nombre }}
                         </div>
                         }
-
 
                         <li class="list-group-item">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -201,9 +177,124 @@
                     }
                 </div>
             </div>
-
-
-
         </div>
+
+        <section class="reviews-section mt-5">
+            <div class="reviews-section__header">
+                <div>
+                    <h4 class="h4 mb-1">Reseñas</h4>
+                    <p class="text-muted mb-0">Consulta opiniones reales antes de tomar una decision.</p>
+                </div>
+                <button type="button" class="btn searcher__submit" (click)="irANuevaResenia()">
+                    <i class="bi bi-pencil-square me-2"></i>Escribir reseña
+                </button>
+            </div>
+
+            @if (reviewCreated()) {
+            <div class="alert alert-success mt-3 d-flex justify-content-between align-items-center gap-3">
+                <span>Tu reseña se ha publicado correctamente.</span>
+                <button type="button" class="btn btn-sm btn-outline-success" (click)="cerrarMensajeReviewCreada()">
+                    Cerrar
+                </button>
+            </div>
+            }
+
+            @if (reseniasLoading()) {
+            <div class="reviews-loading mt-4">
+                <div class="spinner-border spinner-border-sm text-secondary me-2" role="status" aria-hidden="true"></div>
+                <span class="text-muted small">Cargando reseñas...</span>
+            </div>
+            } @else if (reseniasError()) {
+            <div class="alert alert-danger mt-3">{{ reseniasError() }}</div>
+            } @else if (!resenias().length) {
+            <div class="reviews-section__empty mt-4">
+                <div class="reviews-section__empty-icon">
+                    <i class="bi bi-chat-square-text"></i>
+                </div>
+                <div>
+                    <strong>Aun no hay reseñas para este proveedor.</strong>
+                    <p class="mb-3 small text-muted">
+                        Cuando una pareja comparta su experiencia, aparecera aqui. Si ya trabajaste con esta empresa,
+                        puedes crear la primera reseña desde un formulario completo con fotos.
+                    </p>
+                    <button type="button" class="btn searcher__submit" (click)="irANuevaResenia()">
+                       <i class="bi bi-pencil-square me-2"></i>  Escribir la primera reseña
+                    </button>
+                </div>
+            </div>
+            } @else {
+
+            <div class="reviews-summary mt-4">
+                <div class="reviews-summary__score">
+                    <span class="reviews-summary__number">{{ puntuacionMedia().toFixed(1) }}</span>
+                    <div class="reviews-summary__stars">
+                        @for (_s of estrellas(puntuacionMedia()); track $index) {
+                        <i class="bi bi-star-fill"></i>
+                        }
+                        @for (_s of estrellasVacias(puntuacionMedia()); track $index) {
+                        <i class="bi bi-star"></i>
+                        }
+                    </div>
+                    <span class="reviews-summary__total">{{ resenias().length }} {{ resenias().length === 1 ? 'reseña' : 'reseñas' }}</span>
+                </div>
+
+                @if (estadisticasOrdenadas().length) {
+                <div class="reviews-summary__bars">
+                    @for (estrella of estadisticasOrdenadas(); track estrella.rating) {
+                    <div class="reviews-summary__bar-row">
+                        <span class="reviews-summary__bar-label">{{ estrella.rating }}<i class="bi bi-star-fill ms-1"></i></span>
+                        <div class="reviews-summary__bar-track">
+                            <div class="reviews-summary__bar-fill" [style.width.%]="estrella.porcentaje"></div>
+                        </div>
+                        <span class="reviews-summary__bar-count">{{ estrella.total }}</span>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <div class="reviews-list mt-4">
+                @for (resenia of resenias(); track resenia.id) {
+                <article class="reviews-list__item">
+                    <div class="reviews-list__item-header">
+                        <div class="reviews-list__avatar" [style.background]="colorAvatar(resenia.usuario.name)">
+                            {{ inicialesUsuario(resenia.usuario.name) }}
+                        </div>
+                        <div class="reviews-list__meta">
+                            <strong>{{ resenia.usuario.name }}</strong>
+                            <div class="reviews-list__stars">
+                                @for (_s of estrellas(resenia.puntuacion); track $index) {
+                                <i class="bi bi-star-fill"></i>
+                                }
+                                @for (_s of estrellasVacias(resenia.puntuacion); track $index) {
+                                <i class="bi bi-star"></i>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <p class="reviews-list__comment">{{ resenia.comentario }}</p>
+
+                    @if ((resenia.fotos?.length ?? 0) > 0) {
+                    <div class="reviews-list__gallery">
+                        @for (foto of resenia.fotos; track foto.path ?? foto.url) {
+                        <img [src]="foto.url" [alt]="resenia.comentario">
+                        }
+                    </div>
+                    }
+                </article>
+                }
+            </div>
+
+            <div class="reviews-section__cta mt-4">
+                <div>
+                    <strong>Quieres compartir tu experiencia?</strong>
+                    <p class="mb-0 small text-muted">Te llevamos a un formulario mas completo donde tambien puedes adjuntar fotos.</p>
+                </div>
+                <button type="button" class="btn searcher__submit" (click)="irANuevaResenia()">
+                    Anadir una reseña
+                </button>
+            </div>
+            }
+        </section>
     </div>
 </div>

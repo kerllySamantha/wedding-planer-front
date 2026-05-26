@@ -139,4 +139,70 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.stats-grid {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-inline: 1rem;
+}
+
+.stats-card {
+  min-height: 9.5em;
+  margin: 0 !important;
+  padding: 1.2rem 1rem;
+  border-radius: 1.2rem;
+  border: 1px solid rgba(139, 70, 96, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 0.25s ease;
+  box-shadow: 0 8px 22px rgba(139, 70, 96, 0.08);
+}
+
+.stats-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(139, 70, 96, 0.14);
+}
+
+.stats-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.9rem;
+  background: linear-gradient(135deg, #f1ccd7, #ecdbe1);
+  color: #8b4660;
+  font-size: 1.35rem;
+}
+
+.stats-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #7f3951;
+  margin-bottom: 0.35rem;
+}
+
+.stats-description {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: #6b5a61;
+}
+
+@media (max-width: 768px) {
+  .stats-card {
+    min-height: 8.5em;
+    padding: 1rem 0.8rem;
+  }
+  .stats-title {
+    font-size: 0.92rem;
+  }
+  .stats-description {
+    font-size: 0.76rem;
+  }
 }/*# sourceMappingURL=actividades-mi-boda.component.css.map */

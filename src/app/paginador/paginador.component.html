@@ -1,0 +1,36 @@
+@if (lastPage() > 1) {
+  <nav class="paginador" aria-label="Navegación de páginas">
+
+    <button class="paginador__nav"
+            [disabled]="currentPage() === 1"
+            (click)="anterior()"
+            aria-label="Página anterior">
+      <i class="bi bi-chevron-left"></i>
+    </button>
+
+    @for (pagina of paginasVisibles(); track $index) {
+      @if (pagina === '...') {
+        <span class="paginador__ellipsis">···</span>
+      } @else {
+        <button class="paginador__num"
+                [class.paginador__num--active]="pagina === currentPage()"
+                (click)="ir(pagina)"
+                [attr.aria-current]="pagina === currentPage() ? 'page' : null">
+          {{ pagina }}
+        </button>
+      }
+    }
+
+    <button class="paginador__nav"
+            [disabled]="currentPage() === lastPage()"
+            (click)="siguiente()"
+            aria-label="Página siguiente">
+      <i class="bi bi-chevron-right"></i>
+    </button>
+
+  </nav>
+
+  <p class="paginador__info">
+    {{ total() }} resultado{{ total() === 1 ? '' : 's' }} · página {{ currentPage() }} de {{ lastPage() }}
+  </p>
+}
