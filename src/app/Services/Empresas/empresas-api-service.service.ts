@@ -7,6 +7,7 @@ import {
   Empresa,
   EmpresaResponse,
   Empresas,
+  EstadisticasEmpresa,
 } from '../../Interfaces/Empresa';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Productos, ProductosPorCategoria } from '../../Interfaces/Producto';
@@ -140,6 +141,10 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
           return throwError(() => error);
         }),
       );
+  }
+
+  getEstadisticasEmpresa(id: number): Observable<EstadisticasEmpresa> {
+    return this.http.get<EstadisticasEmpresa>(`${this.apiUrl}/empresa/${id}/estadisticas`);
   }
 
   uploadImageBase64(

@@ -1,40 +1,124 @@
-<div class="month-selector d-flex align-items-center justify-content-center mb-4">
-  <!-- Botón mes anterior -->
+<!-- ── Selector de mes ──────────────────────────────────── -->
+<div class="month-selector d-flex align-items-center justify-content-center mb-3">
   <button class="icon-button" (click)="prevMonth()">
-    <svg cIcon name="cil-chevron-left" size="custom" title="Flecha izquierda"></svg>
+    <svg cIcon name="cil-chevron-left" size="custom" title="Mes anterior"></svg>
   </button>
-
-  <!-- Mes y año -->
   <div class="mx-2 month-display">
     {{ selectedDate() | date:'MMMM':'':'es' | titlecase }} {{ selectedDate() | date:'yyyy' }}
   </div>
-
-  <!-- Botón mes siguiente -->
   <button class="icon-button" (click)="nextMonth()">
-    <svg cIcon name="cil-chevron-right" size="custom" title="Flecha derecha"></svg>
+    <svg cIcon name="cil-chevron-right" size="custom" title="Mes siguiente"></svg>
   </button>
 </div>
 
-<div class="cards-grid pt-2 mt-2">
+<!-- ── Cards de estado del mes ─────────────────────────── -->
+<div class="cards-grid mb-3">
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCompletadas()" [today]="selectedDate()" tittle="Confirmadas"></app-card-info-admin>
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasPendientes()"  [today]="selectedDate()" tittle="Pendientes"></app-card-info-admin>
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCanceladas()"  [today]="selectedDate()" tittle="Canceladas"></app-card-info-admin>
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasBloqueadas()"  [today]="selectedDate()" tittle="Bloqueadas"></app-card-info-admin>
+  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasRechazadas()"  [today]="selectedDate()" tittle="Rechazadas"></app-card-info-admin>
+</div>
 
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCompletadas()" [today]="selectedDate()"
-    tittle="Reservas Confirmadas">
-  </app-card-info-admin>
+<!-- ── KPI strip ────────────────────────────────────────── -->
+<div class="kpi-strip mb-3">
+  <div class="kpi-chip">
+    <span class="kpi-chip__value">{{ totalReservas() }}</span>
+    <span class="kpi-chip__label">Reservas totales</span>
+  </div>
+  <div class="kpi-chip">
+    <span class="kpi-chip__value">{{ totalProductos() }}</span>
+    <span class="kpi-chip__label">Productos activos</span>
+  </div>
+  <div class="kpi-chip">
+    <span class="kpi-chip__value">{{ mediaValoracion() }}<small> / 5</small></span>
+    <span class="kpi-chip__label">Valoración media</span>
+  </div>
+  <div class="kpi-chip">
+    <span class="kpi-chip__value">{{ totalResenias() }}</span>
+    <span class="kpi-chip__label">Reseñas recibidas</span>
+  </div>
+</div>
 
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasPendientes()" [today]="selectedDate()"
-    tittle="Reservas Pendientes">
-  </app-card-info-admin>
+<!-- ── Fila 1: Tendencia anual (ancho completo) ─────────── -->
+<div class="chart-row chart-row--full mb-3">
+  <div class="chart-card">
+    <div class="chart-card__header">
+      <p class="chart-title">Tendencia de reservas · {{ year }}</p>
+      <span class="chart-badge">Año completo</span>
+    </div>
+    <div class="chart-body chart-body--tall">
+      <canvas #tendenciaCanvas></canvas>
+    </div>
+  </div>
+</div>
 
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasCanceladas()" [today]="selectedDate()"
-    tittle="Reservas Canceladas">
-  </app-card-info-admin>
+<!-- ── Fila 2: Top productos + Distribución valoraciones ── -->
+<div class="chart-row chart-row--2 mb-3">
+  <div class="chart-card">
+    <div class="chart-card__header">
+      <p class="chart-title">Top productos más reservados</p>
+      <span class="chart-badge">Top 5</span>
+    </div>
+    <div class="chart-body chart-body--medium">
+      <canvas #topCanvas></canvas>
+    </div>
+  </div>
 
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasBloqueadas()" [today]="selectedDate()"
-    tittle="Reservas Bloqueadas">
-  </app-card-info-admin>
-  <app-card-info-admin [loading]="loading()" [error]="error()" [reservas]="reservasRechazadas()" [today]="selectedDate()"
-      tittle="Reservas Rechazadas">
-  </app-card-info-admin>
+  <div class="chart-card">
+    <div class="chart-card__header">
+      <p class="chart-title">Distribución de valoraciones</p>
+      <span class="chart-badge">Reseñas</span>
+    </div>
+    <div class="chart-body chart-body--medium">
+      <canvas #valoracionesCanvas></canvas>
+    </div>
+  </div>
+</div>
 
+<!-- ── Fila 3: Estado (donut) + Resumen del mes ─────────── -->
+<div class="chart-row chart-row--2">
+  <div class="chart-card">
+    <div class="chart-card__header">
+      <p class="chart-title">Reservas por estado</p>
+      <span class="chart-badge">Global</span>
+    </div>
+    <div class="donut-wrap">
+      <canvas #estadoCanvas width="200" height="200"></canvas>
+    </div>
+  </div>
 
+  <div class="chart-card summary-card">
+    <div class="chart-card__header">
+      <p class="chart-title">Resumen del mes</p>
+      <span class="chart-badge">{{ selectedDate() | date:'MMM yyyy':'':'es' | titlecase }}</span>
+    </div>
+    <div class="summary-list">
+      <div class="summary-row">
+        <span class="summary-dot" style="background:#143f66"></span>
+        <span class="summary-label">Confirmadas</span>
+        <span class="summary-val">{{ reservasCompletadas().length }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-dot" style="background:#2f5d86"></span>
+        <span class="summary-label">Pendientes</span>
+        <span class="summary-val">{{ reservasPendientes().length }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-dot" style="background:#4a7ba5"></span>
+        <span class="summary-label">Canceladas</span>
+        <span class="summary-val">{{ reservasCanceladas().length }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-dot" style="background:#6f9dbf"></span>
+        <span class="summary-label">Bloqueadas</span>
+        <span class="summary-val">{{ reservasBloqueadas().length }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-dot" style="background:#95bdd8"></span>
+        <span class="summary-label">Rechazadas</span>
+        <span class="summary-val">{{ reservasRechazadas().length }}</span>
+      </div>
+    </div>
+  </div>
 </div>

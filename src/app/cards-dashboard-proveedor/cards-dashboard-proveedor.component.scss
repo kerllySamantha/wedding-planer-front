@@ -1,24 +1,21 @@
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(0.35rem, 0.8vw, 0.65rem);
-}
+$navy:      #143f66;
+$blue:      #2f5d86;
+$card-bg:   linear-gradient(155deg, rgba(255,255,255,0.28), rgba(255,255,255,0.12));
+$border:    rgba(255,255,255,0.32);
+$shadow:    0 8px 24px rgba(15,34,58,0.14);
+$shadow-hv: 0 14px 32px rgba(15,34,58,0.18);
+$radius:    1rem;
+$gap:       clamp(0.45rem, 0.85vw, 0.7rem);
 
-.cards-grid app-card-info-admin {
-  width: 100%;
-  min-width: 0;
-}
+// ── Selector de mes ─────────────────────────────────────────
+.month-selector { user-select: none; }
 
-@media (max-width: 430px) {
-  .cards-grid {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 768px) {
-  .cards-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
+.month-display {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: $navy;
+  min-width: 9rem;
+  text-align: center;
 }
 
 .icon-button {
@@ -26,15 +23,177 @@
   border: none;
   padding: 0.2rem;
   cursor: pointer;
+
+  svg {
+    width: 1.4rem;
+    height: 1.4rem;
+    fill: $navy;
+    opacity: 0.7;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+
+  &:hover svg { opacity: 1; transform: scale(1.15); }
 }
 
-.icon-button svg {
-  width: 1.5rem;
-  height: 1.5rem;
-  fill: #000;
-  transition: transform 0.2s;
+// ── Cards de estado ─────────────────────────────────────────
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $gap;
+
+  @media (min-width: 560px) { grid-template-columns: repeat(3, 1fr); }
+  @media (min-width: 900px) { grid-template-columns: repeat(5, 1fr); }
+
+  app-card-info-admin { width: 100%; min-width: 0; }
 }
 
-.icon-button:hover svg {
-  transform: scale(1.2);
+// ── KPI strip ───────────────────────────────────────────────
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $gap;
+
+  @media (min-width: 640px) { grid-template-columns: repeat(4, 1fr); }
+}
+
+.kpi-chip {
+  background: $card-bg;
+  border: 1px solid $border;
+  border-radius: 0.75rem;
+  backdrop-filter: blur(10px);
+  box-shadow: $shadow;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover { transform: translateY(-2px); box-shadow: $shadow-hv; }
+}
+
+.kpi-chip__value {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: $blue;
+  line-height: 1;
+
+  small { font-size: 0.78rem; font-weight: 500; color: rgba($navy, 0.5); }
+}
+
+.kpi-chip__label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: rgba($navy, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+// ── Filas de gráficas ───────────────────────────────────────
+.chart-row {
+  display: grid;
+  gap: $gap;
+
+  &--full { grid-template-columns: 1fr; }
+
+  &--2 {
+    grid-template-columns: 1fr 1fr;
+
+    @media (max-width: 700px) { grid-template-columns: 1fr; }
+  }
+}
+
+// ── Card de gráfica ─────────────────────────────────────────
+.chart-card {
+  background: $card-bg;
+  border: 1px solid $border;
+  border-radius: $radius;
+  backdrop-filter: blur(14px);
+  box-shadow: $shadow;
+  padding: 1rem 1.1rem 0.9rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover { transform: translateY(-2px); box-shadow: $shadow-hv; }
+}
+
+.chart-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.chart-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: $navy;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.chart-badge {
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: $blue;
+  background: rgba(47,93,134,0.12);
+  border-radius: 999px;
+  padding: 0.14rem 0.5rem;
+}
+
+// ── Canvas containers ───────────────────────────────────────
+.chart-body {
+  position: relative;
+  width: 100%;
+
+  &--tall   { height: 200px; }
+  &--medium { height: 170px; }
+
+  canvas { width: 100% !important; height: 100% !important; }
+}
+
+.donut-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.3rem 0;
+}
+
+// ── Summary card ────────────────────────────────────────────
+.summary-card { display: flex; flex-direction: column; }
+
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
+  margin: 0.5rem 0;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.summary-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  color: rgba($navy, 0.72);
+  font-weight: 500;
+  flex: 1;
+}
+
+.summary-val {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: $navy;
 }

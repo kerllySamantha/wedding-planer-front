@@ -21,6 +21,8 @@ export class AutenticarHttpClientService extends AuthenticationService {
     return this.http.post<UserResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap(response => {
         this.auth.set(response.data);
+        const foto = (response.data as any).fotoPerfil || (response.data as any).foto_perfil;
+        if (foto) this.fotoUrl.set(foto);
         if (response.token) {
           localStorage.setItem('token', response.token);
         }
@@ -32,6 +34,7 @@ export class AutenticarHttpClientService extends AuthenticationService {
     return this.http.post<void>(`${this.apiUrl}/logout`, {}).pipe(
       tap(() => {
         this.auth.set(undefined);
+        this.fotoUrl.set(null);
         localStorage.clear();
       }),
       map(() => undefined)
@@ -41,7 +44,13 @@ export class AutenticarHttpClientService extends AuthenticationService {
   override restoreSession() {
     const userData = localStorage.getItem('user');
     if (userData) {
-      this.auth.set(JSON.parse(userData));
+      try {
+        const user = JSON.parse(userData);
+        this.auth.set(user);
+        this.fotoUrl.set(user.fotoPerfil || user.foto_perfil || null);
+      } catch {
+        localStorage.removeItem('user');
+      }
     }
   }
 }

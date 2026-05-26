@@ -29,18 +29,37 @@ h1 {
   border: none;
   cursor: pointer;
   padding: 0;
+  border-radius: 50%;
+  transition: transform 0.22s ease;
+}
+.avatar-button:hover {
+  transform: scale(1.08);
 }
 
 .avatar-circle {
-  width: 2.55rem;
-  height: 2.55rem;
+  width: 2.8rem;
+  height: 2.8rem;
   border-radius: 50%;
-  background: linear-gradient(135deg, #f76c6f, #ff9aa2);
+  background: linear-gradient(135deg, #e91e63 0%, #f76c6f 55%, #ff9aa2 100%);
   color: #ffffff;
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-weight: 800;
+  font-size: 1rem;
   text-transform: uppercase;
-  box-shadow: 0 10px 22px rgba(247, 108, 111, 0.28);
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 0 2.5px #fff, 0 0 0 4.5px rgba(247, 108, 111, 0.55), 0 6px 18px rgba(247, 108, 111, 0.35);
+  transition: box-shadow 0.22s ease;
+}
+
+.avatar-button:hover .avatar-circle {
+  box-shadow: 0 0 0 2.5px #fff, 0 0 0 4.5px rgba(247, 108, 111, 0.8), 0 10px 24px rgba(247, 108, 111, 0.45);
+}
+
+.avatar-img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2.5px #fff, 0 0 0 4.5px rgba(247, 108, 111, 0.45), 0 6px 18px rgba(0, 0, 0, 0.14);
 }
 
 .notif-button {

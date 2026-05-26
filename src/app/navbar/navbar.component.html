@@ -106,9 +106,11 @@
 
         <!-- Avatar -->
         <button class="p-0 avatar-button" [matMenuTriggerFor]="userMenuHome">
-          <div class="d-flex justify-content-center align-items-center avatar-circle">
-            {{ nombreU() }}
-          </div>
+          @if(fotoU()) {
+            <img class="avatar-circle avatar-img" [src]="fotoU()!" alt="Foto de perfil" />
+          } @else {
+            <div class="d-flex justify-content-center align-items-center avatar-circle">{{ nombreU() }}</div>
+          }
         </button>
 
         <mat-menu #userMenuHome="matMenu" yPosition="below" xPosition="after">
@@ -251,9 +253,11 @@
 
         <!-- Avatar -->
         <button class="p-0 avatar-button" [matMenuTriggerFor]="userMenuMain">
-          <div class="d-flex justify-content-center align-items-center avatar-circle">
-            {{ nombreU() }}
-          </div>
+          @if(fotoU()) {
+            <img class="avatar-circle avatar-img" [src]="fotoU()!" alt="Foto de perfil" />
+          } @else {
+            <div class="d-flex justify-content-center align-items-center avatar-circle">{{ nombreU() }}</div>
+          }
         </button>
 
         <mat-menu #userMenuMain="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after">
