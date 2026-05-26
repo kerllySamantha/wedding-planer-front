@@ -81,6 +81,79 @@
   /* ancho máximo */
 }
 
+.stat-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.stat-icon-wrap .img-see {
+  width: 28px;
+  height: 28px;
+  -o-object-fit: contain;
+     object-fit: contain;
+  margin-bottom: 0;
+}
+
+.icon-pink {
+  background-color: #FBEAF0;
+}
+
+.icon-teal {
+  background-color: #E1F5EE;
+}
+
+.icon-purple {
+  background-color: #EEEDFE;
+}
+
+.icon-amber {
+  background-color: #FAEEDA;
+}
+
+.stat-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: #6c757d;
+  text-align: center;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+}
+
+.stat-bar {
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 10px;
+}
+
+.bar-pink {
+  background-color: #D4537E;
+}
+
+.bar-teal {
+  background-color: #1D9E75;
+}
+
+.bar-purple {
+  background-color: #7F77DD;
+}
+
+.bar-amber {
+  background-color: #BA7517;
+}
+
 @media (max-width: 575.98px) {
   .boda-style.secundaria {
     padding: 0;

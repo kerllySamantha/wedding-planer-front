@@ -29,6 +29,7 @@
 }
 
 .pf-hero__avatar {
+  position: relative;
   width: 84px;
   height: 84px;
   border-radius: 50%;
@@ -42,6 +43,51 @@
   justify-content: center;
   flex-shrink: 0;
   box-shadow: 0 6px 18px rgba(247, 108, 111, 0.25);
+  overflow: hidden;
+  cursor: pointer;
+}
+.pf-hero__avatar-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 50%;
+}
+.pf-hero__avatar-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.48);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.18s;
+  cursor: pointer;
+  color: #fff;
+  font-size: 1.35rem;
+  z-index: 1;
+}
+.pf-hero__avatar:hover .pf-hero__avatar-overlay {
+  opacity: 1;
+}
+.pf-hero__avatar--loading {
+  color: #f76c6f;
+  font-size: 1.5rem;
+}
+
+.pf-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .pf-hero__info {

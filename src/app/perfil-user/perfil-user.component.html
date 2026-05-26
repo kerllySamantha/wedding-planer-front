@@ -6,18 +6,23 @@
   <header class="pf-hero">
     <div class="pf-hero__cover"></div>
     <div class="pf-hero__body">
-      <div class="pf-hero__avatar" [attr.aria-label]="'Avatar de ' + (perfil()?.data?.usuario?.name || 'usuario')">
+      <div class="pf-hero__avatar" [class.pf-hero__avatar--loading]="uploadingFoto()"
+        [attr.aria-label]="'Avatar de ' + (perfil()?.data?.usuario?.name || 'usuario')">
 
-        @if (perfil()?.data?.usuario?.fotoPerfil) {
-
-        <img [src]="perfil()?.data?.usuario?.fotoPerfil" [alt]="perfil()?.data?.usuario?.name"
-          class="pf-hero__avatar-image">
-
+        @if (uploadingFoto()) {
+          <i class="bi bi-arrow-repeat pf-spin"></i>
+        } @else if (fotoPerfilUrl()) {
+          <img [src]="fotoPerfilUrl()" [alt]="perfil()?.data?.usuario?.name"
+            class="pf-hero__avatar-image">
         } @else {
-
-        {{ (perfil()?.data?.usuario?.name || '?').charAt(0).toUpperCase() }}
-
+          {{ (perfil()?.data?.usuario?.name || '?').charAt(0).toUpperCase() }}
         }
+
+        <label class="pf-hero__avatar-overlay" title="Cambiar foto de perfil">
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="pf-visually-hidden"
+            (change)="onFotoPerfilSelected($event)">
+          <i class="bi bi-camera-fill"></i>
+        </label>
 
       </div>
       <div class="pf-hero__info">

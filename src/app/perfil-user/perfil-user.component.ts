@@ -34,6 +34,7 @@ import { Boda, CreateBoda } from '../Interfaces/Boda';
 import { CreateResenia, Resenia } from '../Interfaces/Resenia';
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
 import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
+import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { PresupuestoHttpService } from '../Services/Presupuesto/presupuesto-http-service.service';
 
 type PerfilUsuarioForm = {
@@ -74,7 +75,8 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   private readonly regionesServer = inject(RegionsServer);
   private readonly reseniasService = inject(ReseniasServiceServiceService);
   private readonly empresasService = inject(EmpresasServiceServiceService);
-  private readonly presupuestoService = inject(PresupuestoHttpService)
+  private readonly presupuestoService = inject(PresupuestoHttpService);
+  private readonly empresasApiSvc = inject(EmpresasApiServiceService);
   private readonly router = inject(Router);
 
   readonly perfil = signal<PerfilResponse | null>(null);
@@ -98,6 +100,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly submittedBoda = signal(false);
   readonly bodaFormError = signal<string | null>(null);
   readonly bodaFormSuccess = signal<string | null>(null);
+  readonly uploadingFoto = signal(false);
   readonly reseniasBoda = signal<Resenia[]>([]);
   readonly reseniasLoading = signal(false);
   readonly reseniasError = signal<string | null>(null);
@@ -156,6 +159,11 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
       provinciaId ? this.regionesServer.getTowns(provinciaId) : of([] as Town[]),
     ),
   );
+  readonly fotoPerfilUrl = computed(() => {
+    const user = this.perfil()?.data?.usuario as any;
+    return (user?.fotoPerfil || user?.foto_perfil || null) as string | null;
+  });
+
   readonly reseniasConEmpresa = computed(() =>
     this.reseniasBoda().map((resenia) => ({
       ...resenia,
@@ -272,6 +280,88 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.unsubscribeNotificaciones?.();
+  }
+
+  onFotoPerfilSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+
+    const ext = this.getImageExtension(file);
+    const userId = Number(localStorage.getItem('id'));
+    if (!ext || !userId) return;
+
+    this.uploadingFoto.set(true);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = String(reader.result ?? '');
+      if (!base64) { this.uploadingFoto.set(false); return; }
+
+      this.empresasApiSvc.uploadImageBase64(base64, ext, userId).subscribe({
+        next: (res) => {
+          console.log('[foto] upload response completo:', res);
+          const rawUrl = res.url || res.path || '';
+          console.log('[foto] rawUrl capturado:', rawUrl);
+          const url = rawUrl.startsWith('http://') || rawUrl.startsWith('https://') || rawUrl.startsWith('/')
+            ? rawUrl
+            : rawUrl ? `/${rawUrl}` : '';
+          console.log('[foto] url final para payload:', url);
+          const perfilActual = this.perfil()?.data;
+          const perfilId = String(perfilActual?.id ?? '');
+          if (!perfilId || !url) {
+            console.warn('[foto] perfilId o url vacíos, abortando:', { perfilId, url });
+            this.uploadingFoto.set(false); return;
+          }
+
+          const payload: CreatePerfilUsuario = {
+            name: perfilActual?.usuario?.name ?? '',
+            email: perfilActual?.usuario?.email ?? '',
+            password: '',
+            direccion: perfilActual?.direccion ?? '',
+            telefono: perfilActual?.telefono ?? '',
+            poblacion_id: perfilActual?.poblacion?.id ?? 0,
+            fecha_boda: '',
+            foto_perfil: url,
+          };
+          console.log('[foto] payload enviado a editarPerfil:', payload);
+
+          this.perfilServiceCtx.editarPerfil(perfilId, payload).subscribe({
+            next: (resp) => {
+              console.log('[foto] editarPerfil OK:', resp);
+              this.uploadingFoto.set(false);
+              this.perfil.update(current => {
+                if (!current) return current;
+                return {
+                  ...current,
+                  data: {
+                    ...current.data,
+                    usuario: {
+                      ...current.data.usuario,
+                      fotoPerfil: url,
+                    },
+                  },
+                };
+              });
+            },
+            error: (err) => {
+              console.error('[foto] editarPerfil ERROR:', err);
+              this.uploadingFoto.set(false);
+            },
+          });
+        },
+        error: (err) => {
+          console.error('[foto] uploadImageBase64 ERROR:', err);
+          this.uploadingFoto.set(false);
+        },
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  private getImageExtension(file: File): string | null {
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    return ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext) ? ext : null;
   }
 
   cargarPerfil(userId: number): void {

@@ -39,6 +39,7 @@ $shadow:      0 4px 24px rgba(82, 63, 105, 0.1);
 }
 
 .pf-hero__avatar {
+  position: relative;
   width: 84px;
   height: 84px;
   border-radius: 50%;
@@ -52,6 +53,54 @@ $shadow:      0 4px 24px rgba(82, 63, 105, 0.1);
   justify-content: center;
   flex-shrink: 0;
   box-shadow: 0 6px 18px rgba(247, 108, 111, 0.25);
+  overflow: hidden;
+  cursor: pointer;
+
+  &-image {
+    width: 76px;
+    height: 76px;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+    border-radius: 50%;
+  }
+
+  &-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.48);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.18s;
+    cursor: pointer;
+    color: #fff;
+    font-size: 1.35rem;
+    z-index: 1;
+  }
+
+  &:hover &-overlay {
+    opacity: 1;
+  }
+
+  &--loading {
+    color: $pink;
+    font-size: 1.5rem;
+  }
+}
+
+.pf-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .pf-hero__info {
@@ -267,6 +316,13 @@ $shadow:      0 4px 24px rgba(82, 63, 105, 0.1);
     color: #fff;
     border-color: $pink;
     &:hover:not(:disabled) { background: darken($pink, 8%); border-color: darken($pink, 8%); }
+  }
+
+  &--secondary {
+    background: #fce8ec;
+    color: #c0505a;
+    border-color: #f5c0c8;
+    &:hover:not(:disabled) { background: #f9d0d7; border-color: #f0a0ac; }
   }
 
   &--outline {
