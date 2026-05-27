@@ -5,11 +5,13 @@ $text-dark: #2c2c2c;
 $text-muted: #9ca3af;
 
 .presupuesto-card {
-  background: white;
-  border: 1px solid $color-border;
-  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 16px;
   padding: 1.25rem 1.5rem 1rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 }
 
 .presupuesto-titulo {
