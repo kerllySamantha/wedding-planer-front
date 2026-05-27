@@ -1,10 +1,11 @@
 .boda-hero {
-  display: flex;
-  align-items: stretch;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: auto minmax(250px, 380px) 1fr;
+  align-items: center;
+  column-gap: 12px;
   background: linear-gradient(110deg, #436a90 0%, #799aba 100%);
-  border-radius: 12px;
-  padding: 14px 16px;
+  border-radius: 14px;
+  padding: 12px 14px;
   position: relative;
   overflow: hidden;
 
@@ -12,35 +13,93 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 55% 10%, rgba(255,255,255,0.08) 0%, transparent 46%);
+    background: radial-gradient(circle at 45% 8%, rgba(255,255,255,0.12) 0%, transparent 42%);
     pointer-events: none;
   }
 
   > * { position: relative; z-index: 1; }
 }
 
-.hero-photo { width: 184px; height: 184px; border-radius: 12px; overflow: hidden; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.26); }
-.hero-photo .boda-bg { position: absolute; inset: 0; background-image: url("../../assets/images/boda1.jpg"); background-size: cover; background-position: center; }
-.hero-info { min-width: 220px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-.hero-name { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0 0 2px; }
-.hero-date { font-size: 0.95rem; color: rgba(255,255,255,0.78); margin: 0 0 12px; }
+.hero-photo {
+  width: 170px;
+  height: 170px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.28);
+}
+
+.hero-photo .boda-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("../../assets/images/boda1.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hero-name { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0 0 1px; }
+.hero-date { font-size: 0.95rem; color: rgba(255,255,255,0.78); margin: 0 0 10px; }
+
 .countdown { display: flex; gap: 8px; }
-.cd-box { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.32); border-radius: 9px; padding: 8px 16px; text-align: center; }
+.cd-box {
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.34);
+  border-radius: 10px;
+  padding: 7px 14px;
+  text-align: center;
+  backdrop-filter: blur(7px);
+}
 .cd-num { display: block; font-size: 2rem; font-weight: 700; color: #fff; line-height: 1; }
-.cd-lbl { display: block; font-size: 0.92rem; color: rgba(255,255,255,0.64); margin-top: 4px; text-transform: uppercase; }
-.hero-sep { width: 1px; background: rgba(255,255,255,0.2); align-self: stretch; flex-shrink: 0; }
-.metrics { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; }
-.metric { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 6px 8px; border-left: 1px solid rgba(255,255,255,0.2); }
+.cd-lbl { display: block; font-size: 0.86rem; color: rgba(255,255,255,0.66); margin-top: 3px; text-transform: uppercase; }
+
+.hero-sep { display: none; }
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 0;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 12px;
+  padding: 8px 4px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 4px 6px;
+  border-left: 1px solid rgba(255,255,255,0.2);
+}
 .metric:first-child { border-left: none; }
-.mi-icon { font-size: 13px; color: rgba(255,255,255,0.56); margin-bottom: 4px; }
-.mv { font-size: 1.5rem; font-weight: 700; color: #fff; line-height: 1; }
-.mv--sm { font-size: 1.55rem; }
-.ml { font-size: 0.95rem; color: rgba(255,255,255,0.72); margin-top: 4px; }
-.ms { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 1px; }
+
+.mi-icon { font-size: 12px; color: rgba(255,255,255,0.56); margin-bottom: 3px; }
+.mv { font-size: 1.45rem; font-weight: 700; color: #fff; line-height: 1; }
+.mv--sm { font-size: 1.35rem; }
+.ml { font-size: 0.72rem; color: rgba(255,255,255,0.76); margin-top: 3px; }
+.ms { font-size: 0.64rem; color: rgba(255,255,255,0.5); margin-top: 1px; }
+
+@media (max-width: 1024px) {
+  .boda-hero {
+    grid-template-columns: auto 1fr;
+    row-gap: 10px;
+  }
+
+  .metrics { grid-column: 1 / -1; }
+}
 
 @media (max-width: 768px) {
-  .boda-hero { flex-wrap: wrap; padding: 14px; gap: 12px; }
-  .hero-sep { display: none; }
-  .metrics { grid-template-columns: repeat(2, 1fr); width: 100%; }
+  .boda-hero { padding: 12px; grid-template-columns: 1fr; row-gap: 10px; }
+  .hero-photo { width: 140px; height: 140px; }
+  .metrics { grid-template-columns: repeat(2, 1fr); }
   .metric { border-left: none; border-top: 1px solid rgba(255,255,255,0.15); }
+  .metric:nth-child(-n+2) { border-top: none; }
 }
