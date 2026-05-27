@@ -40,7 +40,7 @@
   </div>
 </div>
 
-<!-- ── Tendencia anual de reservas ───────────────────────── -->
+<!-- ── Tendencia anual · gráfica de línea ───────────────── -->
 <div class="chart-row chart-row--full mb-4">
   <div class="chart-card">
     <div class="chart-card__header">
@@ -53,49 +53,119 @@
   </div>
 </div>
 
-<!-- ── Catálogo de productos ─────────────────────────────── -->
-<div class="chart-row chart-row--full mb-4">
-  <div class="chart-card">
-    <div class="chart-card__header">
-      <p class="chart-title">Catálogo de productos · Rango de precios</p>
-      <span class="chart-badge">{{ totalProductos() }} productos</span>
-    </div>
-    <div class="chart-body" [style.height.px]="catalogoChartHeight()">
-      <canvas #catalogoCanvas></canvas>
-    </div>
-  </div>
-</div>
+<!-- ── Leaderboard + Solicitudes ────────────────────────── -->
+<div class="chart-row chart-row--2 mb-4">
 
-<!-- ── Top reservados | Solicitudes de presupuesto ──────── -->
-<div class="chart-row chart-row--2">
+  <!-- Top 5 · leaderboard -->
   <div class="chart-card">
-    <div class="chart-card__header">
+    <div class="chart-card__header mb-1">
       <p class="chart-title">Top productos más reservados</p>
-      <span class="chart-badge">Top 5</span>
+      <span class="chart-badge">Top {{ topProductos().length }}</span>
     </div>
-    <div class="chart-body chart-body--medium">
-      <canvas #topCanvas></canvas>
-    </div>
+
+    @if (topProductos().length > 0) {
+      <div class="leaderboard">
+        @for (prod of topProductos(); track $index; let i = $index) {
+          <div class="lb-row">
+            <span class="lb-rank" [style.background]="lbColors[i] + '22'" [style.color]="lbColors[i]">
+              {{ i + 1 }}
+            </span>
+            <div class="lb-info">
+              <span class="lb-name" [title]="prod.nombre">{{ prod.nombre || 'Sin nombre' }}</span>
+              <div class="lb-bar-wrap">
+                <div class="lb-bar" [style.width.%]="prod.total / maxTop() * 100" [style.background]="lbColors[i]"></div>
+              </div>
+            </div>
+            <span class="lb-count">{{ prod.total }}</span>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="lb-empty">Sin reservas todavía</p>
+    }
   </div>
 
+  <!-- Solicitudes de presupuesto -->
   <div class="chart-card">
-    <div class="chart-card__header">
+    <div class="chart-card__header mb-1">
       <p class="chart-title">Solicitudes de presupuesto</p>
       <span class="chart-badge">{{ totalSolicitudes() }} total</span>
     </div>
+
     <div class="sol-grid">
       <div class="sol-card sol-card--pendiente">
         <span class="sol-card__num">{{ solicitudesPendientes() }}</span>
+        <span class="sol-card__pct">{{ solicitudesPct().pend }}</span>
         <span class="sol-card__lbl">Pendientes</span>
       </div>
       <div class="sol-card sol-card--aceptada">
         <span class="sol-card__num">{{ solicitudesAceptadas() }}</span>
+        <span class="sol-card__pct">{{ solicitudesPct().acep }}</span>
         <span class="sol-card__lbl">Aceptadas</span>
       </div>
       <div class="sol-card sol-card--rechazada">
         <span class="sol-card__num">{{ solicitudesRechazadas() }}</span>
+        <span class="sol-card__pct">{{ solicitudesPct().rech }}</span>
         <span class="sol-card__lbl">Rechazadas</span>
       </div>
     </div>
+
+    <div class="sol-bar">
+      @if (totalSolicitudes() > 0) {
+        @if (solicitudesPendientes() > 0) {
+          <div class="sol-bar__seg sol-bar__seg--pend" [style.flex]="solicitudesPendientes()"></div>
+        }
+        @if (solicitudesAceptadas() > 0) {
+          <div class="sol-bar__seg sol-bar__seg--acep" [style.flex]="solicitudesAceptadas()"></div>
+        }
+        @if (solicitudesRechazadas() > 0) {
+          <div class="sol-bar__seg sol-bar__seg--rech" [style.flex]="solicitudesRechazadas()"></div>
+        }
+      } @else {
+        <div class="sol-bar__empty">Sin solicitudes recibidas todavía</div>
+      }
+    </div>
   </div>
+
+</div>
+
+<!-- ── Catálogo de productos · lista horizontal ───────────── -->
+<div class="chart-card mb-4">
+  <div class="chart-card__header mb-3">
+    <p class="chart-title">Catálogo de productos</p>
+    <span class="chart-badge">{{ totalProductos() }} productos</span>
+  </div>
+
+  @if (productosCatalogo().length > 0) {
+    <div class="prod-list">
+      @for (prod of productosCatalogo(); track prod.id ?? $index; let i = $index) {
+        <div class="prod-item" [style.--accent]="lbColors[i % lbColors.length]">
+
+          <span class="prod-item__badge">P{{ i + 1 }}</span>
+
+          <div class="prod-item__body">
+            <p class="prod-item__name">{{ prod.nombre || 'Sin nombre' }}</p>
+            <div class="prod-item__price-row">
+              <span class="prod-item__price">{{ prod.precio_min ?? 0 | number }}€</span>
+              <div class="prod-item__pbar">
+                <div class="prod-item__pbar-fill"
+                     [style.left.%]="maxPrecio() > 0 ? (+(prod.precio_min ?? 0) / maxPrecio() * 100) : 0"
+                     [style.right.%]="maxPrecio() > 0 ? (100 - (+(prod.precio_max ?? 0) / maxPrecio() * 100)) : 0">
+                </div>
+              </div>
+              <span class="prod-item__price">{{ prod.precio_max ?? 0 | number }}€</span>
+            </div>
+          </div>
+
+          <div class="prod-item__stat">
+            <span class="prod-item__stat-num">{{ prod.total_reservas ?? 0 }}</span>
+            <span class="prod-item__stat-lbl">reservas</span>
+          </div>
+
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="lb-empty">Aún no hay productos en el catálogo</p>
+  }
 </div>

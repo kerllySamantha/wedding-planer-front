@@ -1,43 +1,43 @@
 <!-- Bootstrap 5 Navigation -->
-<nav class="navbar bg-white shadow-sm mb-3 border-bottom py-4">
-    <div class="container-fluid">
-        <ul class="nav w-100 d-flex justify-content-evenly align-items-center ms-5 me-5">
+<nav class="navbar border-bottom py-0 mb-0">
+    <div class="container-fluid px-3">
+        <ul class="nav w-100 d-flex justify-content-around align-items-center">
             <!-- Mi boda -->
             <li class="nav-item">
-                <a class="nav-link text-center active" (click)="irARuta('mi-boda', $event)">
-                    <img src="assets/images/anillos.svg" alt="Mi boda" width="40" height="40" class="mb-1">
+                <a class="nav-link text-center" [class.active]="esRutaActiva('mi-boda')" (click)="irARuta('mi-boda', $event)">
+                    <img src="assets/images/anillos.svg" alt="Mi boda">
                     <div>Mi boda</div>
                 </a>
             </li>
 
-            <!-- Proveedores (interno) -->
+            <!-- Proveedores -->
             <li class="nav-item">
-                <a class="nav-link text-center" (click)="irARuta('dashboard-proveedores', $event)">
-                    <img src="assets/images/provedor2.svg" alt="Proveedores" width="40" height="40" class="mb-1">
+                <a class="nav-link text-center" [class.active]="esRutaActiva('dashboard-proveedores')" (click)="irARuta('dashboard-proveedores', $event)">
+                    <img src="assets/images/provedor2.svg" alt="Proveedores">
                     <div>Proveedores</div>
                 </a>
             </li>
 
             <!-- Presupuesto -->
             <li class="nav-item">
-                <a class="nav-link text-center" (click)="irARuta('tools/presupuesto', $event)">
-                    <img src="assets/images/3.png" alt="Presupuesto" width="40" height="40" class="mb-1">
+                <a class="nav-link text-center" [class.active]="esRutaActiva('tools/presupuesto')" (click)="irARuta('tools/presupuesto', $event)">
+                    <img src="assets/images/3.png" alt="Presupuesto">
                     <div>Presupuesto</div>
                 </a>
             </li>
 
             <!-- Mi perfil -->
             <li class="nav-item">
-                <a class="nav-link text-center" (click)="irARuta('perfil-user', $event)">
-                    <i class="bi bi-person-circle menu-icon mb-1"></i>
+                <a class="nav-link text-center" [class.active]="esRutaActiva('perfil-user')" (click)="irARuta('perfil-user', $event)">
+                    <i class="bi bi-person-circle menu-icon"></i>
                     <div>Mi perfil</div>
                 </a>
             </li>
 
             <!-- Explorar -->
             <li class="nav-item">
-                <a class="nav-link text-center" (click)="irARuta('dashboard', $event)">
-                    <i class="bi bi-compass menu-icon mb-1"></i>
+                <a class="nav-link text-center" [class.active]="esRutaActiva('dashboard')" (click)="irARuta('dashboard', $event)">
+                    <i class="bi bi-compass menu-icon"></i>
                     <div>Explorar</div>
                 </a>
             </li>

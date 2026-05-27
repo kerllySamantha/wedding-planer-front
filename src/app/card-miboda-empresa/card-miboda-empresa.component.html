@@ -1,20 +1,24 @@
-<a [routerLink]="['/proveedores/detalles', empresa()?.id]" class="text-decoration-none">
-  <mat-card class="example-card w-100" appearance="outlined">
-    <mat-card-header class="d-flex align-items-center">
-      <div mat-card-avatar class="example-header-image"></div>
-      <h6 class="ms-3 ms-md-4 mb-0 flex-grow-1">{{ empresa()?.nombre_empresa }}</h6>
-      <!-- <mat-card-subtitle>{{ empresa()?.descripcion }}</mat-card-subtitle> -->
+<a [routerLink]="['/proveedores/detalles', empresa()?.id]" class="text-decoration-none card-link">
+  <mat-card class="example-card" appearance="outlined">
+    <div class="card-cover">
+      @if (empresa()?.fotos?.length) {
+        <img [src]="empresa()?.fotos?.[0]?.url" alt="{{ empresa()?.nombre_empresa }}" class="cover-photo" />
+      } @else {
+        <i class="bi" [class]="'bi ' + iconoServicio()"></i>
+      }
+      <span class="tag">{{ badgeTexto() }}</span>
+    </div>
+
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image">{{ iniciales() }}</div>
+      <mat-card-title>
+        <h6>{{ empresa()?.nombre_empresa }}</h6>
+      </mat-card-title>
     </mat-card-header>
 
-    <!-- Mostrar solo la primera imagen (índice 0) para evitar confusión -->
-    @for (imagen of empresa()?.fotos; track imagen.url; let idx = $index) {
-      @if (idx === 0) {
-        <img mat-card-image [src]="imagen.url" alt="Imagen de {{ empresa()?.nombre_empresa }}" class="w-100 img-fluid" />
-      }
-    }
-
-    <mat-card-content class="py-3 py-md-4">
-      <p class="mb-0">{{ empresa()?.poblacion?.nombre }}</p>
+    <mat-card-content>
+      <p>{{ empresa()?.tipo_servicio }}</p>
+      <small>{{ empresa()?.poblacion?.nombre }} · {{ empresa()?.provincia?.nombre }}</small>
     </mat-card-content>
   </mat-card>
 </a>

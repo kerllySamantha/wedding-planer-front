@@ -21,7 +21,7 @@ import { Reserva } from '../Interfaces/Reserva';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { EstadisticasEmpresa } from '../Interfaces/Empresa';
 import { PedirPresupuestoApiService } from '../Services/PedirPresupuestos/pedir-presupuesto-api.service';
-import { DatePipe, registerLocaleData, TitleCasePipe } from '@angular/common';
+import { DatePipe, DecimalPipe, registerLocaleData, TitleCasePipe } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { register } from 'swiper/element/bundle';
 register();
@@ -36,7 +36,6 @@ import { CardInfoAdminComponent } from '../card-info-admin/card-info-admin.compo
 registerLocaleData(localeEs);
 SwiperCore.use([Navigation, Thumbs, FreeMode]);
 
-// ── Paleta azul de la app ──────────────────────────────────────────────────
 const C = {
   navy:     '#0f2233',
   dark:     '#143f66',
@@ -47,8 +46,8 @@ const C = {
   lightest: '#bbd5e8',
 };
 
-const TOP_COLORS  = [C.dark, C.mid, C.base, C.soft, C.pale];
-const toAlpha     = (hex: string, a = 'cc') => hex + a;
+const TOP_COLORS   = [C.dark, C.mid, C.base, C.soft, C.pale];
+const toAlpha      = (hex: string, a = 'cc') => hex + a;
 const MONTH_LABELS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
 const TOOLTIP_BASE = {
@@ -59,11 +58,10 @@ const TOOLTIP_BASE = {
   padding:         10,
 };
 
-// ──────────────────────────────────────────────────────────────────────────
 @Component({
   selector: 'app-cards-dashboard-proveedor',
   standalone: true,
-  imports: [CardInfoAdminComponent, DatePipe, TitleCasePipe, IconModule, IconDirective],
+  imports: [CardInfoAdminComponent, DatePipe, DecimalPipe, TitleCasePipe, IconModule, IconDirective],
   providers: [IconSetService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cards-dashboard-proveedor.component.html',
@@ -77,12 +75,8 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   private iconSet         = inject(IconSetService);
 
   @ViewChild('tendenciaCanvas') tendenciaCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('topCanvas')       topCanvas!:       ElementRef<HTMLCanvasElement>;
-  @ViewChild('catalogoCanvas')  catalogoCanvas!:  ElementRef<HTMLCanvasElement>;
 
   private tendenciaChart: Chart | null = null;
-  private topChart:       Chart | null = null;
-  private catalogoChart:  Chart | null = null;
 
   // ── Signals ──────────────────────────────────────────────────────────────
   estadisticas      = signal<EstadisticasEmpresa['data'] | null>(null);
@@ -107,7 +101,11 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   totalReservas    = computed(() => this.estadisticas()?.totalReservas  ?? 0);
   totalSolicitudes = computed(() => this.solicitudesItems().length);
 
-  // Solicitudes desglosadas (para tarjetas)
+  // Top productos para leaderboard
+  topProductos = computed(() => this.estadisticas()?.topProductos ?? []);
+  maxTop       = computed(() => Math.max(1, ...this.topProductos().map(p => p.total)));
+
+  // Solicitudes desglosadas + porcentajes
   solicitudesPendientes = computed(() =>
     this.solicitudesItems().filter(s => ['pendiente', 'pendiente_usuario'].includes(s.estado ?? '')).length
   );
@@ -117,6 +115,15 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   solicitudesRechazadas = computed(() =>
     this.solicitudesItems().filter(s => ['rechazado_empresa', 'rechazado_usuario'].includes(s.estado ?? '')).length
   );
+  solicitudesPct = computed(() => {
+    const t = this.totalSolicitudes();
+    if (!t) return { pend: '—', acep: '—', rech: '—' };
+    return {
+      pend: Math.round(this.solicitudesPendientes() / t * 100) + '%',
+      acep: Math.round(this.solicitudesAceptadas()  / t * 100) + '%',
+      rech: Math.round(this.solicitudesRechazadas() / t * 100) + '%',
+    };
+  });
 
   // Reservas del mes seleccionado
   reservasMes         = computed(() => this.reservas().filter(r => isSameMonth(parseISO(r.fecha_inicio), this.selectedDate())));
@@ -126,7 +133,7 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   reservasBloqueadas  = computed(() => this.reservasMes().filter(r => r.estado === 'bloqueada'));
   reservasRechazadas  = computed(() => this.reservasMes().filter(r => r.estado === 'rechazada'));
 
-  // Datos mensuales para la gráfica de tendencia anual
+  // Tendencia anual
   reservasMensuales = computed(() => {
     const all = this.reservas();
     return this.meses.map(m => ({
@@ -135,21 +142,16 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
     }));
   });
 
-  // Altura dinámica del gráfico de catálogo
-  catalogoChartHeight = computed(() => Math.max(220, this.productosCatalogo().length * 54 + 40));
+  // Precio máximo del catálogo para calcular barras relativas
+  maxPrecio = computed(() =>
+    Math.max(1, ...this.productosCatalogo().map(p => +(p.precio_max ?? 0)))
+  );
+
+  // Colores por posición (leaderboard y tarjetas)
+  readonly lbColors = TOP_COLORS;
 
   constructor() {
     this.iconSet.icons = { cilListNumbered, cilPaperPlane, cilChevronRight, cilChevronLeft };
-
-    effect(() => {
-      const stats = this.estadisticas();
-      if (stats) this.aplicarStats(stats);
-    });
-
-    effect(() => {
-      const prods = this.productosCatalogo();
-      if (this.catalogoChart && prods.length) this.aplicarCatalogo(prods);
-    });
 
     effect(() => {
       const data = this.reservasMensuales();
@@ -166,23 +168,14 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
 
   ngAfterViewInit(): void {
     this.initTendencia();
-    this.initTop();
-    this.initCatalogo();
-
-    const stats = this.estadisticas();
-    if (stats) this.aplicarStats(stats);
-    const prods = this.productosCatalogo();
-    if (prods.length) this.aplicarCatalogo(prods);
     this.aplicarTendencia(this.reservasMensuales());
   }
 
   ngOnDestroy(): void {
     this.tendenciaChart?.destroy();
-    this.topChart?.destroy();
-    this.catalogoChart?.destroy();
   }
 
-  // ── Inicialización de gráficas ────────────────────────────────────────────
+  // ── Gráficas ──────────────────────────────────────────────────────────────
 
   private initTendencia(): void {
     this.tendenciaChart = new Chart(this.tendenciaCanvas.nativeElement, {
@@ -231,7 +224,9 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
               font: { size: 11, weight: 600 },
               color: C.dark,
               usePointStyle: true,
-              pointStyleWidth: 10,
+              pointStyle: 'circle' as any,
+              boxWidth: 8,
+              boxHeight: 8,
               padding: 16,
             },
           },
@@ -240,152 +235,18 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
         scales: {
           x: {
             ticks: { color: 'rgba(20,63,102,0.65)', font: { size: 11 } },
-            grid: { color: 'rgba(47,93,134,0.07)' },
+            grid:  { color: 'rgba(47,93,134,0.07)' },
             border: { display: false },
           },
           y: {
             beginAtZero: true,
             ticks: { color: 'rgba(20,63,102,0.6)', font: { size: 11 }, stepSize: 1 },
-            grid: { color: 'rgba(47,93,134,0.07)' },
+            grid:  { color: 'rgba(47,93,134,0.07)' },
             border: { display: false },
           },
         },
       },
     });
-  }
-
-  private initTop(): void {
-    this.topChart = new Chart(this.topCanvas.nativeElement, {
-      type: 'bar',
-      data: {
-        labels: [],
-        datasets: [{
-          data: [],
-          backgroundColor: [],
-          borderRadius: 8,
-          borderSkipped: false,
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { ...TOOLTIP_BASE, callbacks: { label: ctx => ` ${ctx.parsed.y} reservas` } },
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: C.dark,
-              font: { size: 10, weight: 600 },
-              maxRotation: 30,
-              callback: (_, i, ticks) => {
-                const l = (ticks[i] as any)?.label ?? '';
-                return typeof l === 'string' && l.length > 13 ? l.slice(0, 13) + '…' : l;
-              },
-            },
-            grid: { display: false },
-            border: { display: false },
-          },
-          y: {
-            beginAtZero: true,
-            ticks: { color: 'rgba(20,63,102,0.6)', font: { size: 11 }, stepSize: 1 },
-            grid: { color: 'rgba(47,93,134,0.07)' },
-            border: { display: false },
-          },
-        },
-      },
-    });
-  }
-
-  private initCatalogo(): void {
-    this.catalogoChart = new Chart(this.catalogoCanvas.nativeElement, {
-      type: 'bar',
-      data: {
-        labels: [],
-        datasets: [{
-          label: 'Rango de precio',
-          data: [],
-          backgroundColor: [],
-          borderColor: [],
-          borderWidth: 2,
-          borderRadius: 6,
-          borderSkipped: false,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            ...TOOLTIP_BASE,
-            callbacks: {
-              title: ctx => ctx[0]?.label ?? '',
-              label: ctx => {
-                const d = ctx.dataset.data[ctx.dataIndex] as unknown as [number, number];
-                return Array.isArray(d) ? ` ${d[0]}€ — ${d[1]}€` : '';
-              },
-            },
-          },
-        },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Precio (€)',
-              color: 'rgba(20,63,102,0.5)',
-              font: { size: 10 },
-            },
-            ticks: {
-              color: 'rgba(20,63,102,0.6)',
-              font: { size: 10 },
-              callback: v => `${v}€`,
-            },
-            grid: { color: 'rgba(47,93,134,0.07)' },
-            border: { display: false },
-          },
-          y: {
-            ticks: {
-              color: C.dark,
-              font: { size: 11, weight: 600 },
-              callback: (_, i, ticks) => {
-                const l = (ticks[i] as any)?.label ?? '';
-                return typeof l === 'string' && l.length > 28 ? l.slice(0, 28) + '…' : l;
-              },
-            },
-            grid: { display: false },
-            border: { display: false },
-          },
-        },
-      },
-    });
-  }
-
-  // ── Aplicar datos ─────────────────────────────────────────────────────────
-
-  private aplicarStats(stats: EstadisticasEmpresa['data']): void {
-    if (this.topChart) {
-      const p = stats.topProductos ?? [];
-      this.topChart.data.labels                               = p.map(x => x.nombre ?? '');
-      this.topChart.data.datasets[0].data                     = p.map(x => x.total);
-      (this.topChart.data.datasets[0] as any).backgroundColor = p.map((_, i) => toAlpha(TOP_COLORS[i] ?? C.pale));
-      this.topChart.update();
-    }
-  }
-
-  private aplicarCatalogo(productos: any[]): void {
-    if (!this.catalogoChart) return;
-    this.catalogoChart.data.labels = productos.map(p => p.nombre ?? '');
-    this.catalogoChart.data.datasets[0].data = productos.map(p => {
-      const min = +(p.precio_min ?? 0);
-      const max = +(p.precio_max ?? 0);
-      return [min, Math.max(max, min + 1)] as any;
-    });
-    (this.catalogoChart.data.datasets[0] as any).backgroundColor = productos.map((_, i) => toAlpha(TOP_COLORS[i % TOP_COLORS.length], 'bb'));
-    (this.catalogoChart.data.datasets[0] as any).borderColor     = productos.map((_, i) => TOP_COLORS[i % TOP_COLORS.length]);
-    this.catalogoChart.update();
   }
 
   private aplicarTendencia(data: { total: number; confirmadas: number }[]): void {

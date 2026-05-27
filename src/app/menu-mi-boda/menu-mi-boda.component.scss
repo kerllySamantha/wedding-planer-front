@@ -1,10 +1,39 @@
-a {
-    color: black !important;
+$text:   #2C3E52;
+$muted:  #8AAABB;
+$coral:  #f76c6f;
+$border: #DDE5EE;
+
+nav {
+  background: #fff !important;
+  border-top: 1px solid #eef2f6 !important;
+  border-bottom: 1px solid $border !important;
+  box-shadow: none !important;
 }
 
-.menu-icon {
-    display: block;
-    font-size: 2rem;
-    line-height: 1;
-    color: #472732;
+:host ::ng-deep .navbar { padding: 0 !important; }
+:host ::ng-deep .nav {
+  justify-content: space-between !important;
+  gap: 6px;
+  padding: 0 18px;
 }
+.nav-item { flex: 1; min-width: 0; }
+
+a.nav-link {
+  color: $muted !important;
+  font-size: 0.82rem;
+  font-weight: 400;
+  border-bottom: 2px solid transparent;
+  padding: 6px 6px 7px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+a.nav-link.active { color: $text !important; font-weight: 500; border-bottom-color: $coral; }
+.menu-icon { display: block; font-size: 1.35rem; line-height: 1; color: $muted; }
+a.active .menu-icon { color: $text; }
+
+nav img { mix-blend-mode: multiply; opacity: 0.75; width: 24px !important; height: 24px !important; }
+a.active img { opacity: 1; }
