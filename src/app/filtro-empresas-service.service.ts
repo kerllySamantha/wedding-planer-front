@@ -33,6 +33,8 @@ export class FiltroEmpresasServiceService {
       )
     )
   });
+
+  empresasCargando = computed(() => this.empresasResource.isLoading());
   
 
   empresasRecibidas = computed(() =>

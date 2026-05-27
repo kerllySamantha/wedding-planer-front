@@ -38,6 +38,8 @@ export class MiBodaComponent {
 
   );
 
+  cargandoEmpresas = computed(() => this.filtroEmpresas.empresasCargando());
+
  
   categorias$ = this.servicioDeCategorias.getCategorias().pipe(
     map((data) =>

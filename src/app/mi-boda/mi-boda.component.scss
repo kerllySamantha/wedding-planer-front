@@ -130,6 +130,56 @@ $coral:  #f76c6f;
   margin-top: 10px;
 }
 
+.skeleton-card {
+  border: 1px solid #f6d8de;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff7f9;
+}
+
+.skeleton-pink {
+  --bs-placeholder-bg: #e8d5d7;
+  background-color: #e8d5d7 !important;
+  color: #e8d5d7 !important;
+  opacity: 1;
+}
+
+.skeleton-cover {
+  display: block;
+  height: 170px;
+  border-radius: 0;
+}
+
+.skeleton-body .placeholder {
+  display: block;
+  height: 0.9rem;
+  border-radius: 8px;
+}
+
+.skeleton-thumbs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.skeleton-thumb {
+  width: 30%;
+  height: 74px !important;
+  border-radius: 8px;
+}
+
+.skeleton-line {
+  margin-inline: auto;
+}
+
+.skeleton-line--title {
+  width: 58%;
+}
+
+.skeleton-line--subtitle {
+  width: 72%;
+}
+
 @media (max-width: 1100px) { .provider-grid { grid-template-columns: repeat(3, 1fr); } }
 
 @media (max-width: 768px) {

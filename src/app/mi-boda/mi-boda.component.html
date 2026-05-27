@@ -31,6 +31,25 @@
   </div>
 
   <div class="provider-grid">
+    @if (cargandoEmpresas()) {
+      @for (item of [1,2,3,4,5,6,7,8]; track item) {
+        <div class="card skeleton-card" aria-hidden="true">
+          <div class="placeholder-glow">
+            <span class="placeholder skeleton-pink skeleton-cover col-12"></span>
+            <div class="skeleton-body px-3 py-3">
+              <div class="skeleton-thumbs mb-3">
+                <span class="placeholder skeleton-pink skeleton-thumb"></span>
+                <span class="placeholder skeleton-pink skeleton-thumb"></span>
+                <span class="placeholder skeleton-pink skeleton-thumb"></span>
+              </div>
+              <span class="placeholder skeleton-pink skeleton-line skeleton-line--title mb-2"></span>
+              <span class="placeholder skeleton-pink skeleton-line skeleton-line--subtitle"></span>
+            </div>
+          </div>
+        </div>
+      }
+    }
+
     @for (empresa of companies(); track empresa.id) {
       <app-card-miboda-empresa [empresa]="empresa"></app-card-miboda-empresa>
     }
