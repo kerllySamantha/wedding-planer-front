@@ -5,16 +5,18 @@ $text-dark: #2c2c2c;
 $text-muted: #9ca3af;
 
 .presupuesto-card {
-  background: white;
-  border: 1px solid $color-border;
-  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.58);
+  border: none;
+  border-radius: 16px;
   padding: 1.25rem 1.5rem 1rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.09);
 }
 
 .presupuesto-titulo {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: $text-muted;
@@ -62,8 +64,8 @@ $text-muted: #9ca3af;
 }
 
 .stat-value {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.45rem;
+  font-weight: 700;
   color: $text-dark;
   margin: 0;
 

@@ -1,4 +1,9 @@
-<form (submit)="$event.preventDefault()">
+<form class="presupuesto-tool" (submit)="$event.preventDefault()">
+
+  <section class="tool-header">
+    <h3>Calculadora de presupuesto</h3>
+    <p>Organiza tus partidas, controla lo pagado y accede al pago seguro de cada concepto pendiente.</p>
+  </section>
 
   @if (cargando()) {
     <div class="skeleton-wrapper">
@@ -20,6 +25,7 @@
   }
 
   @else if (categoriaIdSeleccionada() !== null) {
+    <div class="table-wrapper">
     <table class="table tipos-table">
       <thead>
         <tr>
@@ -67,6 +73,7 @@
         }
       </tbody>
     </table>
+    </div>
   }
 
 </form>

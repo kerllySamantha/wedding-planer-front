@@ -8,44 +8,48 @@ $text-dark: #2c2c2c;
 .container-personal {
   width: 90%;
   margin: 0 auto;
-  padding: 0;
+  padding: 0 0 1.75rem;
 }
 
 // ── Toggle buttons ─────────────────────────────────────
 .toggle-btn {
-  min-width: 120px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 8px !important;
-  padding: 8px 20px;
+  min-width: 140px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 12px !important;
+  padding: 10px 24px;
   letter-spacing: 0.3px;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .btn-selected {
-  background-color: $color-border !important;
-  color: $text-dark !important;
-  border: 1px solid darken($color-border, 5%) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #f76c6f, #eb575c) !important;
+  color: #fff !important;
+  border: 1px solid #e0585b !important;
+  box-shadow: 0 8px 20px rgba(235, 87, 92, 0.28);
+  transform: translateY(-1px) scale(1.01);
 }
 
 .btn-unselected {
-  background-color: #fff;
-  color: $text-muted;
-  border: 1px solid $color-border !important;
+  background: rgba(255, 255, 255, 0.9);
+  color: #667085;
+  border: 1px solid #d8dee9 !important;
 
   &:hover {
-    background-color: rgba($color-border, 0.4);
+    background-color: #fafafa;
     color: $text-dark;
   }
 }
 
 // ── Lista de categorías ────────────────────────────────
 .categoria-list {
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  background: white;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 12px 24px rgba(17, 24, 39, 0.08);
 }
 
 .categoria-item {
@@ -54,7 +58,7 @@ $text-dark: #2c2c2c;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: white;
+  background: transparent;
   border: 1px solid transparent;
   border-left: 3px solid transparent;
   transition: all 0.2s ease;
@@ -67,7 +71,7 @@ $text-dark: #2c2c2c;
   }
 
   &.active {
-    background-color: $accent-mid;
+    background: linear-gradient(90deg, rgba($accent, 0.16), rgba($accent, 0.08));
     border-left: 3px solid $accent;
     color: $text-dark;
     font-weight: 600;
@@ -96,4 +100,104 @@ $text-dark: #2c2c2c;
     background-color: $accent-light;
     color: darken($accent, 8%);
   }
+}
+
+.pago-panel {
+  background: rgba(255, 255, 255, 0.58);
+  border: none;
+  border-radius: 14px;
+  padding: 1.1rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 14px 30px rgba(17, 24, 39, 0.1);
+
+  h3 { margin: 0 0 0.35rem; }
+  p { margin: 0 0 1rem; color: #6b7280; }
+}
+
+.pago-chart-wrap {
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 12px;
+  padding: 0.75rem;
+  height: fit-content;
+  h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  canvas {
+    height: 200px !important;
+    max-height: 200px;
+  }
+}
+
+.pago-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.pago-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pago-card {
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 12px;
+  padding: 0.8rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.pago-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.55rem;
+  h4 { margin: 0; font-size: 1rem; }
+}
+
+.pago-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.55rem;
+  label { display: block; font-size: 0.72rem; color: #6b7280; text-transform: uppercase; }
+  strong { font-size: 0.92rem; }
+  .ok { color: #16a34a; }
+}
+
+.progreso-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+.pago-progress { height: 6px; }
+.progreso-barra {
+  background: linear-gradient(90deg, #f76c6f, #e85d75);
+}
+
+.estado-pill {
+  background: #fdecef;
+  color: #c94f63;
+  border: 1px solid #f5c8d0;
+}
+
+@media (max-width: 992px) {
+  .pago-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sin-pendientes {
+  padding: 0.9rem;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+  color: #6b7280;
 }

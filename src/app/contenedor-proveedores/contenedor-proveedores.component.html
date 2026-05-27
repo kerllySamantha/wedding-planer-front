@@ -39,13 +39,60 @@
 
         <!-- Columna Presupuesto / Tipos -->
         <div class="col-8 p-3">
-            <div class="container mb-3">
+            <div class="container mb-3" *ngIf="!selectPago; else pagoView">
                 <app-contenedor-presupuesto></app-contenedor-presupuesto>
             </div>
-            <div class="container">
+            <div class="container" *ngIf="!selectPago">
                 <app-contenedor-tipos [categoriaIdSeleccionada]="idSelected()" [presupuestoId]="presupuestoId()">
                 </app-contenedor-tipos>
             </div>
+
+            <ng-template #pagoView>
+                <section class="pago-panel">
+                    <h3>Pagos realizados</h3>
+                    <p>Detalle de los pagos que ya has registrado en tus presupuestos.</p>
+                    <div class="pago-layout">
+                        <div class="pago-chart-wrap">
+                            <h4>Distribución general</h4>
+                            <canvas #pagoChart aria-label="Distribución de pagos"></canvas>
+                        </div>
+
+                        <div class="pago-list">
+                            @for (presupuesto of pagosRealizados(); track presupuesto.id) {
+                            <article class="pago-card">
+                                <div class="pago-card-head">
+                                    <div>
+                                        <h4>{{ nombrePresupuesto(presupuesto) }}</h4>
+                                        <small>{{ detallesPagados(presupuesto)[0]?.nombre || 'Sin detalle por conceptos' }}</small>
+                                    </div>
+                                    <span class="badge estado-pill">Pagado</span>
+                                </div>
+
+                                <div class="pago-metrics">
+                                    <div><label>Estimado</label><strong>{{ presupuesto.monto_total }} €</strong></div>
+                                    <div><label>Pagado</label><strong class="ok">{{ presupuesto.monto_pagado || 0 }} €</strong></div>
+                                    <div><label>Fecha</label><strong>{{ presupuesto.fecha_creacion }}</strong></div>
+                                </div>
+
+                                <div class="progreso-top">
+                                    <span>Progreso del pago</span>
+                                    <span>{{ porcentajePagado(presupuesto) }}%</span>
+                                </div>
+                                <div class="progress pago-progress">
+                                    <div class="progress-bar progreso-barra" [style.width.%]="porcentajePagado(presupuesto)"></div>
+                                </div>
+                            </article>
+                            }
+                        </div>
+                    </div>
+
+                    @if (pagosRealizados().length === 0) {
+                    <div class="sin-pendientes">
+                        Aún no tienes pagos registrados.
+                    </div>
+                    }
+                </section>
+            </ng-template>
         </div>
     </div>
 </div>
