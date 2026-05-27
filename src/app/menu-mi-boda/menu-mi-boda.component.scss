@@ -7,17 +7,32 @@ nav {
   background: #fff !important;
   border-bottom: 0.5px solid $border !important;
   box-shadow: none !important;
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
-a {
+// Quita el padding vertical que Bootstrap añade a .navbar
+:host ::ng-deep .navbar {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.nav-item {
+  padding: 0;
+}
+
+a.nav-link {
   color: $muted !important;
-  font-size: 0.80rem;
+  font-size: 0.75rem;
   font-weight: 400;
   border-bottom: 2px solid transparent;
-  padding-bottom: 6px;
+  padding: 8px 12px 6px !important;
   transition: color 0.15s, border-color 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
 
   &.active {
     color: $text !important;
@@ -30,7 +45,7 @@ a {
 
 .menu-icon {
   display: block;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   line-height: 1;
   color: $muted;
 }
@@ -41,6 +56,8 @@ a.active .menu-icon { color: $text; }
 nav img {
   mix-blend-mode: multiply;
   opacity: 0.75;
+  width: 28px !important;
+  height: 28px !important;
 }
 
 a.active img { opacity: 1; }
