@@ -1,10 +1,10 @@
 .boda-hero {
   display: flex;
   align-items: stretch;
-  gap: 22px;
-  background: linear-gradient(110deg, #3f668e 0%, #7e9fbe 100%);
-  border-radius: 14px;
-  padding: 24px 26px;
+  gap: 18px;
+  background: linear-gradient(110deg, #436a90 0%, #799aba 100%);
+  border-radius: 12px;
+  padding: 18px 20px;
   position: relative;
   overflow: hidden;
 
@@ -21,87 +21,29 @@
   > * { position: relative; z-index: 1; }
 }
 
-.hero-photo {
-  width: 136px;
-  height: 136px;
-  border-radius: 14px;
-  overflow: hidden;
-  flex-shrink: 0;
-  position: relative;
-  border: 1px solid rgba(255,255,255,0.26);
-
-  .boda-bg {
-    position: absolute;
-    inset: 0;
-    background-image: url("../../assets/images/boda1.jpg");
-    background-size: cover;
-    background-position: center;
-  }
-}
-
-.hero-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.hero-name {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 4px;
-}
-
-.hero-date {
-  font-size: 1.5rem;
-  color: rgba(255,255,255,0.7);
-  margin: 0 0 18px;
-}
-
-.countdown { display: flex; gap: 10px; }
-
-.cd-box {
-  background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.32);
-  border-radius: 10px;
-  padding: 10px 18px;
-  text-align: center;
-  backdrop-filter: blur(8px);
-}
-
-.cd-num { display: block; font-size: 2.8rem; font-weight: 700; color: #fff; line-height: 1; }
-.cd-lbl { display: block; font-size: 1.1rem; color: rgba(255,255,255,0.64); margin-top: 5px; text-transform: uppercase; }
-
-.hero-sep { width: 1px; background: rgba(255,255,255,0.22); align-self: stretch; flex-shrink: 0; }
-
+.hero-photo { width: 124px; height: 124px; border-radius: 12px; overflow: hidden; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.26); }
+.hero-photo .boda-bg { position: absolute; inset: 0; background-image: url("../../assets/images/boda1.jpg"); background-size: cover; background-position: center; }
+.hero-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.hero-name { font-size: 1.45rem; font-weight: 700; color: #fff; margin: 0 0 2px; }
+.hero-date { font-size: 1.02rem; color: rgba(255,255,255,0.7); margin: 0 0 12px; }
+.countdown { display: flex; gap: 8px; }
+.cd-box { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.32); border-radius: 9px; padding: 8px 14px; text-align: center; }
+.cd-num { display: block; font-size: 2rem; font-weight: 700; color: #fff; line-height: 1; }
+.cd-lbl { display: block; font-size: 0.82rem; color: rgba(255,255,255,0.64); margin-top: 4px; text-transform: uppercase; }
+.hero-sep { width: 1px; background: rgba(255,255,255,0.2); align-self: stretch; flex-shrink: 0; }
 .metrics { display: grid; grid-template-columns: repeat(4, 1fr); align-items: center; }
-
-.metric {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 8px 14px;
-  border-left: 1px solid rgba(255,255,255,0.2);
-  &:first-child { border-left: none; }
-}
-
-.mi-icon { font-size: 16px; color: rgba(255,255,255,0.56); margin-bottom: 8px; }
-.mv { font-size: 2.4rem; font-weight: 700; color: #fff; line-height: 1; &--sm { font-size: 2rem; } }
-.ml { font-size: 1.25rem; color: rgba(255,255,255,0.72); margin-top: 6px; }
-.ms { font-size: 1.05rem; color: rgba(255,255,255,0.45); margin-top: 3px; }
+.metric { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 6px 10px; border-left: 1px solid rgba(255,255,255,0.2); }
+.metric:first-child { border-left: none; }
+.mi-icon { font-size: 14px; color: rgba(255,255,255,0.56); margin-bottom: 6px; }
+.mv { font-size: 1.9rem; font-weight: 700; color: #fff; line-height: 1; }
+.mv--sm { font-size: 1.65rem; }
+.ml { font-size: 0.98rem; color: rgba(255,255,255,0.72); margin-top: 5px; }
+.ms { font-size: 0.8rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
 
 @media (max-width: 768px) {
-  .boda-hero { flex-wrap: wrap; padding: 16px; gap: 14px; }
-  .hero-sep  { display: none; }
-  .metrics   { grid-template-columns: repeat(2, 1fr); width: 100%; }
-  .metric    { border-left: none; border-top: 1px solid rgba(255,255,255,0.15); }
+  .boda-hero { flex-wrap: wrap; padding: 14px; gap: 12px; }
+  .hero-sep { display: none; }
+  .metrics { grid-template-columns: repeat(2, 1fr); width: 100%; }
+  .metric { border-left: none; border-top: 1px solid rgba(255,255,255,0.15); }
   .metric:nth-child(-n+2) { border-top: none; }
-  .hero-name { font-size: 1.4rem; }
-  .hero-date { font-size: 1rem; }
-  .cd-num { font-size: 1.5rem; }
-  .mv { font-size: 1.4rem; }
-  .ml { font-size: 0.85rem; }
-  .ms { font-size: 0.75rem; }
 }
