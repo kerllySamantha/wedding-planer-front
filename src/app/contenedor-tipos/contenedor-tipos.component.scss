@@ -6,7 +6,7 @@ $text-muted: #9ca3af;
 
 .presupuesto-tool {
   background: rgba(255, 255, 255, 0.58);
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 18px;
   padding: 1rem;
   backdrop-filter: blur(12px);
@@ -15,12 +15,12 @@ $text-muted: #9ca3af;
 }
 
 .tool-header {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 
   h3 {
     margin: 0 0 6px;
     color: $text-dark;
-    font-size: 1.05rem;
+    font-size: 1.2rem;
     font-weight: 700;
   }
 
@@ -34,7 +34,7 @@ $text-muted: #9ca3af;
 .table-wrapper {
   overflow-x: auto;
   background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 12px;
 }
 
@@ -94,14 +94,15 @@ $text-muted: #9ca3af;
   min-width: 760px;
 
   thead tr th {
-    font-size: 0.72rem;
+    font-size: 0.76rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.07em;
     color: $text-muted;
-    padding: 10px 12px;
+    padding: 12px 12px;
     border-bottom: 1px solid $color-border;
     white-space: nowrap;
+    background: rgba(248, 250, 252, 0.9);
   }
 
   tbody .tipo-row {

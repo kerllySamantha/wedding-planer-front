@@ -8,11 +8,14 @@ $text-dark: #2c2c2c;
 .container-personal {
   width: 90%;
   margin: 0 auto;
-  padding: 0 0 1.5rem;
+  padding: 1.25rem 1.25rem 1.75rem;
   background:
-    radial-gradient(circle at 15% 20%, rgba(247, 108, 111, 0.12), transparent 35%),
-    radial-gradient(circle at 85% 5%, rgba(99, 102, 241, 0.08), transparent 30%);
-  border-radius: 24px;
+    linear-gradient(140deg, rgba(255, 255, 255, 0.96), rgba(249, 250, 255, 0.9)),
+    radial-gradient(circle at 12% 18%, rgba(247, 108, 111, 0.08), transparent 34%),
+    radial-gradient(circle at 88% 4%, rgba(99, 102, 241, 0.08), transparent 26%);
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 24px 45px rgba(15, 23, 42, 0.08);
 }
 
 // ── Toggle buttons ─────────────────────────────────────
@@ -27,17 +30,17 @@ $text-dark: #2c2c2c;
 }
 
 .btn-selected {
-  background: linear-gradient(135deg, #fbe6e6, #f8dede) !important;
-  color: #3d2f2f !important;
-  border: 1px solid #efcaca !important;
-  box-shadow: 0 10px 20px rgba(247, 108, 111, 0.16);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #f76c6f, #eb575c) !important;
+  color: #fff !important;
+  border: 1px solid #e0585b !important;
+  box-shadow: 0 8px 20px rgba(235, 87, 92, 0.28);
+  transform: translateY(-1px) scale(1.01);
 }
 
 .btn-unselected {
-  background: #fff;
-  color: #8a92a8;
-  border: 1px solid $color-border !important;
+  background: rgba(255, 255, 255, 0.9);
+  color: #667085;
+  border: 1px solid #d8dee9 !important;
 
   &:hover {
     background-color: #fafafa;
@@ -47,13 +50,13 @@ $text-dark: #2c2c2c;
 
 // ── Lista de categorías ────────────────────────────────
 .categoria-list {
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.58);
   border: 1px solid rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+  box-shadow: 0 12px 24px rgba(17, 24, 39, 0.08);
 }
 
 .categoria-item {
@@ -75,7 +78,7 @@ $text-dark: #2c2c2c;
   }
 
   &.active {
-    background-color: $accent-mid;
+    background: linear-gradient(90deg, rgba($accent, 0.16), rgba($accent, 0.08));
     border-left: 3px solid $accent;
     color: $text-dark;
     font-weight: 600;
@@ -109,11 +112,11 @@ $text-dark: #2c2c2c;
 .pago-panel {
   background: rgba(255, 255, 255, 0.58);
   border: 1px solid rgba(255, 255, 255, 0.45);
-  border-radius: 16px;
+  border-radius: 14px;
   padding: 1.1rem;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+  box-shadow: 0 14px 30px rgba(17, 24, 39, 0.1);
 
   h3 { margin: 0 0 0.35rem; }
   p { margin: 0 0 1rem; color: #6b7280; }
