@@ -55,7 +55,7 @@
                     @for (presupuesto of pagosRealizados(); track presupuesto.id) {
                     <article class="pago-item">
                         <div>
-                            <strong>{{ presupuesto.tipos.nombre || ('Presupuesto #' + presupuesto.id) }}</strong>
+                            <strong>{{ nombrePresupuesto(presupuesto) }}</strong>
                             <small>Total estimado: {{ presupuesto.monto_total }} €</small>
                             <small>Total pagado: {{ presupuesto.monto_pagado || 0 }} €</small>
                             <small>Fecha: {{ presupuesto.fecha_creacion }}</small>

@@ -58,6 +58,14 @@ export class ContenedorProveedoresComponent {
     });
   }
 
+  nombrePresupuesto(presupuesto: any): string {
+    return (
+      presupuesto?.tipos?.nombre ??
+      presupuesto?.tipo_producto?.nombre ??
+      `Presupuesto #${presupuesto?.id ?? ''}`
+    );
+  }
+
   detallesPagados(presupuesto: any) {
     const items = presupuesto?.items_presupuesto ?? presupuesto?.items ?? [];
     if (!Array.isArray(items)) return [];
