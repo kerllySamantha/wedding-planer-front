@@ -77,3 +77,14 @@ $text-muted: #9ca3af;
     color: $accent;
   }
 }
+
+.chart-row {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid $color-border;
+
+  canvas {
+    width: 100%;
+    max-height: 180px;
+  }
+}

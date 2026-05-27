@@ -8,14 +8,7 @@ $text-dark: #2c2c2c;
 .container-personal {
   width: 90%;
   margin: 0 auto;
-  padding: 1.25rem 1.25rem 1.75rem;
-  background:
-    linear-gradient(140deg, rgba(255, 255, 255, 0.96), rgba(249, 250, 255, 0.9)),
-    radial-gradient(circle at 12% 18%, rgba(247, 108, 111, 0.08), transparent 34%),
-    radial-gradient(circle at 88% 4%, rgba(99, 102, 241, 0.08), transparent 26%);
-  border-radius: 20px;
-  border: none;
-  box-shadow: 0 24px 45px rgba(15, 23, 42, 0.08);
+  padding: 0 0 1.75rem;
 }
 
 // ── Toggle buttons ─────────────────────────────────────
