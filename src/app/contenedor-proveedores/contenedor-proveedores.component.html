@@ -43,7 +43,10 @@
                 <app-contenedor-presupuesto></app-contenedor-presupuesto>
             </div>
             <div class="container">
-                <app-contenedor-tipos [categoriaIdSeleccionada]="idSelected()" [presupuestoId]="presupuestoId()">
+                <app-contenedor-tipos
+                  [categoriaIdSeleccionada]="idSelected()"
+                  [presupuestoId]="presupuestoId()"
+                  [vista]="selectPago ? 'pago' : 'presupuesto'">
                 </app-contenedor-tipos>
             </div>
         </div>

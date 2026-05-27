@@ -25,6 +25,7 @@
   }
 
   @else if (categoriaIdSeleccionada() !== null) {
+    @if (vista() === 'presupuesto') {
     <div class="table-wrapper">
     <table class="table tipos-table">
       <thead>
@@ -33,7 +34,6 @@
           <th>Coste estimado</th>
           <th>Pagado</th>
           <th>Diferencia</th>
-          <th>Pago</th>
         </tr>
       </thead>
       <tbody>
@@ -70,20 +70,35 @@
                 {{ calcularDiferencia(detalle) }} €
               </span>
             </td>
-            <td>
-              <button
-                type="button"
-                class="btn-pagar"
-                [disabled]="!tienePagoPendiente(detalle) || !detalle.presupuesto_id"
-                (click)="irAPago(detalle)">
-                {{ tienePagoPendiente(detalle) ? 'Pagar con Stripe' : 'Pagado' }}
-              </button>
-            </td>
           </tr>
         }
       </tbody>
     </table>
     </div>
+    } @else {
+      <section class="payments-view">
+        <h4>Pagos pendientes por concepto</h4>
+        <p>Aquí puedes terminar de pagar cada partida pendiente con Stripe.</p>
+
+        <div class="payment-list">
+          @for (detalle of (detallesPorCategoria()[categoriaIdSeleccionada()!] || []); track $index) {
+            <article class="payment-item">
+              <div>
+                <strong>{{ detalle.nombre_tipo_personalizado }}</strong>
+                <small>Pagado {{ detalle.monto_pagado ?? 0 }} € de {{ detalle.monto_estimado }} €</small>
+              </div>
+              <button
+                type="button"
+                class="btn-pagar"
+                [disabled]="!tienePagoPendiente(detalle) || !detalle.presupuesto_id"
+                (click)="irAPago(detalle)">
+                {{ tienePagoPendiente(detalle) ? ('Pagar ' + montoPendiente(detalle) + ' €') : 'Pagado' }}
+              </button>
+            </article>
+          }
+        </div>
+      </section>
+    }
   }
 
 </form>

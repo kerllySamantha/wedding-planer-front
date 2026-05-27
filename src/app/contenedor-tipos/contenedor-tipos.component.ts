@@ -28,6 +28,7 @@ export class ContenedorTiposComponent {
   private router = inject(Router);
 
   categoriaIdSeleccionada = input<number | null>(null);
+  vista = input<'presupuesto' | 'pago'>('presupuesto');
   presupuestoId = input<number | null>(null);
   bodaId = computed(() => this.bodactx.bodaEncontrada()?.id);
 
@@ -295,6 +296,10 @@ lastId: number | null = null;
 
   tienePagoPendiente(item: PresupuestoItem): boolean {
     return (item.monto_estimado ?? 0) > (item.monto_pagado ?? 0);
+  }
+
+  montoPendiente(item: PresupuestoItem): number {
+    return Math.max((item.monto_estimado ?? 0) - (item.monto_pagado ?? 0), 0);
   }
 
   irAPago(item: PresupuestoItem) {

@@ -8,34 +8,35 @@ $text-dark: #2c2c2c;
 .container-personal {
   width: 90%;
   margin: 0 auto;
-  padding: 0;
+  padding: 0 0 1.5rem;
 }
 
 // ── Toggle buttons ─────────────────────────────────────
 .toggle-btn {
-  min-width: 120px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 8px !important;
-  padding: 8px 20px;
+  min-width: 140px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 12px !important;
+  padding: 10px 24px;
   letter-spacing: 0.3px;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .btn-selected {
-  background-color: $color-border !important;
-  color: $text-dark !important;
-  border: 1px solid darken($color-border, 5%) !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #fbe6e6, #f8dede) !important;
+  color: #3d2f2f !important;
+  border: 1px solid #efcaca !important;
+  box-shadow: 0 10px 20px rgba(247, 108, 111, 0.16);
+  transform: translateY(-1px);
 }
 
 .btn-unselected {
-  background-color: #fff;
-  color: $text-muted;
+  background: #fff;
+  color: #8a92a8;
   border: 1px solid $color-border !important;
 
   &:hover {
-    background-color: rgba($color-border, 0.4);
+    background-color: #fafafa;
     color: $text-dark;
   }
 }
