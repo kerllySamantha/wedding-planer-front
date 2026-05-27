@@ -114,9 +114,9 @@ export class ContenedorProveedoresComponent implements AfterViewInit {
       type: 'doughnut',
       data: {
         labels: ['Pagado', 'Restante'],
-        datasets: [{ data: [totalPagado, restante], backgroundColor: ['#34b37b', '#e5e7eb'], borderWidth: 0 }],
+        datasets: [{ data: [totalPagado, restante], backgroundColor: ['#f76c6f', '#f3d9de'], borderWidth: 0 }],
       },
-      options: { cutout: '70%', plugins: { legend: { position: 'bottom' } } },
+      options: { cutout: '72%', plugins: { legend: { position: 'bottom' } }, maintainAspectRatio: false },
     });
   }
 

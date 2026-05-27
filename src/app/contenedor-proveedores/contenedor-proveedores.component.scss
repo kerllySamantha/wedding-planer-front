@@ -118,15 +118,38 @@ $text-dark: #2c2c2c;
 .pago-chart-wrap {
   background: rgba(255, 255, 255, 0.55);
   border-radius: 12px;
-  padding: 0.6rem;
-  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  height: fit-content;
+  h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  canvas {
+    height: 200px !important;
+    max-height: 200px;
+  }
+}
+
+.pago-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.pago-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .pago-card {
   background: rgba(255, 255, 255, 0.72);
   border-radius: 12px;
   padding: 0.8rem;
-  margin-bottom: 0.75rem;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
 }
 
@@ -156,6 +179,21 @@ $text-dark: #2c2c2c;
   color: #6b7280;
 }
 .pago-progress { height: 6px; }
+.progreso-barra {
+  background: linear-gradient(90deg, #f76c6f, #e85d75);
+}
+
+.estado-pill {
+  background: #fdecef;
+  color: #c94f63;
+  border: 1px solid #f5c8d0;
+}
+
+@media (max-width: 992px) {
+  .pago-layout {
+    grid-template-columns: 1fr;
+  }
+}
 
 .sin-pendientes {
   padding: 0.9rem;
