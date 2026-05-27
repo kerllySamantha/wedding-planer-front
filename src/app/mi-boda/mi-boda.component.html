@@ -18,16 +18,18 @@
   </div>
 
   <div class="search-row">
-    <select #categoriaSelect class="fbox fbox--strong" id="categorias" (change)="onCategoriaChange($event)">
-      <option value="" disabled selected>Filtrar por categoría</option>
-      @for (categoria of categorias$ | async; track categoria.id) {
-        <option [value]="categoria.id">{{ categoria.nombre }}</option>
-      }
-    </select>
+    <div class="filter-control filter-control--select">
+      <select #categoriaSelect class="fbox fbox--strong" id="categorias" (change)="onCategoriaChange($event)">
+        <option value="" disabled selected>Filtrar por categoría</option>
+        @for (categoria of categorias$ | async; track categoria.id) {
+          <option [value]="categoria.id">{{ categoria.nombre }}</option>
+        }
+      </select>
+    </div>
 
-    <div class="filter-action-wrap">
+    <div class="filter-control filter-control--action">
       <button class="fbox fbox--coral" type="button" (click)="limpiarFiltros(categoriaSelect)">
-        <i class="bi bi-funnel me-1"></i>Limpiar
+        <i class="bi bi-arrow-counterclockwise me-1"></i>Limpiar
       </button>
     </div>
   </div>
