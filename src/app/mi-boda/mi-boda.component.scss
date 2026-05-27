@@ -22,12 +22,12 @@ $coral:  #f76c6f;
   margin-top: 0;
 }
 
-.sec-title { font-size: 2.05rem; font-weight: 700; color: $text; margin: 0 0 6px; line-height: 1.05; }
-.sec-sub { font-size: 1.1rem; color: #79A0BA; margin: 0; line-height: 1.25; }
+.sec-title { font-size: 2rem; font-weight: 800; color: $text; margin: 0 0 7px; line-height: 1.03; letter-spacing: 0.01em; }
+.sec-sub { font-size: 1.05rem; color: #7399b5; margin: 0; line-height: 1.28; }
 
 .sec-badge {
   flex-shrink: 0;
-  font-size: 1rem;
+  font-size: 1.08rem;
   font-weight: 600;
   color: #dd5f63;
   background: #FEE9E9;
@@ -38,7 +38,7 @@ $coral:  #f76c6f;
   align-items: center;
 }
 
-.search-row { display: flex; gap: 12px; margin-top: 8px; margin-bottom: 8px; align-items: center; }
+.search-row { display: flex; gap: 12px; margin-top: 10px; margin-bottom: 4px; align-items: center; }
 
 .sbox {
   flex: 2;
@@ -65,14 +65,15 @@ $coral:  #f76c6f;
 .fbox {
   min-width: 210px;
   max-width: 260px;
-  height: 42px;
+  height: 52px;
   background: #fff;
   border: 1px solid #c8d8e8;
-  border-radius: 999px;
+  border-radius: 18px;
   padding: 0 16px;
-  font-size: 1rem;
+  font-size: 1.08rem;
   color: #5f87a6;
   display: inline-flex;
+  box-shadow: 0 1px 2px rgba(44,62,82,.05);
   align-items: center;
   gap: 6px;
   cursor: pointer;
@@ -83,23 +84,24 @@ $coral:  #f76c6f;
   &:hover { border-color: #9fb9d2; box-shadow: 0 2px 8px rgba(76,126,167,.14); }
 
   &--coral {
-    min-width: 132px;
-    max-width: 152px;
+    min-width: 168px;
+    max-width: 182px;
     color: #fff;
-    border-color: #eb616c;
-    background: #ef6a72;
+    border-color: #e85f6b;
+    background: linear-gradient(180deg, #f0717a 0%, #eb5f6a 100%);
     font-weight: 700;
     justify-content: center;
-    box-shadow: 0 3px 10px rgba(239,106,114,.28);
+    box-shadow: 0 8px 18px rgba(235,95,106,.28);
   }
 
-  &--coral:hover { background: #e65a65; border-color: #e65a65; }
+  &--coral:hover { background: linear-gradient(180deg, #ee6973 0%, #e45763 100%); border-color: #e45763; transform: translateY(-1px); }
 
   &--strong {
     background: #ffffff;
     border-color: #c8d8e8;
     color: #5f87a6;
     font-weight: 500;
+    min-width: 330px;
   }
 }
 
@@ -116,7 +118,7 @@ $coral:  #f76c6f;
   .page-content { padding: 12px 10px 18px; gap: 10px; }
   .search-row { flex-wrap: wrap; }
   .sbox { flex: 1 1 100%; }
-  .fbox { min-width: 160px; max-width: none; flex: 0 1 auto; }
+  .fbox { min-width: 150px; max-width: none; flex: 0 1 auto; height: 44px; font-size: 0.95rem; }
   .sec-title { font-size: 1.4rem; }
   .sec-sub { font-size: 0.9rem; }
 }
