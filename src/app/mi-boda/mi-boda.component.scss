@@ -38,7 +38,13 @@ $coral:  #f76c6f;
   align-items: center;
 }
 
-.search-row { display: flex; gap: 12px; margin-top: 12px; margin-bottom: 2px; align-items: stretch; padding: 12px; border: 1px solid #d9e3ee; border-radius: 12px; background: #f7fbff; }
+.search-row { display: flex; margin-top: 12px; margin-bottom: 2px; justify-content: flex-end; padding: 12px; border: 1px solid #d9e3ee; border-radius: 12px; background: #f7fbff; }
+
+.filter-group {
+  width: min(100%, 540px);
+  display: flex;
+  align-items: stretch;
+}
 
 .sbox {
   flex: 2;
@@ -63,9 +69,8 @@ $coral:  #f76c6f;
 }
 
 .fbox {
-  min-width: 230px;
-  max-width: 320px;
-  width: 100%;
+  min-width: 0;
+  max-width: none;
   height: 44px;
   background: #fff;
   border: 1px solid #c8d8e8;
@@ -85,8 +90,7 @@ $coral:  #f76c6f;
   &:hover { border-color: #9fb9d2; box-shadow: 0 2px 8px rgba(76,126,167,.14); }
 
   &--coral {
-    min-width: 132px;
-    max-width: 160px;
+    min-width: 134px;
     color: #fff;
     border-color: #e85f6b;
     background: #eb5f6a;
@@ -102,8 +106,14 @@ $coral:  #f76c6f;
     border-color: #c8d8e8;
     color: #5f87a6;
     font-weight: 500;
-    min-width: 330px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
+}
+
+.filter-group .fbox--coral {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .provider-grid {
@@ -117,33 +127,14 @@ $coral:  #f76c6f;
 
 @media (max-width: 768px) {
   .page-content { padding: 12px 10px 18px; gap: 18px; }
-  .search-row { flex-wrap: wrap; padding: 10px; }
+  .search-row { padding: 10px; }
   .sbox { flex: 1 1 100%; }
-  .fbox { min-width: 150px; max-width: none; height: 42px; font-size: 0.95rem; }
-  .filter-control--select,
-  .filter-control--action { flex: 1 1 100%; }
+  .fbox { height: 42px; font-size: 0.95rem; }
+  .filter-group { width: 100%; }
+  .filter-group .fbox--coral { min-width: 122px; }
   .sec-title { font-size: 1.4rem; }
   .sec-sub { font-size: 0.9rem; }
 }
 
 @media (max-width: 480px) { .provider-grid { grid-template-columns: 1fr; } }
 
-
-.filter-control {
-  display: flex;
-  align-items: center;
-  padding: 6px;
-  border: 1px solid #d4dfeb;
-  border-radius: 10px;
-  background: #fff;
-}
-
-.filter-control--select {
-  flex: 1 1 340px;
-}
-
-.filter-control--action {
-  flex: 0 0 auto;
-  margin-left: auto;
-  border-color: #f1c3c8;
-}
