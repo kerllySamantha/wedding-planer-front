@@ -13,13 +13,26 @@ import { RouterLink } from '@angular/router';
 export class CardMibodaEmpresaComponent {
   empresa = input<Empresa | null>();
 
-  verTexto = computed(() => {
-    const empresa = this.empresa();
-    if (!empresa?.direccion) return false;
-    return empresa.direccion.length > 35
-      ? empresa.direccion.slice(0, 35) + '...'
-      : empresa.direccion;
-
+  badgeTexto = computed(() => {
+    const tipo = this.empresa()?.tipo_servicio?.trim();
+    return tipo && tipo.length ? tipo : 'Servicio';
   });
 
+  iniciales = computed(() => {
+    const nombre = this.empresa()?.nombre_empresa?.trim() || '';
+    if (!nombre) return '—';
+    const partes = nombre.split(/\s+/).filter(Boolean);
+    if (partes.length === 1) return partes[0].slice(0, 1).toUpperCase();
+    return (partes[0][0] + partes[1][0]).toUpperCase();
+  });
+
+  iconoServicio = computed(() => {
+    const tipo = (this.empresa()?.tipo_servicio || '').toLowerCase();
+    if (tipo.includes('carpa')) return 'bi-house-heart';
+    if (tipo.includes('catering') || tipo.includes('comida')) return 'bi-cup-hot';
+    if (tipo.includes('foto') || tipo.includes('video')) return 'bi-camera';
+    if (tipo.includes('joy')) return 'bi-gem';
+    if (tipo.includes('mus')) return 'bi-music-note-beamed';
+    return 'bi-stars';
+  });
 }
