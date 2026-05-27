@@ -6,18 +6,18 @@
 
   <app-actividades-mi-boda></app-actividades-mi-boda>
 
-  <div class="sec-header">
+  <div class="sec-header mt-5">
     <div>
       <p class="sec-title">Crea tu equipo soñado</p>
       <p class="sec-sub">Lee las opiniones, guarda tus favoritos y contáctalos</p>
     </div>
-    <span class="sec-badge">
+    <!-- <span class="sec-badge">
       <i class="bi bi-building me-1"></i>
       {{ totalResultados() }} {{ totalResultados() === 1 ? 'proveedor' : 'proveedores' }}
-    </span>
+    </span> -->
   </div>
 
-  <div class="d-flex justify-content-end">
+  <div class="d-flex justify-content-end my-3">
     <div class="filter-group input-group shadow-sm">
       <select #categoriaSelect class="form-select fbox fbox--strong" id="categorias" (change)="onCategoriaChange($event)">
         <option value="" disabled selected>Filtrar por categoría</option>

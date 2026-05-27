@@ -1,10 +1,62 @@
-a {
-  color: black !important;
+nav {
+  background: #fff !important;
+  border-top: 1px solid #eef2f6 !important;
+  border-bottom: 1px solid #DDE5EE !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .navbar {
+  padding: 0 !important;
+}
+
+:host ::ng-deep .nav {
+  justify-content: space-between !important;
+  gap: 6px;
+  padding: 0 18px;
+}
+
+.nav-item {
+  flex: 1;
+  min-width: 0;
+}
+
+a.nav-link {
+  color: #4F5B71 !important;
+  font-size: 0.82rem;
+  font-weight: 400;
+  border-bottom: 2px solid transparent;
+  padding: 6px 6px 7px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+a.nav-link.active {
+  color: #4F5B71 !important;
+  font-weight: 500;
+  border-bottom-color: #f76c6f;
 }
 
 .menu-icon {
   display: block;
-  font-size: 2rem;
+  font-size: 1.35rem;
   line-height: 1;
-  color: #472732;
+  color: #4F5B71;
+}
+
+a.active .menu-icon {
+  color: #4F5B71;
+}
+
+nav img {
+  mix-blend-mode: multiply;
+  opacity: 0.75;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+a.active img {
+  opacity: 1;
 }/*# sourceMappingURL=menu-mi-boda.component.css.map */
