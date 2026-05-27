@@ -12,16 +12,36 @@ export class MenuMiBodaComponent {
 
   irARuta(ruta: string, event: Event): void {
     event.preventDefault();
-    const urlActual = this.router.url;
+    const urlActual = this.normalizar(this.router.url);
+    const destino = this.normalizar(`/${ruta}`);
 
-    if (urlActual.includes(ruta)) {
-      return;
-    }
+    if (urlActual === destino || urlActual.startsWith(`${destino}/`)) return;
 
     this.router.navigate([ruta]);
   }
 
   esRutaActiva(ruta: string): boolean {
-    return this.router.url.includes(ruta);
+    const url = this.normalizar(this.router.url);
+
+    if (ruta === 'mi-boda') {
+      return (
+        url.includes('/mi-boda') &&
+        !url.includes('/dashboard-proveedores') &&
+        !url.includes('/tools/presupuesto') &&
+        !url.includes('/perfil-user') &&
+        !url.includes('/dashboard')
+      );
+    }
+
+    if (ruta === 'tools/presupuesto') {
+      return url.includes('/tools/presupuesto') || url.includes('/presupuesto');
+    }
+
+    const objetivo = this.normalizar(`/${ruta}`);
+    return url === objetivo || url.startsWith(`${objetivo}/`);
+  }
+
+  private normalizar(value: string): string {
+    return value.split('?')[0].split('#')[0].replace(/\/+$/, '').toLowerCase();
   }
 }
