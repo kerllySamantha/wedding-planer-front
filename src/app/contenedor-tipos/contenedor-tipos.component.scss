@@ -4,6 +4,38 @@ $color-border: rgb(237, 230, 230);
 $text-dark: #2c2c2c;
 $text-muted: #9ca3af;
 
+.presupuesto-tool {
+  background: linear-gradient(180deg, #fff 0%, #fff6f6 100%);
+  border: 1px solid rgba($accent, 0.12);
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 10px 28px rgba(27, 31, 35, 0.06);
+}
+
+.tool-header {
+  margin-bottom: 12px;
+
+  h3 {
+    margin: 0 0 6px;
+    color: $text-dark;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: #6b7280;
+  }
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #f0ecec;
+  border-radius: 12px;
+}
+
 // ── Skeleton ───────────────────────────────────────────
 .skeleton-wrapper {
   padding: 0.5rem 0;
@@ -57,6 +89,7 @@ $text-muted: #9ca3af;
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  min-width: 760px;
 
   thead tr th {
     font-size: 0.72rem;
@@ -81,6 +114,23 @@ $text-muted: #9ca3af;
       border-bottom: 1px solid rgba($color-border, 0.6);
       vertical-align: middle;
     }
+  }
+}
+
+.btn-pagar {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #f76c6f, #ef4444);
+  cursor: pointer;
+
+  &:disabled {
+    background: #e5e7eb;
+    color: #6b7280;
+    cursor: not-allowed;
   }
 }
 

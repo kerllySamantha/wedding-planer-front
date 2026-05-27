@@ -11,6 +11,7 @@ import { CountdownServiceService } from '../Services/countdown-service.service';
 import { PresupuestoHttpService } from '../Services/Presupuesto/presupuesto-http-service.service';
 import { DecimalPipe } from '@angular/common';
 import { Boda } from '../Interfaces/Boda';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contenedor-tipos',
@@ -24,6 +25,7 @@ export class ContenedorTiposComponent {
   detallesPedidoctx = inject(ItemsDetallesService);
   presupuestoctx = inject(PresupuestoHttpService);
   bodactx = inject(CountdownServiceService);
+  private router = inject(Router);
 
   categoriaIdSeleccionada = input<number | null>(null);
   presupuestoId = input<number | null>(null);
@@ -289,6 +291,16 @@ lastId: number | null = null;
 
   estaBloqueadoPorPago(item: PresupuestoItem): boolean {
     return (item.monto_pagado ?? 0) > 0;
+  }
+
+  tienePagoPendiente(item: PresupuestoItem): boolean {
+    return (item.monto_estimado ?? 0) > (item.monto_pagado ?? 0);
+  }
+
+  irAPago(item: PresupuestoItem) {
+    const presupuestoId = item.presupuesto_id ?? this.presupuestoIdPorTipo.get(item.tipo_producto_id);
+    if (!presupuestoId || !this.tienePagoPendiente(item)) return;
+    this.router.navigate(['/presupuesto', presupuestoId]);
   }
 
   private setBaseTotalesCategoria(categoriaId: number, detalles: PresupuestoItem[]) {
