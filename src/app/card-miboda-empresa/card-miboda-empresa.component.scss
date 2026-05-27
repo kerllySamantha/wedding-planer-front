@@ -55,19 +55,19 @@ $accent: #f06a72;
 
 .example-card mat-card-header { padding: 10px 12px 5px; align-items: center; }
 .example-header-image {
-  border-radius: 11px;
+  border-radius: 50%;
   background: #d5dde6;
   color: #3f5d78;
-  width: 40px !important;
-  height: 40px !important;
-  min-width: 40px !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
   margin-right: 10px !important;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.08rem; font-weight: 700;
+  font-size: 0.96rem; font-weight: 700;
 }
 
 .example-card mat-card-content { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 3px; }
-.example-card mat-card-content p { font-size: 0.95rem; color: $text; margin: 0; line-height: 1.25; }
-.example-card mat-card-content small { font-size: 0.84rem; color: $muted; line-height: 1.25; }
+.example-card mat-card-content p { font-size: 0.84rem; color: $text; margin: 0; line-height: 1.25; }
+.example-card mat-card-content small { font-size: 0.76rem; color: $muted; line-height: 1.25; }
 
-h6 { font-weight: 700; font-size: 1.85rem; color: $text; margin: 0; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+h6 { font-weight: 700; font-size: 1.02rem; color: $text; margin: 0; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
