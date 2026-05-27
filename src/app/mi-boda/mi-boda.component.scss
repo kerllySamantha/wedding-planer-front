@@ -154,6 +154,30 @@ $coral:  #f76c6f;
   border-radius: 8px;
 }
 
+.skeleton-thumbs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.skeleton-thumb {
+  width: 30%;
+  height: 74px !important;
+  border-radius: 8px;
+}
+
+.skeleton-line {
+  margin-inline: auto;
+}
+
+.skeleton-line--title {
+  width: 58%;
+}
+
+.skeleton-line--subtitle {
+  width: 72%;
+}
+
 @media (max-width: 1100px) { .provider-grid { grid-template-columns: repeat(3, 1fr); } }
 
 @media (max-width: 768px) {
