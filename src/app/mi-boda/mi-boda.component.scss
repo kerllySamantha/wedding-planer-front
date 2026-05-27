@@ -131,10 +131,14 @@ $coral:  #f76c6f;
 }
 
 .skeleton-card {
-  border: 1px solid #d9e4ef;
+  border: 1px solid #f6d8de;
   border-radius: 16px;
   overflow: hidden;
-  background: #fff;
+  background: #fff7f9;
+}
+
+.skeleton-pink {
+  --bs-placeholder-bg: #f3c9d2;
 }
 
 .skeleton-cover {
