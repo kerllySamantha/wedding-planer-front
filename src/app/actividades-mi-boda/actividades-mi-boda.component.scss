@@ -1,3 +1,13 @@
+// ── Contenedor unificado (imagen + cards) ────────────────────
+.boda-card {
+    background: linear-gradient(135deg, #fdf0f1 0%, #fff8f8 100%);
+    border: 1px solid rgba(247, 108, 111, 0.16);
+    border-radius: 1.6rem;
+    padding: 1.25rem;
+    box-shadow: 0 6px 28px rgba(247, 108, 111, 0.11);
+}
+
+// ── Countdown / imagen (sin cambios) ─────────────────────────
 .boda-style {
     border-radius: 0.5rem;
     overflow: hidden;
@@ -12,9 +22,7 @@
 }
 
 .counterItem__label,
-.counterItem__value {
-    color: white;
-}
+.counterItem__value { color: white; }
 
 .fondo-imagen {
     position: relative;
@@ -68,99 +76,110 @@
     margin-bottom: 1.15rem;
 }
 
+// ── Sección de stats (solo layout) ───────────────────────────
+.stats-section {
+    margin-top: 0.5rem;
+}
+
 .stats-grid {
-    max-width: 900px;
-    margin: 0 auto;
-    padding-inline: 1rem;
+    margin: 0;
+    padding: 0;
 }
 
+// ── Cards individuales ────────────────────────────────────────
 .stats-card {
-    min-height: 10em;
-    margin: 0 !important;
-    padding: 1rem .85rem;
-    border-radius: 0.9rem;
-    border: 1px solid #ece5e8;
     background: #fff;
-    transition: .2s ease;
-    box-shadow: 0 4px 14px rgba(54, 30, 39, 0.08);
+    border: 1px solid rgba(247, 108, 111, 0.12);
+    border-radius: 1.2rem;
+    padding: 1.4rem 1.25rem 1.3rem;
+    box-shadow: 0 2px 12px rgba(54, 30, 39, 0.07);
+    transition: transform .24s ease, box-shadow .24s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100%;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 28px rgba(247, 108, 111, 0.14);
+    }
 }
 
-.stats-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 9px 20px rgba(54, 30, 39, 0.14);
-    border-color: #ddd1d6;
+// ── Variantes: solo acento en borde superior e icono ─────────
+.stats-card--rose   { border-top: 3px solid #f76c6f;
+    .stats-card__icon-box { background: rgba(247, 108, 111, 0.12); color: #f76c6f; }
+    .stats-card__num      { color: #f76c6f; }
+}
+.stats-card--mint   { border-top: 3px solid #e04c4e;
+    .stats-card__icon-box { background: rgba(224, 76, 78, 0.12); color: #e04c4e; }
+    .stats-card__num      { color: #e04c4e; }
+}
+.stats-card--violet { border-top: 3px solid #aa333a;
+    .stats-card__icon-box { background: rgba(170, 51, 58, 0.12); color: #aa333a; }
+    .stats-card__num      { color: #aa333a; }
+}
+.stats-card--gold   { border-top: 3px solid #680012;
+    .stats-card__icon-box { background: rgba(104, 0, 18, 0.10); color: #680012; }
+    .stats-card__num      { color: #680012; }
 }
 
-.stats-card--rose { border-top: 4px solid #D4537E; }
-.stats-card--mint { border-top: 4px solid #1D9E75; }
-.stats-card--violet { border-top: 4px solid #7F77DD; }
-.stats-card--gold { border-top: 4px solid #BA7517; }
-
-.stat-icon-wrap {
-    position: relative;
-    display: inline-flex;
-    margin-bottom: 10px;
-}
-
-.stat-icon {
-    width: 60px;
-    height: 60px;
+// ── Caja de icono circular ────────────────────────────────────
+.stats-card__icon-box {
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: .9rem;
-    font-weight: 800;
-    letter-spacing: .08em;
-    color: #4a2d38;
-    background: #f7f1f4;
-    border: 1px solid #ecdfe4;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
 }
 
-.stat-badge {
-    position: absolute;
-    top: -8px;
-    right: -12px;
-    min-width: 24px;
-    height: 24px;
-    border-radius: 999px;
-    padding: 0 7px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.62rem;
+// ── Número principal ──────────────────────────────────────────
+.stats-card__num {
+    font-size: 2.2rem;
     font-weight: 800;
-    color: #fff;
-    border: 2px solid #fff;
     line-height: 1;
+    margin: 0 0 0.35rem;
+    position: relative;
+    z-index: 1;
+
+    &--amount {
+        font-size: 1.25rem;
+        font-weight: 800;
+        line-height: 1.2;
+    }
 }
 
-.badge-pink { background-color: #D4537E; }
-.badge-teal { background-color: #1D9E75; }
-.badge-purple { background-color: #7F77DD; }
-.badge-amber { background-color: #BA7517; }
-
-.stat-title {
-    font-size: .9rem;
+// ── Textos ────────────────────────────────────────────────────
+.stats-card__name {
+    font-size: 0.83rem;
     font-weight: 700;
     color: #3f2a33;
     line-height: 1.2;
+    margin: 0 0 0.2rem;
+    position: relative;
+    z-index: 1;
 }
 
-.stat-label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #6d5661;
-    text-align: center;
+.stats-card__sub {
+    font-size: 0.70rem;
+    color: #8a7080;
     line-height: 1.3;
+    margin: 0;
+    position: relative;
+    z-index: 1;
 }
 
-.stat-label--amount {
-    font-size: 0.8rem;
-    color: #6f4215;
-}
-
+// ── Responsive ────────────────────────────────────────────────
 @media (max-width: 768px) {
-    .stats-card { min-height: 8.8em; }
-    .stat-icon { width: 52px; height: 52px; font-size: .8rem; }
+    .stats-card { padding: 1.1rem 1rem 1rem; }
+    .stats-card__icon-box { width: 40px; height: 40px; font-size: 1.1rem; margin-bottom: 0.75rem; }
+    .stats-card__num { font-size: 1.8rem; }
+    .stats-card__num--amount { font-size: 1.05rem; }
+    .stats-card__name { font-size: 0.78rem; }
+    .stats-card__sub { font-size: 0.67rem; }
 }

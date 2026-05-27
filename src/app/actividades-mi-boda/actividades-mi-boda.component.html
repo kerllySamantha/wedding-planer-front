@@ -1,5 +1,5 @@
 <div class="container boda py-5">
-  <div class="row g-0 align-items-start justify-content-center boda">
+  <div class="row g-0 align-items-start justify-content-center boda boda-card">
 
     <div class="col-10 col-md-10 col-lg-3 col-xl-3 fondo-imagen position-relative rounded-4">
       <div class="boda-bg w-100 h-100 position-absolute"></div>
@@ -37,52 +37,46 @@
           {{fechaFormateada()}}
         </p>
 
-        <div class="row g-3 justify-content-center stats-grid">
+        <div class="stats-section">
+          <div class="row g-3 stats-grid">
 
-          <div class="col-6 col-md-3">
-            <div class="boda-style card stats-card stats-card--rose d-flex flex-column align-items-center justify-content-center text-center">
-              <div class="stat-icon-wrap" aria-hidden="true">
-                <span class="stat-icon">SC</span>
-                <span class="stat-badge badge-pink">{{ serviciosContratados() }}</span>
+            <div class="col-6 col-md-3">
+              <div class="stats-card stats-card--rose">
+                <span class="stats-card__icon-box"><i class="bi bi-briefcase-fill"></i></span>
+                <strong class="stats-card__num">{{ serviciosContratados() }}</strong>
+                <span class="stats-card__name">Servicios contratados</span>
+                <span class="stats-card__sub">Proveedores cerrados</span>
               </div>
-              <span class="stat-title">Servicios contratados</span>
-              <span class="stat-label">Proveedores ya cerrados</span>
             </div>
-          </div>
 
-          <div class="col-6 col-md-3">
-            <div class="boda-style card stats-card stats-card--mint d-flex flex-column align-items-center justify-content-center text-center">
-              <div class="stat-icon-wrap" aria-hidden="true">
-                <span class="stat-icon">TC</span>
-                <span class="stat-badge badge-teal">{{ tareasCompletadas() }}</span>
+            <div class="col-6 col-md-3">
+              <div class="stats-card stats-card--mint">
+                <span class="stats-card__icon-box"><i class="bi bi-check2-all"></i></span>
+                <strong class="stats-card__num">{{ tareasCompletadas() }}</strong>
+                <span class="stats-card__name">Pagos completados</span>
+                <span class="stats-card__sub">Sin deuda pendiente</span>
               </div>
-              <span class="stat-title">Tareas completadas</span>
-              <span class="stat-label">Checklist al día</span>
             </div>
-          </div>
 
-          <div class="col-6 col-md-3">
-            <div class="boda-style card stats-card stats-card--violet d-flex flex-column align-items-center justify-content-center text-center">
-              <div class="stat-icon-wrap" aria-hidden="true">
-                <span class="stat-icon">IC</span>
-                <span class="stat-badge badge-purple">—</span>
+            <div class="col-6 col-md-3">
+              <div class="stats-card stats-card--violet">
+                <span class="stats-card__icon-box"><i class="bi bi-people-fill"></i></span>
+                <strong class="stats-card__num">—</strong>
+                <span class="stats-card__name">Invitados confirmados</span>
+                <span class="stats-card__sub">RSVP recibido</span>
               </div>
-              <span class="stat-title">Invitados confirmados</span>
-              <span class="stat-label">RSVP recibido</span>
             </div>
-          </div>
 
-          <div class="col-6 col-md-3">
-            <div class="boda-style card stats-card stats-card--gold d-flex flex-column align-items-center justify-content-center text-center">
-              <div class="stat-icon-wrap" aria-hidden="true">
-                <span class="stat-icon">PG</span>
-                <span class="stat-badge badge-amber">€</span>
+            <div class="col-6 col-md-3">
+              <div class="stats-card stats-card--gold">
+                <span class="stats-card__icon-box"><i class="bi bi-currency-euro"></i></span>
+                <strong class="stats-card__num stats-card__num--amount">{{ formatearMoneda(presupuestoGastado()) }}</strong>
+                <span class="stats-card__name">Presupuesto invertido</span>
+                <span class="stats-card__sub">Total pagado</span>
               </div>
-              <span class="stat-title">Presupuesto invertido</span>
-              <span class="stat-label stat-label--amount">{{ formatearMoneda(presupuestoGastado()) }}</span>
             </div>
-          </div>
 
+          </div>
         </div>
 
       </div>
