@@ -44,6 +44,8 @@ $coral:  #f76c6f;
   width: min(100%, 540px);
   display: flex;
   align-items: stretch;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .sbox {
@@ -79,7 +81,7 @@ $coral:  #f76c6f;
   font-size: 1rem;
   color: #5f87a6;
   display: inline-flex;
-  box-shadow: 0 1px 2px rgba(44,62,82,.05);
+  box-shadow: none;
   align-items: center;
   gap: 6px;
   cursor: pointer;
@@ -87,7 +89,7 @@ $coral:  #f76c6f;
   transition: all .18s ease;
 
   &:focus,
-  &:hover { border-color: #9fb9d2; box-shadow: 0 2px 8px rgba(76,126,167,.14); }
+  &:hover { border-color: #9fb9d2; box-shadow: none; }
 
   &--coral {
     min-width: 134px;
@@ -96,10 +98,10 @@ $coral:  #f76c6f;
     background: #eb5f6a;
     font-weight: 700;
     justify-content: center;
-    box-shadow: 0 8px 18px rgba(235,95,106,.28);
+    box-shadow: none;
   }
 
-  &--coral:hover { background: #e45763; border-color: #e45763; transform: translateY(-1px); }
+  &--coral:hover { background: #e45763; border-color: #e45763; transform: none; }
 
   &--strong {
     background: #ffffff;
@@ -114,6 +116,11 @@ $coral:  #f76c6f;
 .filter-group .fbox--coral {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
+}
+
+.filter-group .form-select {
+  background-position: right 0.9rem center;
+  padding-right: 2.1rem;
 }
 
 .provider-grid {
@@ -137,4 +144,3 @@ $coral:  #f76c6f;
 }
 
 @media (max-width: 480px) { .provider-grid { grid-template-columns: 1fr; } }
-
