@@ -85,14 +85,15 @@ $coral:  #f76c6f;
   &--coral {
     min-width: 122px;
     max-width: 140px;
-    color: #ef6a72;
-    border-color: #efb1b6;
-    background: #fff;
-    font-weight: 600;
+    color: #fff;
+    border-color: #eb616c;
+    background: #ef6a72;
+    font-weight: 700;
     justify-content: center;
+    box-shadow: 0 3px 10px rgba(239,106,114,.28);
   }
 
-  &--coral:hover { background: #fff5f5; }
+  &--coral:hover { background: #e65a65; border-color: #e65a65; }
 
   &--strong {
     background: #ffffff;
