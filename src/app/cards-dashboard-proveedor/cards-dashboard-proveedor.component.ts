@@ -77,12 +77,7 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   private iconSet         = inject(IconSetService);
 
   @ViewChild('tendenciaCanvas') tendenciaCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('topCanvas')       topCanvas!:       ElementRef<HTMLCanvasElement>;
-  @ViewChild('catalogoCanvas')  catalogoCanvas!:  ElementRef<HTMLCanvasElement>;
-
   private tendenciaChart: Chart | null = null;
-  private topChart:       Chart | null = null;
-  private catalogoChart:  Chart | null = null;
 
   // ── Signals ──────────────────────────────────────────────────────────────
   estadisticas      = signal<EstadisticasEmpresa['data'] | null>(null);
@@ -106,6 +101,11 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   totalProductos   = computed(() => this.estadisticas()?.totalProductos ?? 0);
   totalReservas    = computed(() => this.estadisticas()?.totalReservas  ?? 0);
   totalSolicitudes = computed(() => this.solicitudesItems().length);
+
+  topProductos = computed(() => this.estadisticas()?.topProductos ?? []);
+  productosCatalogoOrdenados = computed(() =>
+    [...this.productosCatalogo()].sort((a, b) => (Number(b.total_reservas ?? 0) - Number(a.total_reservas ?? 0)))
+  );
 
   // Solicitudes desglosadas (para tarjetas)
   solicitudesPendientes = computed(() =>
@@ -135,21 +135,9 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
     }));
   });
 
-  // Altura dinámica del gráfico de catálogo
-  catalogoChartHeight = computed(() => Math.max(220, this.productosCatalogo().length * 54 + 40));
 
   constructor() {
     this.iconSet.icons = { cilListNumbered, cilPaperPlane, cilChevronRight, cilChevronLeft };
-
-    effect(() => {
-      const stats = this.estadisticas();
-      if (stats) this.aplicarStats(stats);
-    });
-
-    effect(() => {
-      const prods = this.productosCatalogo();
-      if (this.catalogoChart && prods.length) this.aplicarCatalogo(prods);
-    });
 
     effect(() => {
       const data = this.reservasMensuales();
@@ -166,20 +154,11 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
 
   ngAfterViewInit(): void {
     this.initTendencia();
-    this.initTop();
-    this.initCatalogo();
-
-    const stats = this.estadisticas();
-    if (stats) this.aplicarStats(stats);
-    const prods = this.productosCatalogo();
-    if (prods.length) this.aplicarCatalogo(prods);
     this.aplicarTendencia(this.reservasMensuales());
   }
 
   ngOnDestroy(): void {
     this.tendenciaChart?.destroy();
-    this.topChart?.destroy();
-    this.catalogoChart?.destroy();
   }
 
   // ── Inicialización de gráficas ────────────────────────────────────────────
@@ -254,139 +233,9 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
     });
   }
 
-  private initTop(): void {
-    this.topChart = new Chart(this.topCanvas.nativeElement, {
-      type: 'bar',
-      data: {
-        labels: [],
-        datasets: [{
-          data: [],
-          backgroundColor: [],
-          borderRadius: 8,
-          borderSkipped: false,
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { ...TOOLTIP_BASE, callbacks: { label: ctx => ` ${ctx.parsed.y} reservas` } },
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: C.dark,
-              font: { size: 10, weight: 600 },
-              maxRotation: 30,
-              callback: (_, i, ticks) => {
-                const l = (ticks[i] as any)?.label ?? '';
-                return typeof l === 'string' && l.length > 13 ? l.slice(0, 13) + '…' : l;
-              },
-            },
-            grid: { display: false },
-            border: { display: false },
-          },
-          y: {
-            beginAtZero: true,
-            ticks: { color: 'rgba(20,63,102,0.6)', font: { size: 11 }, stepSize: 1 },
-            grid: { color: 'rgba(47,93,134,0.07)' },
-            border: { display: false },
-          },
-        },
-      },
-    });
-  }
-
-  private initCatalogo(): void {
-    this.catalogoChart = new Chart(this.catalogoCanvas.nativeElement, {
-      type: 'bar',
-      data: {
-        labels: [],
-        datasets: [{
-          label: 'Rango de precio',
-          data: [],
-          backgroundColor: [],
-          borderColor: [],
-          borderWidth: 2,
-          borderRadius: 6,
-          borderSkipped: false,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            ...TOOLTIP_BASE,
-            callbacks: {
-              title: ctx => ctx[0]?.label ?? '',
-              label: ctx => {
-                const d = ctx.dataset.data[ctx.dataIndex] as unknown as [number, number];
-                return Array.isArray(d) ? ` ${d[0]}€ — ${d[1]}€` : '';
-              },
-            },
-          },
-        },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Precio (€)',
-              color: 'rgba(20,63,102,0.5)',
-              font: { size: 10 },
-            },
-            ticks: {
-              color: 'rgba(20,63,102,0.6)',
-              font: { size: 10 },
-              callback: v => `${v}€`,
-            },
-            grid: { color: 'rgba(47,93,134,0.07)' },
-            border: { display: false },
-          },
-          y: {
-            ticks: {
-              color: C.dark,
-              font: { size: 11, weight: 600 },
-              callback: (_, i, ticks) => {
-                const l = (ticks[i] as any)?.label ?? '';
-                return typeof l === 'string' && l.length > 28 ? l.slice(0, 28) + '…' : l;
-              },
-            },
-            grid: { display: false },
-            border: { display: false },
-          },
-        },
-      },
-    });
-  }
 
   // ── Aplicar datos ─────────────────────────────────────────────────────────
 
-  private aplicarStats(stats: EstadisticasEmpresa['data']): void {
-    if (this.topChart) {
-      const p = stats.topProductos ?? [];
-      this.topChart.data.labels                               = p.map(x => x.nombre ?? '');
-      this.topChart.data.datasets[0].data                     = p.map(x => x.total);
-      (this.topChart.data.datasets[0] as any).backgroundColor = p.map((_, i) => toAlpha(TOP_COLORS[i] ?? C.pale));
-      this.topChart.update();
-    }
-  }
-
-  private aplicarCatalogo(productos: any[]): void {
-    if (!this.catalogoChart) return;
-    this.catalogoChart.data.labels = productos.map(p => p.nombre ?? '');
-    this.catalogoChart.data.datasets[0].data = productos.map(p => {
-      const min = +(p.precio_min ?? 0);
-      const max = +(p.precio_max ?? 0);
-      return [min, Math.max(max, min + 1)] as any;
-    });
-    (this.catalogoChart.data.datasets[0] as any).backgroundColor = productos.map((_, i) => toAlpha(TOP_COLORS[i % TOP_COLORS.length], 'bb'));
-    (this.catalogoChart.data.datasets[0] as any).borderColor     = productos.map((_, i) => TOP_COLORS[i % TOP_COLORS.length]);
-    this.catalogoChart.update();
-  }
 
   private aplicarTendencia(data: { total: number; confirmadas: number }[]): void {
     if (!this.tendenciaChart) return;

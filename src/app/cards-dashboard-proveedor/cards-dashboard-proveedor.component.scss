@@ -216,3 +216,28 @@ $gap:       clamp(0.75rem, 1.2vw, 1.1rem);
   letter-spacing: 0.05em;
   text-align: center;
 }
+
+.table-wrap {
+  max-height: 320px;
+  overflow: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(20, 63, 102, 0.14);
+  background: rgba(255,255,255,0.52);
+}
+
+.product-table {
+  font-size: 0.83rem;
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #eef5fb;
+    color: $navy;
+    font-size: 0.67rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    z-index: 1;
+  }
+
+  td, th { padding: 0.55rem 0.7rem; }
+}
