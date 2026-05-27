@@ -1,22 +1,24 @@
-<a [routerLink]="['/proveedores/detalles', empresa()?.id]" class="text-decoration-none">
+<a [routerLink]="['/proveedores/detalles', empresa()?.id]" class="text-decoration-none card-link">
   <mat-card class="example-card" appearance="outlined">
-
-    @for (imagen of empresa()?.fotos; track imagen.url; let idx = $index) {
-      @if (idx === 0) {
-        <img mat-card-image [src]="imagen.url" alt="{{ empresa()?.nombre_empresa }}" />
+    <div class="card-cover">
+      @if (empresa()?.fotos?.length) {
+        <img [src]="empresa()?.fotos?.[0]?.url" alt="{{ empresa()?.nombre_empresa }}" class="cover-photo" />
+      } @else {
+        <i class="bi" [class]="'bi ' + iconoServicio()"></i>
       }
-    }
+      <span class="tag">{{ badgeTexto() }}</span>
+    </div>
 
     <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
+      <div mat-card-avatar class="example-header-image">{{ iniciales() }}</div>
       <mat-card-title>
         <h6>{{ empresa()?.nombre_empresa }}</h6>
       </mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
-      <p>{{ empresa()?.poblacion?.nombre }}</p>
+      <p>{{ empresa()?.tipo_servicio }}</p>
+      <small>{{ empresa()?.poblacion?.nombre }} · {{ empresa()?.provincia?.nombre }}</small>
     </mat-card-content>
-
   </mat-card>
 </a>
