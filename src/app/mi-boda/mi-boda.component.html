@@ -6,7 +6,6 @@
 
   <app-actividades-mi-boda></app-actividades-mi-boda>
 
-  <!-- Cabecera sección — directamente sobre fondo #F0F4F8 -->
   <div class="sec-header">
     <div>
       <p class="sec-title">Crea tu equipo soñado</p>
@@ -18,17 +17,9 @@
     </span>
   </div>
 
-  <!-- Fila de búsqueda -->
   <div class="search-row">
-    <div class="sbox">
-      <i class="bi bi-search sbox__icon"></i>
-      <input class="sbox__input" type="text" placeholder="Buscar proveedor…"
-          (input)="onNombreChange($event)">
-    </div>
-
-    <select #categoriaSelect class="fbox" id="categorias"
-        (change)="onCategoriaChange($event)">
-      <option value="" disabled selected>Todas las categorías</option>
+    <select #categoriaSelect class="fbox fbox--strong" id="categorias" (change)="onCategoriaChange($event)">
+      <option value="" disabled selected>Filtrar por categoría</option>
       @for (categoria of categorias$ | async; track categoria.id) {
         <option [value]="categoria.id">{{ categoria.nombre }}</option>
       }
@@ -39,7 +30,6 @@
     </button>
   </div>
 
-  <!-- Grid de proveedores -->
   <div class="provider-grid">
     @for (empresa of companies(); track empresa.id) {
       <app-card-miboda-empresa [empresa]="empresa"></app-card-miboda-empresa>
