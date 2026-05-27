@@ -112,23 +112,28 @@ $text-dark: #2c2c2c;
 .pago-item {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 0.85rem;
   border: 1px solid #eee;
   border-radius: 10px;
   margin-bottom: 0.7rem;
 
   strong { display: block; }
-  small { color: #6b7280; }
+  small {
+    display: block;
+    color: #6b7280;
+    margin-top: 2px;
+  }
 }
 
-.btn-pago-go {
-  border: 1px solid #efcaca;
-  background: linear-gradient(135deg, #fbe6e6, #f8dede);
-  color: #3d2f2f;
+.estado-pagado {
+  background: #e8f8ef;
+  color: #1f8f5f;
+  border: 1px solid #bdebd3;
   border-radius: 999px;
-  padding: 0.45rem 0.9rem;
+  padding: 0.35rem 0.75rem;
   font-weight: 600;
+  font-size: 0.78rem;
 }
 
 .sin-pendientes {

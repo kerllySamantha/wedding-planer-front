@@ -49,24 +49,24 @@
 
             <ng-template #pagoView>
                 <section class="pago-panel">
-                    <h3>Pagos pendientes</h3>
-                    <p>Selecciona un presupuesto pendiente y continúa el pago seguro con Stripe.</p>
+                    <h3>Pagos realizados</h3>
+                    <p>Detalle de los pagos que ya has registrado en tus presupuestos.</p>
 
-                    @for (presupuesto of presupuestosPendientes(); track presupuesto.id) {
+                    @for (presupuesto of pagosRealizados(); track presupuesto.id) {
                     <article class="pago-item">
                         <div>
                             <strong>{{ presupuesto.tipos.nombre || ('Presupuesto #' + presupuesto.id) }}</strong>
-                            <small>Pagado {{ presupuesto.monto_pagado || 0 }} € de {{ presupuesto.monto_total }} €</small>
+                            <small>Total estimado: {{ presupuesto.monto_total }} €</small>
+                            <small>Total pagado: {{ presupuesto.monto_pagado || 0 }} €</small>
+                            <small>Fecha: {{ presupuesto.fecha_creacion }}</small>
                         </div>
-                        <button type="button" class="btn-pago-go" (click)="irAPagoPresupuesto(presupuesto.id)">
-                            Ir a pagar
-                        </button>
+                        <span class="estado-pagado">Pagado</span>
                     </article>
                     }
 
-                    @if (presupuestosPendientes().length === 0) {
+                    @if (pagosRealizados().length === 0) {
                     <div class="sin-pendientes">
-                        No tienes pagos pendientes ahora mismo.
+                        Aún no tienes pagos registrados.
                     </div>
                     }
                 </section>
