@@ -4,7 +4,7 @@
         <ul class="nav w-100 d-flex justify-content-around align-items-center">
             <!-- Mi boda -->
             <li class="nav-item">
-                <a class="nav-link text-center active" (click)="irARuta('mi-boda', $event)">
+                <a class="nav-link text-center" [class.active]="esRutaActiva('mi-boda')" (click)="irARuta('mi-boda', $event)">
                     <img src="assets/images/anillos.svg" alt="Mi boda">
                     <div>Mi boda</div>
                 </a>
@@ -12,7 +12,7 @@
 
             <!-- Proveedores -->
             <li class="nav-item">
-                <a class="nav-link text-center" (click)="irARuta('dashboard-proveedores', $event)">
+                <a class="nav-link text-center" [class.active]="esRutaActiva('dashboard-proveedores')" (click)="irARuta('dashboard-proveedores', $event)">
                     <img src="assets/images/provedor2.svg" alt="Proveedores">
                     <div>Proveedores</div>
                 </a>
@@ -20,7 +20,7 @@
 
             <!-- Presupuesto -->
             <li class="nav-item">
-                <a class="nav-link text-center" (click)="irARuta('tools/presupuesto', $event)">
+                <a class="nav-link text-center" [class.active]="esRutaActiva('tools/presupuesto')" (click)="irARuta('tools/presupuesto', $event)">
                     <img src="assets/images/3.png" alt="Presupuesto">
                     <div>Presupuesto</div>
                 </a>
@@ -28,7 +28,7 @@
 
             <!-- Mi perfil -->
             <li class="nav-item">
-                <a class="nav-link text-center" (click)="irARuta('perfil-user', $event)">
+                <a class="nav-link text-center" [class.active]="esRutaActiva('perfil-user')" (click)="irARuta('perfil-user', $event)">
                     <i class="bi bi-person-circle menu-icon"></i>
                     <div>Mi perfil</div>
                 </a>
@@ -36,7 +36,7 @@
 
             <!-- Explorar -->
             <li class="nav-item">
-                <a class="nav-link text-center" (click)="irARuta('dashboard', $event)">
+                <a class="nav-link text-center" [class.active]="esRutaActiva('dashboard')" (click)="irARuta('dashboard', $event)">
                     <i class="bi bi-compass menu-icon"></i>
                     <div>Explorar</div>
                 </a>

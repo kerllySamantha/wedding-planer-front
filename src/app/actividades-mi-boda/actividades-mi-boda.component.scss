@@ -1,10 +1,11 @@
 .boda-hero {
-  display: flex;
-  align-items: stretch;
-  gap: 20px;
-  background: linear-gradient(135deg, #3a6186 0%, #89a4c0 100%);
-  border-radius: 12px;
-  padding: 22px 24px;
+  display: grid;
+  grid-template-columns: auto minmax(240px, 330px) minmax(420px, 1fr);
+  align-items: center;
+  column-gap: 10px;
+  background: linear-gradient(110deg, #436a90 0%, #799aba 100%);
+  border-radius: 14px;
+  padding: 12px 12px;
   position: relative;
   overflow: hidden;
 
@@ -12,145 +13,118 @@
     content: '';
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 50%),
-      radial-gradient(circle at 10% 80%, rgba(255,255,255,0.04) 0%, transparent 50%);
+    background: radial-gradient(circle at 45% 8%, rgba(255,255,255,0.12) 0%, transparent 42%);
     pointer-events: none;
   }
 
   > * { position: relative; z-index: 1; }
 }
 
-// ── Foto ─────────────────────────────────────────────────────
 .hero-photo {
-  width: 130px;
-  height: 130px;
+  width: 170px;
+  height: 170px;
   border-radius: 12px;
   overflow: hidden;
-  flex-shrink: 0;
-  position: relative;
-  border: 0.5px solid rgba(255,255,255,0.20);
-
-  .boda-bg {
-    position: absolute;
-    inset: 0;
-    background-image: url("../../assets/images/boda1.jpg");
-    background-size: cover;
-    background-position: center;
-  }
+  border: 1px solid rgba(255,255,255,0.28);
 }
 
-// ── Info + countdown ──────────────────────────────────────────
+.hero-photo .boda-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("../../assets/images/boda1.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
 .hero-info {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.hero-name {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #fff;
-  margin: 0 0 2px;
-}
+.hero-name { font-size: 1.5rem; font-weight: 700; color: #fff; margin: 0 0 1px; }
+.hero-date { font-size: 0.95rem; color: rgba(255,255,255,0.78); margin: 0 0 10px; }
 
-.hero-date {
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.62);
-  margin: 0 0 14px;
-}
-
-.countdown {
-  display: flex;
-  gap: 8px;
-}
-
+.countdown { display: flex; gap: 8px; }
 .cd-box {
-  background: rgba(255,255,255,0.15);
-  border: 0.5px solid rgba(255,255,255,0.30);
-  border-radius: 8px;
-  padding: 8px 14px;
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.34);
+  border-radius: 10px;
+  padding: 7px 14px;
   text-align: center;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(7px);
 }
+.cd-num { display: block; font-size: 2rem; font-weight: 700; color: #fff; line-height: 1; }
+.cd-lbl { display: block; font-size: 0.86rem; color: rgba(255,255,255,0.66); margin-top: 3px; text-transform: uppercase; }
 
-.cd-num {
-  display: block;
-  font-size: 1.35rem;
-  font-weight: 500;
-  color: #fff;
-  line-height: 1;
-}
+.hero-sep { display: none; }
 
-.cd-lbl {
-  display: block;
-  font-size: 0.60rem;
-  color: rgba(255,255,255,0.58);
-  margin-top: 3px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-// ── Separador ─────────────────────────────────────────────────
-.hero-sep {
-  width: 0.5px;
-  background: rgba(255,255,255,0.20);
-  align-self: stretch;
-  flex-shrink: 0;
-}
-
-// ── Métricas ──────────────────────────────────────────────────
 .metrics {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  align-items: center;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 0;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 12px;
+  padding: 10px 8px;
 }
 
 .metric {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 8px 12px;
-  border-left: 0.5px solid rgba(255,255,255,0.18);
+  padding: 4px 6px;
+  border-left: 1px solid rgba(255,255,255,0.2);
+}
+.metric:first-child { border-left: none; }
 
-  &:first-child { border-left: none; }
+.mi-icon { font-size: 12px; color: rgba(255,255,255,0.56); margin-bottom: 3px; }
+.mv { font-size: 1.45rem; font-weight: 700; color: #fff; line-height: 1; }
+.mv--sm { font-size: 1.35rem; }
+.ml { font-size: 0.72rem; color: rgba(255,255,255,0.76); margin-top: 3px; }
+.ms { font-size: 0.64rem; color: rgba(255,255,255,0.5); margin-top: 1px; }
+
+@media (max-width: 1024px) {
+  .boda-hero {
+    grid-template-columns: auto 1fr;
+    row-gap: 8px;
+    column-gap: 10px;
+  }
+
+  .hero-info { min-width: 0; }
+  .metrics { grid-column: 1 / -1; }
 }
 
-.mi-icon {
-  font-size: 14px;
-  color: rgba(255,255,255,0.50);
-  margin-bottom: 5px;
-}
-
-.mv {
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: #fff;
-  line-height: 1;
-
-  &--sm { font-size: 0.88rem; font-weight: 600; }
-}
-
-.ml {
-  font-size: 0.70rem;
-  color: rgba(255,255,255,0.62);
-  margin-top: 3px;
-}
-
-.ms {
-  font-size: 0.60rem;
-  color: rgba(255,255,255,0.38);
-  margin-top: 1px;
-}
-
-// ── Responsive ────────────────────────────────────────────────
 @media (max-width: 768px) {
-  .boda-hero { flex-wrap: wrap; padding: 16px; gap: 14px; }
-  .hero-sep  { display: none; }
-  .metrics   { grid-template-columns: repeat(2, 1fr); width: 100%; }
-  .metric    { border-left: none; border-top: 0.5px solid rgba(255,255,255,0.15); }
-  .metric:nth-child(-n+2) { border-top: none; }
+  .boda-hero {
+    padding: 10px;
+    grid-template-columns: 126px 1fr;
+    column-gap: 8px;
+    row-gap: 8px;
+  }
+
+  .hero-photo { width: 126px; height: 126px; }
+  .hero-info { min-width: 0; }
+  .hero-name { font-size: 1.05rem; }
+  .hero-date { font-size: 0.72rem; margin-bottom: 8px; }
+  .countdown { gap: 6px; }
+  .cd-box { padding: 6px 10px; }
+  .cd-num { font-size: 1.55rem; }
+  .cd-lbl { font-size: 0.68rem; }
+
+  .metrics {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 6px 2px;
+  }
+
+  .metric { border-left: 1px solid rgba(255,255,255,0.15); border-top: none; padding: 3px 2px; }
+  .metric:first-child { border-left: none; }
+  .mv { font-size: 1.15rem; }
+  .mv--sm { font-size: 1.05rem; }
+  .ml { font-size: 0.6rem; }
+  .ms { font-size: 0.54rem; }
 }

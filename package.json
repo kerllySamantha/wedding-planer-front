@@ -39,6 +39,7 @@
     "countdown": "^2.6.0",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.18",
+    "fastbootstrap": "^2.2.0",
     "fullcalendar": "^6.1.20",
     "laravel-echo": "^2.3.0",
     "pusher-js": "^8.4.0",

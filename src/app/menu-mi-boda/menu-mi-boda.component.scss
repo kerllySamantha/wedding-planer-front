@@ -5,59 +5,35 @@ $border: #DDE5EE;
 
 nav {
   background: #fff !important;
-  border-bottom: 0.5px solid $border !important;
+  border-top: 1px solid #eef2f6 !important;
+  border-bottom: 1px solid $border !important;
   box-shadow: none !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
 }
 
-// Quita el padding vertical que Bootstrap añade a .navbar
-:host ::ng-deep .navbar {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+:host ::ng-deep .navbar { padding: 0 !important; }
+:host ::ng-deep .nav {
+  justify-content: space-between !important;
+  gap: 6px;
+  padding: 0 18px;
 }
-
-.nav-item {
-  padding: 0;
-}
+.nav-item { flex: 1; min-width: 0; }
 
 a.nav-link {
   color: $muted !important;
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   font-weight: 400;
   border-bottom: 2px solid transparent;
-  padding: 8px 12px 6px !important;
-  transition: color 0.15s, border-color 0.15s;
+  padding: 6px 6px 7px !important;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-
-  &.active {
-    color: $text !important;
-    font-weight: 500;
-    border-bottom-color: $coral;
-  }
-
-  &:hover:not(.active) { color: $text !important; }
+  gap: 2px;
+  white-space: nowrap;
 }
 
-.menu-icon {
-  display: block;
-  font-size: 1.5rem;
-  line-height: 1;
-  color: $muted;
-}
-
+a.nav-link.active { color: $text !important; font-weight: 500; border-bottom-color: $coral; }
+.menu-icon { display: block; font-size: 1.35rem; line-height: 1; color: $muted; }
 a.active .menu-icon { color: $text; }
 
-// PNG/SVG sin fondo blanco visible
-nav img {
-  mix-blend-mode: multiply;
-  opacity: 0.75;
-  width: 28px !important;
-  height: 28px !important;
-}
-
+nav img { mix-blend-mode: multiply; opacity: 0.75; width: 24px !important; height: 24px !important; }
 a.active img { opacity: 1; }
