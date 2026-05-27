@@ -27,11 +27,11 @@ $coral:  #f76c6f;
 
 .sec-badge {
   flex-shrink: 0;
-  font-size: 1.08rem;
+  font-size: 1rem;
   font-weight: 600;
   color: #dd5f63;
   background: #FEE9E9;
-  border-radius: 18px;
+  border-radius: 10px;
   padding: 0.32rem 0.85rem;
   white-space: nowrap;
   display: flex;
@@ -55,7 +55,7 @@ $coral:  #f76c6f;
     flex: 1;
     border: none;
     outline: none;
-    font-size: 1.08rem;
+    font-size: 1rem;
     color: $text;
     background: transparent;
     &::placeholder { color: rgba($muted, 0.72); }
@@ -63,14 +63,14 @@ $coral:  #f76c6f;
 }
 
 .fbox {
-  min-width: 210px;
-  max-width: 260px;
-  height: 52px;
+  min-width: 230px;
+  max-width: 300px;
+  height: 46px;
   background: #fff;
   border: 1px solid #c8d8e8;
-  border-radius: 18px;
-  padding: 0 16px;
-  font-size: 1.08rem;
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 1rem;
   color: #5f87a6;
   display: inline-flex;
   box-shadow: 0 1px 2px rgba(44,62,82,.05);
@@ -84,17 +84,18 @@ $coral:  #f76c6f;
   &:hover { border-color: #9fb9d2; box-shadow: 0 2px 8px rgba(76,126,167,.14); }
 
   &--coral {
-    min-width: 168px;
-    max-width: 182px;
+    min-width: 132px;
+    max-width: 150px;
     color: #fff;
     border-color: #e85f6b;
-    background: linear-gradient(180deg, #f0717a 0%, #eb5f6a 100%);
+    background: #eb5f6a;
     font-weight: 700;
     justify-content: center;
+    margin-left: auto;
     box-shadow: 0 8px 18px rgba(235,95,106,.28);
   }
 
-  &--coral:hover { background: linear-gradient(180deg, #ee6973 0%, #e45763 100%); border-color: #e45763; transform: translateY(-1px); }
+  &--coral:hover { background: #e45763; border-color: #e45763; transform: translateY(-1px); }
 
   &--strong {
     background: #ffffff;
@@ -118,7 +119,8 @@ $coral:  #f76c6f;
   .page-content { padding: 12px 10px 18px; gap: 10px; }
   .search-row { flex-wrap: wrap; }
   .sbox { flex: 1 1 100%; }
-  .fbox { min-width: 150px; max-width: none; flex: 0 1 auto; height: 44px; font-size: 0.95rem; }
+  .fbox { min-width: 150px; max-width: none; flex: 0 1 auto; height: 42px; font-size: 0.95rem; }
+  .fbox--coral { margin-left: auto; }
   .sec-title { font-size: 1.4rem; }
   .sec-sub { font-size: 0.9rem; }
 }
