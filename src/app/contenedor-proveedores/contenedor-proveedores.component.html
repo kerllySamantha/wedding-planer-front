@@ -51,44 +51,35 @@
                 <section class="pago-panel">
                     <h3>Pagos realizados</h3>
                     <p>Detalle de los pagos que ya has registrado en tus presupuestos.</p>
-
-                    <div class="table-responsive pago-table-wrap">
-                        <table class="table table-hover align-middle pago-table">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Presupuesto</th>
-                                    <th>Estimado</th>
-                                    <th>Pagado</th>
-                                    <th>Fecha</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for (presupuesto of pagosRealizados(); track presupuesto.id) {
-                                <tr>
-                                    <td>
-                                        <strong>{{ nombrePresupuesto(presupuesto) }}</strong>
-                                        @if (detallesPagados(presupuesto).length > 0) {
-                                        <div class="detalle-lines">
-                                            @for (detalle of detallesPagados(presupuesto); track $index) {
-                                            <small class="d-block text-muted">
-                                                • {{ detalle.nombre }}: {{ detalle.pagado }} € / {{ detalle.estimado }} €
-                                            </small>
-                                            }
-                                        </div>
-                                        } @else {
-                                        <small class="d-block text-muted">Sin detalle por conceptos.</small>
-                                        }
-                                    </td>
-                                    <td>{{ presupuesto.monto_total }} €</td>
-                                    <td>{{ presupuesto.monto_pagado || 0 }} €</td>
-                                    <td>{{ presupuesto.fecha_creacion }}</td>
-                                    <td><span class="badge text-bg-success">Pagado</span></td>
-                                </tr>
-                                }
-                            </tbody>
-                        </table>
+                    <div class="pago-chart-wrap">
+                        <canvas #pagoChart aria-label="Distribución de pagos"></canvas>
                     </div>
+
+                    @for (presupuesto of pagosRealizados(); track presupuesto.id) {
+                    <article class="pago-card">
+                        <div class="pago-card-head">
+                            <div>
+                                <h4>{{ nombrePresupuesto(presupuesto) }}</h4>
+                                <small>{{ detallesPagados(presupuesto)[0]?.nombre || 'Sin detalle por conceptos' }}</small>
+                            </div>
+                            <span class="badge text-bg-success">Pagado</span>
+                        </div>
+
+                        <div class="pago-metrics">
+                            <div><label>Estimado</label><strong>{{ presupuesto.monto_total }} €</strong></div>
+                            <div><label>Pagado</label><strong class="ok">{{ presupuesto.monto_pagado || 0 }} €</strong></div>
+                            <div><label>Fecha</label><strong>{{ presupuesto.fecha_creacion }}</strong></div>
+                        </div>
+
+                        <div class="progreso-top">
+                            <span>Progreso del pago</span>
+                            <span>{{ porcentajePagado(presupuesto) }}%</span>
+                        </div>
+                        <div class="progress pago-progress">
+                            <div class="progress-bar bg-success" [style.width.%]="porcentajePagado(presupuesto)"></div>
+                        </div>
+                    </article>
+                    }
 
                     @if (pagosRealizados().length === 0) {
                     <div class="sin-pendientes">
