@@ -6,27 +6,44 @@
     <app-actividades-mi-boda></app-actividades-mi-boda>
 
     <div class="row">
-        <h1>Crea tu equipo soñado</h1>
-        <div class="row justify-content-center align-items-center g-3">
-            <p class="col-12 col-md-5 mb-0">
-                Lee las opiniones, guarda tus favoritos y contáctalos
-            </p>
+        <div class="equipo-section">
 
-            <!-- Select: en móvil ocupa todo; en md se alinea a la derecha en la misma fila -->
-            <div class="col-12 col-md-6">
-                <select class="form-select w-100" id="categorias" name="categoria" (change)="onCategoriaChange($event)">
-                    <option value="" disabled selected>Seleccione una categoría</option>
+            <!-- Cabecera -->
+            <div class="equipo-section__top">
+                <div>
+                    <h2 class="equipo-title">Crea tu equipo soñado</h2>
+                    <p class="equipo-sub">Lee las opiniones, guarda tus favoritos y contáctalos</p>
+                </div>
+                <span class="equipo-badge">
+                    <i class="bi bi-building me-1"></i>
+                    {{ totalResultados() }} {{ totalResultados() === 1 ? 'proveedor' : 'proveedores' }}
+                </span>
+            </div>
 
-                    @for (categoria of categorias$ | async  ; track categoria.id) {
-                    <option [value]="categoria.id">
-                        {{ categoria.nombre }}
-                    </option>
+            <!-- Barra de filtros -->
+            <div class="filter-bar">
+                <div class="input-group filter-input-group">
+                    <span class="input-group-text filter-addon">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control filter-input" placeholder="Buscar proveedor…"
+                        (input)="onNombreChange($event)">
+                </div>
+
+                <select #categoriaSelect class="form-select filter-select" id="categorias"
+                    (change)="onCategoriaChange($event)">
+                    <option value="" disabled selected>Todas las categorías</option>
+                    @for (categoria of categorias$ | async; track categoria.id) {
+                        <option [value]="categoria.id">{{ categoria.nombre }}</option>
                     }
                 </select>
+
+                <button class="btn btn-limpiar" type="button" (click)="limpiarFiltros(categoriaSelect)">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i>Limpiar
+                </button>
             </div>
+
         </div>
-
-
     </div>
 </div>
 

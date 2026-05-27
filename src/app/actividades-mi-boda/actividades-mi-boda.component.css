@@ -1,3 +1,11 @@
+.boda-card {
+  background: linear-gradient(135deg, #fdf0f1 0%, #fff8f8 100%);
+  border: 1px solid rgba(247, 108, 111, 0.16);
+  border-radius: 1.6rem;
+  padding: 1.25rem;
+  box-shadow: 0 6px 28px rgba(247, 108, 111, 0.11);
+}
+
 .boda-style {
   border-radius: 0.5rem;
   overflow: hidden;
@@ -65,127 +73,191 @@
   margin-bottom: 1.15rem;
 }
 
+.stats-section {
+  margin-top: 0.5rem;
+}
+
 .stats-grid {
-  max-width: 900px;
-  margin: 0 auto;
-  padding-inline: 1rem;
+  margin: 0;
+  padding: 0;
 }
 
 .stats-card {
-  min-height: 10em;
-  margin: 0 !important;
-  padding: 1rem 0.85rem;
-  border-radius: 0.9rem;
-  border: 1px solid #ece5e8;
-  background: #fff;
-  transition: 0.2s ease;
-  box-shadow: 0 4px 14px rgba(54, 30, 39, 0.08);
+  border-radius: 1.2rem;
+  padding: 1.4rem 1.25rem 1.3rem;
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
-
+.stats-card::before {
+  content: "";
+  position: absolute;
+  top: -32px;
+  right: -32px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: transform 0.4s ease;
+}
 .stats-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 9px 20px rgba(54, 30, 39, 0.14);
-  border-color: #ddd1d6;
+  transform: translateY(-6px);
+}
+.stats-card:hover::before {
+  transform: scale(1.4);
 }
 
 .stats-card--rose {
-  border-top: 4px solid #D4537E;
+  background: linear-gradient(145deg, #fce8e9 0%, #fff5f5 100%);
+  border: 1px solid rgba(247, 108, 111, 0.22);
+  border-top: 3px solid #f76c6f;
+  box-shadow: 0 4px 20px rgba(247, 108, 111, 0.13);
+}
+.stats-card--rose::before {
+  background: rgba(247, 108, 111, 0.08);
+}
+.stats-card--rose:hover {
+  box-shadow: 0 14px 36px rgba(247, 108, 111, 0.22);
+}
+.stats-card--rose .stats-card__icon-box {
+  background: rgba(247, 108, 111, 0.14);
+  color: #f76c6f;
+}
+.stats-card--rose .stats-card__num {
+  color: #f76c6f;
 }
 
 .stats-card--mint {
-  border-top: 4px solid #1D9E75;
+  background: linear-gradient(145deg, #f8dcdc 0%, #fdeeed 100%);
+  border: 1px solid rgba(224, 76, 78, 0.22);
+  border-top: 3px solid #e04c4e;
+  box-shadow: 0 4px 20px rgba(224, 76, 78, 0.13);
+}
+.stats-card--mint::before {
+  background: rgba(224, 76, 78, 0.08);
+}
+.stats-card--mint:hover {
+  box-shadow: 0 14px 36px rgba(224, 76, 78, 0.22);
+}
+.stats-card--mint .stats-card__icon-box {
+  background: rgba(224, 76, 78, 0.14);
+  color: #e04c4e;
+}
+.stats-card--mint .stats-card__num {
+  color: #e04c4e;
 }
 
 .stats-card--violet {
-  border-top: 4px solid #7F77DD;
+  background: linear-gradient(145deg, #f4d2d3 0%, #fae8e8 100%);
+  border: 1px solid rgba(170, 51, 58, 0.22);
+  border-top: 3px solid #aa333a;
+  box-shadow: 0 4px 20px rgba(170, 51, 58, 0.13);
+}
+.stats-card--violet::before {
+  background: rgba(170, 51, 58, 0.08);
+}
+.stats-card--violet:hover {
+  box-shadow: 0 14px 36px rgba(170, 51, 58, 0.22);
+}
+.stats-card--violet .stats-card__icon-box {
+  background: rgba(170, 51, 58, 0.14);
+  color: #aa333a;
+}
+.stats-card--violet .stats-card__num {
+  color: #aa333a;
 }
 
 .stats-card--gold {
-  border-top: 4px solid #BA7517;
+  background: linear-gradient(145deg, #f0c8ca 0%, #f8e0e0 100%);
+  border: 1px solid rgba(104, 0, 18, 0.2);
+  border-top: 3px solid #680012;
+  box-shadow: 0 4px 20px rgba(104, 0, 18, 0.13);
+}
+.stats-card--gold::before {
+  background: rgba(104, 0, 18, 0.06);
+}
+.stats-card--gold:hover {
+  box-shadow: 0 14px 36px rgba(104, 0, 18, 0.2);
+}
+.stats-card--gold .stats-card__icon-box {
+  background: rgba(104, 0, 18, 0.12);
+  color: #680012;
+}
+.stats-card--gold .stats-card__num {
+  color: #680012;
 }
 
-.stat-icon-wrap {
-  position: relative;
-  display: inline-flex;
-  margin-bottom: 10px;
-}
-
-.stat-icon {
-  width: 60px;
-  height: 60px;
+.stats-card__icon-box {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #4a2d38;
-  background: #f7f1f4;
-  border: 1px solid #ecdfe4;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
-.stat-badge {
-  position: absolute;
-  top: -8px;
-  right: -12px;
-  min-width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  padding: 0 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.62rem;
+.stats-card__num {
+  font-size: 2.2rem;
   font-weight: 800;
-  color: #fff;
-  border: 2px solid #fff;
   line-height: 1;
+  margin: 0 0 0.35rem;
+  position: relative;
+  z-index: 1;
 }
-
-.badge-pink {
-  background-color: #D4537E;
-}
-
-.badge-teal {
-  background-color: #1D9E75;
-}
-
-.badge-purple {
-  background-color: #7F77DD;
-}
-
-.badge-amber {
-  background-color: #BA7517;
-}
-
-.stat-title {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #3f2a33;
+.stats-card__num--amount {
+  font-size: 1.25rem;
+  font-weight: 800;
   line-height: 1.2;
 }
 
-.stat-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #6d5661;
-  text-align: center;
-  line-height: 1.3;
+.stats-card__name {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: #3f2a33;
+  line-height: 1.2;
+  margin: 0 0 0.2rem;
+  position: relative;
+  z-index: 1;
 }
 
-.stat-label--amount {
-  font-size: 0.8rem;
-  color: #6f4215;
+.stats-card__sub {
+  font-size: 0.7rem;
+  color: #8a7080;
+  line-height: 1.3;
+  margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
 @media (max-width: 768px) {
   .stats-card {
-    min-height: 8.8em;
+    padding: 1.1rem 1rem 1rem;
   }
-  .stat-icon {
-    width: 52px;
-    height: 52px;
-    font-size: 0.8rem;
+  .stats-card__icon-box {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+  .stats-card__num {
+    font-size: 1.8rem;
+  }
+  .stats-card__num--amount {
+    font-size: 1.05rem;
+  }
+  .stats-card__name {
+    font-size: 0.78rem;
+  }
+  .stats-card__sub {
+    font-size: 0.67rem;
   }
 }/*# sourceMappingURL=actividades-mi-boda.component.css.map */

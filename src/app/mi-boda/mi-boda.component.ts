@@ -51,6 +51,19 @@ export class MiBodaComponent {
     this.filtroEmpresas.seleccionarCategoria(id);
   }
 
+  onNombreChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.filtroEmpresas.buscarPorNombre(input.value);
+  }
+
+  limpiarFiltros(selectEl: HTMLSelectElement) {
+    selectEl.value = '';
+    this.filtroEmpresas.seleccionarCategoria(null);
+    this.filtroEmpresas.buscarPorNombre('');
+  }
+
+  totalResultados = computed(() => this.filtroEmpresas.empresasFiltradas().length);
+
 
 
 }

@@ -15,7 +15,8 @@ export class FiltroEmpresasServiceService {
   loading = signal(true);
   error = signal<string | null>(null);
   categoriaSeleccionadaId = signal<number | null>(null);
-  tipoSeleccionadoId = signal<number|null>(null)
+  tipoSeleccionadoId = signal<number|null>(null);
+  nombreBusqueda = signal<string>('');
 
 
 
@@ -44,20 +45,31 @@ export class FiltroEmpresasServiceService {
 
   empresasFiltradas = computed(() => {
     const idSeleccionado = this.categoriaSeleccionadaId();
-    const todas = this.empresasRecibidas().filter((empresa) => this.empresaTieneImagenes(empresa));
+    const nombre = this.nombreBusqueda().trim().toLowerCase();
+    let todas = this.empresasRecibidas().filter((empresa) => this.empresaTieneImagenes(empresa));
 
-    if (!idSeleccionado) return todas;
+    if (idSeleccionado) {
+      todas = todas.filter(empresa =>
+        empresa.productos.some(categoria => categoria.categoria.id === idSeleccionado)
+      );
+    }
 
-    return todas.filter(empresa =>
-      empresa.productos.some(categoria =>
-        categoria.categoria.id === idSeleccionado
-      )
-    );
+    if (nombre) {
+      todas = todas.filter(empresa =>
+        empresa.nombre_empresa.toLowerCase().includes(nombre)
+      );
+    }
+
+    return todas;
   });
 
 
   seleccionarCategoria(id: number | null) {
     this.categoriaSeleccionadaId.set(id);
+  }
+
+  buscarPorNombre(nombre: string) {
+    this.nombreBusqueda.set(nombre);
   }
 
   seleccionarTipo(id: number | null){
