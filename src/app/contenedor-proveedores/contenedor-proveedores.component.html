@@ -59,6 +59,19 @@
                             <small>Total estimado: {{ presupuesto.monto_total }} €</small>
                             <small>Total pagado: {{ presupuesto.monto_pagado || 0 }} €</small>
                             <small>Fecha: {{ presupuesto.fecha_creacion }}</small>
+
+                            @if (detallesPagados(presupuesto).length > 0) {
+                            <ul class="pago-detalle-lista">
+                                @for (detalle of detallesPagados(presupuesto); track $index) {
+                                <li>
+                                    <span>{{ detalle.nombre }}</span>
+                                    <span>{{ detalle.pagado }} € / {{ detalle.estimado }} €</span>
+                                </li>
+                                }
+                            </ul>
+                            } @else {
+                            <small class="sin-detalle">Este pago no tiene detalle por conceptos.</small>
+                            }
                         </div>
                         <span class="estado-pagado">Pagado</span>
                     </article>

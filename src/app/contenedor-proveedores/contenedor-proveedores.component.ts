@@ -58,6 +58,23 @@ export class ContenedorProveedoresComponent {
     });
   }
 
+  detallesPagados(presupuesto: any) {
+    const items = presupuesto?.items_presupuesto ?? presupuesto?.items ?? [];
+    if (!Array.isArray(items)) return [];
+
+    return items
+      .map((item: any) => {
+        const pagado = Number(item?.monto_pagado ?? 0);
+        const estimado = Number(item?.monto_estimado ?? 0);
+        return {
+          nombre: item?.nombre_tipo_personalizado || item?.tipo_producto?.nombre || 'Concepto',
+          pagado,
+          estimado,
+        };
+      })
+      .filter((item: any) => item.pagado > 0);
+  }
+
 
 
 
