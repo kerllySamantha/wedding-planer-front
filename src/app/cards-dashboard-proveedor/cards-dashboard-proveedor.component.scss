@@ -176,11 +176,11 @@ $gap:       clamp(0.75rem, 1.2vw, 1.1rem);
 
 .sol-card {
   border-radius: 0.85rem;
-  padding: 1.6rem 0.75rem 1.3rem;
+  padding: 1.75rem 0.75rem 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.55rem;
   transition: transform 0.2s, box-shadow 0.2s;
 
   &:hover { transform: translateY(-3px); box-shadow: $shadow-hv; }
@@ -202,10 +202,16 @@ $gap:       clamp(0.75rem, 1.2vw, 1.1rem);
 }
 
 .sol-card__num {
-  font-size: 2.4rem;
+  font-size: 2.8rem;
   font-weight: 800;
   color: $navy;
   line-height: 1;
+}
+
+.sol-card__pct {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $blue;
 }
 
 .sol-card__lbl {
@@ -217,27 +223,211 @@ $gap:       clamp(0.75rem, 1.2vw, 1.1rem);
   text-align: center;
 }
 
-.table-wrap {
-  max-height: 320px;
-  overflow: auto;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(20, 63, 102, 0.14);
-  background: rgba(255,255,255,0.52);
+// ── Barra proporcional solicitudes ──────────────────────────────────────────
+.sol-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 1rem;
+  background: rgba($navy, 0.06);
 }
 
-.product-table {
-  font-size: 0.83rem;
+.sol-bar__seg {
+  transition: flex 0.5s ease;
 
-  thead th {
-    position: sticky;
-    top: 0;
-    background: #eef5fb;
-    color: $navy;
-    font-size: 0.67rem;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    z-index: 1;
-  }
+  &--pend { background: #6f9dbf; }
+  &--acep { background: #143f66; }
+  &--rech { background: #95bdd8; }
+}
 
-  td, th { padding: 0.55rem 0.7rem; }
+.sol-bar__empty {
+  flex: 1;
+  font-size: 0.72rem;
+  color: rgba($navy, 0.38);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.01em;
+}
+
+// ── Leaderboard top productos ────────────────────────────────────────────────
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 0.75rem 0 0.25rem;
+}
+
+.lb-row {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr 3rem;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.lb-rank {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.lb-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.lb-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: $navy;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lb-bar-wrap {
+  height: 7px;
+  background: rgba($navy, 0.13);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lb-bar {
+  height: 100%;
+  border-radius: 999px;
+  opacity: 0.78;
+  transition: width 0.55s cubic-bezier(.4, 0, .2, 1);
+}
+
+.lb-count {
+  font-size: 1rem;
+  font-weight: 800;
+  color: $navy;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.lb-empty {
+  font-size: 0.85rem;
+  color: rgba($navy, 0.4);
+  text-align: center;
+  padding: 2rem 0;
+  margin: 0;
+}
+
+// ── Catálogo · lista horizontal de productos ─────────────────────────────────
+.prod-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.prod-item {
+  display: grid;
+  grid-template-columns: 2.8rem 1fr auto;
+  align-items: center;
+  gap: 1.1rem;
+  // Fondo azul-tintado para contrastar dentro del chart-card blanco
+  background: linear-gradient(135deg, rgba(47,93,134,0.13), rgba(20,63,102,0.07));
+  border: 1px solid rgba(47,93,134,0.22);
+  border-left: 4px solid var(--accent, #{$blue});
+  border-radius: 0.85rem;
+  padding: 1rem 1.25rem 1rem 1rem;
+  transition: transform 0.18s, box-shadow 0.18s;
+
+  &:hover { transform: translateX(3px); box-shadow: $shadow-hv; }
+}
+
+.prod-item__badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--accent, #{$blue});
+  background: rgba(47,93,134,0.15);
+  border-radius: 0.45rem;
+  padding: 0.3rem 0.45rem;
+  white-space: nowrap;
+  text-align: center;
+  align-self: flex-start;
+  margin-top: 0.1rem;
+}
+
+.prod-item__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.prod-item__name {
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: $navy;
+  margin: 0;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.prod-item__price-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.prod-item__price {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: $navy;
+  white-space: nowrap;
+}
+
+.prod-item__pbar {
+  position: relative;
+  height: 9px;
+  background: rgba($navy, 0.14);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.prod-item__pbar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--accent, #{$blue});
+  border-radius: 999px;
+  opacity: 0.80;
+  min-width: 10px;
+}
+
+.prod-item__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  flex-shrink: 0;
+  min-width: 3.5rem;
+}
+
+.prod-item__stat-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: $navy;
+  line-height: 1;
+}
+
+.prod-item__stat-lbl {
+  font-size: 0.63rem;
+  font-weight: 700;
+  color: rgba($navy, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }

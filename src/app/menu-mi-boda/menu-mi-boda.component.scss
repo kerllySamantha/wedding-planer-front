@@ -1,10 +1,46 @@
+$text:   #2C3E52;
+$muted:  #8AAABB;
+$coral:  #f76c6f;
+$border: #DDE5EE;
+
+nav {
+  background: #fff !important;
+  border-bottom: 0.5px solid $border !important;
+  box-shadow: none !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
 a {
-    color: black !important;
+  color: $muted !important;
+  font-size: 0.80rem;
+  font-weight: 400;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 6px;
+  transition: color 0.15s, border-color 0.15s;
+
+  &.active {
+    color: $text !important;
+    font-weight: 500;
+    border-bottom-color: $coral;
+  }
+
+  &:hover:not(.active) { color: $text !important; }
 }
 
 .menu-icon {
-    display: block;
-    font-size: 2rem;
-    line-height: 1;
-    color: #472732;
+  display: block;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: $muted;
 }
+
+a.active .menu-icon { color: $text; }
+
+// PNG/SVG sin fondo blanco visible
+nav img {
+  mix-blend-mode: multiply;
+  opacity: 0.75;
+}
+
+a.active img { opacity: 1; }

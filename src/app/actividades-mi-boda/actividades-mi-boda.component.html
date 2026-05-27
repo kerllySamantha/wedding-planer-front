@@ -1,86 +1,60 @@
-<div class="container boda py-5">
-  <div class="row g-0 align-items-start justify-content-center boda boda-card">
+<div class="boda-hero">
 
-    <div class="col-10 col-md-10 col-lg-3 col-xl-3 fondo-imagen position-relative rounded-4">
-      <div class="boda-bg w-100 h-100 position-absolute"></div>
+  <!-- Foto -->
+  <div class="hero-photo">
+    <div class="boda-bg"></div>
+  </div>
 
-      <div
-        class="info-boda position-relative z-1 d-flex flex-column justify-content-end align-items-center text-center text-white h-100">
-        <div class="info-boda-content">
-          <dl class="row g-2 justify-content-around align-items-center mb-2 counterItem">
-            <div class="col-3">
-              <dt class="counterItem__label small text-uppercase mb-0">Días</dt>
-              <dd class="counterItem__value app-count-down-days fs-5 fw-bold mb-0">
-                {{fechaCountdown()?.days}}
-              </dd>
-            </div>
-
-            <div class="col-3">
-              <dt class="counterItem__label small text-uppercase mb-0">Horas</dt>
-              <dd class="counterItem__value app-count-down-hours fs-5 fw-bold mb-0">
-                {{fechaCountdown()?.hours}}
-              </dd>
-            </div>
-          </dl>
-        </div>
+  <!-- Nombre, fecha y countdown -->
+  <div class="hero-info">
+    <p class="hero-name">{{ formatearNombrePareja(bodaEncontrada()?.nombre_pareja) }}</p>
+    <p class="hero-date">{{fechaFormateada()}}</p>
+    <div class="countdown">
+      <div class="cd-box">
+        <div class="cd-num">{{fechaCountdown()?.days}}</div>
+        <div class="cd-lbl">días</div>
+      </div>
+      <div class="cd-box">
+        <div class="cd-num">{{fechaCountdown()?.hours}}</div>
+        <div class="cd-lbl">horas</div>
       </div>
     </div>
+  </div>
 
-    <div class="col-12 col-lg-9 col-xl-9">
-      <div class="card-body text-center ">
+  <!-- Separador vertical -->
+  <div class="hero-sep"></div>
 
-        <h5 class="card-title">
-          {{ formatearNombrePareja(bodaEncontrada()?.nombre_pareja) }}
-        </h5>
+  <!-- Métricas -->
+  <div class="metrics">
 
-        <p class="card-text text-highlight">
-          {{fechaFormateada()}}
-        </p>
+    <div class="metric">
+      <i class="bi bi-briefcase-fill mi-icon"></i>
+      <span class="mv">{{ serviciosContratados() }}</span>
+      <span class="ml">Servicios</span>
+      <span class="ms">Contratados</span>
+    </div>
 
-        <div class="stats-section">
-          <div class="row g-3 stats-grid">
+    <div class="metric">
+      <i class="bi bi-check2-all mi-icon"></i>
+      <span class="mv">{{ tareasCompletadas() }}</span>
+      <span class="ml">Pagos</span>
+      <span class="ms">Sin deuda</span>
+    </div>
 
-            <div class="col-6 col-md-3">
-              <div class="stats-card stats-card--rose">
-                <span class="stats-card__icon-box"><i class="bi bi-briefcase-fill"></i></span>
-                <strong class="stats-card__num">{{ serviciosContratados() }}</strong>
-                <span class="stats-card__name">Servicios contratados</span>
-                <span class="stats-card__sub">Proveedores cerrados</span>
-              </div>
-            </div>
+    <div class="metric">
+      <i class="bi bi-people-fill mi-icon"></i>
+      <span class="mv">—</span>
+      <span class="ml">Invitados</span>
+      <span class="ms">RSVP pendiente</span>
+    </div>
 
-            <div class="col-6 col-md-3">
-              <div class="stats-card stats-card--mint">
-                <span class="stats-card__icon-box"><i class="bi bi-check2-all"></i></span>
-                <strong class="stats-card__num">{{ tareasCompletadas() }}</strong>
-                <span class="stats-card__name">Pagos completados</span>
-                <span class="stats-card__sub">Sin deuda pendiente</span>
-              </div>
-            </div>
-
-            <div class="col-6 col-md-3">
-              <div class="stats-card stats-card--violet">
-                <span class="stats-card__icon-box"><i class="bi bi-people-fill"></i></span>
-                <strong class="stats-card__num">—</strong>
-                <span class="stats-card__name">Invitados confirmados</span>
-                <span class="stats-card__sub">RSVP recibido</span>
-              </div>
-            </div>
-
-            <div class="col-6 col-md-3">
-              <div class="stats-card stats-card--gold">
-                <span class="stats-card__icon-box"><i class="bi bi-currency-euro"></i></span>
-                <strong class="stats-card__num stats-card__num--amount">{{ formatearMoneda(presupuestoGastado()) }}</strong>
-                <span class="stats-card__name">Presupuesto invertido</span>
-                <span class="stats-card__sub">Total pagado</span>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div>
+    <div class="metric">
+      <i class="bi bi-currency-euro mi-icon"></i>
+      <span class="mv mv--sm">{{ formatearMoneda(presupuestoGastado()) }}</span>
+      <span class="ml">Presupuesto</span>
+      <span class="ms">Total pagado</span>
     </div>
 
   </div>
+
 </div>

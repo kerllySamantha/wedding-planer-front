@@ -2,58 +2,48 @@
 <app-navbar></app-navbar>
 <app-menu-mi-boda></app-menu-mi-boda>
 
-<div class="container-fluid">
-    <app-actividades-mi-boda></app-actividades-mi-boda>
+<div class="page-content">
 
-    <div class="row">
-        <div class="equipo-section">
+  <app-actividades-mi-boda></app-actividades-mi-boda>
 
-            <!-- Cabecera -->
-            <div class="equipo-section__top">
-                <div>
-                    <h2 class="equipo-title">Crea tu equipo soñado</h2>
-                    <p class="equipo-sub">Lee las opiniones, guarda tus favoritos y contáctalos</p>
-                </div>
-                <span class="equipo-badge">
-                    <i class="bi bi-building me-1"></i>
-                    {{ totalResultados() }} {{ totalResultados() === 1 ? 'proveedor' : 'proveedores' }}
-                </span>
-            </div>
-
-            <!-- Barra de filtros -->
-            <div class="filter-bar">
-                <div class="input-group filter-input-group">
-                    <span class="input-group-text filter-addon">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" class="form-control filter-input" placeholder="Buscar proveedor…"
-                        (input)="onNombreChange($event)">
-                </div>
-
-                <select #categoriaSelect class="form-select filter-select" id="categorias"
-                    (change)="onCategoriaChange($event)">
-                    <option value="" disabled selected>Todas las categorías</option>
-                    @for (categoria of categorias$ | async; track categoria.id) {
-                        <option [value]="categoria.id">{{ categoria.nombre }}</option>
-                    }
-                </select>
-
-                <button class="btn btn-limpiar" type="button" (click)="limpiarFiltros(categoriaSelect)">
-                    <i class="bi bi-arrow-counterclockwise me-1"></i>Limpiar
-                </button>
-            </div>
-
-        </div>
+  <!-- Cabecera sección — directamente sobre fondo #F0F4F8 -->
+  <div class="sec-header">
+    <div>
+      <p class="sec-title">Crea tu equipo soñado</p>
+      <p class="sec-sub">Lee las opiniones, guarda tus favoritos y contáctalos</p>
     </div>
-</div>
+    <span class="sec-badge">
+      <i class="bi bi-building me-1"></i>
+      {{ totalResultados() }} {{ totalResultados() === 1 ? 'proveedor' : 'proveedores' }}
+    </span>
+  </div>
 
-<div class="personal-container">
-
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-        @for (empresa of companies(); track empresa.id) {
-        <app-card-miboda-empresa [empresa]="empresa"></app-card-miboda-empresa>
-        }
-
+  <!-- Fila de búsqueda -->
+  <div class="search-row">
+    <div class="sbox">
+      <i class="bi bi-search sbox__icon"></i>
+      <input class="sbox__input" type="text" placeholder="Buscar proveedor…"
+          (input)="onNombreChange($event)">
     </div>
+
+    <select #categoriaSelect class="fbox" id="categorias"
+        (change)="onCategoriaChange($event)">
+      <option value="" disabled selected>Todas las categorías</option>
+      @for (categoria of categorias$ | async; track categoria.id) {
+        <option [value]="categoria.id">{{ categoria.nombre }}</option>
+      }
+    </select>
+
+    <button class="fbox fbox--coral" type="button" (click)="limpiarFiltros(categoriaSelect)">
+      <i class="bi bi-arrow-counterclockwise me-1"></i>Limpiar
+    </button>
+  </div>
+
+  <!-- Grid de proveedores -->
+  <div class="provider-grid">
+    @for (empresa of companies(); track empresa.id) {
+      <app-card-miboda-empresa [empresa]="empresa"></app-card-miboda-empresa>
+    }
+  </div>
 
 </div>

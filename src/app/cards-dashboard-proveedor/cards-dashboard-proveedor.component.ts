@@ -21,7 +21,7 @@ import { Reserva } from '../Interfaces/Reserva';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { EstadisticasEmpresa } from '../Interfaces/Empresa';
 import { PedirPresupuestoApiService } from '../Services/PedirPresupuestos/pedir-presupuesto-api.service';
-import { DatePipe, registerLocaleData, TitleCasePipe } from '@angular/common';
+import { DatePipe, DecimalPipe, registerLocaleData, TitleCasePipe } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
 import { register } from 'swiper/element/bundle';
 register();
@@ -36,7 +36,6 @@ import { CardInfoAdminComponent } from '../card-info-admin/card-info-admin.compo
 registerLocaleData(localeEs);
 SwiperCore.use([Navigation, Thumbs, FreeMode]);
 
-// ── Paleta azul de la app ──────────────────────────────────────────────────
 const C = {
   navy:     '#0f2233',
   dark:     '#143f66',
@@ -47,8 +46,8 @@ const C = {
   lightest: '#bbd5e8',
 };
 
-const TOP_COLORS  = [C.dark, C.mid, C.base, C.soft, C.pale];
-const toAlpha     = (hex: string, a = 'cc') => hex + a;
+const TOP_COLORS   = [C.dark, C.mid, C.base, C.soft, C.pale];
+const toAlpha      = (hex: string, a = 'cc') => hex + a;
 const MONTH_LABELS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
 const TOOLTIP_BASE = {
@@ -59,11 +58,10 @@ const TOOLTIP_BASE = {
   padding:         10,
 };
 
-// ──────────────────────────────────────────────────────────────────────────
 @Component({
   selector: 'app-cards-dashboard-proveedor',
   standalone: true,
-  imports: [CardInfoAdminComponent, DatePipe, TitleCasePipe, IconModule, IconDirective],
+  imports: [CardInfoAdminComponent, DatePipe, DecimalPipe, TitleCasePipe, IconModule, IconDirective],
   providers: [IconSetService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cards-dashboard-proveedor.component.html',
@@ -77,6 +75,7 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   private iconSet         = inject(IconSetService);
 
   @ViewChild('tendenciaCanvas') tendenciaCanvas!: ElementRef<HTMLCanvasElement>;
+
   private tendenciaChart: Chart | null = null;
 
   // ── Signals ──────────────────────────────────────────────────────────────
@@ -102,12 +101,11 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   totalReservas    = computed(() => this.estadisticas()?.totalReservas  ?? 0);
   totalSolicitudes = computed(() => this.solicitudesItems().length);
 
+  // Top productos para leaderboard
   topProductos = computed(() => this.estadisticas()?.topProductos ?? []);
-  productosCatalogoOrdenados = computed(() =>
-    [...this.productosCatalogo()].sort((a, b) => (Number(b.total_reservas ?? 0) - Number(a.total_reservas ?? 0)))
-  );
+  maxTop       = computed(() => Math.max(1, ...this.topProductos().map(p => p.total)));
 
-  // Solicitudes desglosadas (para tarjetas)
+  // Solicitudes desglosadas + porcentajes
   solicitudesPendientes = computed(() =>
     this.solicitudesItems().filter(s => ['pendiente', 'pendiente_usuario'].includes(s.estado ?? '')).length
   );
@@ -117,6 +115,15 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   solicitudesRechazadas = computed(() =>
     this.solicitudesItems().filter(s => ['rechazado_empresa', 'rechazado_usuario'].includes(s.estado ?? '')).length
   );
+  solicitudesPct = computed(() => {
+    const t = this.totalSolicitudes();
+    if (!t) return { pend: '—', acep: '—', rech: '—' };
+    return {
+      pend: Math.round(this.solicitudesPendientes() / t * 100) + '%',
+      acep: Math.round(this.solicitudesAceptadas()  / t * 100) + '%',
+      rech: Math.round(this.solicitudesRechazadas() / t * 100) + '%',
+    };
+  });
 
   // Reservas del mes seleccionado
   reservasMes         = computed(() => this.reservas().filter(r => isSameMonth(parseISO(r.fecha_inicio), this.selectedDate())));
@@ -126,7 +133,7 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
   reservasBloqueadas  = computed(() => this.reservasMes().filter(r => r.estado === 'bloqueada'));
   reservasRechazadas  = computed(() => this.reservasMes().filter(r => r.estado === 'rechazada'));
 
-  // Datos mensuales para la gráfica de tendencia anual
+  // Tendencia anual
   reservasMensuales = computed(() => {
     const all = this.reservas();
     return this.meses.map(m => ({
@@ -135,6 +142,13 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
     }));
   });
 
+  // Precio máximo del catálogo para calcular barras relativas
+  maxPrecio = computed(() =>
+    Math.max(1, ...this.productosCatalogo().map(p => +(p.precio_max ?? 0)))
+  );
+
+  // Colores por posición (leaderboard y tarjetas)
+  readonly lbColors = TOP_COLORS;
 
   constructor() {
     this.iconSet.icons = { cilListNumbered, cilPaperPlane, cilChevronRight, cilChevronLeft };
@@ -161,7 +175,7 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
     this.tendenciaChart?.destroy();
   }
 
-  // ── Inicialización de gráficas ────────────────────────────────────────────
+  // ── Gráficas ──────────────────────────────────────────────────────────────
 
   private initTendencia(): void {
     this.tendenciaChart = new Chart(this.tendenciaCanvas.nativeElement, {
@@ -210,7 +224,9 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
               font: { size: 11, weight: 600 },
               color: C.dark,
               usePointStyle: true,
-              pointStyleWidth: 10,
+              pointStyle: 'circle' as any,
+              boxWidth: 8,
+              boxHeight: 8,
               padding: 16,
             },
           },
@@ -219,23 +235,19 @@ export class CardsDashboardProveedorComponent implements OnInit, AfterViewInit, 
         scales: {
           x: {
             ticks: { color: 'rgba(20,63,102,0.65)', font: { size: 11 } },
-            grid: { color: 'rgba(47,93,134,0.07)' },
+            grid:  { color: 'rgba(47,93,134,0.07)' },
             border: { display: false },
           },
           y: {
             beginAtZero: true,
             ticks: { color: 'rgba(20,63,102,0.6)', font: { size: 11 }, stepSize: 1 },
-            grid: { color: 'rgba(47,93,134,0.07)' },
+            grid:  { color: 'rgba(47,93,134,0.07)' },
             border: { display: false },
           },
         },
       },
     });
   }
-
-
-  // ── Aplicar datos ─────────────────────────────────────────────────────────
-
 
   private aplicarTendencia(data: { total: number; confirmadas: number }[]): void {
     if (!this.tendenciaChart) return;
