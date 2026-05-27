@@ -38,14 +38,14 @@ $coral:  #f76c6f;
   align-items: center;
 }
 
-.search-row { display: flex; margin-top: 12px; margin-bottom: 2px; justify-content: flex-end; padding: 12px; border: 1px solid #d9e3ee; border-radius: 12px; background: #f7fbff; }
-
 .filter-group {
   width: min(100%, 540px);
   display: flex;
   align-items: stretch;
   border-radius: 10px;
   overflow: hidden;
+  margin-top: 12px;
+  margin-bottom: 2px;
 }
 
 .sbox {
@@ -105,7 +105,7 @@ $coral:  #f76c6f;
 
   &--strong {
     background: #ffffff;
-    border-color: #c8d8e8;
+    border-color: #d0deec;
     color: #5f87a6;
     font-weight: 500;
     border-top-right-radius: 0;
@@ -134,7 +134,6 @@ $coral:  #f76c6f;
 
 @media (max-width: 768px) {
   .page-content { padding: 12px 10px 18px; gap: 18px; }
-  .search-row { padding: 10px; }
   .sbox { flex: 1 1 100%; }
   .fbox { height: 42px; font-size: 0.95rem; }
   .filter-group { width: 100%; }

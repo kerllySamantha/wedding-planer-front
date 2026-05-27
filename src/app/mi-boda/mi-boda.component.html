@@ -17,8 +17,8 @@
     </span>
   </div>
 
-  <div class="search-row d-flex justify-content-end">
-    <div class="filter-group input-group">
+  <div class="d-flex justify-content-end">
+    <div class="filter-group input-group shadow-sm">
       <select #categoriaSelect class="form-select fbox fbox--strong" id="categorias" (change)="onCategoriaChange($event)">
         <option value="" disabled selected>Filtrar por categoría</option>
         @for (categoria of categorias$ | async; track categoria.id) {
@@ -26,7 +26,7 @@
         }
       </select>
 
-      <button class="btn fbox fbox--coral" type="button" (click)="limpiarFiltros(categoriaSelect)">Limpiar</button>
+      <button class="btn fbox fbox--coral fw-semibold" type="button" (click)="limpiarFiltros(categoriaSelect)">Limpiar</button>
     </div>
   </div>
 
