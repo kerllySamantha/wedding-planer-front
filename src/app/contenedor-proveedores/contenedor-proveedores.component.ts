@@ -10,6 +10,8 @@ import { TiposApiService } from '../Services/Tipos/tipos-api.service';
 import { TiposHttpService } from '../Services/Tipos/tipos-http.service';
 import { TipoSimple } from '../Interfaces/Tipos';
 import { ContenedorTiposComponent } from '../contenedor-tipos/contenedor-tipos.component';
+import { CountdownServiceService } from '../Services/countdown-service.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contenedor-proveedores',
@@ -23,6 +25,8 @@ export class ContenedorProveedoresComponent {
   selectPago: boolean = false;
   idSelected = signal<number | null>(null);
   presupuestoId = signal<number | null>(null);
+  countdownService = inject(CountdownServiceService);
+  private router = inject(Router);
 
 
   selectColor(tipo: string) {
@@ -46,6 +50,20 @@ export class ContenedorProveedoresComponent {
     this.idSelected.set(id);
   }
 
+  presupuestosPendientes() {
+    const boda = this.countdownService.bodaEncontrada();
+    const presupuestos = boda?.presupuestos ?? [];
+
+    return presupuestos.filter((p: any) => {
+      const total = Number(p?.monto_total ?? 0);
+      const pagado = Number(p?.monto_pagado ?? 0);
+      return total > pagado;
+    });
+  }
+
+  irAPagoPresupuesto(id: number) {
+    this.router.navigate(['/presupuesto', id]);
+  }
 
 
 

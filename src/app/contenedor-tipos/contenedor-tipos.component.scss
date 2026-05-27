@@ -117,65 +117,6 @@ $text-muted: #9ca3af;
   }
 }
 
-.payments-view {
-  background: #fff;
-  border: 1px solid #f0e4e4;
-  border-radius: 12px;
-  padding: 1rem;
-
-  h4 {
-    margin: 0 0 0.35rem;
-    font-size: 1rem;
-  }
-
-  p {
-    margin: 0 0 1rem;
-    color: #6b7280;
-  }
-}
-
-.payment-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.payment-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.8rem;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  background: linear-gradient(180deg, #fff, #fff8f8);
-
-  strong {
-    display: block;
-    color: #1f2937;
-  }
-
-  small {
-    color: #6b7280;
-  }
-}
-
-.btn-pagar {
-  border: 0;
-  border-radius: 999px;
-  padding: 0.45rem 0.8rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: white;
-  background: linear-gradient(135deg, #f76c6f, #ef4444);
-  cursor: pointer;
-
-  &:disabled {
-    background: #e5e7eb;
-    color: #6b7280;
-    cursor: not-allowed;
-  }
-}
-
 // ── Inputs ─────────────────────────────────────────────
 .input-tipo {
   width: 100%;

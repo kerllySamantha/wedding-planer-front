@@ -98,3 +98,42 @@ $text-dark: #2c2c2c;
     color: darken($accent, 8%);
   }
 }
+
+.pago-panel {
+  background: #fff;
+  border: 1px solid $color-border;
+  border-radius: 12px;
+  padding: 1rem;
+
+  h3 { margin: 0 0 0.35rem; }
+  p { margin: 0 0 1rem; color: #6b7280; }
+}
+
+.pago-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin-bottom: 0.7rem;
+
+  strong { display: block; }
+  small { color: #6b7280; }
+}
+
+.btn-pago-go {
+  border: 1px solid #efcaca;
+  background: linear-gradient(135deg, #fbe6e6, #f8dede);
+  color: #3d2f2f;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-weight: 600;
+}
+
+.sin-pendientes {
+  padding: 0.9rem;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+  color: #6b7280;
+}

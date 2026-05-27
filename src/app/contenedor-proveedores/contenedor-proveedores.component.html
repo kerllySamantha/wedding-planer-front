@@ -39,16 +39,38 @@
 
         <!-- Columna Presupuesto / Tipos -->
         <div class="col-8 p-3">
-            <div class="container mb-3">
+            <div class="container mb-3" *ngIf="!selectPago; else pagoView">
                 <app-contenedor-presupuesto></app-contenedor-presupuesto>
             </div>
-            <div class="container">
-                <app-contenedor-tipos
-                  [categoriaIdSeleccionada]="idSelected()"
-                  [presupuestoId]="presupuestoId()"
-                  [vista]="selectPago ? 'pago' : 'presupuesto'">
+            <div class="container" *ngIf="!selectPago">
+                <app-contenedor-tipos [categoriaIdSeleccionada]="idSelected()" [presupuestoId]="presupuestoId()">
                 </app-contenedor-tipos>
             </div>
+
+            <ng-template #pagoView>
+                <section class="pago-panel">
+                    <h3>Pagos pendientes</h3>
+                    <p>Selecciona un presupuesto pendiente y continúa el pago seguro con Stripe.</p>
+
+                    @for (presupuesto of presupuestosPendientes(); track presupuesto.id) {
+                    <article class="pago-item">
+                        <div>
+                            <strong>{{ presupuesto.tipos.nombre || ('Presupuesto #' + presupuesto.id) }}</strong>
+                            <small>Pagado {{ presupuesto.monto_pagado || 0 }} € de {{ presupuesto.monto_total }} €</small>
+                        </div>
+                        <button type="button" class="btn-pago-go" (click)="irAPagoPresupuesto(presupuesto.id)">
+                            Ir a pagar
+                        </button>
+                    </article>
+                    }
+
+                    @if (presupuestosPendientes().length === 0) {
+                    <div class="sin-pendientes">
+                        No tienes pagos pendientes ahora mismo.
+                    </div>
+                    }
+                </section>
+            </ng-template>
         </div>
     </div>
 </div>
