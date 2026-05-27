@@ -1,11 +1,11 @@
 .boda-hero {
   display: grid;
-  grid-template-columns: auto minmax(250px, 380px) 1fr;
+  grid-template-columns: auto minmax(240px, 330px) minmax(420px, 1fr);
   align-items: center;
-  column-gap: 12px;
+  column-gap: 10px;
   background: linear-gradient(110deg, #436a90 0%, #799aba 100%);
   border-radius: 14px;
-  padding: 12px 14px;
+  padding: 12px 12px;
   position: relative;
   overflow: hidden;
 
@@ -67,7 +67,7 @@
   background: rgba(255,255,255,0.06);
   border: 1px solid rgba(255,255,255,0.16);
   border-radius: 12px;
-  padding: 8px 4px;
+  padding: 10px 8px;
 }
 
 .metric {
@@ -90,16 +90,41 @@
 @media (max-width: 1024px) {
   .boda-hero {
     grid-template-columns: auto 1fr;
-    row-gap: 10px;
+    row-gap: 8px;
+    column-gap: 10px;
   }
 
+  .hero-info { min-width: 0; }
   .metrics { grid-column: 1 / -1; }
 }
 
 @media (max-width: 768px) {
-  .boda-hero { padding: 12px; grid-template-columns: 1fr; row-gap: 10px; }
-  .hero-photo { width: 140px; height: 140px; }
-  .metrics { grid-template-columns: repeat(2, 1fr); }
-  .metric { border-left: none; border-top: 1px solid rgba(255,255,255,0.15); }
-  .metric:nth-child(-n+2) { border-top: none; }
+  .boda-hero {
+    padding: 10px;
+    grid-template-columns: 126px 1fr;
+    column-gap: 8px;
+    row-gap: 8px;
+  }
+
+  .hero-photo { width: 126px; height: 126px; }
+  .hero-info { min-width: 0; }
+  .hero-name { font-size: 1.05rem; }
+  .hero-date { font-size: 0.72rem; margin-bottom: 8px; }
+  .countdown { gap: 6px; }
+  .cd-box { padding: 6px 10px; }
+  .cd-num { font-size: 1.55rem; }
+  .cd-lbl { font-size: 0.68rem; }
+
+  .metrics {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 6px 2px;
+  }
+
+  .metric { border-left: 1px solid rgba(255,255,255,0.15); border-top: none; padding: 3px 2px; }
+  .metric:first-child { border-left: none; }
+  .mv { font-size: 1.15rem; }
+  .mv--sm { font-size: 1.05rem; }
+  .ml { font-size: 0.6rem; }
+  .ms { font-size: 0.54rem; }
 }
