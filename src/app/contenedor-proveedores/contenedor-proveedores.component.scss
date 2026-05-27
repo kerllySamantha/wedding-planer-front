@@ -14,7 +14,7 @@ $text-dark: #2c2c2c;
     radial-gradient(circle at 12% 18%, rgba(247, 108, 111, 0.08), transparent 34%),
     radial-gradient(circle at 88% 4%, rgba(99, 102, 241, 0.08), transparent 26%);
   border-radius: 20px;
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: none;
   box-shadow: 0 24px 45px rgba(15, 23, 42, 0.08);
 }
 
@@ -111,7 +111,7 @@ $text-dark: #2c2c2c;
 
 .pago-panel {
   background: rgba(255, 255, 255, 0.58);
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: none;
   border-radius: 14px;
   padding: 1.1rem;
   backdrop-filter: blur(12px);
@@ -123,10 +123,11 @@ $text-dark: #2c2c2c;
 }
 
 .pago-table-wrap {
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: none;
   border-radius: 12px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
 }
 
 .pago-table {
