@@ -4,23 +4,20 @@ $border: #DDE5EE;
 $coral: #f76c6f;
 
 :host { display: block; }
-
 .card-link { display: block; }
 
 .example-card {
   border-radius: 14px;
   border: 1px solid $border;
-  box-shadow: none;
   overflow: hidden;
   background: #fff;
   transition: box-shadow .18s ease, transform .18s ease;
   height: 100%;
 }
-
 .example-card:hover { box-shadow: 0 6px 16px rgba(44,62,82,0.12); transform: translateY(-2px); }
 
 .card-cover {
-  height: 116px;
+  height: 122px;
   background: #e9eef4;
   border-bottom: 1px solid #edf2f7;
   display: flex;
@@ -28,9 +25,14 @@ $coral: #f76c6f;
   align-items: center;
   position: relative;
 
-  i {
-    font-size: 2rem;
-    color: #83a8c0;
+  i { font-size: 1.9rem; color: #83a8c0; }
+
+  .cover-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .tag {
@@ -39,42 +41,30 @@ $coral: #f76c6f;
     bottom: 10px;
     background: $coral;
     color: #fff;
-    font-size: .82rem;
+    font-size: .78rem;
     font-weight: 700;
     padding: 2px 12px;
     border-radius: 999px;
     line-height: 1.2;
+    z-index: 1;
   }
 }
 
-.example-card mat-card-header {
-  padding: 6px 12px 2px;
-  align-items: center;
-}
-
+.example-card mat-card-header { padding: 8px 12px 4px; align-items: center; }
 .example-header-image {
-  border-radius: 50%;
+  border-radius: 12px;
   background: #e1e8f0;
   color: #4a657d;
   width: 34px !important;
   height: 34px !important;
   min-width: 34px !important;
-  margin-right: 8px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  font-weight: 700;
+  margin-right: 10px !important;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem; font-weight: 700;
 }
 
-.example-card mat-card-content { padding: 2px 12px 12px; }
-.example-card mat-card-content p { font-size: 0.72rem; color: $muted; margin: 0; line-height: 1.3; }
+.example-card mat-card-content { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 2px; }
+.example-card mat-card-content p { font-size: 0.78rem; color: $text; margin: 0; line-height: 1.25; }
+.example-card mat-card-content small { font-size: 0.72rem; color: $muted; }
 
-h6 {
-  font-weight: 800;
-  font-size: 0.95rem;
-  color: $text;
-  margin: 0;
-  line-height: 1.05;
-  letter-spacing: 0.01em;
-}
+h6 { font-weight: 700; font-size: 0.95rem; color: $text; margin: 0; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

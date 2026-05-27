@@ -1,7 +1,11 @@
 <a [routerLink]="['/proveedores/detalles', empresa()?.id]" class="text-decoration-none card-link">
   <mat-card class="example-card" appearance="outlined">
     <div class="card-cover">
-      <i class="bi" [class]="'bi ' + iconoServicio()"></i>
+      @if (empresa()?.fotos?.length) {
+        <img [src]="empresa()?.fotos?.[0]?.url" alt="{{ empresa()?.nombre_empresa }}" class="cover-photo" />
+      } @else {
+        <i class="bi" [class]="'bi ' + iconoServicio()"></i>
+      }
       <span class="tag">{{ badgeTexto() }}</span>
     </div>
 
@@ -13,7 +17,8 @@
     </mat-card-header>
 
     <mat-card-content>
-      <p>{{ empresa()?.tipo_servicio || empresa()?.poblacion?.nombre }}</p>
+      <p>{{ empresa()?.tipo_servicio }}</p>
+      <small>{{ empresa()?.poblacion?.nombre }} · {{ empresa()?.provincia?.nombre }}</small>
     </mat-card-content>
   </mat-card>
 </a>
