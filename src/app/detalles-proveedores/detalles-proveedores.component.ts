@@ -13,10 +13,11 @@ import { ModalGaleriaFotosComponent } from '../modal-galeria-fotos/modal-galeria
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
 import Swal from 'sweetalert2';
+import { FooterUserComponent } from "../footer-user/footer-user.component";
 
 @Component({
   selector: 'app-detalles-proveedores',
-  imports: [NavbarComponent, MatGridListModule],
+  imports: [NavbarComponent, MatGridListModule, FooterUserComponent],
   templateUrl: './detalles-proveedores.component.html',
   standalone: true,
   styleUrl: './detalles-proveedores.component.scss'

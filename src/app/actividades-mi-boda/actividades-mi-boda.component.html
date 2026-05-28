@@ -1,60 +1,84 @@
-<div class="boda-hero mt-3">
-
-  <!-- Foto -->
-  <div class="hero-photo">
-    <div class="boda-bg"></div>
-  </div>
-
-  <!-- Nombre, fecha y countdown -->
-  <div class="hero-info">
-    <p class="hero-name">{{ formatearNombrePareja(bodaEncontrada()?.nombre_pareja) }}</p>
-    <p class="hero-date">{{fechaFormateada()}}</p>
-    <div class="countdown">
-      <div class="cd-box">
-        <div class="cd-num">{{fechaCountdown()?.days}}</div>
-        <div class="cd-lbl">días</div>
-      </div>
-      <div class="cd-box">
-        <div class="cd-num">{{fechaCountdown()?.hours}}</div>
-        <div class="cd-lbl">horas</div>
+@if (countdownService.loading()) {
+  <div class="boda-hero boda-hero--sk">
+    <div class="sk-photo sk-pulse"></div>
+    <div class="sk-info">
+      <div class="sk-line sk-line--title sk-pulse"></div>
+      <div class="sk-line sk-line--date sk-pulse"></div>
+      <div class="sk-cd">
+        <div class="sk-box sk-pulse"></div>
+        <div class="sk-box sk-pulse"></div>
+        <div class="sk-box sk-pulse"></div>
       </div>
     </div>
+    <div class="sk-metrics">
+      @for (m of [1,2,3,4]; track m) {
+        <div class="sk-metric sk-pulse"></div>
+      }
+    </div>
   </div>
+} @else {
+  <div class="boda-hero">
 
-  <!-- Separador vertical -->
-  <div class="hero-sep"></div>
-
-  <!-- Métricas -->
-  <div class="metrics">
-
-    <div class="metric">
-      <i class="bi bi-briefcase-fill mi-icon"></i>
-      <span class="mv">{{ serviciosContratados() }}</span>
-      <span class="ml">Servicios</span>
-      <span class="ms">Contratados</span>
+    <!-- Foto -->
+    <div class="hero-photo">
+      <div class="boda-bg"></div>
     </div>
 
-    <div class="metric">
-      <i class="bi bi-check2-all mi-icon"></i>
-      <span class="mv">{{ tareasCompletadas() }}</span>
-      <span class="ml">Pagos</span>
-      <span class="ms">Sin deuda</span>
+    <!-- Nombre, fecha y countdown -->
+    <div class="hero-info">
+      <p class="hero-name">{{ formatearNombrePareja(bodaEncontrada()?.nombre_pareja) }}</p>
+      <p class="hero-date">{{ fechaFormateada() }}</p>
+      <div class="countdown">
+        <div class="cd-box">
+          <div class="cd-num">{{ fechaCountdown()?.days }}</div>
+          <div class="cd-lbl">días</div>
+        </div>
+        <div class="cd-box">
+          <div class="cd-num">{{ fechaCountdown()?.hours }}</div>
+          <div class="cd-lbl">horas</div>
+        </div>
+        <div class="cd-box">
+          <div class="cd-num">{{ fechaCountdown()?.minutes }}</div>
+          <div class="cd-lbl">min</div>
+        </div>
+      </div>
     </div>
 
-    <div class="metric">
-      <i class="bi bi-people-fill mi-icon"></i>
-      <span class="mv">—</span>
-      <span class="ml">Invitados</span>
-      <span class="ms">RSVP pendiente</span>
-    </div>
+    <!-- Separador vertical -->
+    <div class="hero-sep"></div>
 
-    <div class="metric">
-      <i class="bi bi-currency-euro mi-icon"></i>
-      <span class="mv mv--sm">{{ formatearMoneda(presupuestoGastado()) }}</span>
-      <span class="ml">Presupuesto</span>
-      <span class="ms">Total pagado</span>
+    <!-- Métricas -->
+    <div class="metrics">
+
+      <div class="metric">
+        <i class="bi bi-briefcase-fill mi-icon"></i>
+        <span class="mv">{{ serviciosContratados() }}</span>
+        <span class="ml">Servicios</span>
+        <span class="ms">Contratados</span>
+      </div>
+
+      <div class="metric">
+        <i class="bi bi-check2-all mi-icon"></i>
+        <span class="mv">{{ tareasCompletadas() }}</span>
+        <span class="ml">Pagos</span>
+        <span class="ms">Sin deuda</span>
+      </div>
+
+      <div class="metric">
+        <i class="bi bi-people-fill mi-icon"></i>
+        <span class="mv">—</span>
+        <span class="ml">Invitados</span>
+        <span class="ms">RSVP pendiente</span>
+      </div>
+
+      <div class="metric">
+        <i class="bi bi-currency-euro mi-icon"></i>
+        <span class="mv mv--sm">{{ formatearMoneda(presupuestoGastado()) }}</span>
+        <span class="ml">Presupuesto</span>
+        <span class="ms">Total pagado</span>
+      </div>
+
     </div>
 
   </div>
-
-</div>
+}
