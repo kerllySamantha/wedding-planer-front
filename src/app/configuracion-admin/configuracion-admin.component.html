@@ -30,37 +30,34 @@
     <div class="settings-card__header identidad-card__header">
       <div>
         <h2><i class="bi bi-palette me-2"></i>Identidad visual</h2>
-        <p class="settings-subtitle">Logo principal y foto de perfil separados para revisar mejor tu marca.</p>
+        <p class="settings-subtitle">Revisa cómo se ven tu foto de perfil y tu logo en la ficha pública.</p>
       </div>
     </div>
 
-    <div class="identidad-stack">
-      <section class="identidad-panel identidad-panel--logo" aria-labelledby="logo-lectura-title">
-        <div class="identidad-panel__copy">
-          <span class="identidad-lbl" id="logo-lectura-title">Logo empresa</span>
-          <span class="identidad-hint">Se mostrará en tu ficha pública y en la barra superior.</span>
-        </div>
-
-        <div class="logo-showcase" aria-label="Vista previa del logo de empresa">
-          @if (logoUrl()) {
-            <img [src]="logoUrl()" alt="Logo empresa" class="logo-rect">
+    <div class="identity-studio identity-studio--readonly">
+      <section class="profile-hero" aria-labelledby="perfil-lectura-title">
+        <div class="profile-hero__avatar-wrap">
+          @if (fotoPerfilUrl()) {
+            <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="profile-hero__avatar">
           } @else {
-            <div class="logo-rect logo-rect--empty"><i class="bi bi-image"></i></div>
+            <div class="profile-hero__avatar profile-hero__avatar--empty"><i class="bi bi-person-fill"></i></div>
           }
         </div>
+        <span class="identidad-lbl" id="perfil-lectura-title">Foto de perfil</span>
+        <span class="identidad-hint">Imagen visible en perfil, mensajes y notificaciones.</span>
       </section>
 
-      <section class="identidad-panel identidad-panel--profile" aria-labelledby="perfil-lectura-title">
-        <div class="identidad-panel__copy">
-          <span class="identidad-lbl" id="perfil-lectura-title">Foto de perfil</span>
-          <span class="identidad-hint">Imagen personal para perfil, mensajes y notificaciones.</span>
+      <section class="brand-logo-card" aria-labelledby="logo-lectura-title">
+        <div class="brand-logo-card__copy">
+          <span class="identidad-lbl" id="logo-lectura-title">Logo empresa</span>
+          <span class="identidad-hint">Tu marca principal para la ficha pública y accesos del proveedor.</span>
         </div>
 
-        <div class="profile-showcase" aria-label="Vista previa de la foto de perfil">
-          @if (fotoPerfilUrl()) {
-            <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="avatar-circle">
+        <div class="brand-logo-card__preview" aria-label="Vista previa del logo de empresa">
+          @if (logoUrl()) {
+            <img [src]="logoUrl()" alt="Logo empresa" class="brand-logo-card__img">
           } @else {
-            <div class="avatar-circle avatar-placeholder"><i class="bi bi-person-fill"></i></div>
+            <div class="brand-logo-card__empty"><i class="bi bi-image"></i><span>Sin logo</span></div>
           }
         </div>
       </section>
@@ -174,51 +171,64 @@
     <div class="settings-card__header identidad-card__header">
       <div>
         <h2><i class="bi bi-palette me-2"></i>Identidad visual</h2>
-        <p class="settings-subtitle">Actualiza primero el logo de la empresa y debajo la foto de perfil.</p>
+        <p class="settings-subtitle">Gestiona tu foto de perfil y el logo con controles rápidos de añadir o eliminar.</p>
       </div>
     </div>
 
-    <div class="identidad-stack">
-      <section class="identidad-panel identidad-panel--logo" aria-labelledby="logo-edicion-title">
-        <div class="identidad-panel__copy">
-          <span class="identidad-lbl" id="logo-edicion-title">Logo empresa</span>
-          <span class="identidad-hint">Ficha pública y barra superior.</span>
+    <div class="identity-studio">
+      <section class="profile-hero profile-hero--editable" aria-labelledby="perfil-edicion-title">
+        <div class="profile-hero__avatar-wrap">
+          <label class="profile-hero__avatar-action" title="Cambiar foto de perfil">
+            @if (fotoPerfilUrl()) {
+              <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="profile-hero__avatar">
+            } @else {
+              <div class="profile-hero__avatar profile-hero__avatar--empty"><i class="bi bi-person-fill"></i></div>
+            }
+            <span class="profile-hero__camera"><i class="bi bi-camera-fill"></i></span>
+            <input type="file" accept="image/*" class="identity-file-input" (change)="onFotoPerfilSelected($event)">
+          </label>
         </div>
 
-        <div class="logo-showcase logo-showcase--editable">
-          @if (logoUrl()) {
-            <img [src]="logoUrl()" alt="Logo empresa" class="logo-rect">
-          } @else {
-            <div class="logo-rect logo-rect--empty"><i class="bi bi-image"></i></div>
-          }
+        <span class="identidad-lbl" id="perfil-edicion-title">Foto de perfil</span>
+        <span class="identidad-hint">Sube una imagen cuadrada para que el recorte circular se vea impecable.</span>
 
-          <label class="logo-change-btn">
-            @if (loadingLogo()) {
-              <i class="bi bi-arrow-repeat logo-spin me-1"></i>Subiendo...
-            } @else {
-              <i class="bi bi-pencil me-1"></i>Cambiar logo
-            }
-            <input type="file" accept="image/*" style="display:none" (change)="onLogoSelected($event)">
+        <div class="identity-actions" aria-label="Acciones de foto de perfil">
+          <label class="identity-action identity-action--primary">
+            <i class="bi bi-plus-lg"></i> Añadir foto
+            <input type="file" accept="image/*" class="identity-file-input" (change)="onFotoPerfilSelected($event)">
           </label>
+          <button type="button" class="identity-action identity-action--danger" (click)="eliminarFotoPerfil()" [disabled]="!fotoPerfilUrl()">
+            <i class="bi bi-trash3"></i> Eliminar
+          </button>
         </div>
       </section>
 
-      <section class="identidad-panel identidad-panel--profile" aria-labelledby="perfil-edicion-title">
-        <div class="identidad-panel__copy">
-          <span class="identidad-lbl" id="perfil-edicion-title">Foto de perfil</span>
-          <span class="identidad-hint">Perfil, mensajes y notificaciones.</span>
+      <section class="brand-logo-card brand-logo-card--editable" aria-labelledby="logo-edicion-title">
+        <div class="brand-logo-card__copy">
+          <span class="identidad-lbl" id="logo-edicion-title">Logo empresa</span>
+          <span class="identidad-hint">Usa una versión horizontal o con fondo transparente para reforzar tu marca.</span>
         </div>
 
-        <div class="profile-showcase">
-          <label class="avatar-edit-label" title="Cambiar foto de perfil">
-            @if (fotoPerfilUrl()) {
-              <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="avatar-circle">
+        <div class="brand-logo-card__preview">
+          @if (logoUrl()) {
+            <img [src]="logoUrl()" alt="Logo empresa" class="brand-logo-card__img">
+          } @else {
+            <div class="brand-logo-card__empty"><i class="bi bi-image"></i><span>Sin logo</span></div>
+          }
+        </div>
+
+        <div class="identity-actions identity-actions--logo" aria-label="Acciones de logo de empresa">
+          <label class="identity-action identity-action--primary">
+            @if (loadingLogo()) {
+              <i class="bi bi-arrow-repeat logo-spin"></i> Subiendo...
             } @else {
-              <div class="avatar-circle avatar-placeholder"><i class="bi bi-person-fill"></i></div>
+              <i class="bi bi-plus-lg"></i> Añadir logo
             }
-            <div class="avatar-camera"><i class="bi bi-camera-fill"></i></div>
-            <input type="file" accept="image/*" class="avatar-file-input" (change)="onFotoPerfilSelected($event)">
+            <input type="file" accept="image/*" class="identity-file-input" (change)="onLogoSelected($event)">
           </label>
+          <button type="button" class="identity-action identity-action--danger" (click)="eliminarLogo()" [disabled]="!logoUrl() || loadingLogo()">
+            <i class="bi bi-trash3"></i> Eliminar
+          </button>
         </div>
       </section>
     </div>
