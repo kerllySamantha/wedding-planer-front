@@ -411,6 +411,58 @@
             }
           </div>
 
+          <!-- ── Fotos de la boda ── -->
+          <div class="pf-form__field">
+            <label class="pf-label">Fotos de la boda</label>
+
+            <!-- Fotos existentes -->
+            @if (fotosResultado().length > 0) {
+              <p class="pf-label--optional pf-photos-hint">Haz clic en una foto para marcarla y eliminarla al guardar</p>
+              <div class="pf-photos-edit">
+                @for (foto of fotosResultado(); track foto.url ?? $index) {
+                  <div class="pf-photo-thumb"
+                       [class.pf-photo-thumb--removing]="fotoMarcada(foto.url || foto.path || '')"
+                       (click)="toggleEliminarFoto(foto.url || foto.path || '')">
+                    <img [src]="foto.url || foto.path" alt="Foto boda">
+                    @if (fotoMarcada(foto.url || foto.path || '')) {
+                      <div class="pf-photo-thumb__overlay">
+                        <i class="bi bi-trash3-fill"></i>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Preview fotos nuevas -->
+            @if (nuevasFotosPreview().length > 0) {
+              <div class="pf-photos-edit pf-photos-edit--new">
+                @for (foto of nuevasFotosPreview(); track $index; let i = $index) {
+                  <div class="pf-photo-thumb pf-photo-thumb--new">
+                    <img [src]="foto.preview" alt="Nueva foto">
+                    <button type="button" class="pf-photo-remove" (click)="eliminarNuevaFoto(i)">
+                      <i class="bi bi-x-lg"></i>
+                    </button>
+                    <span class="pf-photo-badge">Nueva</span>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Botón añadir -->
+            <label class="pf-btn pf-btn--secondary pf-upload-label">
+              <input type="file" accept="image/jpeg,image/png,image/webp" multiple
+                     class="pf-visually-hidden" (change)="onFotosBodaSelected($event)">
+              <i class="bi bi-images me-1"></i>Añadir fotos
+            </label>
+          </div>
+
+          @if (subiendoFotosBoda()) {
+          <div class="pf-notice pf-notice--info">
+            <i class="bi bi-arrow-repeat pf-spin me-2"></i>Subiendo fotos...
+          </div>
+          }
+
           @if (bodaFormError()) {
           <div class="pf-notice pf-notice--error">{{ bodaFormError() }}</div>
           }
@@ -419,11 +471,11 @@
           }
 
           <div class="pf-form__actions">
-            <button type="submit" class="pf-btn pf-btn--primary" [disabled]="guardandoBoda()">
-              {{ guardandoBoda() ? 'Guardando...' : 'Guardar cambios' }}
+            <button type="submit" class="pf-btn pf-btn--primary" [disabled]="guardandoBoda() || subiendoFotosBoda()">
+              {{ guardandoBoda() || subiendoFotosBoda() ? 'Guardando...' : 'Guardar cambios' }}
             </button>
             <button type="button" class="pf-btn pf-btn--ghost" (click)="cancelarEdicionBoda()"
-              [disabled]="guardandoBoda()">
+              [disabled]="guardandoBoda() || subiendoFotosBoda()">
               Cancelar
             </button>
           </div>
@@ -704,3 +756,4 @@
     </main>
   </div>
 </div>
+<app-footer-user></app-footer-user>

@@ -51,6 +51,7 @@ export interface Boda {
         ubicacion: string,
         notas?: string,
         poblacion_id?: number,
+        fotos?: Array<{ url: string; path?: string }>,
     }
 
 

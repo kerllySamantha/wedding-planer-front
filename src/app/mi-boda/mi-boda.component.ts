@@ -12,12 +12,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CardMibodaEmpresaComponent } from '../card-miboda-empresa/card-miboda-empresa.component';
 import { Router, RouterOutlet } from '@angular/router';
 import { InfoCategoria } from '../Interfaces/Categoria';
+import { FooterUserComponent } from "../footer-user/footer-user.component";
 
 @Component({
   selector: 'app-mi-boda',
   imports: [MenuMiBodaComponent, NavbarComponent, ActividadesMiBodaComponent, AsyncPipe,
     MatCardModule, MatButtonModule, AsyncPipe, ReactiveFormsModule,
-     CardMibodaEmpresaComponent, RouterOutlet],
+    CardMibodaEmpresaComponent, RouterOutlet, FooterUserComponent],
   templateUrl: './mi-boda.component.html',
   styleUrl: './mi-boda.component.scss'
 })

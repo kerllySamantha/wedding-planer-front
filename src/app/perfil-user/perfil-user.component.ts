@@ -37,6 +37,7 @@ import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-ser
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { PresupuestoHttpService } from '../Services/Presupuesto/presupuesto-http-service.service';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
+import { FooterUserComponent } from "../footer-user/footer-user.component";
 
 type PerfilUsuarioForm = {
   name: FormControl<string>;
@@ -62,7 +63,7 @@ type ReseniaBodaForm = {
 
 @Component({
   selector: 'app-perfil-user',
-  imports: [CommonModule, NavbarComponent, ReactiveFormsModule],
+  imports: [CommonModule, NavbarComponent, ReactiveFormsModule, FooterUserComponent],
   templateUrl: './perfil-user.component.html',
   styleUrl: './perfil-user.component.scss',
 })
@@ -103,6 +104,9 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly bodaFormError = signal<string | null>(null);
   readonly bodaFormSuccess = signal<string | null>(null);
   readonly uploadingFoto = signal(false);
+  readonly urlsParaEliminar = signal<string[]>([]);
+  readonly nuevasFotosPreview = signal<{ preview: string; base64: string; ext: string }[]>([]);
+  readonly subiendoFotosBoda = signal(false);
   readonly reseniasBoda = signal<Resenia[]>([]);
   readonly reseniasLoading = signal(false);
   readonly reseniasError = signal<string | null>(null);
@@ -563,6 +567,8 @@ descargarPdf() {
     this.submittedBoda.set(false);
     this.bodaFormError.set(null);
     this.bodaFormSuccess.set(null);
+    this.urlsParaEliminar.set([]);
+    this.nuevasFotosPreview.set([]);
     this.patchBodaForm(this.boda());
   }
 
@@ -571,7 +577,41 @@ descargarPdf() {
     this.submittedBoda.set(false);
     this.bodaFormError.set(null);
     this.bodaFormSuccess.set(null);
+    this.urlsParaEliminar.set([]);
+    this.nuevasFotosPreview.set([]);
     this.patchBodaForm(this.boda());
+  }
+
+  toggleEliminarFoto(url: string): void {
+    this.urlsParaEliminar.update(list =>
+      list.includes(url) ? list.filter(u => u !== url) : [...list, url]
+    );
+  }
+
+  fotoMarcada(url: string): boolean {
+    return this.urlsParaEliminar().includes(url);
+  }
+
+  onFotosBodaSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = '';
+
+    files.forEach(file => {
+      const ext = this.getImageExtension(file);
+      if (!ext) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = String(reader.result ?? '');
+        if (!base64) return;
+        this.nuevasFotosPreview.update(arr => [...arr, { preview: base64, base64, ext }]);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  eliminarNuevaFoto(idx: number): void {
+    this.nuevasFotosPreview.update(arr => arr.filter((_, i) => i !== idx));
   }
 
   guardarBoda(): void {
@@ -584,12 +624,43 @@ descargarPdf() {
       return;
     }
 
+    const nuevas = this.nuevasFotosPreview();
+    const userId = Number(localStorage.getItem('id'));
+
+    if (nuevas.length > 0) {
+      this.subiendoFotosBoda.set(true);
+      const uploads$ = nuevas.map(f =>
+        this.empresasApiSvc.uploadImageBase64(f.base64, f.ext, userId)
+      );
+      forkJoin(uploads$).subscribe({
+        next: (responses) => {
+          this.subiendoFotosBoda.set(false);
+          const urlsNuevas = responses.map(r => ({ url: r.url || r.path || '', path: r.path || r.url || '' }));
+          this._enviarGuardarBoda(urlsNuevas);
+        },
+        error: () => {
+          this.subiendoFotosBoda.set(false);
+          this.bodaFormError.set('Error al subir las fotos. Inténtalo de nuevo.');
+        },
+      });
+    } else {
+      this._enviarGuardarBoda([]);
+    }
+  }
+
+  private _enviarGuardarBoda(urlsNuevas: { url: string; path: string }[]): void {
+    const urlsEliminar = this.urlsParaEliminar();
+    const fotosRestantes = this.fotosResultado()
+      .filter(f => !urlsEliminar.includes(f.url || f.path || ''))
+      .map(f => ({ url: f.url || '', path: f.path || '' }));
+
     const payload: CreateBoda = {
       nombre_pareja: this.bodaForm.controls.nombrePareja.value.trim(),
       fecha_boda: this.bodaForm.controls.weddingDate.value,
       ubicacion: this.bodaForm.controls.ubicacion.value.trim(),
       notas: this.bodaForm.controls.notas.value.trim(),
       poblacion_id: Number(this.bodaForm.controls.poblacionId.value),
+      fotos: [...fotosRestantes, ...urlsNuevas],
     };
 
     const bodaActual = this.boda();
@@ -604,14 +675,14 @@ descargarPdf() {
         this.guardandoBoda.set(false);
         this.editandoBoda.set(false);
         this.bodaFormSuccess.set('La boda se ha actualizado correctamente.');
+        this.urlsParaEliminar.set([]);
+        this.nuevasFotosPreview.set([]);
         this.bodaCtx.cargarBodaDelUsuario();
       },
       error: (err: HttpErrorResponse) => {
         this.guardandoBoda.set(false);
         this.bodaFormError.set(
-          err.error?.message ??
-            err.error?.mensaje ??
-            'No se pudo guardar la boda.',
+          err.error?.message ?? err.error?.mensaje ?? 'No se pudo guardar la boda.',
         );
       },
     });

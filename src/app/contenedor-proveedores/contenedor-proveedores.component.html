@@ -2,7 +2,7 @@
 <app-menu-mi-boda></app-menu-mi-boda>
 
 <div class="container-personal">
-    <!-- Botones Presupuesto / Pago -->
+    <!-- Toggle Presupuesto / Pago -->
     <div class="row justify-content-center py-3">
         <div class="btn-group col-auto gap-2" role="group">
             <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off"
@@ -28,29 +28,88 @@
                     <i class="bi bi-plus-circle me-2"></i>
                     Categoría
                 </li>
-                @for (categoria of categorias$ | async; track categoria.id) {
-                <li class="list-group-item categoria-item mb-2" [class.active]="categoria.id === idSelected()"
-                    (click)="clickIdCategoria(categoria.id)">
-                    <img [src]="categoria.icono" alt="" class="me-2">{{ categoria.nombre }}
-                </li>
+
+                @if (categorias() === undefined) {
+                    @for (sk of [1,2,3,4,5,6]; track sk) {
+                        <li class="list-group-item categoria-item cat-skeleton mb-2">
+                            <span class="sk-icon"></span>
+                            <span class="sk-text" [style.width]="(55 + sk * 7) + '%'"></span>
+                        </li>
+                    }
+                } @else {
+                    @for (categoria of categorias()!; track categoria.id) {
+                        <li class="list-group-item categoria-item mb-2"
+                            [class.active]="categoria.id === idSelected()"
+                            (click)="clickIdCategoria(categoria.id)">
+                            <img [src]="categoria.icono" alt="" class="me-2">{{ categoria.nombre }}
+                        </li>
+                    }
                 }
             </ul>
         </div>
 
         <!-- Columna Presupuesto / Tipos -->
         <div class="col-8 p-3">
-            <div class="container mb-3" *ngIf="!selectPago; else pagoView">
-                <app-contenedor-presupuesto></app-contenedor-presupuesto>
-            </div>
-            <div class="container" *ngIf="!selectPago">
-                <app-contenedor-tipos [categoriaIdSeleccionada]="idSelected()" [presupuestoId]="presupuestoId()">
-                </app-contenedor-tipos>
-            </div>
-
-            <ng-template #pagoView>
+            @if (!selectPago) {
+                @if (categorias() === undefined) {
+                    <!-- Skeleton panel derecho mientras cargan categorías -->
+                    <div class="right-skeleton">
+                        <div class="rsk-stats">
+                            @for (s of [1,2,3]; track s) {
+                                <div class="rsk-stat-card">
+                                    <div class="rsk-line rsk-line--sm skeleton"></div>
+                                    <div class="rsk-line rsk-line--lg skeleton"></div>
+                                </div>
+                            }
+                        </div>
+                        <div class="rsk-table">
+                            <div class="rsk-table-header">
+                                @for (h of [1,2,3,4]; track h) {
+                                    <div class="skeleton rsk-th"></div>
+                                }
+                            </div>
+                            @for (r of [1,2,3,4,5]; track r) {
+                                <div class="rsk-table-row">
+                                    @for (c of [1,2,3,4]; track c) {
+                                        <div class="skeleton rsk-td"></div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                } @else {
+                <div class="container mb-3">
+                    <app-contenedor-presupuesto></app-contenedor-presupuesto>
+                </div>
+                <div class="container">
+                    <app-contenedor-tipos [categoriaIdSeleccionada]="idSelected()" [presupuestoId]="presupuestoId()">
+                    </app-contenedor-tipos>
+                </div>
+                }
+            } @else {
                 <section class="pago-panel">
-                    <h3>Pagos realizados</h3>
-                    <p>Detalle de los pagos que ya has registrado en tus presupuestos.</p>
+                    <div class="pago-header">
+                        <h3>Pagos realizados</h3>
+                        <p>Detalle de los pagos que ya has registrado en tus presupuestos.</p>
+                    </div>
+
+                    <!-- Resumen de totales -->
+                    <div class="pago-summary">
+                        <div class="pago-summary__item">
+                            <span class="pago-summary__label">Total estimado</span>
+                            <strong class="pago-summary__value">{{ totalEstimadoSection() | number:'1.2-2' }} €</strong>
+                        </div>
+                        <div class="pago-summary__item pago-summary__item--paid">
+                            <i class="bi bi-check-circle-fill pago-summary__icon"></i>
+                            <span class="pago-summary__label">Total pagado</span>
+                            <strong class="pago-summary__value">{{ totalPagadoSection() | number:'1.2-2' }} €</strong>
+                        </div>
+                        <div class="pago-summary__item pago-summary__item--rest">
+                            <span class="pago-summary__label">Pendiente</span>
+                            <strong class="pago-summary__value">{{ totalPendienteSection() | number:'1.2-2' }} €</strong>
+                        </div>
+                    </div>
+
                     <div class="pago-layout">
                         <div class="pago-chart-wrap">
                             <h4>Distribución general</h4>
@@ -59,40 +118,51 @@
 
                         <div class="pago-list">
                             @for (presupuesto of pagosRealizados(); track presupuesto.id) {
-                            <article class="pago-card">
-                                <div class="pago-card-head">
-                                    <div>
-                                        <h4>{{ nombrePresupuesto(presupuesto) }}</h4>
-                                        <small>{{ detallesPagados(presupuesto)[0]?.nombre || 'Sin detalle por conceptos' }}</small>
+                                <article class="pago-card">
+                                    <div class="pago-card-head">
+                                        <div>
+                                            <h4>{{ nombrePresupuesto(presupuesto) }}</h4>
+                                            <small>{{ detallesPagados(presupuesto)[0]?.nombre || 'Sin detalle por conceptos' }}</small>
+                                        </div>
+                                        <span class="badge estado-pill">Pagado</span>
                                     </div>
-                                    <span class="badge estado-pill">Pagado</span>
-                                </div>
 
-                                <div class="pago-metrics">
-                                    <div><label>Estimado</label><strong>{{ presupuesto.monto_total }} €</strong></div>
-                                    <div><label>Pagado</label><strong class="ok">{{ presupuesto.monto_pagado || 0 }} €</strong></div>
-                                    <div><label>Fecha</label><strong>{{ presupuesto.fecha_creacion }}</strong></div>
-                                </div>
+                                    <div class="pago-metrics">
+                                        <div>
+                                            <label>Estimado</label>
+                                            <strong>{{ presupuesto.monto_total }} €</strong>
+                                        </div>
+                                        <div>
+                                            <label>Pagado</label>
+                                            <strong class="ok">{{ presupuesto.monto_pagado || 0 }} €</strong>
+                                        </div>
+                                        <div>
+                                            <label>Fecha</label>
+                                            <strong>{{ presupuesto.fecha_creacion }}</strong>
+                                        </div>
+                                    </div>
 
-                                <div class="progreso-top">
-                                    <span>Progreso del pago</span>
-                                    <span>{{ porcentajePagado(presupuesto) }}%</span>
-                                </div>
-                                <div class="progress pago-progress">
-                                    <div class="progress-bar progreso-barra" [style.width.%]="porcentajePagado(presupuesto)"></div>
-                                </div>
-                            </article>
+                                    <div class="progreso-top">
+                                        <span>Progreso del pago</span>
+                                        <span class="progreso-pct">{{ porcentajePagado(presupuesto) }}%</span>
+                                    </div>
+                                    <div class="progress pago-progress">
+                                        <div class="progress-bar progreso-barra"
+                                            [style.width.%]="porcentajePagado(presupuesto)"></div>
+                                    </div>
+                                </article>
                             }
                         </div>
                     </div>
 
                     @if (pagosRealizados().length === 0) {
-                    <div class="sin-pendientes">
-                        Aún no tienes pagos registrados.
-                    </div>
+                        <div class="sin-pendientes">
+                            <i class="bi bi-inbox me-2"></i>
+                            Aún no tienes pagos registrados.
+                        </div>
                     }
                 </section>
-            </ng-template>
+            }
         </div>
     </div>
 </div>

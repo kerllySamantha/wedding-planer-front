@@ -16,14 +16,14 @@ import { VisualizadorProveedoresCardsComponent } from "../visualizador-proveedor
 import { HorizontalCardProveedoresComponent } from "../horizontal-card-proveedores/horizontal-card-proveedores.component";
 import { RouterOutlet } from '@angular/router';
 import { PaginadorComponent } from '../paginador/paginador.component';
+import { FooterUserComponent } from "../footer-user/footer-user.component";
 
 
 @Component({
   selector: 'app-dashboard-proveedores',
   imports: [NavbarComponent, CardProveedoresComponent, BuscadorComponent, FiltroProveedoresComponent,
     VisualizadorProveedoresCardsComponent, HorizontalCardProveedoresComponent,
-    RouterOutlet, PaginadorComponent
-  ],
+    RouterOutlet, PaginadorComponent, FooterUserComponent],
   templateUrl: './dashboard-proveedores.component.html',
   styleUrl: './dashboard-proveedores.component.scss'
 })

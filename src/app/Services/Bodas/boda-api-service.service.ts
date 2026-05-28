@@ -97,13 +97,16 @@ export class BodaApiServiceService extends BodaServiceServiceService{
 
 
   override editarBoda(idBoda : string, boda: CreateBoda): Observable<Object| null> {
-    const putObject = {
+    const putObject: Record<string, unknown> = {
       nombre_pareja: boda.nombre_pareja,
       fecha_boda: boda.fecha_boda,
       ubicacion: boda.ubicacion,
       notas: boda.notas ?? '',
       poblacion_id: boda.poblacion_id ?? null,
     };
+    if (boda.fotos !== undefined) {
+      putObject['fotos'] = boda.fotos;
+    }
     return this.http.put(`${this.apiUrl}/bodas/${idBoda}`, putObject)
   }
 

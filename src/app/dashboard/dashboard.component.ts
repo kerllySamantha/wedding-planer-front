@@ -17,10 +17,12 @@ import { BuscadorComponent } from "../buscador/buscador.component";
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
 import { PaginadorComponent } from '../paginador/paginador.component';
+import { FooterUserComponent } from '../footer-user/footer-user.component';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [NavbarComponent, CardEmpresaComponent, CardBodaComponent, CardActividadesNoviaComponent, BuscadorComponent, PaginadorComponent],
+  imports: [NavbarComponent, CardEmpresaComponent, CardBodaComponent, CardActividadesNoviaComponent,
+     BuscadorComponent, PaginadorComponent, FooterUserComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })

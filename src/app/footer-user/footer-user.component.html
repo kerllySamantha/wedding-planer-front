@@ -1,0 +1,74 @@
+<footer class="footer">
+
+  <div class="footer__inner">
+
+    <!-- Marca -->
+    <div class="footer__brand">
+      <a class="footer__logo" routerLink="/">
+        <svg class="footer__logo-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="24" r="11" stroke="currentColor" stroke-width="2.5" fill="none"/>
+          <circle cx="32" cy="24" r="11" stroke="currentColor" stroke-width="2.5" fill="none"/>
+        </svg>
+        <span class="footer__logo-text">Sueños <em>de Boda</em></span>
+      </a>
+      <p class="footer__tagline">
+        Hacemos realidad el día más especial de tu vida, con amor y detalle en cada momento.
+      </p>
+    </div>
+
+    <!-- Mi boda — solo si está autenticado como usuario -->
+    @if (esUsuario()) {
+      <div class="footer__nav">
+        <h4 class="footer__nav-title">Mi boda</h4>
+        <ul class="footer__nav-list">
+          @for (link of userLinks; track link.route) {
+            <li>
+              <a [routerLink]="link.route" class="footer__nav-link">{{ link.label }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Explora — siempre visible -->
+    <div class="footer__nav">
+      <h4 class="footer__nav-title">Explora</h4>
+      <ul class="footer__nav-list">
+        @for (link of exploraLinks; track link.route) {
+          <li>
+            <a [routerLink]="link.route" class="footer__nav-link">{{ link.label }}</a>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <!-- Acceso — solo si NO está autenticado -->
+    @if (!estaAutenticado()) {
+      <div class="footer__nav">
+        <h4 class="footer__nav-title">Acceso</h4>
+        <ul class="footer__nav-list">
+          @for (link of accesoLinks; track link.route) {
+            <li>
+              <a [routerLink]="link.route" class="footer__nav-link">{{ link.label }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+  </div>
+
+  <!-- Barra inferior -->
+  <div class="footer__bottom">
+    <div class="footer__bottom-inner">
+      <p class="footer__copy">
+        © {{ currentYear }} Sueños de Boda. Hecho con
+        <svg class="footer__heart" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+        </svg>
+        en España.
+      </p>
+    </div>
+  </div>
+
+</footer>

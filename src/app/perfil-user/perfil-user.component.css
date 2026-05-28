@@ -519,6 +519,104 @@
   border-radius: 12px;
 }
 
+.pf-photos-hint {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0 0 8px;
+}
+
+.pf-photos-edit {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+.pf-photos-edit--new {
+  margin-top: 0.5rem;
+}
+
+.pf-photo-thumb {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.18s, opacity 0.18s;
+}
+.pf-photo-thumb img {
+  width: 100%;
+  height: 100px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.pf-photo-thumb--removing {
+  border-color: #f76c6f;
+  opacity: 0.65;
+}
+.pf-photo-thumb__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(247, 108, 111, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.3rem;
+}
+.pf-photo-thumb--new {
+  cursor: default;
+}
+
+.pf-photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  border: none;
+  color: #fff;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+.pf-photo-remove:hover {
+  background: #f76c6f;
+}
+
+.pf-photo-badge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  background: #f76c6f;
+  color: #fff;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.pf-upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.pf-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
 .pf-badge-count {
   display: inline-flex;
   align-items: center;
