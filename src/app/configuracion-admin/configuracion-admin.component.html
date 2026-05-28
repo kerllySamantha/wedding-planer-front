@@ -27,27 +27,43 @@
 
   <!-- Identidad visual (lectura) -->
   <article class="settings-card identidad-card">
-    <h2><i class="bi bi-palette me-2"></i>Identidad visual</h2>
-    <div class="identidad-grid">
-
-      <div class="identidad-slot">
-        <span class="identidad-lbl">Foto de perfil</span>
-        @if (fotoPerfilUrl()) {
-          <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="avatar-circle">
-        } @else {
-          <div class="avatar-circle avatar-placeholder"><i class="bi bi-person-fill"></i></div>
-        }
+    <div class="settings-card__header identidad-card__header">
+      <div>
+        <h2><i class="bi bi-palette me-2"></i>Identidad visual</h2>
+        <p class="settings-subtitle">Logo principal y foto de perfil separados para revisar mejor tu marca.</p>
       </div>
+    </div>
 
-      <div class="identidad-slot">
-        <span class="identidad-lbl">Logo empresa</span>
-        @if (logoUrl()) {
-          <img [src]="logoUrl()" alt="Logo empresa" class="logo-rect">
-        } @else {
-          <div class="logo-rect logo-rect--empty"><i class="bi bi-image"></i></div>
-        }
-      </div>
+    <div class="identidad-stack">
+      <section class="identidad-panel identidad-panel--logo" aria-labelledby="logo-lectura-title">
+        <div class="identidad-panel__copy">
+          <span class="identidad-lbl" id="logo-lectura-title">Logo empresa</span>
+          <span class="identidad-hint">Se mostrará en tu ficha pública y en la barra superior.</span>
+        </div>
 
+        <div class="logo-showcase" aria-label="Vista previa del logo de empresa">
+          @if (logoUrl()) {
+            <img [src]="logoUrl()" alt="Logo empresa" class="logo-rect">
+          } @else {
+            <div class="logo-rect logo-rect--empty"><i class="bi bi-image"></i></div>
+          }
+        </div>
+      </section>
+
+      <section class="identidad-panel identidad-panel--profile" aria-labelledby="perfil-lectura-title">
+        <div class="identidad-panel__copy">
+          <span class="identidad-lbl" id="perfil-lectura-title">Foto de perfil</span>
+          <span class="identidad-hint">Imagen personal para perfil, mensajes y notificaciones.</span>
+        </div>
+
+        <div class="profile-showcase" aria-label="Vista previa de la foto de perfil">
+          @if (fotoPerfilUrl()) {
+            <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="avatar-circle">
+          } @else {
+            <div class="avatar-circle avatar-placeholder"><i class="bi bi-person-fill"></i></div>
+          }
+        </div>
+      </section>
     </div>
   </article>
 
@@ -155,41 +171,56 @@
 
   <!-- Identidad visual editable -->
   <article class="settings-card identidad-card">
-    <h2><i class="bi bi-palette me-2"></i>Identidad visual</h2>
-    <div class="identidad-grid">
-
-      <div class="identidad-slot">
-        <span class="identidad-lbl">Foto de perfil</span>
-        <label class="avatar-edit-label" title="Cambiar foto de perfil">
-          @if (fotoPerfilUrl()) {
-            <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="avatar-circle">
-          } @else {
-            <div class="avatar-circle avatar-placeholder"><i class="bi bi-person-fill"></i></div>
-          }
-          <div class="avatar-camera"><i class="bi bi-camera-fill"></i></div>
-          <input type="file" accept="image/*" class="avatar-file-input" (change)="onFotoPerfilSelected($event)">
-        </label>
-        <span class="identidad-hint">Perfil y notificaciones</span>
+    <div class="settings-card__header identidad-card__header">
+      <div>
+        <h2><i class="bi bi-palette me-2"></i>Identidad visual</h2>
+        <p class="settings-subtitle">Actualiza primero el logo de la empresa y debajo la foto de perfil.</p>
       </div>
+    </div>
 
-      <div class="identidad-slot">
-        <span class="identidad-lbl">Logo empresa</span>
-        @if (logoUrl()) {
-          <img [src]="logoUrl()" alt="Logo empresa" class="logo-rect">
-        } @else {
-          <div class="logo-rect logo-rect--empty"><i class="bi bi-image"></i></div>
-        }
-        <label class="logo-change-btn">
-          @if (loadingLogo()) {
-            <i class="bi bi-arrow-repeat logo-spin me-1"></i>Subiendo...
+    <div class="identidad-stack">
+      <section class="identidad-panel identidad-panel--logo" aria-labelledby="logo-edicion-title">
+        <div class="identidad-panel__copy">
+          <span class="identidad-lbl" id="logo-edicion-title">Logo empresa</span>
+          <span class="identidad-hint">Ficha pública y barra superior.</span>
+        </div>
+
+        <div class="logo-showcase logo-showcase--editable">
+          @if (logoUrl()) {
+            <img [src]="logoUrl()" alt="Logo empresa" class="logo-rect">
           } @else {
-            <i class="bi bi-pencil me-1"></i>Cambiar
+            <div class="logo-rect logo-rect--empty"><i class="bi bi-image"></i></div>
           }
-          <input type="file" accept="image/*" style="display:none" (change)="onLogoSelected($event)">
-        </label>
-        <span class="identidad-hint">Ficha pública y barra superior</span>
-      </div>
 
+          <label class="logo-change-btn">
+            @if (loadingLogo()) {
+              <i class="bi bi-arrow-repeat logo-spin me-1"></i>Subiendo...
+            } @else {
+              <i class="bi bi-pencil me-1"></i>Cambiar logo
+            }
+            <input type="file" accept="image/*" style="display:none" (change)="onLogoSelected($event)">
+          </label>
+        </div>
+      </section>
+
+      <section class="identidad-panel identidad-panel--profile" aria-labelledby="perfil-edicion-title">
+        <div class="identidad-panel__copy">
+          <span class="identidad-lbl" id="perfil-edicion-title">Foto de perfil</span>
+          <span class="identidad-hint">Perfil, mensajes y notificaciones.</span>
+        </div>
+
+        <div class="profile-showcase">
+          <label class="avatar-edit-label" title="Cambiar foto de perfil">
+            @if (fotoPerfilUrl()) {
+              <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="avatar-circle">
+            } @else {
+              <div class="avatar-circle avatar-placeholder"><i class="bi bi-person-fill"></i></div>
+            }
+            <div class="avatar-camera"><i class="bi bi-camera-fill"></i></div>
+            <input type="file" accept="image/*" class="avatar-file-input" (change)="onFotoPerfilSelected($event)">
+          </label>
+        </div>
+      </section>
     </div>
   </article>
 
