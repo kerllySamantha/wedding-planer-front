@@ -17,11 +17,12 @@
     <div class="row g-0">
         <!-- Imagen -->
         <div class="col-md-4">
-            @for (item of empresa()?.fotos; track item.path; let idx = $index) {
-            @if (idx === 0) {
-            <img [src]="item.url" [alt]="empresa()?.nombre_empresa"
+            @if ((empresa()?.fotos?.length ?? 0) > 0) {
+            <img [src]="empresa()!.fotos![0].url" [alt]="empresa()?.nombre_empresa"
                 class="img-fluid rounded-4 object-fit-cover presentacion-img" />
-            }
+            } @else if (empresa()?.logo || empresa()?.usuario?.fotoPerfil) {
+            <img [src]="empresa()?.logo ?? empresa()?.usuario?.fotoPerfil" [alt]="empresa()?.nombre_empresa"
+                class="img-fluid rounded-4 object-fit-cover presentacion-img" />
             }
         </div>
 

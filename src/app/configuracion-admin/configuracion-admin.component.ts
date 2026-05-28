@@ -61,6 +61,8 @@ export class ConfiguracionAdminComponent {
   >({});
   galeriaUrls = signal<Foto[]>([]);
   logoUrl = signal<string>('');
+  fotoPerfilUrl = signal<string>('');
+  fotoPerfilPath = signal<string>('');
   loadingLogo = signal(false);
   empresaSinImagenes = computed(() => (this.empresa()?.fotos?.length ?? 0) === 0);
   loadingUpload = signal(false);
@@ -118,6 +120,8 @@ export class ConfiguracionAdminComponent {
 
         this.galeriaUrls.set(fotos);
         this.logoUrl.set(this.normalizeImageUrl(empresa.logo ?? ''));
+        this.fotoPerfilUrl.set(empresa.usuario?.fotoPerfil ?? '');
+        this.fotoPerfilPath.set('');
         this.inicializarCategoriaSeleccionada();
       },
     });
@@ -603,6 +607,30 @@ export class ConfiguracionAdminComponent {
     reader.readAsDataURL(file);
   }
 
+  onFotoPerfilSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const extension = this.getImageExtension(file);
+    const userId = Number(this.idUser());
+    if (!extension || Number.isNaN(userId)) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = String(reader.result ?? '');
+      if (!base64) return;
+      this.empresaCtx.uploadImageBase64(base64, extension, userId).subscribe({
+        next: (res) => {
+          if (res?.path) this.fotoPerfilPath.set(res.path);
+          if (res?.url) this.fotoPerfilUrl.set(this.normalizeImageUrl(res.url));
+        },
+        error: (err) => console.error('Error al subir foto de perfil:', err),
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+
   private getImageExtension(file: File): string | null {
     const extensionFromName = file.name.split('.').pop()?.toLowerCase() ?? '';
     const allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
@@ -688,6 +716,7 @@ export class ConfiguracionAdminComponent {
       fotos: this.galeriaUrls(),
       productos: productosPayloadFiltrado,
       productos_eliminados: productosEliminados,
+      ...(this.fotoPerfilPath() ? { fotoPerfil: this.fotoPerfilPath() } : {}),
     };
 
     console.log('Payload enviado a /api/empresas/:id', formEmpresa);

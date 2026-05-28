@@ -76,10 +76,9 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
     idEmpresa: string,
     empresa: CreateEmpresa,
   ): Observable<Object | null> {
-    const putObject = {
+    const putObject: Record<string, unknown> = {
       name: empresa.name,
       email: empresa.email,
-      password: empresa.password,
       rol: 'empresa',
       direccion: empresa.direccion,
       telefono: empresa.telefono,
@@ -92,6 +91,8 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
       productos: empresa.productos ?? [],
       productos_eliminados: empresa.productos_eliminados ?? [],
     };
+    if (empresa.password) putObject['password'] = empresa.password;
+    if (empresa.fotoPerfil) putObject['fotoPerfil'] = empresa.fotoPerfil;
     return this.http.put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject);
   }
 

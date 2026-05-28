@@ -13,7 +13,7 @@ h1{
 /* Fondo principal */
 .vendor-section {
   position: relative;
-  min-height: 60vh;
+  min-height: 100vh;
   background: url("../../assets/images/fondo4.jpg") center center / cover
     no-repeat;
   display: flex;
@@ -558,7 +558,7 @@ TOGGLE PASSWORD
 @media (max-width: 575.98px) {
   .vendor-section {
     padding: 1.2rem 1rem 2rem;
-    min-height: auto;
+    min-height: 100vh;
   }
 
   .vendor-content {

@@ -5,7 +5,7 @@
     <div class="row justify-content-between">
         <div class="col-lg-8 col-12">
             <div class="container-imagenes">
-                @if (fotosOrdenadas().length === 0) {
+                @if (cargandoFotos()) {
                 <div class="row gx-0 w-100 sk-galeria">
                     <div class="col-5 p-0 pe-2 d-flex">
                         <div class="sk-galeria__izq"></div>
@@ -24,6 +24,14 @@
                         </div>
                     </div>
                 </div>
+                } @else if (fotosOrdenadas().length === 0) {
+                @if (imagenFallback()) {
+                <img [src]="imagenFallback()!" [alt]="empresa()?.nombre_empresa" class="img-fallback-banner">
+                } @else {
+                <div class="img-fallback-placeholder">
+                    <i class="bi bi-building"></i>
+                </div>
+                }
                 } @else {
                 <div class="row gx-0">
                     <div class="col-5 p-0 pe-2">

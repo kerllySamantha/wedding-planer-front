@@ -1,183 +1,269 @@
 <nav class="navbar navbar-expand-xl bg-body-tertiary shadow-sm fixed-top">
+
   <div class="container-fluid">
+
+    <!-- HAMBURGER -->
     <button class="navbar-toggler d-xl-none" (click)="onHamburgerClick()">
+
       <span class="navbar-toggler-icon"></span>
+
     </button>
 
+    <!-- BRAND -->
     <div class="navbar-brand brand-identity d-none d-xl-flex align-items-center">
+
       <div class="brand-avatar">
+
         @if (fotoEmpresa()) {
-          <img [src]="fotoEmpresa()!" alt="Logo empresa" class="brand-avatar__img" />
+
+        <img [src]="fotoEmpresa()!" alt="Logo empresa" class="brand-avatar__img" />
+
         } @else {
-          <span class="brand-avatar__initial">{{ inicialEmpresa() }}</span>
+
+        <span class="brand-avatar__initial">
+          {{ inicialEmpresa() }}
+        </span>
+
         }
+
       </div>
+
       <div class="brand-copy">
-        <span class="brand-copy__name">{{ nombreEmpresa() }}</span>
+
+        <span class="brand-copy__name">
+          {{ nombreEmpresa() }}
+        </span>
+
         @if (tipoServicio()) {
-          <span class="brand-copy__role">{{ tipoServicio() }}</span>
+
+        <span class="brand-copy__role">
+          {{ tipoServicio() }}
+        </span>
+
         }
+
       </div>
+
     </div>
 
+    <!-- DERECHA -->
     <div class="d-flex align-items-center gap-3">
-      <button class="btn btn-light topbar-icon-btn btn-chat" type="button" aria-label="Mensajes">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          class="bi bi-chat-dots-fill"
-          viewBox="0 0 16 16"
-        >
-          <path
-            d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2"
-          />
-        </svg>
-      </button>
 
+      <!-- CHAT -->
+      <!-- <button class="btn btn-light topbar-icon-btn btn-chat" type="button" aria-label="Mensajes">
 
-<button 
-  class="btn btn-light topbar-icon-btn btn-notif" 
-  type="button"
-  aria-label="Notificaciones"
-  [matMenuTriggerFor]="menuNotificaciones"
-  (menuOpened)="cargarNotificaciones()">
-  
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" 
-       fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
-    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6"/>
-  </svg>
+        <i class="bi bi-chat-dots-fill"></i>
 
-  <!-- Punto rojo flotante, no desplaza nada -->
-  @if (hayNotificaciones()) {
-    <span class="notif-dot"></span>
-  }
-</button>
+      </button> -->
 
-<mat-menu #menuNotificaciones="matMenu" class="custom-dropdown-menu" position="before">
-  
-  <!-- Header -->
-  <div class="notif-header" (click)="$event.stopPropagation()">
-    <span class="fw-semibold">Notificaciones</span>
-    @if (noLeidas() > 0) {
-      <button mat-button color="primary" class="notif-mark-all" (click)="marcarTodasLeidas()">
-        Marcar todas como leídas
-      </button>
-    }
-  </div>
+      <!-- NOTIFICACIONES -->
+      <button class="btn btn-light topbar-icon-btn btn-notif" type="button" aria-label="Notificaciones"
+        [matMenuTriggerFor]="menuNotificaciones" (menuOpened)="cargarNotificaciones()">
 
-  <mat-divider />
+        <i class="bi bi-bell"></i>
 
-  <!-- Loading -->
-  @if (cargando()) {
-    <div class="notif-empty" (click)="$event.stopPropagation()">
-      <mat-spinner diameter="28" />
-      <span>Cargando...</span>
-    </div>
-  }
-
-  <!-- Vacío -->
-  @else if (notificaciones().length === 0) {
-    <div class="notif-empty" (click)="$event.stopPropagation()">
-      <mat-icon>notifications_none</mat-icon>
-      <span>No tienes notificaciones</span>
-    </div>
-  }
-
-  <!-- Lista -->
-  @else {
- @for (notif of notificaciones(); track notif.id) {
-  <button mat-menu-item class="notif-item" [class.notif-no-leida]="!notif.leido" (click)="onClickNotificacion(notif)">
-    
-    <div class="notif-item-inner">
-      <div class="notif-icono">
-        <mat-icon>{{ iconoPorTipo(notif.tipo) }}</mat-icon>
-      </div>
-
-      <div class="notif-contenido">
-        <div class="notif-titulo-row">
-          <span class="notif-titulo">{{ notif.titulo }}</span>
-          @if (!notif.leido) {
-            <span class="notif-punto"></span>
-          }
-        </div>
-        <!-- <p class="notif-mensaje">{{ notif.mensaje }}</p> -->
-
-        <!-- Solo nombre del cliente, nada más -->
-        @if (notif.referencia?.nombre) {
-          <span class="notif-cliente">{{ notif.referencia?.nombre }}</span>
+        @if (hayNotificaciones()) {
+        <span class="notif-dot"></span>
         }
-      </div>
-    </div>
 
-  </button>
-  <mat-divider />
-}
-  }
-
-  <!-- Paginación -->
-  @if (meta() && !cargando()) {
-    <div class="notif-footer" (click)="$event.stopPropagation()">
-      <button mat-icon-button [disabled]="!links()?.prev" (click)="cambiarPagina(paginaActual() - 1)">
-        <mat-icon>chevron_left</mat-icon>
       </button>
-      <span class="text-muted small">{{ paginaActual() }} / {{ meta()!.last_page }}</span>
-      <button mat-icon-button [disabled]="!links()?.next" (click)="cambiarPagina(paginaActual() + 1)">
-        <mat-icon>chevron_right</mat-icon>
-      </button>
-    </div>
-  }
 
-</mat-menu>
+      <!-- MENU NOTIFICACIONES -->
+      <mat-menu #menuNotificaciones="matMenu" class="custom-dropdown-menu" position="before">
 
-      <div class="dropdown user-dropdown">
-        <button [matMenuTriggerFor]="menu" class="btn btn-light topbar-icon-btn profile-btn" type="button" aria-label="Perfil">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-person-circle"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"
-            />
-            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-          </svg>
+        <!-- HEADER -->
+        <div class="notif-header" (click)="$event.stopPropagation()">
+
+          <span class="fw-semibold">
+            Notificaciones
+          </span>
+
+          @if (noLeidas() > 0) {
+
+          <button mat-button color="primary" class="notif-mark-all" (click)="marcarTodasLeidas()">
+
+            Marcar todas como leídas
+
+          </button>
+
+          }
+
+        </div>
+
+        <mat-divider />
+
+        <!-- LOADING -->
+        @if (cargando()) {
+
+        <div class="notif-empty" (click)="$event.stopPropagation()">
+
+          <mat-spinner diameter="28" />
+
+          <span>Cargando...</span>
+
+        </div>
+
+        }
+
+        <!-- VACIO -->
+        @else if (notificaciones().length === 0) {
+
+        <div class="notif-empty" (click)="$event.stopPropagation()">
+
+          <i class="bi bi-bell"></i>
+
+          <span>No tienes notificaciones</span>
+
+        </div>
+
+        }
+
+        <!-- LISTA -->
+        @else {
+
+        @for (notif of notificaciones(); track notif.id) {
+
+        <button mat-menu-item class="notif-item" [class.notif-no-leida]="!notif.leido"
+          (click)="onClickNotificacion(notif)">
+
+          <div class="notif-item-inner">
+
+            <div class="notif-icono">
+
+              <mat-icon>
+                {{ iconoPorTipo(notif.tipo) }}
+              </mat-icon>
+
+            </div>
+
+            <div class="notif-contenido">
+
+              <div class="notif-titulo-row">
+
+                <span class="notif-titulo">
+                  {{ notif.titulo }}
+                </span>
+
+                @if (!notif.leido) {
+                <span class="notif-punto"></span>
+                }
+
+              </div>
+
+              @if (notif.referencia?.nombre) {
+
+              <span class="notif-cliente">
+                {{ notif.referencia?.nombre }}
+              </span>
+
+              }
+
+            </div>
+
+          </div>
+
         </button>
 
+        <mat-divider />
+
+        }
+
+        }
+
+        <!-- FOOTER -->
+        @if (meta() && !cargando()) {
+
+        <div class="notif-footer" (click)="$event.stopPropagation()">
+
+          <button mat-icon-button [disabled]="!links()?.prev" (click)="cambiarPagina(paginaActual() - 1)">
+
+            <mat-icon>chevron_left</mat-icon>
+
+          </button>
+
+          <span class="text-muted small">
+
+            {{ paginaActual() }} / {{ meta()!.last_page }}
+
+          </span>
+
+          <button mat-icon-button [disabled]="!links()?.next" (click)="cambiarPagina(paginaActual() + 1)">
+
+            <mat-icon>chevron_right</mat-icon>
+
+          </button>
+
+        </div>
+
+        }
+
+      </mat-menu>
+
+      <!-- PERFIL -->
+      <div class="dropdown user-dropdown">
+
+        <button [matMenuTriggerFor]="menu" class="btn btn-light topbar-icon-btn profile-btn" type="button"
+          aria-label="Perfil">
+
+          <i class="bi bi-person-circle"></i>
+
+        </button>
+
+        <!-- MENU PERFIL -->
         <mat-menu #menu="matMenu" class="custom-dropdown-menu" xPosition="before">
+
           <div class="menu-header">
-            <span class="menu-company">{{ nombreEmpresa() }}</span>
-            <small class="menu-subtitle">Cuenta de proveedor</small>
+
+            <span class="menu-company">
+              {{ nombreEmpresa() }}
+            </span>
+
+            <small class="menu-subtitle">
+              Cuenta de proveedor
+            </small>
+
           </div>
 
           <div class="menu-divider"></div>
 
           <button mat-menu-item class="menu-item-logout" (click)="logout()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M6 3a2 2 0 0 0-2 2v1a.5.5 0 0 0 1 0V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-1a.5.5 0 0 0-1 0v1a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
-              <path fill-rule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l2-2a.5.5 0 1 1 .708.708L1.707 7.5H8.5a.5.5 0 0 1 0 1H1.707l1.147 1.146a.5.5 0 0 1-.708.708z"/>
-            </svg>
-            <span>Cerrar sesion</span>
+
+            <i class="bi bi-box-arrow-right"></i>
+
+            <span>
+              Cerrar sesión
+            </span>
+
           </button>
+
         </mat-menu>
+
       </div>
+
     </div>
+
   </div>
+
 </nav>
 
+<!-- SIDEBAR -->
 <div id="adminSidebar" class="offcanvas offcanvas-start custom-offcanvas d-xl-none" [class.show]="sidebarOpen()">
+
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title">{{ nombreEmpresa() }}</h5>
-    <button type="button" class="btn-close" (click)="toggleSidebar()"></button>
+
+    <h5 class="offcanvas-title">
+      {{ nombreEmpresa() }}
+    </h5>
+
+    <button type="button" class="btn-close" (click)="toggleSidebar()">
+    </button>
+
   </div>
 
   <div class="offcanvas-body">
+
     <app-admin-nav-proveedor></app-admin-nav-proveedor>
+
   </div>
+
 </div>
-
-

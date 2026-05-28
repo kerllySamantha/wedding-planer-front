@@ -39,6 +39,18 @@ export class DetallesProveedoresComponent {
 
   fotoPrincipal = computed(() => this.fotosOrdenadas()[0] || null);
   puedeResenar = computed(() => this.authCtx.auth() && this.authCtx.rol() === 'usuario');
+
+  cargandoFotos = computed(() => {
+    const empresa = this.empresa();
+    if (!empresa) return true;
+    const hayFotos = (empresa.fotos?.length ?? 0) > 0;
+    return hayFotos && this.fotosOrdenadas().length === 0;
+  });
+
+  imagenFallback = computed(() => {
+    const empresa = this.empresa();
+    return empresa?.logo || empresa?.usuario?.fotoPerfil || null;
+  });
   estadisticasOrdenadas = computed(() =>
     [...(this.estadisticas()?.estrellas ?? [])].sort((a, b) => b.rating - a.rating)
   );

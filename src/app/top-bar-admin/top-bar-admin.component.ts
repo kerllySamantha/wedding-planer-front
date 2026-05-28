@@ -15,6 +15,7 @@ import { CurrencyPipe } from '@angular/common';
 import { interval } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EchoService } from '../Services/Echo/echo.service';
+import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 
 @Component({
   selector: 'app-top-bar-admin',
@@ -30,6 +31,7 @@ export class TopBarAdminComponent {
   private svc = inject(NotificacionesService);
   private destroyRef = inject(DestroyRef);
   private echoSvc = inject(EchoService);
+  private empresasCtx = inject(EmpresasApiServiceService);
 
 
   cargando = signal(false);
@@ -51,6 +53,7 @@ export class TopBarAdminComponent {
       return !this.esLeida(n) && !ocultas.has(id);
     });
   });
+
   meta = computed(() => this.respuesta()?.meta ?? null);
   links = computed(() => this.respuesta()?.links ?? null);
   noLeidas = computed(() => this.notificaciones().length);
@@ -67,10 +70,7 @@ export class TopBarAdminComponent {
         this.escucharNotificaciones();
       })
       .catch(err => console.error('Error preparando Echo:', err));
-    //   interval(10000)
-    //     .pipe(takeUntilDestroyed(this.destroyRef))
-    //     .subscribe(() => this.cargarNotificaciones());
-  }
+    }
 
   toggleSidebar() {
     this.sidebarOpen.update(v => !v);
@@ -81,15 +81,30 @@ export class TopBarAdminComponent {
   }
 
   private cargarNombreEmpresa() {
-    const empresa = localStorage.getItem('empresa');
-    if (empresa) {
-      const empresaObj = JSON.parse(empresa);
+    const empresaRaw = localStorage.getItem('empresa');
+    if (empresaRaw) {
+      const empresaObj = JSON.parse(empresaRaw);
       const nombre = empresaObj.nombre_empresa || '';
       this.nombreEmpresa.set(nombre);
-      this.fotoEmpresa.set(empresaObj.logo || null);
+      this.fotoEmpresa.set(empresaObj.logo || empresaObj.usuario?.fotoPerfil || null);
       this.inicialEmpresa.set(nombre.charAt(0).toUpperCase() || '?');
       this.tipoServicio.set(empresaObj.tipo_servicio || '');
     }
+
+    const userId = Number(localStorage.getItem('id'));
+    if (!userId) return;
+    this.empresasCtx.getEmpresaByUser(userId).subscribe({
+      next: (response) => {
+        const empresa = response?.data;
+        if (!empresa) return;
+        const nombre = empresa.nombre_empresa || '';
+        this.nombreEmpresa.set(nombre);
+        this.fotoEmpresa.set(empresa.logo || empresa.usuario?.fotoPerfil || null);
+        this.inicialEmpresa.set(nombre.charAt(0).toUpperCase() || '?');
+        this.tipoServicio.set(empresa.tipo_servicio || '');
+        localStorage.setItem('empresa', JSON.stringify(empresa));
+      },
+    });
   }
 
   logout(event?: Event) {

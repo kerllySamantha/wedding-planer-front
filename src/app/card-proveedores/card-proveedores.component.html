@@ -9,6 +9,7 @@
     <div class="card-flip tp-box" [attr.data-side]="flip()"  (click)="toggleFlip()">
 
         <!-- Carrusel de imágenes -->
+        @if ((empresa()?.fotos?.length ?? 0) > 0) {
         <div id="carousel{{empresa()?.id}}" class="carousel slide card-front" data-bs-ride="carousel">
             <div class="carousel-inner">
                 @for (imagen of empresa()?.fotos; track imagen.url; let idx = $index) {
@@ -27,6 +28,17 @@
                 }
             </div>
         </div>
+        } @else {
+        <div class="card-front">
+            @if (empresa()?.logo || empresa()?.usuario?.fotoPerfil) {
+            <img [src]="empresa()?.logo ?? empresa()?.usuario?.fotoPerfil" [alt]="empresa()?.nombre_empresa">
+            } @else {
+            <div class="d-flex align-items-center justify-content-center h-100">
+                <i class="bi bi-building" style="font-size: 3rem; color: #ccc;"></i>
+            </div>
+            }
+        </div>
+        }
 
         <!-- Info proveedor -->
         <div class="card-back">

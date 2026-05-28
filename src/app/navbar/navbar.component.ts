@@ -13,6 +13,7 @@ import { Notificacion } from '../Interfaces/Notificacion';
 import { PedirPresupuestoInfo } from '../Interfaces/PedirPresupuesto';
 import { EchoService } from '../Services/Echo/echo.service';
 import { filter } from 'rxjs';
+import { PaginadorComponent } from '../paginador/paginador.component';
 
 @Component({
   selector: 'app-navbar',
@@ -22,6 +23,7 @@ import { filter } from 'rxjs';
     MatSidenavModule,
     MatCheckboxModule,
     MatButtonModule,
+   
     MatMenuModule,
     MatDividerModule,
     NgTemplateOutlet,

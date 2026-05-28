@@ -122,6 +122,13 @@
         }
       </div>
 
+       <app-paginador
+        [currentPage]="filtradoTotalServicectx.paginaMeta().currentPage"
+        [lastPage]="filtradoTotalServicectx.paginaMeta().lastPage"
+        [total]="filtradoTotalServicectx.paginaMeta().total"
+        (pageChange)="filtradoTotalServicectx.irAPagina($event)">
+      </app-paginador>
+
       <!-- Estado vacío -->
       @if (!cargandoEmpresas() && companies().length === 0) {
         <div class="empty-state">

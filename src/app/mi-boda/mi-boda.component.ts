@@ -4,7 +4,6 @@ import { NavbarComponent } from "../navbar/navbar.component";
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { ActividadesMiBodaComponent } from '../actividades-mi-boda/actividades-mi-boda.component';
-import { FiltroEmpresasServiceService } from '../filtro-empresas-service.service';
 import { AsyncPipe } from '@angular/common';
 import { CategoriasServiceService } from '../Services/Catergorias/categoria-service.service';
 import { map } from 'rxjs';
@@ -14,28 +13,24 @@ import { NotasBodaComponent } from '../notas-boda/notas-boda.component';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { InfoCategoria } from '../Interfaces/Categoria';
 import { FooterUserComponent } from "../footer-user/footer-user.component";
+import { PaginadorComponent } from '../paginador/paginador.component';
+import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
 
 @Component({
   selector: 'app-mi-boda',
   imports: [MenuMiBodaComponent, NavbarComponent, ActividadesMiBodaComponent, AsyncPipe,
     MatCardModule, MatButtonModule, ReactiveFormsModule,
-    CardMibodaEmpresaComponent, RouterOutlet, RouterLink, FooterUserComponent, NotasBodaComponent],
+    CardMibodaEmpresaComponent, RouterOutlet, RouterLink, FooterUserComponent, NotasBodaComponent, PaginadorComponent],
   templateUrl: './mi-boda.component.html',
   styleUrl: './mi-boda.component.scss'
 })
 export class MiBodaComponent {
-  filtroEmpresas = inject(FiltroEmpresasServiceService);
   servicioDeCategorias = inject(CategoriasServiceService);
+  filtradoTotalServicectx = inject(ServicioFiltrado);
 
+  companies = computed(() => this.filtradoTotalServicectx.companiesTotalFiltered());
+  cargandoEmpresas = computed(() => this.filtradoTotalServicectx.isLoading());
 
-  companies = computed(() =>
-    this.filtroEmpresas.empresasFiltradas()
-
-  );
-
-  cargandoEmpresas = computed(() => this.filtroEmpresas.empresasCargando());
-
- 
   categorias$ = this.servicioDeCategorias.getCategorias().pipe(
     map((data) =>
       (data?.data as InfoCategoria[] ?? []).filter((categoria) => (categoria.tipos ?? []).length > 0),
@@ -44,23 +39,19 @@ export class MiBodaComponent {
 
   onCategoriaChange(event: Event) {
     const select = event.target as HTMLSelectElement;
-    const id = select.value ? Number(select.value) : null;
-    this.filtroEmpresas.seleccionarCategoria(id);
+    const id = select.value ? Number(select.value) : undefined;
+    this.filtradoTotalServicectx.setFilters({ ...(this.filtradoTotalServicectx.filtros() ?? {}), categoria: id });
   }
 
   onNombreChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    this.filtroEmpresas.buscarPorNombre(input.value);
+    this.filtradoTotalServicectx.setFilters({ ...(this.filtradoTotalServicectx.filtros() ?? {}), nombre: input.value });
   }
 
   limpiarFiltros(selectEl: HTMLSelectElement) {
     selectEl.value = '';
-    this.filtroEmpresas.seleccionarCategoria(null);
-    this.filtroEmpresas.buscarPorNombre('');
+    this.filtradoTotalServicectx.setFilters({});
   }
 
-  totalResultados = computed(() => this.filtroEmpresas.empresasFiltradas().length);
-
-
-
+  totalResultados = computed(() => this.filtradoTotalServicectx.paginaMeta().total);
 }

@@ -309,19 +309,14 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
 
       this.empresasApiSvc.uploadImageBase64(base64, ext, userId).subscribe({
         next: (res) => {
-          console.log('[foto] upload response completo:', res);
-          const rawUrl = res.url || res.path || '';
-          console.log('[foto] rawUrl capturado:', rawUrl);
-          const url = rawUrl.startsWith('http://') || rawUrl.startsWith('https://') || rawUrl.startsWith('/')
-            ? rawUrl
-            : rawUrl ? `/${rawUrl}` : '';
-          console.log('[foto] url final para payload:', url);
+          // res.path = ruta relativa (imagenes/...) — lo que debe ir a la BD
+          // res.url  = URL completa — lo que se usa para mostrar
+          const fotoPath = res.path || '';
+          const fotoDisplayUrl = res.url || (fotoPath ? `/storage/${fotoPath}` : '');
+
           const perfilActual = this.perfil()?.data;
           const perfilId = String(perfilActual?.id ?? '');
-          if (!perfilId || !url) {
-            console.warn('[foto] perfilId o url vacíos, abortando:', { perfilId, url });
-            this.uploadingFoto.set(false); return;
-          }
+          if (!perfilId || !fotoPath) { this.uploadingFoto.set(false); return; }
 
           const payload: CreatePerfilUsuario = {
             name: perfilActual?.usuario?.name ?? '',
@@ -331,13 +326,11 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
             telefono: perfilActual?.telefono ?? '',
             poblacion_id: perfilActual?.poblacion?.id ?? 0,
             fecha_boda: '',
-            foto_perfil: url,
+            foto_perfil: fotoPath,
           };
-          console.log('[foto] payload enviado a editarPerfil:', payload);
 
           this.perfilServiceCtx.editarPerfil(perfilId, payload).subscribe({
-            next: (resp) => {
-              console.log('[foto] editarPerfil OK:', resp);
+            next: () => {
               this.uploadingFoto.set(false);
               this.perfil.update(current => {
                 if (!current) return current;
@@ -345,29 +338,18 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
                   ...current,
                   data: {
                     ...current.data,
-                    usuario: { ...current.data.usuario, fotoPerfil: url },
+                    usuario: { ...current.data.usuario, fotoPerfil: fotoDisplayUrl },
                   },
                 };
               });
-              // Actualiza el signal de auth y localStorage para que el navbar refleje la foto
-              this.authSvc.auth.update(u => u ? { ...u, fotoPerfil: url } : u);
-              try {
-                const stored = localStorage.getItem('user');
-                if (stored) {
-                  const parsed = JSON.parse(stored);
-                  parsed.fotoPerfil = url;
-                  localStorage.setItem('user', JSON.stringify(parsed));
-                }
-              } catch {}
+              this.authSvc.updateAuthUser({ fotoPerfil: fotoDisplayUrl });
             },
-            error: (err) => {
-              console.error('[foto] editarPerfil ERROR:', err);
+            error: () => {
               this.uploadingFoto.set(false);
             },
           });
         },
-        error: (err) => {
-          console.error('[foto] uploadImageBase64 ERROR:', err);
+        error: () => {
           this.uploadingFoto.set(false);
         },
       });
@@ -659,7 +641,7 @@ descargarPdf() {
       fecha_boda: this.bodaForm.controls.weddingDate.value,
       ubicacion: this.bodaForm.controls.ubicacion.value.trim(),
       notas: this.bodaForm.controls.notas.value.trim(),
-      poblacion_id: Number(this.bodaForm.controls.poblacionId.value),
+      poblacion_id: Number(this.bodaForm.controls.poblacionId.value) || undefined,
       fotos: [...fotosRestantes, ...urlsNuevas],
     };
 

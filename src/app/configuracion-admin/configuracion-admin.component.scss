@@ -876,4 +876,148 @@ $blur-value: blur(18px);
   max-width: 360px;
 }
 
+/* ---------- Avatar de perfil ---------- */
+
+.avatar-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.avatar-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(4, 88, 127, 0.18);
+  box-shadow: 0 4px 18px rgba(6, 90, 130, 0.15);
+  display: block;
+}
+
+.avatar-placeholder {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 88, 127, 0.08);
+  border: 3px solid rgba(4, 88, 127, 0.12);
+  color: $color-muted;
+  font-size: 2.6rem;
+}
+
+.avatar-edit-label {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+
+  &:hover .avatar-camera,
+  &:focus-within .avatar-camera {
+    opacity: 1;
+  }
+}
+
+.avatar-camera {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(14, 54, 84, 0.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.avatar-file-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+/* ---------- Identidad visual ---------- */
+
+.identidad-grid {
+  display: flex;
+  gap: 3rem;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+}
+
+.identidad-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.identidad-lbl {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: $color-muted;
+}
+
+.identidad-hint {
+  font-size: 0.74rem;
+  color: rgba(4, 88, 127, 0.45);
+  text-align: center;
+}
+
+.logo-rect {
+  width: 120px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 0.7rem;
+  border: 1px solid $color-border;
+  background: $color-soft;
+  display: block;
+}
+
+.logo-rect--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $color-muted;
+  font-size: 2rem;
+  border: 1.5px dashed rgba(4, 88, 127, 0.25);
+}
+
+.logo-change-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  padding: 0.3rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 1px solid $color-accent;
+  color: $color-accent;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: $color-accent;
+    color: #fff;
+  }
+}
+
+@keyframes logo-spin-anim {
+  to { transform: rotate(360deg); }
+}
+
+.logo-spin {
+  display: inline-block;
+  animation: logo-spin-anim 0.8s linear infinite;
+}
+
 
