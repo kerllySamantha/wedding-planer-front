@@ -29,6 +29,13 @@
 
     <article class="settings-card">
       <h2><i class="bi bi-building me-2"></i>General</h2>
+
+      @if (logoUrl()) {
+      <div class="logo-preview-wrap mb-3">
+        <img [src]="logoUrl()" alt="Logo empresa" class="logo-preview-img">
+      </div>
+      }
+
       <dl class="settings-list">
         <div>
           <dt>Empresa</dt>
@@ -175,6 +182,38 @@
       Debes indicar al menos un email o teléfono de contacto.
     </p>
     }
+  </article>
+
+  <!-- Logo de empresa -->
+  <article class="settings-card">
+    <div class="settings-card__header">
+      <div>
+        <h2><i class="bi bi-image me-2"></i>Foto de empresa</h2>
+        <p class="settings-subtitle">Imagen principal que representa tu negocio.</p>
+      </div>
+    </div>
+
+    <div class="logo-edit-wrap">
+      @if (logoUrl()) {
+      <div class="logo-current">
+        <img [src]="logoUrl()" alt="Logo actual" class="logo-preview-img">
+        <button type="button" class="btn btn-sm btn-outline-danger ms-3" (click)="logoUrl.set('')">
+          <i class="bi bi-trash me-1"></i>Quitar
+        </button>
+      </div>
+      }
+
+      <label class="gallery-upload-zone logo-upload-zone mt-2">
+        <input type="file" accept="image/*" (change)="onLogoSelected($event)">
+        <span class="gallery-upload-zone__icon"><i class="bi bi-cloud-arrow-up"></i></span>
+        <p class="gallery-upload-zone__label">{{ logoUrl() ? 'Cambiar foto de empresa' : 'Subir foto de empresa' }}</p>
+        <p class="gallery-upload-zone__hint">PNG, JPG o WEBP · Máx. 10 MB</p>
+      </label>
+
+      @if (loadingLogo()) {
+      <p class="text-muted mt-2 mb-0 small">Subiendo imagen, espera…</p>
+      }
+    </div>
   </article>
 
   <!-- Categorías y tipos -->

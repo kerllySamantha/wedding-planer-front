@@ -60,6 +60,8 @@ export class ConfiguracionAdminComponent {
     >
   >({});
   galeriaUrls = signal<Foto[]>([]);
+  logoUrl = signal<string>('');
+  loadingLogo = signal(false);
   empresaSinImagenes = computed(() => (this.empresa()?.fotos?.length ?? 0) === 0);
   loadingUpload = signal(false);
   saving = signal(false);
@@ -115,6 +117,7 @@ export class ConfiguracionAdminComponent {
           .filter((foto) => Boolean(foto.url));
 
         this.galeriaUrls.set(fotos);
+        this.logoUrl.set(this.normalizeImageUrl(empresa.logo ?? ''));
         this.inicializarCategoriaSeleccionada();
       },
     });
@@ -305,8 +308,9 @@ export class ConfiguracionAdminComponent {
   }
 
   productosPorTipo(tipoId: number): Producto[] {
-    void tipoId;
-    return [];
+    return this.productosCatalogoGeneral().filter(
+      (p) => p.tipo_producto?.id === tipoId,
+    );
   }
 
 
@@ -565,11 +569,35 @@ export class ConfiguracionAdminComponent {
           this.loadingUpload.set(false);
         },
         error: (err) => {
-          console.error('Error completo:', err);
-          console.error('Errores Laravel:', err.error?.errors);
-          console.error('Mensaje:', err.error?.message);
-          this.saving.set(false);
+          console.error('Error al subir imagen:', err);
+          this.loadingUpload.set(false);
         },
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  onLogoSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const extension = this.getImageExtension(file);
+    const userId = Number(this.idUser());
+    if (!extension || Number.isNaN(userId)) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = String(reader.result ?? '');
+      if (!base64) return;
+      this.loadingLogo.set(true);
+      this.empresaCtx.uploadImageBase64(base64, extension, userId).subscribe({
+        next: (res) => {
+          const url = this.normalizeImageUrl(res?.url ?? '');
+          if (url) this.logoUrl.set(url);
+          this.loadingLogo.set(false);
+        },
+        error: () => this.loadingLogo.set(false),
       });
     };
     reader.readAsDataURL(file);
@@ -656,7 +684,7 @@ export class ConfiguracionAdminComponent {
       poblacion_id: empresa.poblacion?.id ?? 0,
       direccion: values.direccion ?? '',
       descripcion: empresa.descripcion ?? '',
-      logo: empresa.logo ?? '',
+      logo: this.logoUrl() || empresa.logo || '',
       fotos: this.galeriaUrls(),
       productos: productosPayloadFiltrado,
       productos_eliminados: productosEliminados,
