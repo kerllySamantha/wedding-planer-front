@@ -56,8 +56,10 @@
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['dashboard-proveedores']">Proveedores</a>
         </li>
-        <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/mis-reservas']" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">Reservas</a>
+        </li>
       </ul>
     </div>
 
@@ -80,8 +82,10 @@
             <a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }">Proveedores</a>
           </li>
-          <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/mis-reservas']" routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">Reservas</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -205,8 +209,10 @@
           <a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }">Proveedores</a>
         </li>
-        <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/mis-reservas']" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">Reservas</a>
+        </li>
       </ul>
     </div>
 
@@ -227,8 +233,10 @@
             <a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active"
               [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">Proveedores</a>
           </li>
-          <li class="nav-item"><a class="nav-link" href="#">Lugares</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Reservas</a></li>
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/mis-reservas']" routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">Reservas</a>
+          </li>
         </ul>
       </div>
     </div>

@@ -2,67 +2,140 @@
 <app-navbar></app-navbar>
 <app-menu-mi-boda></app-menu-mi-boda>
 
-<div class="page-content">
+<div class="boda-page">
 
-  <app-actividades-mi-boda></app-actividades-mi-boda>
-
-  <div class="sec-header mt-5">
-    <div>
-      <p class="sec-title">Crea tu equipo soñado</p>
-      <p class="sec-sub">Lee las opiniones, guarda tus favoritos y contáctalos</p>
-    </div>
+  <!-- Hero con countdown -->
+  <div class="hero-outer">
+    <app-actividades-mi-boda></app-actividades-mi-boda>
   </div>
 
-  <div class="d-flex justify-content-end my-3">
-    <div class="filter-group input-group shadow-sm">
-      <select #categoriaSelect class="form-select fbox fbox--strong" id="categorias"
-        (change)="onCategoriaChange($event)">
-        <option value="" disabled selected>Filtrar por categoría</option>
-        @for (categoria of categorias$ | async; track categoria.id) {
-          <option [value]="categoria.id">{{ categoria.nombre }}</option>
-        }
-      </select>
-      <button class="btn fbox fbox--coral fw-semibold" type="button"
-        (click)="limpiarFiltros(categoriaSelect)">Limpiar</button>
-    </div>
-  </div>
+  <!-- Herramientas de tu boda -->
+  <!-- <section class="tools-section">
+    <div class="tools-wrap">
+      <p class="tools-eyebrow">Herramientas de tu boda</p>
+      <div class="tools-grid">
 
-  <!-- Grid de proveedores -->
-  <div class="provider-grid">
-    @if (cargandoEmpresas()) {
-      @for (item of [1,2,3,4,5,6,7,8]; track item) {
-        <div class="card skeleton-card" aria-hidden="true">
-          <div class="placeholder-glow">
-            <span class="placeholder skeleton-pink skeleton-cover col-12"></span>
-            <div class="skeleton-body px-3 py-2">
-              <div class="skeleton-header mb-2">
-                <span class="placeholder skeleton-pink skeleton-avatar"></span>
-                <span class="placeholder skeleton-pink skeleton-line skeleton-line--name"></span>
-              </div>
-              <span class="placeholder skeleton-pink skeleton-line skeleton-line--type mb-1"></span>
-              <span class="placeholder skeleton-pink skeleton-line skeleton-line--location"></span>
-            </div>
+        <a routerLink="/tools/presupuesto" class="tool-card tool-card--live">
+          <span class="tool-card__icon-wrap tool-card__icon-wrap--rose">
+            <i class="bi bi-wallet2"></i>
+          </span>
+          <div class="tool-card__copy">
+            <span class="tool-card__name">Presupuesto</span>
+            <span class="tool-card__desc">Controla gastos y pagos</span>
           </div>
+          <i class="bi bi-arrow-right tool-card__arrow"></i>
+        </a>
+
+        <div class="tool-card tool-card--soon">
+          <span class="tool-card__icon-wrap tool-card__icon-wrap--muted">
+            <i class="bi bi-people"></i>
+          </span>
+          <div class="tool-card__copy">
+            <span class="tool-card__name">Invitados</span>
+            <span class="tool-card__desc">Lista y confirmaciones</span>
+          </div>
+          <span class="tool-badge">Pronto</span>
+        </div>
+
+        <div class="tool-card tool-card--soon">
+          <span class="tool-card__icon-wrap tool-card__icon-wrap--muted">
+            <i class="bi bi-check2-square"></i>
+          </span>
+          <div class="tool-card__copy">
+            <span class="tool-card__name">Tareas</span>
+            <span class="tool-card__desc">Checklist nupcial</span>
+          </div>
+          <span class="tool-badge">Pronto</span>
+        </div>
+
+        <div class="tool-card tool-card--soon">
+          <span class="tool-card__icon-wrap tool-card__icon-wrap--muted">
+            <i class="bi bi-diagram-3"></i>
+          </span>
+          <div class="tool-card__copy">
+            <span class="tool-card__name">Distribución</span>
+            <span class="tool-card__desc">Mesas y asientos</span>
+          </div>
+          <span class="tool-badge">Pronto</span>
+        </div>
+
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Notas de tu boda -->
+  <app-notas-boda></app-notas-boda>
+
+  <!-- Mi equipo de proveedores -->
+  <section class="team-section">
+    <div class="team-wrap">
+
+      <div class="sec-header">
+        <div>
+          <h2 class="sec-title">Mi equipo de proveedores</h2>
+          <p class="sec-sub">
+            @if (cargandoEmpresas()) {
+              Cargando proveedores...
+            } @else if (totalResultados() > 0) {
+              {{ totalResultados() }} proveedor{{ totalResultados() === 1 ? '' : 'es' }} en tu boda
+            } @else {
+              Explora y añade proveedores a tu boda
+            }
+          </p>
+        </div>
+        <div class="filter-group input-group">
+          <select #categoriaSelect class="form-select fbox fbox--strong"
+            (change)="onCategoriaChange($event)">
+            <option value="" disabled selected>Categoría</option>
+            @for (categoria of categorias$ | async; track categoria.id) {
+              <option [value]="categoria.id">{{ categoria.nombre }}</option>
+            }
+          </select>
+          <button class="btn fbox fbox--coral fw-semibold" type="button"
+            (click)="limpiarFiltros(categoriaSelect)">
+            Limpiar
+          </button>
+        </div>
+      </div>
+
+      <!-- Grid de proveedores -->
+      <div class="provider-grid">
+        @if (cargandoEmpresas()) {
+          @for (item of [1,2,3,4,5,6,7,8]; track item) {
+            <div class="card skeleton-card" aria-hidden="true">
+              <div class="placeholder-glow">
+                <span class="placeholder skeleton-pink skeleton-cover col-12"></span>
+                <div class="skeleton-body px-3 py-2">
+                  <div class="skeleton-header mb-2">
+                    <span class="placeholder skeleton-pink skeleton-avatar"></span>
+                    <span class="placeholder skeleton-pink skeleton-line skeleton-line--name"></span>
+                  </div>
+                  <span class="placeholder skeleton-pink skeleton-line skeleton-line--type mb-1"></span>
+                  <span class="placeholder skeleton-pink skeleton-line skeleton-line--location"></span>
+                </div>
+              </div>
+            </div>
+          }
+        }
+        @for (empresa of companies(); track empresa.id) {
+          <app-card-miboda-empresa [empresa]="empresa"></app-card-miboda-empresa>
+        }
+      </div>
+
+      <!-- Estado vacío -->
+      @if (!cargandoEmpresas() && companies().length === 0) {
+        <div class="empty-state">
+          <i class="bi bi-heart empty-state__icon"></i>
+          <p class="empty-state__title">Tu equipo está vacío</p>
+          <p class="empty-state__sub">Explora proveedores y añádelos a tu boda desde el apartado Explorar.</p>
+          <button class="empty-state__btn" (click)="limpiarFiltros(categoriaSelect)">
+            Limpiar filtros
+          </button>
         </div>
       }
-    }
 
-    @for (empresa of companies(); track empresa.id) {
-      <app-card-miboda-empresa [empresa]="empresa"></app-card-miboda-empresa>
-    }
-  </div>
-
-  <!-- Estado vacío -->
-  @if (!cargandoEmpresas() && companies().length === 0) {
-    <div class="empty-state mt-4">
-      <i class="bi bi-search empty-state__icon"></i>
-      <p class="empty-state__title">Sin resultados</p>
-      <p class="empty-state__sub">No encontramos proveedores para esta categoría.</p>
-      <button class="empty-state__btn" (click)="limpiarFiltros(categoriaSelect)">
-        Limpiar filtros
-      </button>
     </div>
-  }
+  </section>
 
 </div>
 

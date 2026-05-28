@@ -1,0 +1,472 @@
+$text:   #3d2c2e;
+$muted:  #9e8585;
+$border: #f0ddd9;
+$coral:  #f76c6f;
+
+:host { display: block; }
+
+// ── Sección ────────────────────────────────────────────
+.notas-section {
+  position: relative;
+  background: rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba($border, 0.55);
+  padding: 2.5rem 0 4rem;
+}
+
+.notas-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 22px;
+}
+
+// ── Kicker ─────────────────────────────────────────────
+.notas-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 13px 4px 10px;
+  border-radius: 999px;
+  background: rgba($coral, 0.1);
+  border: 1px solid rgba($coral, 0.22);
+  font-size: 0.71rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: $coral;
+  margin-bottom: 0.65rem;
+
+  i { font-size: 0.72rem; }
+}
+
+// ── Cabecera ───────────────────────────────────────────
+.notas-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 1.6rem;
+
+  &__copy { flex: 1; min-width: 0; }
+}
+
+.notas-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: $text;
+  margin: 0 0 4px;
+  line-height: 1.1;
+}
+
+.notas-sub {
+  font-size: 0.88rem;
+  color: $muted;
+  margin: 0;
+}
+
+// ── Botón nueva nota ───────────────────────────────────
+.btn-nueva {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 10px 20px;
+  background: $coral;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba($coral, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover {
+    background: darken($coral, 6%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 26px rgba($coral, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  }
+
+  &:active { transform: translateY(0); }
+}
+
+// ── Filtros ────────────────────────────────────────────
+.cat-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 1.75rem;
+}
+
+.cat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: $muted;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(61, 44, 46, 0.05);
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--cat-color, #{$coral});
+    color: var(--cat-color, #{$text});
+    background: rgba(255, 255, 255, 0.88);
+  }
+
+  &--all-active {
+    background: $coral;
+    border-color: $coral;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba($coral, 0.32);
+  }
+
+  &--active {
+    background: var(--cat-color);
+    border-color: var(--cat-color);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// ── Formulario (glass) ─────────────────────────────────
+.nota-form {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 22px;
+  padding: 1.5rem;
+  margin-bottom: 1.75rem;
+  box-shadow:
+    0 8px 32px rgba(61, 44, 46, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba($border, 0.55);
+  }
+}
+
+.nota-control {
+  width: 100%;
+  border: 1.5px solid $border;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  color: $text;
+  background: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+
+  &:focus {
+    border-color: rgba($coral, 0.5);
+    box-shadow: 0 0 0 3px rgba($coral, 0.09);
+    outline: none;
+    background: #fff;
+  }
+
+  &--titulo {
+    display: block;
+    height: 44px;
+    padding: 0 12px;
+  }
+
+  &--textarea {
+    display: block;
+    padding: 10px 12px;
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.55;
+
+    &::placeholder { color: rgba($muted, 0.85); }
+  }
+}
+
+// ── Selector visual de categoría ───────────────────────
+.cat-selector-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $muted;
+  margin-bottom: 0.5rem;
+}
+
+.cat-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1.5px solid $border;
+    background: rgba(255, 255, 255, 0.65);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: $muted;
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+
+    i { font-size: 0.82rem; }
+
+    &:hover {
+      border-color: var(--cat-c);
+      color: var(--cat-c);
+      background: #fff;
+    }
+
+    &--active {
+      background: var(--cat-c);
+      border-color: var(--cat-c);
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14);
+    }
+  }
+}
+
+// ── Botones formulario ─────────────────────────────────
+.nota-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &--cancel {
+    background: transparent;
+    border: 1px solid #ddd0d3;
+    color: $muted;
+    &:hover { background: #fdf6f7; color: $text; border-color: $border; }
+  }
+
+  &--save {
+    background: $coral;
+    border: 1px solid darken($coral, 4%);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba($coral, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    &:hover:not(:disabled) {
+      background: darken($coral, 5%);
+      transform: translateY(-1px);
+      box-shadow: 0 7px 18px rgba($coral, 0.34);
+    }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+}
+
+// ── Grid ───────────────────────────────────────────────
+.notas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+// ── Nota card (glassmorphism) ──────────────────────────
+.nota-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.70);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-top: 3px solid var(--card-color);
+  border-radius: 18px;
+  padding: 1rem 1.15rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+  box-shadow:
+    0 4px 20px rgba(61, 44, 46, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: box-shadow 0.22s ease, transform 0.22s ease, background 0.22s ease;
+
+  // Tinte suave de la categoría
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--card-color);
+    opacity: 0.04;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  &:hover {
+    box-shadow:
+      0 14px 36px rgba(61, 44, 46, 0.13),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.86);
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    position: relative;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px 3px 7px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    font-size: 0.69rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--card-color);
+    line-height: 1;
+    backdrop-filter: blur(4px);
+  }
+
+  &__del {
+    border: none;
+    background: transparent;
+    color: $muted;
+    font-size: 0.82rem;
+    padding: 4px 5px;
+    border-radius: 6px;
+    cursor: pointer;
+    line-height: 1;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    transition: color 0.15s, background 0.15s;
+
+    &:hover { color: #dc2626; background: rgba(220, 38, 38, 0.09); }
+  }
+
+  &__title {
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: $text;
+    margin: 0;
+    line-height: 1.25;
+    position: relative;
+  }
+
+  &__body {
+    font-size: 0.85rem;
+    color: #5a4748;
+    margin: 0;
+    flex: 1;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    position: relative;
+  }
+
+  &__foot {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: auto;
+    padding-top: 7px;
+    border-top: 1px solid rgba($border, 0.5);
+    font-size: 0.7rem;
+    color: $muted;
+    position: relative;
+
+    i { font-size: 0.65rem; }
+  }
+
+  // Icono de fondo decorativo
+  &__watermark {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.75rem;
+    font-size: 4rem;
+    color: var(--card-color);
+    opacity: 0.07;
+    pointer-events: none;
+    line-height: 1;
+  }
+}
+
+// ── Estado vacío ───────────────────────────────────────
+.notas-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3.5rem 1rem;
+  text-align: center;
+
+  &__ring {
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: 50%;
+    background: rgba($coral, 0.08);
+    border: 1.5px dashed rgba($coral, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 8px rgba($coral, 0.04);
+  }
+
+  &__icon {
+    font-size: 1.9rem;
+    color: $coral;
+    opacity: 0.8;
+  }
+
+  &__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $text;
+    margin: 0;
+  }
+
+  &__sub {
+    font-size: 0.85rem;
+    color: $muted;
+    margin: 0;
+    max-width: 290px;
+    line-height: 1.58;
+  }
+}
+
+// ── Responsive ─────────────────────────────────────────
+@media (max-width: 768px) {
+  .notas-wrap { padding: 0 14px; }
+  .notas-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .notas-title { font-size: 1.45rem; }
+  .notas-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+}
+
+@media (max-width: 450px) {
+  .notas-grid { grid-template-columns: 1fr; }
+}

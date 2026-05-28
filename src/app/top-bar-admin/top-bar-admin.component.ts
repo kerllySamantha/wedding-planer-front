@@ -36,6 +36,9 @@ export class TopBarAdminComponent {
   paginaActual = signal(1);
   sidebarOpen = signal(false);
   nombreEmpresa = signal<string>('');
+  fotoEmpresa = signal<string | null>(null);
+  inicialEmpresa = signal<string>('?');
+  tipoServicio = signal<string>('');
   userIde = signal<number>(Number(localStorage.getItem('id')));
   respuesta = signal<Paginated<Notificacion> | null>(null);
   ocultas = signal<Set<number | string>>(new Set());
@@ -81,7 +84,11 @@ export class TopBarAdminComponent {
     const empresa = localStorage.getItem('empresa');
     if (empresa) {
       const empresaObj = JSON.parse(empresa);
-      this.nombreEmpresa.set(empresaObj.nombre_empresa || '');
+      const nombre = empresaObj.nombre_empresa || '';
+      this.nombreEmpresa.set(nombre);
+      this.fotoEmpresa.set(empresaObj.logo || null);
+      this.inicialEmpresa.set(nombre.charAt(0).toUpperCase() || '?');
+      this.tipoServicio.set(empresaObj.tipo_servicio || '');
     }
   }
 

@@ -1,0 +1,110 @@
+<app-navbar></app-navbar>
+
+<section class="reservas-page">
+
+  <div class="reservas-header">
+    <div class="reservas-header__inner">
+      <h1 class="reservas-title">Mis Reservas</h1>
+      <p class="reservas-subtitle">Solicitudes de presupuesto enviadas a tus proveedores</p>
+    </div>
+  </div>
+
+  <div class="reservas-body">
+
+    <!-- Filtros -->
+    <div class="reservas-filters">
+      <button class="filter-chip" [class.filter-chip--active]="filtro() === 'todos'" (click)="filtro.set('todos')">
+        Todos
+        @if (contarPorFiltro('todos') > 0) {
+          <span class="filter-chip__count">{{ contarPorFiltro('todos') }}</span>
+        }
+      </button>
+      <button class="filter-chip" [class.filter-chip--active]="filtro() === 'pendiente'" (click)="filtro.set('pendiente')">
+        Pendientes
+        @if (contarPorFiltro('pendiente') > 0) {
+          <span class="filter-chip__count">{{ contarPorFiltro('pendiente') }}</span>
+        }
+      </button>
+      <button class="filter-chip" [class.filter-chip--active]="filtro() === 'aceptado'" (click)="filtro.set('aceptado')">
+        Aceptados
+        @if (contarPorFiltro('aceptado') > 0) {
+          <span class="filter-chip__count">{{ contarPorFiltro('aceptado') }}</span>
+        }
+      </button>
+      <button class="filter-chip" [class.filter-chip--active]="filtro() === 'rechazado'" (click)="filtro.set('rechazado')">
+        Rechazados
+        @if (contarPorFiltro('rechazado') > 0) {
+          <span class="filter-chip__count">{{ contarPorFiltro('rechazado') }}</span>
+        }
+      </button>
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+      <div class="reservas-empty">
+        <div class="reservas-spinner"></div>
+        <p class="reservas-empty__text">Cargando solicitudes...</p>
+      </div>
+    }
+
+    <!-- Error -->
+    @else if (error()) {
+      <div class="reservas-empty">
+        <i class="bi bi-exclamation-circle reservas-empty__icon"></i>
+        <p class="reservas-empty__text">{{ error() }}</p>
+      </div>
+    }
+
+    <!-- Lista vacía -->
+    @else if (presupuestosFiltrados().length === 0) {
+      <div class="reservas-empty">
+        <i class="bi bi-inbox reservas-empty__icon"></i>
+        <p class="reservas-empty__text">
+          {{ filtro() === 'todos' ? 'Aún no has solicitado ningún presupuesto' : 'No hay solicitudes en esta categoría' }}
+        </p>
+        @if (filtro() === 'todos') {
+          <a [routerLink]="['/dashboard-proveedores']" class="reservas-cta">Explorar proveedores</a>
+        }
+      </div>
+    }
+
+    <!-- Lista -->
+    @else {
+      <div class="reservas-list">
+        @for (p of presupuestosFiltrados(); track p.id) {
+          <a [routerLink]="['/presupuesto', p.id]" class="reserva-card">
+
+            <div class="reserva-card__left">
+              <div class="reserva-card__avatar">{{ p.nombre?.charAt(0)?.toUpperCase() || '?' }}</div>
+              <div class="reserva-card__info">
+                <span class="reserva-card__name">{{ p.nombre }}</span>
+                <span class="reserva-card__meta">
+                  @if (p.fecha) {
+                    <i class="bi bi-calendar3"></i> {{ p.fecha | date:'dd/MM/yyyy' }}
+                  }
+                  @if (p.modalidad) {
+                    <span class="reserva-card__dot">·</span>
+                    {{ p.modalidad === 'servicio' ? 'Servicio' : 'Producto' }}
+                  }
+                </span>
+              </div>
+            </div>
+
+            <div class="reserva-card__right">
+              @if (p.importe_ofertado) {
+                <span class="reserva-card__price">{{ p.importe_ofertado | currency:'EUR':'symbol':'1.0-0' }}</span>
+              } @else if (p.presupuesto) {
+                <span class="reserva-card__price reserva-card__price--muted">{{ p.presupuesto | currency:'EUR':'symbol':'1.0-0' }}</span>
+              }
+              <span class="estado-badge" [ngClass]="claseEstado(p.estado)">{{ etiquetaEstado(p.estado) }}</span>
+            </div>
+
+          </a>
+        }
+      </div>
+    }
+
+  </div>
+</section>
+
+<app-footer-user></app-footer-user>

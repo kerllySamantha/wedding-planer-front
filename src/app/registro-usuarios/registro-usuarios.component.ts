@@ -16,7 +16,6 @@ import { CreatePerfilUsuario } from '../Interfaces/Perfil';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { RegionsServer } from '../Services/Regiones/regiones-abstract.server';
 import { PerfilServiceServiceService } from '../Services/Perfiles/perfil-service-service.service';
-import { NavbarComponent } from '../navbar/navbar.component';
 
 type RegistroUsuarioForm = {
   name: FormControl<string>;
@@ -31,7 +30,7 @@ type RegistroUsuarioForm = {
 
 @Component({
   selector: 'app-registro-usuarios',
-  imports: [RouterLink, NavbarComponent, ReactiveFormsModule, CommonModule],
+  imports: [RouterLink, ReactiveFormsModule, CommonModule],
   templateUrl: './registro-usuarios.component.html',
   styleUrl: './registro-usuarios.component.scss',
 })

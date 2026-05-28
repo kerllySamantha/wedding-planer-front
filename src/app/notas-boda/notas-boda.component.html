@@ -1,0 +1,132 @@
+<section class="notas-section">
+  <div class="notas-wrap">
+
+    <!-- Cabecera -->
+    <div class="notas-header">
+      <div class="notas-header__copy">
+        <div class="notas-kicker">
+          <i class="bi bi-journal-bookmark-fill"></i>
+          <span>Mi diario de boda</span>
+        </div>
+        <h2 class="notas-title">Notas de tu boda</h2>
+        <p class="notas-sub">
+          @if (notas().length > 0) {
+            {{ notas().length }} nota{{ notas().length === 1 ? '' : 's' }} guardada{{ notas().length === 1 ? '' : 's' }}
+          } @else {
+            Ideas, referencias e inspiración para tu gran día
+          }
+        </p>
+      </div>
+      @if (!mostrarForm()) {
+        <button class="btn-nueva" (click)="abrirForm()">
+          <i class="bi bi-plus-lg"></i>
+          <span>Nueva nota</span>
+        </button>
+      }
+    </div>
+
+    <!-- Filtros por categoría -->
+    @if (notas().length > 0) {
+      <div class="cat-filters">
+        <button class="cat-pill" [class.cat-pill--all-active]="filtroCategoria() === null"
+          (click)="toggleFiltro(filtroCategoria()!)">
+          <i class="bi bi-grid-3x3-gap-fill"></i>
+          Todas
+        </button>
+        @for (cat of categorias; track cat.id) {
+          @if (categoriasUsadas().includes(cat.id)) {
+            <button class="cat-pill"
+              [class.cat-pill--active]="filtroCategoria() === cat.id"
+              [style.--cat-color]="colorCategoria(cat.id)"
+              (click)="toggleFiltro(cat.id)">
+              <i class="bi {{ cat.icon }}"></i>{{ cat.label }}
+            </button>
+          }
+        }
+      </div>
+    }
+
+    <!-- Formulario nueva nota -->
+    @if (mostrarForm()) {
+      <div class="nota-form">
+
+        <div class="nota-form__fields">
+          <input type="text" class="nota-control nota-control--titulo"
+            [(ngModel)]="nuevaTitulo"
+            placeholder="Título (opcional)" maxlength="80">
+          <textarea class="nota-control nota-control--textarea"
+            [(ngModel)]="nuevaContenido"
+            rows="4"
+            placeholder="Escribe tu nota, idea o referencia..."
+            maxlength="1000"></textarea>
+        </div>
+
+        <!-- Selector visual de categoría -->
+        <div class="cat-selector-label">Categoría</div>
+        <div class="cat-selector">
+          @for (cat of categorias; track cat.id) {
+            <button type="button" class="cat-selector__item"
+              [class.cat-selector__item--active]="nuevaCategoria === cat.id"
+              [style.--cat-c]="colorCategoria(cat.id)"
+              (click)="nuevaCategoria = cat.id">
+              <i class="bi {{ cat.icon }}"></i>
+              <span>{{ cat.label }}</span>
+            </button>
+          }
+        </div>
+
+        <div class="nota-form__actions">
+          <button class="nota-btn nota-btn--cancel" type="button" (click)="cancelar()">
+            Cancelar
+          </button>
+          <button class="nota-btn nota-btn--save" type="button"
+            (click)="guardar()" [disabled]="!nuevaContenido.trim()">
+            <i class="bi bi-check2"></i> Guardar nota
+          </button>
+        </div>
+
+      </div>
+    }
+
+    <!-- Grid de notas -->
+    @if (notasFiltradas().length > 0) {
+      <div class="notas-grid">
+        @for (nota of notasFiltradas(); track nota.id) {
+          <article class="nota-card" [style.--card-color]="colorCategoria(nota.categoria)">
+            <div class="nota-card__head">
+              <span class="nota-card__badge">
+                <i class="bi {{ iconoCategoria(nota.categoria) }}"></i>
+                {{ labelCategoria(nota.categoria) }}
+              </span>
+              <button class="nota-card__del" (click)="eliminar(nota.id)" aria-label="Eliminar nota">
+                <i class="bi bi-trash3"></i>
+              </button>
+            </div>
+            @if (nota.titulo) {
+              <h4 class="nota-card__title">{{ nota.titulo }}</h4>
+            }
+            <p class="nota-card__body">{{ nota.contenido }}</p>
+            <div class="nota-card__foot">
+              <i class="bi bi-clock"></i>
+              <span>{{ formatearFecha(nota.creadaEn) }}</span>
+            </div>
+            <i class="bi {{ iconoCategoria(nota.categoria) }} nota-card__watermark"></i>
+          </article>
+        }
+      </div>
+    } @else if (!mostrarForm() && notas().length === 0) {
+      <div class="notas-empty">
+        <div class="notas-empty__ring">
+          <i class="bi bi-journal-bookmark-fill notas-empty__icon"></i>
+        </div>
+        <p class="notas-empty__title">Sin notas todavía</p>
+        <p class="notas-empty__sub">Guarda ideas, referencias o recordatorios para tu gran día.</p>
+        <button class="btn-nueva" (click)="abrirForm()">
+          <i class="bi bi-plus-lg"></i>
+          <span>Añadir primera nota</span>
+        </button>
+      </div>
+    }
+
+  </div>
+</section>

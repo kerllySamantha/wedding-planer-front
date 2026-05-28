@@ -8,6 +8,7 @@ export const APP_PATHS = {
   registerCompany: 'registerEmpresa',
   userWedding: 'mi-boda',
   userProfile: 'perfil-user',
+  userReservas: 'mis-reservas',
   budgetTool: 'tools/presupuesto',
   supplierDetails: 'proveedores/detalles',
   providerDashboard: 'proveedor-dashboard',

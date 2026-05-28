@@ -141,6 +141,11 @@ export class CrearReseniaProveedorComponent implements OnDestroy {
     input.value = '';
   }
 
+  starDescripcion(val: number): string {
+    const labels: Record<number, string> = { 1: 'Malo', 2: 'Regular', 3: 'Bien', 4: 'Muy bien', 5: 'Excelente' };
+    return labels[val] ?? '';
+  }
+
   setPuntuacion(star: number): void {
     this.form.controls.puntuacion.setValue(String(star));
     this.form.controls.puntuacion.markAsTouched();

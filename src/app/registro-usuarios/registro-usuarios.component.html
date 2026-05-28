@@ -1,192 +1,192 @@
-<div class="fondo">
-  <app-navbar></app-navbar>
+<section class="reg-section">
 
-  <main class="contenedor-registro">
-    <div class="login-row">
-      <section class="image-fondo d-none d-md-block"></section>
+  <!-- Link volver al inicio -->
+  <a [routerLink]="['/dashboard']" class="reg-home-link">
+    <i class="bi bi-arrow-left me-1"></i>Ir al inicio
+  </a>
 
-      <section class="column-login">
-        <div class="login-content">
-          <div class="form-header">
-            <h2>Crea tu cuenta</h2>
-            <p class="subtitle-text">
-              ¿Ya dispones de cuenta?
-              <a [routerLink]="['/login']">Accede aquí</a>
-            </p>
+  <div class="reg-content container-fluid">
+
+    <!-- Columna izquierda: marketing copy -->
+    <div class="reg-left">
+      <div class="reg-copy">
+        <span class="reg-eyebrow">PORTAL PARA NOVIAS</span>
+
+        <h1>
+          Tu boda perfecta,<br>
+          organizada desde aquí
+        </h1>
+
+        <p>
+          Gestiona proveedores, presupuesto y actividades en un solo lugar diseñado para ti.
+        </p>
+
+        <ul class="reg-benefits">
+          <li>
+            <span class="check-circle"><i class="bi bi-check-lg"></i></span>
+            <span>Agenda y coordina todos tus proveedores</span>
+          </li>
+          <li>
+            <span class="check-circle"><i class="bi bi-check-lg"></i></span>
+            <span>Control del presupuesto en tiempo real</span>
+          </li>
+          <li>
+            <span class="check-circle"><i class="bi bi-check-lg"></i></span>
+            <span>Cuenta atrás personalizada para tu gran día</span>
+          </li>
+        </ul>
+
+        <p class="reg-login-text">
+          ¿Ya tienes cuenta?&nbsp;
+          <a [routerLink]="['/login']">Accede aquí</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Columna derecha: card glassmorphism -->
+    <div class="reg-right">
+      <div class="reg-card">
+
+        <div class="reg-card-head">
+          <div class="reg-card-icon">
+            <i class="bi bi-heart-fill"></i>
+          </div>
+          <h2>Crea tu cuenta</h2>
+        </div>
+
+        @if (generalError) {
+          <div class="reg-alert reg-alert--danger">{{ generalError }}</div>
+        }
+        @if (successMessage) {
+          <div class="reg-alert reg-alert--success">{{ successMessage }}</div>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit($event)" novalidate>
+
+          <!-- ACCESO -->
+          <p class="reg-section-label">Acceso</p>
+
+          <div class="row gx-2">
+            <div class="col-12 col-sm-6">
+              <div class="field-group">
+                <div class="field-wrap" [class.is-invalid-wrap]="isInvalid('name')">
+                  <span class="field-icon"><i class="bi bi-person"></i></span>
+                  <input type="text" class="reg-input" placeholder="Usuario" formControlName="name">
+                </div>
+                @if (isInvalid('name')) {
+                  <div class="reg-invalid">{{ getError('name') }}</div>
+                }
+              </div>
+            </div>
+            <div class="col-12 col-sm-6">
+              <div class="field-group">
+                <div class="field-wrap" [class.is-invalid-wrap]="isInvalid('email')">
+                  <span class="field-icon"><i class="bi bi-envelope"></i></span>
+                  <input type="email" class="reg-input" placeholder="Correo electrónico" formControlName="email">
+                </div>
+                @if (isInvalid('email')) {
+                  <div class="reg-invalid">{{ getError('email') }}</div>
+                }
+              </div>
+            </div>
           </div>
 
-          @if (generalError) {
-            <div class="alert alert-danger" role="alert">{{ generalError }}</div>
-          }
-          @if (successMessage) {
-            <div class="alert alert-success" role="alert">{{ successMessage }}</div>
-          }
-
-          <form [formGroup]="form" (ngSubmit)="onSubmit($event)" novalidate>
-
-            <!-- ACCESO -->
-            <p class="section-label pt-3">Acceso</p>
-
-            <div class="row gx-3 pt-2">
-              <div class="col-12 col-md-6">
-                <div class="campo">
-                  <div class="input-box" [class.is-invalid]="isInvalid('name')">
-                    <span class="input-icon"><i class="bi bi-person"></i></span>
-                    <div class="input-area">
-                      <input id="name" type="text" class="input-control" formControlName="name" placeholder=" ">
-                      <label for="name" class="floating-label">Usuario</label>
-                    </div>
-                  </div>
-                  @if (isInvalid('name')) {
-                    <div class="invalid-feedback d-block">{{ getError('name') }}</div>
-                  }
+          <div class="row gx-2">
+            <div class="col-12 col-sm-6">
+              <div class="field-group">
+                <div class="field-wrap" [class.is-invalid-wrap]="isInvalid('password')">
+                  <span class="field-icon" (click)="togglePasswordVisibility()">
+                    <i class="bi" [ngClass]="showPassword ? 'bi-unlock' : 'bi-lock'"></i>
+                  </span>
+                  <input [type]="showPassword ? 'text' : 'password'" class="reg-input"
+                    placeholder="Contraseña" formControlName="password">
                 </div>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <div class="campo">
-                  <div class="input-box" [class.is-invalid]="isInvalid('email')">
-                    <span class="input-icon"><i class="bi bi-envelope"></i></span>
-                    <div class="input-area">
-                      <input id="email" type="email" class="input-control" formControlName="email" placeholder=" ">
-                      <label for="email" class="floating-label">Correo</label>
-                    </div>
-                  </div>
-                  @if (isInvalid('email')) {
-                    <div class="invalid-feedback d-block">{{ getError('email') }}</div>
-                  }
-                </div>
+                @if (isInvalid('password')) {
+                  <div class="reg-invalid">{{ getError('password') }}</div>
+                }
               </div>
             </div>
-
-            <div class="row gx-3">
-              <div class="col-12 col-md-6">
-                <div class="campo">
-                  <div class="input-box" [class.is-invalid]="isInvalid('password')">
-                    <span class="input-icon"><i class="bi bi-lock"></i></span>
-                    <div class="input-area">
-                      <input
-                        id="password"
-                        [type]="showPassword ? 'text' : 'password'"
-                        class="input-control"
-                        formControlName="password"
-                        placeholder=" ">
-                      <label for="password" class="floating-label">Contraseña</label>
-                    </div>
-                    <button
-                      type="button"
-                      class="password-toggle"
-                      (click)="togglePasswordVisibility()"
-                      [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
-                      <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-                    </button>
-                  </div>
-                  @if (isInvalid('password')) {
-                    <div class="invalid-feedback d-block">{{ getError('password') }}</div>
-                  }
+            <div class="col-12 col-sm-6">
+              <div class="field-group">
+                <div class="field-wrap" [class.is-invalid-wrap]="isInvalid('telefono')">
+                  <span class="field-icon"><i class="bi bi-telephone"></i></span>
+                  <input type="tel" class="reg-input" placeholder="Teléfono (+34...)" formControlName="telefono">
                 </div>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <div class="campo">
-                  <div class="input-box" [class.is-invalid]="isInvalid('telefono')">
-                    <span class="input-icon"><i class="bi bi-telephone"></i></span>
-                    <span class="phone-prefix">+34</span>
-                    <div class="input-area">
-                      <input id="telefono" type="tel" class="input-control" formControlName="telefono" placeholder=" ">
-                      <label for="telefono" class="floating-label">Teléfono</label>
-                    </div>
-                  </div>
-                  @if (isInvalid('telefono')) {
-                    <div class="invalid-feedback d-block">{{ getError('telefono') }}</div>
-                  }
-                </div>
+                @if (isInvalid('telefono')) {
+                  <div class="reg-invalid">{{ getError('telefono') }}</div>
+                }
               </div>
             </div>
+          </div>
 
-            <!-- DATOS PERSONALES -->
-            <p class="section-label pt-3">Datos personales</p>
+          <!-- DATOS PERSONALES -->
+          <p class="reg-section-label">Datos personales</p>
 
-            <div class="campo pt-2">
-              <div class="input-box" [class.is-invalid]="isInvalid('direccion')">
-                <span class="input-icon"><i class="bi bi-house"></i></span>
-                <div class="input-area">
-                  <input id="direccion" type="text" class="input-control" formControlName="direccion" placeholder=" ">
-                  <label for="direccion" class="floating-label">Dirección domiciliaria</label>
-                </div>
-              </div>
-              @if (isInvalid('direccion')) {
-                <div class="invalid-feedback d-block">{{ getError('direccion') }}</div>
-              }
+          <div class="field-group">
+            <div class="field-wrap" [class.is-invalid-wrap]="isInvalid('direccion')">
+              <span class="field-icon"><i class="bi bi-house"></i></span>
+              <input type="text" class="reg-input" placeholder="Dirección domiciliaria" formControlName="direccion">
             </div>
+            @if (isInvalid('direccion')) {
+              <div class="reg-invalid">{{ getError('direccion') }}</div>
+            }
+          </div>
 
-            <!-- TU BODA -->
-            <p class="section-label pt-3">Tu boda</p>
+          <!-- TU BODA -->
+          <p class="reg-section-label">Tu boda</p>
 
-            <div class="campo pt-2">
-              <div class="input-box" [class.is-invalid]="isInvalid('weddingDate')">
-                <span class="input-icon"><i class="bi bi-calendar-heart"></i></span>
-                <div class="input-area">
-                  <input id="weddingDate" type="date" class="input-control" formControlName="weddingDate" placeholder=" ">
-                  <label for="weddingDate" class="floating-label">Fecha de boda</label>
-                </div>
-              </div>
-              @if (isInvalid('weddingDate')) {
-                <div class="invalid-feedback d-block">{{ getError('weddingDate') }}</div>
-              }
+          <div class="field-group">
+            <div class="field-wrap" [class.is-invalid-wrap]="isInvalid('weddingDate')">
+              <span class="field-icon"><i class="bi bi-calendar-heart"></i></span>
+              <input type="date" class="reg-input" formControlName="weddingDate">
             </div>
+            @if (isInvalid('weddingDate')) {
+              <div class="reg-invalid">{{ getError('weddingDate') }}</div>
+            }
+          </div>
 
-            <div class="row gx-3">
-              <div class="col-12 col-md-6">
-                <div class="campo">
-                  <div class="input-box" [class.is-invalid]="isInvalid('provincia')">
-                    <span class="input-icon"><i class="bi bi-map"></i></span>
-                    <div class="input-area">
-                      <select id="provincia" formControlName="provincia" class="input-control">
-                        <option value="" disabled selected></option>
-                        @for (provincia of provincias$ | async; track provincia.id) {
-                          <option [ngValue]="provincia">{{ provincia.nombre }}</option>
-                        }
-                      </select>
-                      <label for="provincia" class="floating-label">Provincia</label>
-                    </div>
-                  </div>
-                  @if (isInvalid('provincia')) {
-                    <div class="invalid-feedback d-block">{{ getError('provincia') }}</div>
-                  }
+          <div class="row gx-2">
+            <div class="col-12 col-sm-6">
+              <div class="field-group">
+                <div class="field-wrap" [class.is-invalid-wrap]="isInvalid('provincia')">
+                  <span class="field-icon"><i class="bi bi-map"></i></span>
+                  <select class="reg-input" formControlName="provincia">
+                    <option value="" disabled selected>Provincia</option>
+                    @for (provincia of provincias$ | async; track provincia.id) {
+                      <option [ngValue]="provincia">{{ provincia.nombre }}</option>
+                    }
+                  </select>
                 </div>
-              </div>
-
-              <div class="col-12 col-md-6">
-                <div class="campo">
-                  <div class="input-box" [class.is-invalid]="isInvalid('poblacion')">
-                    <span class="input-icon"><i class="bi bi-geo-alt"></i></span>
-                    <div class="input-area">
-                      <select id="poblacion" formControlName="poblacion" class="input-control">
-                        <option value="" disabled selected></option>
-                        @for (poblacion of poblaciones$ | async; track poblacion.id) {
-                          <option [ngValue]="poblacion">{{ poblacion.nombre }}</option>
-                        }
-                      </select>
-                      <label for="poblacion" class="floating-label">Población</label>
-                    </div>
-                  </div>
-                  @if (isInvalid('poblacion')) {
-                    <div class="invalid-feedback d-block">{{ getError('poblacion') }}</div>
-                  }
-                </div>
+                @if (isInvalid('provincia')) {
+                  <div class="reg-invalid">{{ getError('provincia') }}</div>
+                }
               </div>
             </div>
-
-            <div class="text-center">
-              <button type="submit" class="btn submit-button" [disabled]="loading">
-                {{ loading ? 'Registrando...' : 'Registrarme' }}
-              </button>
+            <div class="col-12 col-sm-6">
+              <div class="field-group">
+                <div class="field-wrap" [class.is-invalid-wrap]="isInvalid('poblacion')">
+                  <span class="field-icon"><i class="bi bi-geo-alt"></i></span>
+                  <select class="reg-input" formControlName="poblacion">
+                    <option value="" disabled selected>Población</option>
+                    @for (poblacion of poblaciones$ | async; track poblacion.id) {
+                      <option [ngValue]="poblacion">{{ poblacion.nombre }}</option>
+                    }
+                  </select>
+                </div>
+                @if (isInvalid('poblacion')) {
+                  <div class="reg-invalid">{{ getError('poblacion') }}</div>
+                }
+              </div>
             </div>
+          </div>
 
-          </form>
-        </div>
-      </section>
+          <button type="submit" class="btn reg-submit-btn fw-semibold" [disabled]="loading">
+            {{ loading ? 'Registrando...' : 'Crear cuenta' }}
+          </button>
+
+        </form>
+      </div>
     </div>
-  </main>
-</div>
+
+  </div>
+</section>

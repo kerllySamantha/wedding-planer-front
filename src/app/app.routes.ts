@@ -24,6 +24,7 @@ import { ResponderAdminPresupuestoComponent } from './responder-admin-presupuest
 import { solicitudResolver } from './Resolver/solicitud.resolver';
 import { APP_PATHS } from './app.paths';
 import { AceptarPresupuestoComponent } from './aceptar-presupuesto/aceptar-presupuesto.component';
+import { MisReservasComponent } from './mis-reservas/mis-reservas.component';
 import { LoginEmpresasComponent } from './login-empresas/login-empresas.component';
 
 const userOnly = {
@@ -91,6 +92,11 @@ const userRoutes: Routes = [
   {
     path: APP_PATHS.userProfile,
     component: PerfilUserComponent,
+    ...userOnly,
+  },
+  {
+    path: APP_PATHS.userReservas,
+    component: MisReservasComponent,
     ...userOnly,
   },
   {

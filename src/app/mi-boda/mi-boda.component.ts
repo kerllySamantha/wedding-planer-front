@@ -10,15 +10,16 @@ import { CategoriasServiceService } from '../Services/Catergorias/categoria-serv
 import { map } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardMibodaEmpresaComponent } from '../card-miboda-empresa/card-miboda-empresa.component';
-import { Router, RouterOutlet } from '@angular/router';
+import { NotasBodaComponent } from '../notas-boda/notas-boda.component';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { InfoCategoria } from '../Interfaces/Categoria';
 import { FooterUserComponent } from "../footer-user/footer-user.component";
 
 @Component({
   selector: 'app-mi-boda',
   imports: [MenuMiBodaComponent, NavbarComponent, ActividadesMiBodaComponent, AsyncPipe,
-    MatCardModule, MatButtonModule, AsyncPipe, ReactiveFormsModule,
-    CardMibodaEmpresaComponent, RouterOutlet, FooterUserComponent],
+    MatCardModule, MatButtonModule, ReactiveFormsModule,
+    CardMibodaEmpresaComponent, RouterOutlet, RouterLink, FooterUserComponent, NotasBodaComponent],
   templateUrl: './mi-boda.component.html',
   styleUrl: './mi-boda.component.scss'
 })
@@ -26,13 +27,6 @@ export class MiBodaComponent {
   filtroEmpresas = inject(FiltroEmpresasServiceService);
   servicioDeCategorias = inject(CategoriasServiceService);
 
-  constructor(private router: Router) {
-
-  }
-
-  ngOnInit() {
-    console.log(this.companies())
-  }
 
   companies = computed(() =>
     this.filtroEmpresas.empresasFiltradas()

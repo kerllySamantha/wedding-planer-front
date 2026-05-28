@@ -4,7 +4,21 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <span class="navbar-brand d-none d-xl-block">{{ nombreEmpresa() }}</span>
+    <div class="navbar-brand brand-identity d-none d-xl-flex align-items-center">
+      <div class="brand-avatar">
+        @if (fotoEmpresa()) {
+          <img [src]="fotoEmpresa()!" alt="Logo empresa" class="brand-avatar__img" />
+        } @else {
+          <span class="brand-avatar__initial">{{ inicialEmpresa() }}</span>
+        }
+      </div>
+      <div class="brand-copy">
+        <span class="brand-copy__name">{{ nombreEmpresa() }}</span>
+        @if (tipoServicio()) {
+          <span class="brand-copy__role">{{ tipoServicio() }}</span>
+        }
+      </div>
+    </div>
 
     <div class="d-flex align-items-center gap-3">
       <button class="btn btn-light topbar-icon-btn btn-chat" type="button" aria-label="Mensajes">
