@@ -16,11 +16,14 @@ import { Foto } from '../Interfaces/Resenia';
 import { HttpClient } from '@angular/common/http';
 import { Producto, ProductoEmpresa } from '../Interfaces/Producto';
 import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-configuracion-admin',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, MatProgressBar],
   templateUrl: './configuracion-admin.component.html',
   styleUrl: './configuracion-admin.component.scss',
 })
@@ -61,8 +64,10 @@ export class ConfiguracionAdminComponent {
   >({});
   galeriaUrls = signal<Foto[]>([]);
   logoUrl = signal<string>('');
+  logoEliminado = signal(false);
   fotoPerfilUrl = signal<string>('');
   fotoPerfilPath = signal<string>('');
+  fotoPerfilEliminada = signal(false);
   loadingLogo = signal(false);
   empresaSinImagenes = computed(() => (this.empresa()?.fotos?.length ?? 0) === 0);
   loadingUpload = signal(false);
@@ -120,8 +125,10 @@ export class ConfiguracionAdminComponent {
 
         this.galeriaUrls.set(fotos);
         this.logoUrl.set(this.normalizeImageUrl(empresa.logo ?? ''));
+        this.logoEliminado.set(false);
         this.fotoPerfilUrl.set(empresa.usuario?.fotoPerfil ?? '');
         this.fotoPerfilPath.set('');
+        this.fotoPerfilEliminada.set(false);
         this.inicializarCategoriaSeleccionada();
       },
     });
@@ -598,7 +605,10 @@ export class ConfiguracionAdminComponent {
       this.empresaCtx.uploadImageBase64(base64, extension, userId).subscribe({
         next: (res) => {
           const url = this.normalizeImageUrl(res?.url ?? '');
-          if (url) this.logoUrl.set(url);
+          if (url) {
+            this.logoUrl.set(url);
+            this.logoEliminado.set(false);
+          }
           this.loadingLogo.set(false);
         },
         error: () => this.loadingLogo.set(false),
@@ -623,12 +633,27 @@ export class ConfiguracionAdminComponent {
       this.empresaCtx.uploadImageBase64(base64, extension, userId).subscribe({
         next: (res) => {
           if (res?.path) this.fotoPerfilPath.set(res.path);
-          if (res?.url) this.fotoPerfilUrl.set(this.normalizeImageUrl(res.url));
+          if (res?.url) {
+            this.fotoPerfilUrl.set(this.normalizeImageUrl(res.url));
+            this.fotoPerfilEliminada.set(false);
+          }
         },
         error: (err) => console.error('Error al subir foto de perfil:', err),
       });
     };
     reader.readAsDataURL(file);
+  }
+
+
+  eliminarLogo() {
+    this.logoUrl.set('');
+    this.logoEliminado.set(true);
+  }
+
+  eliminarFotoPerfil() {
+    this.fotoPerfilUrl.set('');
+    this.fotoPerfilPath.set('');
+    this.fotoPerfilEliminada.set(true);
   }
 
   private getImageExtension(file: File): string | null {
@@ -712,11 +737,13 @@ export class ConfiguracionAdminComponent {
       poblacion_id: empresa.poblacion?.id ?? 0,
       direccion: values.direccion ?? '',
       descripcion: empresa.descripcion ?? '',
-      logo: this.logoUrl() || empresa.logo || '',
+      logo: this.logoEliminado() ? '' : this.logoUrl() || empresa.logo || '',
       fotos: this.galeriaUrls(),
       productos: productosPayloadFiltrado,
       productos_eliminados: productosEliminados,
-      ...(this.fotoPerfilPath() ? { fotoPerfil: this.fotoPerfilPath() } : {}),
+      ...(this.fotoPerfilPath() || this.fotoPerfilEliminada()
+        ? { fotoPerfil: this.fotoPerfilEliminada() ? '' : this.fotoPerfilPath() }
+        : {}),
     };
 
     console.log('Payload enviado a /api/empresas/:id', formEmpresa);

@@ -65,13 +65,20 @@
 
     </a>
 
-    <!-- ICONO PERSONA MOVIL -->
-    <a class="btn btn-light border-0 d-lg-none order-3" [routerLink]="['login']" data-bs-toggle="collapse"
-      data-bs-target="#userMenu" aria-expanded="false" aria-controls="userMenu">
-
-      <i class="bi bi-person"></i>
-
-    </a>
+    <!-- ICONO USUARIO MOVIL -->
+    @if (autServicectx.auth()) {
+    <button class="d-lg-none order-3 mc-user-toggle" type="button" [matMenuTriggerFor]="userMenuHome">
+      @if (fotoU()) {
+        <img [src]="fotoU()!" alt="Foto de perfil" class="mc-user-toggle__avatar">
+      } @else {
+        <div class="mc-user-toggle__initials">{{ nombreU() }}</div>
+      }
+    </button>
+    } @else {
+    <button class="d-lg-none order-3 mc-user-toggle" type="button" [matMenuTriggerFor]="guestMenuMobile">
+      <i class="bi bi-person fs-5"></i>
+    </button>
+    }
 
     <!-- MENU ESCRITORIO -->
     <div class="d-none d-lg-flex justify-content-center flex-grow-1">
@@ -118,64 +125,53 @@
     <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mainMenuOffcanvas"
       aria-labelledby="mainMenuOffcanvasLabel">
 
-      <div class="offcanvas-header border-bottom">
-
-        <h5 class="offcanvas-title" id="mobileMenuLabel">
-
-          Menú
-
-        </h5>
-
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close">
-        </button>
-
+      <div class="offcanvas-header mc-oc-header">
+        <a class="navbar-brand p-0" [routerLink]="['/']" data-bs-dismiss="offcanvas">
+          <img src="assets/images/logo2.png" alt="Logo" height="36">
+        </a>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
       </div>
 
-      <div class="offcanvas-body">
+      <div class="offcanvas-body mc-oc-body">
 
-        <ul class="navbar-nav flex-column gap-3 text-start">
-
-          @if(autServicectx.rol() === 'usuario' && autServicectx.auth()) {
-
-          <li class="nav-item">
-
-            <a class="nav-link" [routerLink]="['mi-boda']" routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: false }">
-
-              Mi Boda
-
+        <ul class="mc-nav-list">
+          @if (autServicectx.rol() === 'usuario' && autServicectx.auth()) {
+          <li>
+            <a class="mc-nav-item" [routerLink]="['/mi-boda']" routerLinkActive="mc-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: false }" data-bs-dismiss="offcanvas">
+              <span class="mc-nav-item__icon"><i class="bi bi-heart"></i></span>
+              <span>Mi Boda</span>
             </a>
-
           </li>
-
           }
-
-          <li class="nav-item">
-
-            <a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: true }">
-
-              Proveedores
-
-            </a>
-
-          </li>
-
-          <li class="nav-item">
-
-            <a class="nav-link" [routerLink]="['/mis-reservas']" routerLinkActive="active"
+          <li>
+            <a class="mc-nav-item" [routerLink]="['/dashboard-proveedores']" routerLinkActive="mc-nav-item--active"
               [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">
-
-              Reservas
-
+              <span class="mc-nav-item__icon"><i class="bi bi-shop"></i></span>
+              <span>Proveedores</span>
             </a>
-
           </li>
-
+          @if (autServicectx.auth()) {
+          <li>
+            <a class="mc-nav-item" [routerLink]="['/mis-reservas']" routerLinkActive="mc-nav-item--active"
+              [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas">
+              <span class="mc-nav-item__icon"><i class="bi bi-calendar-check"></i></span>
+              <span>Reservas</span>
+            </a>
+          </li>
+          }
+          @if (!autServicectx.auth()) {
+          <li>
+            <a class="mc-nav-item mc-nav-item--empresa" [routerLink]="['/dashboard-empresas']"
+              data-bs-dismiss="offcanvas">
+              <span class="mc-nav-item__icon"><i class="bi bi-briefcase"></i></span>
+              <span>Área Empresas</span>
+            </a>
+          </li>
+          }
         </ul>
 
       </div>
-
     </div>
 
     <!-- DERECHA -->
@@ -222,42 +218,13 @@
 
         </button>
 
-        <!-- MENU USUARIO -->
-        <mat-menu #userMenuHome="matMenu" yPosition="below" xPosition="after">
-
-          <button mat-menu-item [routerLink]="['/']">
-
-            Inicio
-
-          </button>
-
-          <button mat-menu-item [routerLink]="['/perfil-user']">
-
-            Perfil
-
-          </button>
-
-          <button mat-menu-item [routerLink]="['/configuracion']">
-
-            Configuración
-
-          </button>
-
-          <mat-divider></mat-divider>
-
-          <button mat-menu-item (click)="logout($event)">
-
-            Cerrar sesión
-
-          </button>
-
-        </mat-menu>
-
         <!-- MENU NOTIFICACIONES -->
         <mat-menu #notifMenuHome="matMenu" [overlapTrigger]="false" yPosition="below" xPosition="after"
           class="notif-menu">
 
-          <ng-container *ngTemplateOutlet="notifPanel"></ng-container>
+          <ng-container *ngTemplateOutlet="notifPanel">
+
+          </ng-container>
 
         </mat-menu>
 
@@ -271,7 +238,7 @@
         <a class="d-flex align-items-center registro-empresa text-decoration-none text-dark gap-2"
           [routerLink]="['/dashboard-empresas']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
 
-          <i class="bi bi-briefcase text-primary"></i>
+          <i class="bi bi-briefcase icono-empresas"></i>
 
           <span class="area-empresas">
 
@@ -306,6 +273,27 @@
     </div>
 
   </div>
+
+  <!-- mat-menus en el scope del @else principal, fuera de cualquier @if interno -->
+  <mat-menu #userMenuHome="matMenu" yPosition="below" xPosition="after">
+    <button mat-menu-item [routerLink]="['/']">Inicio</button>
+    <button mat-menu-item [routerLink]="['/perfil-user']">Perfil</button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="logout($event)">Cerrar sesión</button>
+  </mat-menu>
+
+  <mat-menu #guestMenuMobile="matMenu" yPosition="below" xPosition="after">
+    <button mat-menu-item [routerLink]="['/login']">
+      <i class="bi bi-box-arrow-in-right me-2"></i>Acceder
+    </button>
+    <button mat-menu-item [routerLink]="['/registerUser']">
+      <i class="bi bi-person-plus me-2"></i>Regístrate
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item [routerLink]="['/dashboard-empresas']">
+      <i class="bi bi-briefcase me-2"></i>Área Empresas
+    </button>
+  </mat-menu>
 
 </nav>
 
@@ -392,3 +380,5 @@
 
   </div>
 </ng-template>
+
+

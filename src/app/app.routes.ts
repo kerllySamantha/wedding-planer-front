@@ -26,6 +26,7 @@ import { APP_PATHS } from './app.paths';
 import { AceptarPresupuestoComponent } from './aceptar-presupuesto/aceptar-presupuesto.component';
 import { MisReservasComponent } from './mis-reservas/mis-reservas.component';
 import { LoginEmpresasComponent } from './login-empresas/login-empresas.component';
+import { BodaDetalleComponent } from './boda-detalle/boda-detalle.component';
 
 const userOnly = {
   canActivate: [rolGuard],
@@ -60,6 +61,10 @@ const publicRoutes: Routes = [
     path: `${APP_PATHS.supplierDetails}/:id`,
     component: DetallesProveedoresComponent,
     resolve: { proveedor: empresaResolver },
+  },
+  {
+    path: `${APP_PATHS.bodaDetalle}/:id`,
+    component: BodaDetalleComponent,
   },
   {
     path: APP_PATHS.budgetTool,

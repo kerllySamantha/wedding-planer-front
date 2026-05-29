@@ -92,7 +92,7 @@ export class EmpresasApiServiceService extends EmpresasServiceServiceService {
       productos_eliminados: empresa.productos_eliminados ?? [],
     };
     if (empresa.password) putObject['password'] = empresa.password;
-    if (empresa.fotoPerfil) putObject['fotoPerfil'] = empresa.fotoPerfil;
+    if (empresa.fotoPerfil !== undefined) putObject['fotoPerfil'] = empresa.fotoPerfil;
     return this.http.put(`${this.apiUrl}/empresas/${idEmpresa}`, putObject);
   }
 

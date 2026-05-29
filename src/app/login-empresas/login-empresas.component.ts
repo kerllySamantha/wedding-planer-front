@@ -8,7 +8,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
-import { switchMap, tap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { NgClass } from '@angular/common';
 
 @Component({
@@ -89,21 +89,23 @@ export class LoginEmpresasComponent {
     this.authServicectx
       .login(email, password)
       .pipe(
-        tap((response) => {
-          localStorage.setItem('user', JSON.stringify(response.data));
-          localStorage.setItem('id', response.data.id.toString());
-          localStorage.setItem('rol', response.data.rol);
-          localStorage.setItem('token', response.token);
-          this.authServicectx['auth'].set(response.data);
-        }),
         switchMap((response) => {
           if (response?.data.rol !== 'empresa') {
+            // El tap() del servicio ya seteó auth y token — los deshacemos
+            this.authServicectx.auth.set(undefined);
+            this.authServicectx.fotoUrl.set(null);
+            localStorage.removeItem('token');
             this.messageError.set(
-              'Las credenciales ingresadas no son correctas.',
+              'Esta cuenta no pertenece a una empresa proveedora.',
             );
             this.error.set(true);
             throw new Error('Rol incorrecto');
           }
+
+          localStorage.setItem('user', JSON.stringify(response.data));
+          localStorage.setItem('id', response.data.id.toString());
+          localStorage.setItem('nombre', response.data.name ?? '');
+          localStorage.setItem('rol', response.data.rol);
 
           return this.empresaServicectx.getEmpresaByUser(response.data.id!);
         }),
@@ -125,12 +127,17 @@ export class LoginEmpresasComponent {
         },
         error: (err) => {
           this.loading = false;
-          this.error.set(true);
-          this.messageError.set(
-            err?.error?.message ??
-              'No se pudo iniciar sesión. Revisa tus credenciales.',
-          );
-          console.error('Error en el flujo:', err);
+          // Limpia cualquier estado parcial que haya quedado seteado
+          this.authServicectx.auth.set(undefined);
+          this.authServicectx.fotoUrl.set(null);
+          localStorage.removeItem('token');
+          if (!this.error()) {
+            this.error.set(true);
+            this.messageError.set(
+              err?.error?.message ??
+                'No se pudo iniciar sesión. Revisa tus credenciales.',
+            );
+          }
         },
       });
   }

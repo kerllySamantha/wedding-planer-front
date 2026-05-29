@@ -16,4 +16,5 @@ export const APP_PATHS = {
   providerSettings: 'proveedor-dashboard/configuracion',
   providerReviews: 'proveedor-dashboard/resenias',
   providerRequests: 'proveedor-dashboard/solicitudes',
+  bodaDetalle: 'bodas',
 } as const;

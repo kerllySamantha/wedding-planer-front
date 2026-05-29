@@ -1,6 +1,6 @@
 <div class="card  h-100  rounded-3 mx-auto " style="max-width: 22rem;">
     <!-- Imagen principal -->
-    <a href="#" class="text-decoration-none text-dark">
+    <a [routerLink]="['/', APP_PATHS.bodaDetalle, boda()?.id]" class="text-decoration-none text-dark">
 
         @for (foto of boda()?.fotos; track foto.path; let idx = $index) {
         @if (idx === 0) {
@@ -24,7 +24,7 @@
         <div class="card-body text-center">
             <h5 class="card-title mb-1">{{ boda()?.nombre_pareja }}</h5>
             <p class="card-text text-muted small mb-0">
-                {{ boda()?.fotos?.length }} Fotos Â· {{ boda()?.ubicacion }}
+                {{ boda()?.fotos?.length }} Fotos · {{ boda()?.ubicacion }}
             </p>
         </div>
     </a>

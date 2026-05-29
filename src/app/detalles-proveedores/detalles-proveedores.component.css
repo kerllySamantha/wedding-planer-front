@@ -368,6 +368,27 @@ svg {
   border-bottom-right-radius: 0.625rem;
 }
 
+.img-fallback-banner {
+  width: 100%;
+  height: 35em;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border-radius: 1.5rem;
+  display: block;
+}
+
+.img-fallback-placeholder {
+  width: 100%;
+  height: 35em;
+  border-radius: 1.5rem;
+  background: #f0e4e6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c4a4ab;
+  font-size: 5rem;
+}
+
 @media (min-width: 992px) {
   .sticky-container {
     position: sticky;

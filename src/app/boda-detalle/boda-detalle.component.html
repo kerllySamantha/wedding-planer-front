@@ -1,0 +1,166 @@
+<app-navbar></app-navbar>
+
+@if (cargando()) {
+  <div class="bd-loading">
+    <div class="bd-loading__spinner"></div>
+    <p class="bd-loading__text">Cargando boda…</p>
+  </div>
+} @else if (boda(); as b) {
+
+  <!-- ── Hero ──────────────────────────────────────────── -->
+  <section class="bd-hero">
+    <div class="bd-hero__img-wrap">
+      <img
+        [src]="fotoSeleccionada() ?? 'assets/images/fondo3.jpg'"
+        [alt]="b.nombre_pareja"
+        class="bd-hero__img">
+      <div class="bd-hero__overlay">
+        <h1 class="bd-hero__title">{{ b.nombre_pareja }}</h1>
+        <p class="bd-hero__meta">
+          <i class="bi bi-calendar-heart me-1"></i>{{ formatFecha(b.fecha_boda) }}
+          @if (b.ubicacion) {
+            <span class="bd-hero__sep">·</span>
+            <i class="bi bi-geo-alt me-1"></i>{{ b.ubicacion }}
+          }
+        </p>
+      </div>
+    </div>
+
+    @if (b.fotos.length > 1) {
+      <div class="bd-thumbs">
+        @for (foto of b.fotos; track foto.path) {
+          <button
+            type="button"
+            class="bd-thumbs__btn"
+            [class.bd-thumbs__btn--active]="fotoSeleccionada() === resolverUrl(foto.url, foto.path)"
+            (click)="seleccionarFoto(foto)">
+            <img [src]="resolverUrl(foto.url, foto.path)" [alt]="b.nombre_pareja" class="bd-thumbs__img">
+          </button>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- ── Contenido principal ───────────────────────────── -->
+  <main class="bd-main">
+
+    <!-- Info boda -->
+    <section class="bd-card">
+      <h2 class="bd-card__title"><i class="bi bi-heart-fill me-2"></i>Sobre la boda</h2>
+      <dl class="bd-dl">
+        @if (b.poblacion.nombre) {
+          <div class="bd-dl__item">
+            <dt><i class="bi bi-geo-alt"></i> Población</dt>
+            <dd>{{ b.poblacion.nombre }}</dd>
+          </div>
+        }
+        @if (b.provincia.nombre) {
+          <div class="bd-dl__item">
+            <dt><i class="bi bi-map"></i> Provincia</dt>
+            <dd>{{ b.provincia.nombre }}</dd>
+          </div>
+        }
+        <div class="bd-dl__item">
+          <dt><i class="bi bi-images"></i> Fotos</dt>
+          <dd>{{ b.fotos.length }} fotografías compartidas</dd>
+        </div>
+        @if (b.notas) {
+          <div class="bd-dl__item bd-dl__item--full">
+            <dt><i class="bi bi-chat-quote"></i> Historia</dt>
+            <dd>{{ b.notas }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+
+    <!-- Galería completa -->
+   @if ((b.fotos.length ) > 1) {
+      <section class="bd-card">
+        <h2 class="bd-card__title"><i class="bi bi-images me-2"></i>Galería de fotos</h2>
+        <div class="bd-gallery">
+          @for (foto of b.fotos; track foto.path) {
+            <a [href]="resolverUrl(foto.url, foto.path)" target="_blank" rel="noopener" class="bd-gallery__item">
+              <img [src]="resolverUrl(foto.url, foto.path)" [alt]="b.nombre_pareja" class="bd-gallery__img">
+              <span class="bd-gallery__zoom"><i class="bi bi-arrows-fullscreen"></i></span>
+            </a>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Reseñas -->
+    <section class="bd-card">
+      <h2 class="bd-card__title">
+        <i class="bi bi-star-fill me-2"></i>Reseñas
+        @if (b.resenias?.length) {
+          <span class="bd-reviews-count">({{ b.resenias!.length }})</span>
+        }
+      </h2>
+
+      @if (b.resenias && b.resenias.length > 0) {
+        <div class="bd-reviews">
+          @for (r of b.resenias; track r.id) {
+            <article class="bd-review">
+
+              <div class="bd-review__head">
+                <div class="bd-review__avatar">
+                  @if (r.usuario.fotoPerfil) {
+                    <img [src]="r.usuario.fotoPerfil" [alt]="r.usuario.name" class="bd-review__avatar-img">
+                  } @else {
+                    <span class="bd-review__avatar-empty"><i class="bi bi-person-fill"></i></span>
+                  }
+                </div>
+                <div class="bd-review__author">
+                  <span class="bd-review__name">{{ r.usuario.name }}</span>
+                  @if (r.empresa.nombre) {
+                    <span class="bd-review__empresa">sobre {{ r.empresa.nombre }}</span>
+                  }
+                </div>
+                <div class="bd-review__stars">
+                  @for (star of estrellas(r.puntuacion); track $index) {
+                    <i class="bi" [class.bi-star-fill]="star === 1" [class.bi-star]="star === 0"></i>
+                  }
+                  <span class="bd-review__score">{{ r.puntuacion }}</span>
+                </div>
+              </div>
+
+              <p class="bd-review__comentario">{{ r.comentario }}</p>
+
+              @if (r.fotos && r.fotos.length > 0) {
+                <div class="bd-review__fotos">
+                  @for (foto of r.fotos; track foto.path) {
+                    <a [href]="resolverUrl(foto.url, foto.path)" target="_blank" rel="noopener">
+                      <img [src]="resolverUrl(foto.url, foto.path)" alt="Foto de reseña" class="bd-review__foto">
+                    </a>
+                  }
+                </div>
+              }
+
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="bd-empty-reviews">
+          <i class="bi bi-chat-dots bd-empty-reviews__icon"></i>
+          <p class="bd-empty-reviews__text">Esta boda aún no tiene reseñas publicadas.</p>
+        </div>
+      }
+    </section>
+
+  </main>
+
+  <div class="bd-footer-nav">
+    <a [routerLink]="['/', APP_PATHS.home]" class="bd-footer-nav__btn">
+      <i class="bi bi-arrow-left me-1"></i>Volver al inicio
+    </a>
+  </div>
+
+} @else {
+  <div class="bd-not-found">
+    <i class="bi bi-question-circle bd-not-found__icon"></i>
+    <p>No se encontró la boda.</p>
+    <a [routerLink]="['/', APP_PATHS.home]" class="bd-footer-nav__btn">Volver al inicio</a>
+  </div>
+}
+
+<app-footer-user></app-footer-user>

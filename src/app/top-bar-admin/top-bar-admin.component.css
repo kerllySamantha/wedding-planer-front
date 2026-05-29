@@ -283,6 +283,75 @@
     font-size: 0.88rem;
   }
 }
+.brand-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  padding-right: 1.1rem;
+  margin-right: 0.25rem;
+  border-right: 1px solid rgba(20, 63, 102, 0.13);
+}
+
+.brand-avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  min-width: 2.25rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #2c6fa0 0%, #143f66 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.82), 0 2px 8px rgba(20, 63, 102, 0.2);
+}
+.brand-avatar__img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.brand-avatar__initial {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.brand-copy__name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brand-700);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: min(38vw, 24rem);
+  line-height: 1.25;
+}
+.brand-copy__role {
+  font-size: 0.67rem;
+  font-weight: 600;
+  color: rgba(20, 63, 102, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: min(38vw, 24rem);
+  line-height: 1.2;
+}
+
 @media (max-width: 575.98px) {
   .navbar.navbar-expand-xl .container-fluid {
     gap: 0.45rem;
