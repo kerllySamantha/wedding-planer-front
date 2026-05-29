@@ -40,6 +40,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
 
   readonly nombreU = signal<string | null>(null);
+  readonly nombreCompleto = signal<string | null>(null);
   readonly fotoU = computed(() => this.autServicectx.fotoUrl());
   readonly rolAuth = computed(() => !!this.autServicectx.rol());
   readonly toastMessage = signal<string | null>(null);
@@ -100,8 +101,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   letraNombre(): void {
-    const inicial = localStorage.getItem('nombre')?.charAt(0) ?? null;
-    this.nombreU.set(inicial);
+    const nombre = localStorage.getItem('nombre') ?? null;
+    this.nombreU.set(nombre?.charAt(0) ?? null);
+    this.nombreCompleto.set(nombre);
   }
 
   logout(event?: Event): void {

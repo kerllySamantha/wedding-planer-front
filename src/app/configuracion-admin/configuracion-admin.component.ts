@@ -16,11 +16,14 @@ import { Foto } from '../Interfaces/Resenia';
 import { HttpClient } from '@angular/common/http';
 import { Producto, ProductoEmpresa } from '../Interfaces/Producto';
 import Swal from 'sweetalert2';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-configuracion-admin',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, MatProgressBar],
   templateUrl: './configuracion-admin.component.html',
   styleUrl: './configuracion-admin.component.scss',
 })

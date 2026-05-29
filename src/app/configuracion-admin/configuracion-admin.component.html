@@ -35,32 +35,33 @@
     </div>
 
     <div class="identity-studio identity-studio--readonly">
-      <section class="profile-hero" aria-labelledby="perfil-lectura-title">
+
+      <!-- Foto de perfil (arriba) -->
+      <section class="profile-hero">
         <div class="profile-hero__avatar-wrap">
           @if (fotoPerfilUrl()) {
-            <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="profile-hero__avatar">
+          <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="profile-hero__avatar">
           } @else {
-            <div class="profile-hero__avatar profile-hero__avatar--empty"><i class="bi bi-person-fill"></i></div>
+          <div class="profile-hero__avatar profile-hero__avatar--empty"><i class="bi bi-person-fill"></i></div>
           }
         </div>
-        <span class="identidad-lbl" id="perfil-lectura-title">Foto de perfil</span>
-        <span class="identidad-hint">Imagen visible en perfil, mensajes y notificaciones.</span>
       </section>
 
-      <section class="brand-logo-card" aria-labelledby="logo-lectura-title">
-        <div class="brand-logo-card__copy">
+      <!-- Logo empresa (debajo) -->
+      <section class="profile-strip" aria-labelledby="logo-lectura-title">
+        <div class="profile-strip__logo-wrap">
+          @if (logoUrl()) {
+          <img [src]="logoUrl()" alt="Logo empresa" class="profile-strip__logo-img">
+          } @else {
+          <div class="profile-strip__logo-empty"><i class="bi bi-image"></i></div>
+          }
+        </div>
+        <div class="profile-strip__info">
           <span class="identidad-lbl" id="logo-lectura-title">Logo empresa</span>
           <span class="identidad-hint">Tu marca principal para la ficha pública y accesos del proveedor.</span>
         </div>
-
-        <div class="brand-logo-card__preview" aria-label="Vista previa del logo de empresa">
-          @if (logoUrl()) {
-            <img [src]="logoUrl()" alt="Logo empresa" class="brand-logo-card__img">
-          } @else {
-            <div class="brand-logo-card__empty"><i class="bi bi-image"></i><span>Sin logo</span></div>
-          }
-        </div>
       </section>
+
     </div>
   </article>
 
@@ -128,7 +129,8 @@
           @for (producto of grupo.productos; track producto.id) {
           <span class="type-chip">
             <strong>{{ producto.nombre }}</strong>
-            <small>· {{ producto.tipo_producto.nombre }} ({{ unidadPorModalidad(producto.tipo_producto.modalidad) }})</small>
+            <small>· {{ producto.tipo_producto.nombre }} ({{ unidadPorModalidad(producto.tipo_producto.modalidad)
+              }})</small>
           </span>
           }
         </div>
@@ -171,66 +173,64 @@
     <div class="settings-card__header identidad-card__header">
       <div>
         <h2><i class="bi bi-palette me-2"></i>Identidad visual</h2>
-        <p class="settings-subtitle">Gestiona tu foto de perfil y el logo con controles rápidos de añadir o eliminar.</p>
+        <p class="settings-subtitle">Gestiona tu foto de perfil y el logo con controles rápidos de añadir o eliminar.
+        </p>
       </div>
     </div>
 
     <div class="identity-studio">
-      <section class="profile-hero profile-hero--editable" aria-labelledby="perfil-edicion-title">
+
+      <!-- Foto de perfil editable (arriba) -->
+      <section class="profile-hero profile-hero--editable">
         <div class="profile-hero__avatar-wrap">
           <label class="profile-hero__avatar-action" title="Cambiar foto de perfil">
             @if (fotoPerfilUrl()) {
-              <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="profile-hero__avatar">
+            <img [src]="fotoPerfilUrl()" alt="Foto de perfil" class="profile-hero__avatar">
             } @else {
-              <div class="profile-hero__avatar profile-hero__avatar--empty"><i class="bi bi-person-fill"></i></div>
+            <div class="profile-hero__avatar profile-hero__avatar--empty"><i class="bi bi-person-fill"></i></div>
             }
             <span class="profile-hero__camera"><i class="bi bi-camera-fill"></i></span>
             <input type="file" accept="image/*" class="identity-file-input" (change)="onFotoPerfilSelected($event)">
           </label>
-        </div>
-
-        <span class="identidad-lbl" id="perfil-edicion-title">Foto de perfil</span>
-        <span class="identidad-hint">Sube una imagen cuadrada para que el recorte circular se vea impecable.</span>
-
-        <div class="identity-actions" aria-label="Acciones de foto de perfil">
-          <label class="identity-action identity-action--primary">
-            <i class="bi bi-plus-lg"></i> Añadir foto
-            <input type="file" accept="image/*" class="identity-file-input" (change)="onFotoPerfilSelected($event)">
-          </label>
-          <button type="button" class="identity-action identity-action--danger" (click)="eliminarFotoPerfil()" [disabled]="!fotoPerfilUrl()">
-            <i class="bi bi-trash3"></i> Eliminar
+          @if (fotoPerfilUrl()) {
+          <button type="button" class="profile-hero__remove-btn" (click)="eliminarFotoPerfil()"
+            aria-label="Eliminar foto de perfil">
+            <i class="bi bi-x-lg"></i>
           </button>
-        </div>
-      </section>
-
-      <section class="brand-logo-card brand-logo-card--editable" aria-labelledby="logo-edicion-title">
-        <div class="brand-logo-card__copy">
-          <span class="identidad-lbl" id="logo-edicion-title">Logo empresa</span>
-          <span class="identidad-hint">Usa una versión horizontal o con fondo transparente para reforzar tu marca.</span>
-        </div>
-
-        <div class="brand-logo-card__preview">
-          @if (logoUrl()) {
-            <img [src]="logoUrl()" alt="Logo empresa" class="brand-logo-card__img">
-          } @else {
-            <div class="brand-logo-card__empty"><i class="bi bi-image"></i><span>Sin logo</span></div>
           }
         </div>
+      </section>
 
-        <div class="identity-actions identity-actions--logo" aria-label="Acciones de logo de empresa">
-          <label class="identity-action identity-action--primary">
-            @if (loadingLogo()) {
+      <!-- Logo editable (debajo) -->
+      <section class="profile-strip profile-strip--editable" aria-labelledby="logo-edicion-title">
+        <div class="profile-strip__logo-wrap">
+          @if (logoUrl()) {
+          <img [src]="logoUrl()" alt="Logo empresa" class="profile-strip__logo-img">
+          } @else {
+          <div class="profile-strip__logo-empty"><i class="bi bi-image"></i></div>
+          }
+        </div>
+        <div class="profile-strip__info">
+          <span class="identidad-lbl" id="logo-edicion-title">Logo empresa</span>
+          <span class="identidad-hint">Usa una versión horizontal o con fondo transparente para reforzar tu
+            marca.</span>
+          <div class="identity-actions" aria-label="Acciones de logo de empresa">
+            <label class="identity-action identity-action--primary">
+              @if (loadingLogo()) {
               <i class="bi bi-arrow-repeat logo-spin"></i> Subiendo...
-            } @else {
+              } @else {
               <i class="bi bi-plus-lg"></i> Añadir logo
-            }
-            <input type="file" accept="image/*" class="identity-file-input" (change)="onLogoSelected($event)">
-          </label>
-          <button type="button" class="identity-action identity-action--danger" (click)="eliminarLogo()" [disabled]="!logoUrl() || loadingLogo()">
-            <i class="bi bi-trash3"></i> Eliminar
-          </button>
+              }
+              <input type="file" accept="image/*" class="identity-file-input" (change)="onLogoSelected($event)">
+            </label>
+            <button type="button" class="identity-action identity-action--danger" (click)="eliminarLogo()"
+              [disabled]="!logoUrl() || loadingLogo()">
+              <i class="bi bi-trash3"></i> Eliminar
+            </button>
+          </div>
         </div>
       </section>
+
     </div>
   </article>
 
@@ -249,8 +249,9 @@
         <span><i class="bi bi-shop me-1"></i>Nombre de la empresa</span>
         <input class="form-control" id="nombre_empresa" formControlName="nombre_empresa"
           [class.is-invalid]="form.controls.nombre_empresa.invalid && (form.controls.nombre_empresa.touched || form.controls.nombre_empresa.dirty)">
-        @if (form.controls.nombre_empresa.invalid && (form.controls.nombre_empresa.touched || form.controls.nombre_empresa.dirty)) {
-          <small class="text-danger">Obligatorio · mínimo 2 caracteres.</small>
+        @if (form.controls.nombre_empresa.invalid && (form.controls.nombre_empresa.touched ||
+        form.controls.nombre_empresa.dirty)) {
+        <small class="text-danger">Obligatorio · mínimo 2 caracteres.</small>
         }
       </label>
 
@@ -259,7 +260,7 @@
         <input class="form-control" id="name" formControlName="name"
           [class.is-invalid]="form.controls.name.invalid && (form.controls.name.touched || form.controls.name.dirty)">
         @if (form.controls.name.invalid && (form.controls.name.touched || form.controls.name.dirty)) {
-          <small class="text-danger">El nombre de contacto es obligatorio.</small>
+        <small class="text-danger">El nombre de contacto es obligatorio.</small>
         }
       </label>
 
@@ -268,7 +269,7 @@
         <input class="form-control" id="email" type="email" formControlName="email"
           [class.is-invalid]="form.controls.email.invalid && (form.controls.email.touched || form.controls.email.dirty)">
         @if (form.controls.email.invalid && (form.controls.email.touched || form.controls.email.dirty)) {
-          <small class="text-danger">Introduce un email válido.</small>
+        <small class="text-danger">Introduce un email válido.</small>
         }
       </label>
 
@@ -277,7 +278,7 @@
         <input class="form-control" id="telefono" formControlName="telefono"
           [class.is-invalid]="form.controls.telefono.invalid && (form.controls.telefono.touched || form.controls.telefono.dirty)">
         @if (form.controls.telefono.invalid && (form.controls.telefono.touched || form.controls.telefono.dirty)) {
-          <small class="text-danger">El teléfono es obligatorio.</small>
+        <small class="text-danger">El teléfono es obligatorio.</small>
         }
       </label>
 
@@ -285,8 +286,9 @@
         <span><i class="bi bi-briefcase me-1"></i>Tipo de servicio</span>
         <input class="form-control" id="tipo_servicio" formControlName="tipo_servicio"
           [class.is-invalid]="form.controls.tipo_servicio.invalid && (form.controls.tipo_servicio.touched || form.controls.tipo_servicio.dirty)">
-        @if (form.controls.tipo_servicio.invalid && (form.controls.tipo_servicio.touched || form.controls.tipo_servicio.dirty)) {
-          <small class="text-danger">Indica el tipo de servicio.</small>
+        @if (form.controls.tipo_servicio.invalid && (form.controls.tipo_servicio.touched ||
+        form.controls.tipo_servicio.dirty)) {
+        <small class="text-danger">Indica el tipo de servicio.</small>
         }
       </label>
 
@@ -295,7 +297,7 @@
         <input class="form-control" id="direccion" formControlName="direccion"
           [class.is-invalid]="form.controls.direccion.invalid && (form.controls.direccion.touched || form.controls.direccion.dirty)">
         @if (form.controls.direccion.invalid && (form.controls.direccion.touched || form.controls.direccion.dirty)) {
-          <small class="text-danger">Dirección obligatoria · mínimo 5 caracteres.</small>
+        <small class="text-danger">Dirección obligatoria · mínimo 5 caracteres.</small>
         }
       </label>
 
@@ -327,10 +329,8 @@
 
     <div class="catalog-selector">
       <label class="form-label" for="categoria-activa-select">Categoría</label>
-      <select id="categoria-activa-select" class="form-select"
-        [value]="categoriaSeleccionadaId()?.toString() ?? ''"
-        (change)="onCategoriaSeleccionada(+$any($event.target).value)"
-        [disabled]="!categoriasEmpresa().length">
+      <select id="categoria-activa-select" class="form-select" [value]="categoriaSeleccionadaId()?.toString() ?? ''"
+        (change)="onCategoriaSeleccionada(+$any($event.target).value)" [disabled]="!categoriasEmpresa().length">
         @for (categoria of categoriasEmpresa(); track categoria.id) {
         <option [value]="categoria.id.toString()">{{ categoria.nombre }}</option>
         }
@@ -366,11 +366,13 @@
 
             <div class="catalog-type-card__body">
 
-              @if (!(productosPersonalizados()[tipoPermitido.tipoId]?.length) && !(nuevosProductosPorTipo()[tipoPermitido.tipoId]?.length)) {
-                <p class="catalog-body-empty">Sin productos añadidos. Pulsa <strong>Añadir</strong> para incluir uno.</p>
+              @if (!(productosPersonalizados()[tipoPermitido.tipoId]?.length) &&
+              !(nuevosProductosPorTipo()[tipoPermitido.tipoId]?.length)) {
+              <p class="catalog-body-empty">Sin productos añadidos. Pulsa <strong>Añadir</strong> para incluir uno.</p>
               }
 
-              @for (personalizado of (productosPersonalizados()[tipoPermitido.tipoId]); track personalizado.id; let idx = $index) {
+              @for (personalizado of (productosPersonalizados()[tipoPermitido.tipoId]); track personalizado.id; let idx
+              = $index) {
               <div class="product-edit-card">
                 <input class="form-control form-control-sm" placeholder="Nombre del producto"
                   [value]="personalizado.nombre"
@@ -461,8 +463,9 @@
       <div class="preview-item">
         <img [src]="imagen.url" alt="Foto del perfil de empresa">
         <a class="preview-overlay" [href]="imagen.url" target="_blank" rel="noopener">Ver imagen &nearr;</a>
-        <button type="button" class="preview-item__remove" (click)="eliminarFoto(imagen.url)" aria-label="Eliminar imagen">
-          ×
+        <button type="button" class="preview-item__remove" (click)="eliminarFoto(imagen.url)"
+          aria-label="Eliminar imagen">
+          <i class="bi bi-x"></i>
         </button>
       </div>
       } @empty {
@@ -475,10 +478,17 @@
 
   <!-- Estado de carga -->
   } @else {
-  <article class="settings-card settings-card--empty">
-    <h2>Cargando tu perfil…</h2>
-    <p>Estamos recuperando los datos de tu empresa.</p>
-  </article>
+ <article class="settings-card settings-card--empty">
+  <h2 class="border-0 pb-0">
+    Cargando tu perfil...
+  </h2>
+
+  <p>
+    Estamos recuperando los datos de tu empresa.
+  </p>
+
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</article>
   }
 
 </section>

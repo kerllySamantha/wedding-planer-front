@@ -75,7 +75,7 @@
           <a [routerLink]="['/presupuesto', p.id]" class="reserva-card">
 
             <div class="reserva-card__left">
-              <div class="reserva-card__avatar">{{ p.nombre?.charAt(0)?.toUpperCase() || '?' }}</div>
+              <div class="reserva-card__avatar">{{ p.nombre.charAt(0).toUpperCase() || '?' }}</div>
               <div class="reserva-card__info">
                 <span class="reserva-card__name">{{ p.nombre }}</span>
                 <span class="reserva-card__meta">
