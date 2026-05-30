@@ -1,4 +1,15 @@
     import { Poblacion, Provincia } from "./CIudades";
+
+export interface ReservaBoda {
+    id: number;
+    empresa_id: number;
+    estado: string;
+    empresa?: {
+        id: number;
+        nombre_empresa: string;
+    } | null;
+}
+
     import { Presupuesto } from "./Presupuesto";
     import { Foto, Resenia } from "./Resenia";
     import { User } from "./User";
@@ -16,6 +27,7 @@ export interface Boda {
         provincia: Provincia
         presupuestos: Presupuesto[],
         proveedores?: unknown[],
+        reservas?: ReservaBoda[],
         resumen_presupuesto?: unknown,
         planificacion?: {
             presupuestos?: Presupuesto[] | null,

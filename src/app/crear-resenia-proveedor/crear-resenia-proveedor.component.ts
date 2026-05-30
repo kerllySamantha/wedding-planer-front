@@ -19,7 +19,7 @@ import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-ser
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
 
 type CrearReseniaForm = {
-  puntuacion: FormControl<string>;
+  puntuacion: FormControl<number>;
   comentario: FormControl<string>;
 };
 
@@ -67,7 +67,7 @@ export class CrearReseniaProveedorComponent implements OnDestroy {
   );
 
   readonly form = new FormGroup<CrearReseniaForm>({
-    puntuacion: this.fb.control('', [Validators.required]),
+    puntuacion: this.fb.control(0, [Validators.required]),
     comentario: this.fb.control('', [
       Validators.required,
       Validators.minLength(20),
@@ -147,7 +147,7 @@ export class CrearReseniaProveedorComponent implements OnDestroy {
   }
 
   setPuntuacion(star: number): void {
-    this.form.controls.puntuacion.setValue(String(star));
+    this.form.controls.puntuacion.setValue(Number(star));
     this.form.controls.puntuacion.markAsTouched();
   }
 
@@ -205,9 +205,15 @@ export class CrearReseniaProveedorComponent implements OnDestroy {
       this.router.navigate(['/proveedores/detalles', empresa.id], {
         queryParams: { review: 'created' },
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      this.generalError.set('No se pudo publicar la reseña. Revisa las fotos e inténtalo de nuevo.');
+      if (error?.status === 409) {
+        this.generalError.set('Ya has publicado una reseña para esta empresa.');
+      } else {
+        this.generalError.set(
+          error?.error?.message ?? 'No se pudo publicar la reseña. Revisa las fotos e inténtalo de nuevo.',
+        );
+      }
       this.uploading.set(false);
       return;
     }

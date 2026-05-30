@@ -32,8 +32,11 @@ export class LoginUsuariosComponent {
 
   authServicectx = inject(AuthenticationService);
   private readonly route = inject(ActivatedRoute);
+  private readonly validated = signal<boolean>(false);
   nombreU = signal<string>('');
   message = signal<string>('');
+  showPassword = signal(false);
+
 
   form = new FormGroup({
     email: new FormControl<string | null>('', [
@@ -46,33 +49,50 @@ export class LoginUsuariosComponent {
     ]),
   });
 
+  togglePassword(): void {
+  this.showPassword.update(value => !value);
+}
+
+
   onSubmit(event: Event) {
     event.preventDefault();
-    const email = this.form.get('email')?.value ?? '';
-    const password = this.form.get('password')?.value ?? '';
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.message.set('Revisa el email y la contraseña.');
+      return;
+    }
+
+    const email = this.form.controls.email.value ?? '';
+    const password = this.form.controls.password.value ?? '';
+
+    this.message.set('');
 
     this.authServicectx.login(email, password).subscribe({
       next: (response: UserResponse) => {
-        this.authServicectx['auth'].set(response.data);
-        localStorage.setItem('id', response.data.id.toString());
-        localStorage.setItem('user', JSON.stringify(response.data));
-        this.nombreU.set(response.data.name);
-        localStorage.setItem('nombre', this.nombreU());
-        localStorage.setItem('rol', response.data.rol);
-        if (response?.data.rol !== 'usuario') {
-          this.message.set('Las credenciales ingresadas no son correctas.');
-        } else {
-          this.message.set('');
-          const redirect = this.route.snapshot.queryParamMap.get('redirect');
-          this.router.navigateByUrl(redirect || '/');
+        const user = response.data;
+
+        if (user.rol !== 'usuario') {
+          this.message.set('Esta zona está reservada para usuarios.');
+          return;
         }
+
+        this.authServicectx['auth'].set(user);
+
+        this.nombreU.set(user.name);
+
+        localStorage.setItem('id', user.id.toString());
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('nombre', user.name);
+        localStorage.setItem('rol', user.rol);
+
+        const redirect = this.route.snapshot.queryParamMap.get('redirect');
+        this.router.navigateByUrl(redirect || '/');
       },
 
       error: (err) => {
         console.error('Error en login', err);
-        this.message.set(
-          'Las credenciales introducidas son incorrectas.',
-        );
+        this.message.set('Las credenciales introducidas son incorrectas.');
       },
     });
   }

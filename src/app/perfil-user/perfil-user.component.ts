@@ -26,18 +26,20 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { catchError, forkJoin, map, Observable, of, startWith, switchMap, tap } from 'rxjs';
+import { catchError, firstValueFrom, forkJoin, map, Observable, of, startWith, switchMap, tap } from 'rxjs';
 import { APP_PATHS } from '../app.paths';
 import { RegionsServer } from '../Services/Regiones/regiones-abstract.server';
 import { Town } from '../Interfaces/CIudades';
 import { Boda, CreateBoda } from '../Interfaces/Boda';
-import { CreateResenia, Resenia } from '../Interfaces/Resenia';
+import { CreateResenia, Foto, Resenia } from '../Interfaces/Resenia';
 import { ReseniasServiceServiceService } from '../Services/Resenias/resenias-service-service.service';
-import { EmpresasServiceServiceService } from '../Services/Empresas/empresas-service-service.service';
 import { EmpresasApiServiceService } from '../Services/Empresas/empresas-api-service.service';
 import { PresupuestoHttpService } from '../Services/Presupuesto/presupuesto-http-service.service';
 import { AuthenticationService } from '../Services/Autentication/authenticationService';
 import { FooterUserComponent } from "../footer-user/footer-user.component";
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
 
 type PerfilUsuarioForm = {
   name: FormControl<string>;
@@ -57,13 +59,13 @@ type BodaProfileForm = {
 
 type ReseniaBodaForm = {
   empresaId: FormControl<string>;
-  puntuacion: FormControl<string>;
+  puntuacion: FormControl<number>;
   comentario: FormControl<string>;
 };
 
 @Component({
   selector: 'app-perfil-user',
-  imports: [CommonModule, NavbarComponent, ReactiveFormsModule, FooterUserComponent],
+  imports: [CommonModule, NavbarComponent, ReactiveFormsModule, FooterUserComponent, MatFormFieldModule, MatSelectModule, MatIconModule],
   templateUrl: './perfil-user.component.html',
   styleUrl: './perfil-user.component.scss',
 })
@@ -76,7 +78,6 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   private readonly pedirPresupuestoCtx = inject(PedirPresupuestoService);
   private readonly regionesServer = inject(RegionsServer);
   private readonly reseniasService = inject(ReseniasServiceServiceService);
-  private readonly empresasService = inject(EmpresasServiceServiceService);
   private readonly presupuestoService = inject(PresupuestoHttpService);
   private readonly empresasApiSvc = inject(EmpresasApiServiceService);
   private readonly authSvc = inject(AuthenticationService);
@@ -114,7 +115,44 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
   readonly enviandoResenia = signal(false);
   readonly reseniaSuccess = signal<string | null>(null);
   readonly reseniaError = signal<string | null>(null);
-  readonly empresasResenia = signal<Empresa[]>([]);
+  readonly fotosReseniaSeleccionadas = signal<{ file: File; previewUrl: string; extension: string }[]>([]);
+  readonly fotosReseniaError = signal<string | null>(null);
+
+  readonly bodaYaPaso = computed(() => {
+    const b = this.boda();
+    if (!b?.fecha_boda) return false;
+    return new Date(b.fecha_boda) <= new Date();
+  });
+
+  readonly empresasResenia = computed<Empresa[]>(() => {
+    const reservas = this.boda()?.reservas ?? [];
+    const yaReseniadas = new Set(
+      this.reseniasBoda()
+        .map(r => r.empresa?.id)
+        .filter((id): id is number => id != null),
+    );
+    const vistas = new Set<number>();
+    const result: Empresa[] = [];
+    for (const r of reservas) {
+      const empId = r.empresa?.id;
+      if (r.estado === 'confirmada' && empId && !vistas.has(empId) && !yaReseniadas.has(empId)) {
+        vistas.add(empId);
+        result.push({
+          id: empId,
+          nombre_empresa: r.empresa!.nombre_empresa,
+          direccion: '', telefono: '', tipo_servicio: '',
+          poblacion: {} as any, provincia: {} as any,
+          usuario: {} as any, productos: [],
+        });
+      }
+    }
+    return result;
+  });
+
+  readonly puedeHacerResenias = computed(() => this.bodaYaPaso() && this.empresasResenia().length > 0);
+  readonly puedeSubirFotosBoda = computed(() => this.bodaYaPaso() && this.empresasResenia().length > 0);
+
+  puntuacion = signal(0);
 
   readonly perfilForm = new FormGroup<PerfilUsuarioForm>({
     name: this.fb.control('', [
@@ -179,7 +217,7 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
 
   readonly reseniaForm = new FormGroup<ReseniaBodaForm>({
     empresaId: this.fb.control('', [Validators.required]),
-    puntuacion: this.fb.control('', [Validators.required]),
+    puntuacion: this.fb.control(0, [Validators.required]),
     comentario: this.fb.control('', [
       Validators.required,
       Validators.minLength(10),
@@ -279,7 +317,6 @@ export class PerfilUserComponent implements OnInit, OnDestroy {
         if (foto) this.authSvc.updateAuthUser({ fotoPerfil: foto });
         this.cargarNotificaciones();
         this.cargarReseniasDeLaBoda(userId);
-        this.cargarEmpresasParaResenia();
       },
       error: (err: HttpErrorResponse) => {
         console.error('Error al cargar perfil:', err);
@@ -472,13 +509,14 @@ descargarPdf() {
     return Array.from({ length: total }, (_, index) => index);
   }
 
-  enviarResenia(): void {
+  async enviarResenia(): Promise<void> {
     const userId = Number(localStorage.getItem('id'));
     const userName = localStorage.getItem('nombre') ?? 'Usuario';
 
     this.submittedResenia.set(true);
     this.reseniaSuccess.set(null);
     this.reseniaError.set(null);
+    this.fotosReseniaError.set(null);
 
     if (this.reseniaForm.invalid) {
       this.reseniaForm.markAllAsTouched();
@@ -494,53 +532,106 @@ descargarPdf() {
       return;
     }
 
-    const payload: CreateResenia = {
-      user_id: String(userId),
-      empresa_id: String(empresa.id),
-      puntuacion: this.reseniaForm.controls.puntuacion.value,
-      comentario: this.reseniaForm.controls.comentario.value.trim(),
-      fotos: [],
-    };
-
     this.enviandoResenia.set(true);
 
-    this.reseniasService.postResenia(payload).subscribe({
-      next: () => {
-        const nuevaResenia: Resenia = {
-          id: Date.now(),
-          comentario: payload.comentario,
-          puntuacion: payload.puntuacion,
-          usuario: {
-            id: userId,
-            name: userName,
-            rol: 'usuario',
-          },
-          empresa: {
-            id: Number(empresa.id),
-            nombre: empresa.nombre_empresa,
-          },
-          fotos: [],
-        };
+    try {
+      const fotos = await this.subirFotosResenia(userId);
 
-        this.reseniasBoda.update((actuales) => [nuevaResenia, ...actuales]);
-        this.reseniaForm.reset({
-          empresaId: '',
-          puntuacion: '',
-          comentario: '',
-        });
-        this.submittedResenia.set(false);
-        this.enviandoResenia.set(false);
-        this.reseniaSuccess.set('Tu reseña se ha guardado correctamente.');
-      },
-      error: (err: HttpErrorResponse) => {
-        this.enviandoResenia.set(false);
-        this.reseniaError.set(
-          err.error?.message ??
-            err.error?.mensaje ??
-            'No se pudo guardar la reseña.',
-        );
-      },
+      const payload: CreateResenia = {
+        user_id: String(userId),
+        empresa_id: String(empresa.id),
+        puntuacion: this.reseniaForm.controls.puntuacion.value,
+        comentario: this.reseniaForm.controls.comentario.value.trim(),
+        fotos,
+      };
+
+      await firstValueFrom(this.reseniasService.postResenia(payload));
+
+      const nuevaResenia: Resenia = {
+        id: Date.now(),
+        comentario: payload.comentario,
+        puntuacion: payload.puntuacion,
+        usuario: { id: userId, name: userName, rol: 'usuario' },
+        empresa: { id: Number(empresa.id), nombre: empresa.nombre_empresa },
+        fotos,
+      };
+
+      this.reseniasBoda.update((actuales) => [nuevaResenia, ...actuales]);
+      this.fotosReseniaSeleccionadas().forEach((f) => URL.revokeObjectURL(f.previewUrl));
+      this.fotosReseniaSeleccionadas.set([]);
+      this.reseniaForm.reset({ empresaId: '', puntuacion: 0, comentario: '' });
+      this.submittedResenia.set(false);
+      this.enviandoResenia.set(false);
+      this.reseniaSuccess.set('Tu reseña se ha guardado correctamente.');
+    } catch (err: any) {
+      this.enviandoResenia.set(false);
+      this.reseniaError.set(
+        err?.error?.message ?? err?.error?.mensaje ?? 'No se pudo guardar la reseña.',
+      );
+    }
+  }
+
+  onFotoReseniaSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = '';
+    if (!files.length) return;
+
+    this.fotosReseniaError.set(null);
+    const actuales = this.fotosReseniaSeleccionadas();
+
+    if (actuales.length + files.length > 6) {
+      this.fotosReseniaError.set('Máximo 6 fotos por reseña.');
+      return;
+    }
+
+    const nuevas: { file: File; previewUrl: string; extension: string }[] = [];
+    for (const file of files) {
+      const extension = this.getExtensionImagen(file);
+      if (!extension) { this.fotosReseniaError.set('Solo se permiten imágenes JPG, PNG, WEBP o GIF.'); continue; }
+      if (file.size > 5 * 1024 * 1024) { this.fotosReseniaError.set('Cada imagen debe pesar menos de 5 MB.'); continue; }
+      nuevas.push({ file, extension, previewUrl: URL.createObjectURL(file) });
+    }
+
+    if (nuevas.length) this.fotosReseniaSeleccionadas.set([...actuales, ...nuevas]);
+  }
+
+  eliminarFotoResenia(index: number): void {
+    const actuales = [...this.fotosReseniaSeleccionadas()];
+    const [eliminada] = actuales.splice(index, 1);
+    if (eliminada?.previewUrl) URL.revokeObjectURL(eliminada.previewUrl);
+    this.fotosReseniaSeleccionadas.set(actuales);
+  }
+
+  private async subirFotosResenia(userId: number): Promise<Foto[]> {
+    const fotos = this.fotosReseniaSeleccionadas();
+    if (!fotos.length) return [];
+
+    const uploads = fotos.map(async (foto) => {
+      const base64 = await this.fileToBase64(foto.file);
+      const res = await firstValueFrom(this.empresasApiSvc.uploadImageBase64(base64, foto.extension, userId));
+      const rawUrl = res?.url ?? '';
+      return { path: res?.path ?? '', url: rawUrl.startsWith('http') || rawUrl.startsWith('/') ? rawUrl : `/${rawUrl}` } as Foto;
     });
+
+    return Promise.all(uploads);
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result ?? ''));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  private getExtensionImagen(file: File): string | null {
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    const allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    if (allowed.includes(ext)) return ext;
+    const extType = file.type.split('/').pop()?.toLowerCase() ?? '';
+    return allowed.includes(extType) ? extType : null;
   }
 
   activarEdicionBoda(): void {
@@ -1251,17 +1342,6 @@ descargarPdf() {
             err.error?.mensaje ??
             'No se pudieron cargar las reseñas.',
         );
-      },
-    });
-  }
-
-  private cargarEmpresasParaResenia(): void {
-    this.empresasService.getEmpresas().subscribe({
-      next: (response) => {
-        this.empresasResenia.set(response?.data ?? []);
-      },
-      error: () => {
-        this.empresasResenia.set([]);
       },
     });
   }

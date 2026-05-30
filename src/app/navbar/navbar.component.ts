@@ -1,6 +1,18 @@
 import { CurrencyPipe, NgTemplateOutlet, DatePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +25,6 @@ import { Notificacion } from '../Interfaces/Notificacion';
 import { PedirPresupuestoInfo } from '../Interfaces/PedirPresupuesto';
 import { EchoService } from '../Services/Echo/echo.service';
 import { filter } from 'rxjs';
-import { PaginadorComponent } from '../paginador/paginador.component';
 
 @Component({
   selector: 'app-navbar',
@@ -23,7 +34,7 @@ import { PaginadorComponent } from '../paginador/paginador.component';
     MatSidenavModule,
     MatCheckboxModule,
     MatButtonModule,
-   
+
     MatMenuModule,
     MatDividerModule,
     NgTemplateOutlet,
@@ -43,6 +54,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   readonly nombreCompleto = signal<string | null>(null);
   readonly fotoU = computed(() => this.autServicectx.fotoUrl());
   readonly rolAuth = computed(() => !!this.autServicectx.rol());
+  readonly isLoggedIn = computed(() => !!localStorage.getItem('token'));
+
+
   readonly toastMessage = signal<string | null>(null);
   readonly mensajeAccion = signal<string | null>(null);
   readonly notificacionesLoading = signal<boolean>(false);
@@ -52,10 +66,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private readonly _notificaciones = signal<Notificacion[]>([]);
 
   readonly notificaciones = computed(() =>
-    this._notificaciones().filter((n) => !this.esLeida(n))
+    this._notificaciones().filter((n) => !this.esLeida(n)),
   );
 
-  readonly notificacionesNoLeidas = computed(() => this.notificaciones().length);
+  readonly notificacionesNoLeidas = computed(
+    () => this.notificaciones().length,
+  );
 
   rutaActiva = '';
   private toastTimer: number | null = null;
@@ -110,9 +126,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     event?.preventDefault();
     this.autServicectx.logout().subscribe({
       next: () => this.router.navigate(['']),
-      error: (err: HttpErrorResponse) => console.error('Error al cerrar sesión', err),
+      error: (err: HttpErrorResponse) =>
+        console.error('Error al cerrar sesión', err),
     });
   }
+
 
   cargarNotificaciones(): void {
     const usuarioId = Number(localStorage.getItem('id'));
@@ -132,7 +150,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       },
       error: (err: HttpErrorResponse) => {
         this.notificacionesError.set(
-          err.error?.message ?? 'No se pudieron cargar las notificaciones.'
+          err.error?.message ?? 'No se pudieron cargar las notificaciones.',
         );
         this.notificacionesLoading.set(false);
       },
@@ -175,7 +193,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.notificacionesCtx.marcarLeida(notif.id).subscribe({
       next: () => {
         this._notificaciones.update((prev) =>
-          prev.map((n) => (n.id === notif.id ? { ...n, leido: true } : n))
+          prev.map((n) => (n.id === notif.id ? { ...n, leido: true } : n)),
         );
         if (this.expandedNotifId() === notif.id) {
           this.expandedNotifId.set(null);
@@ -202,13 +220,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   presupuestoId(notif: Notificacion): string | number | null {
     const ref = notif?.referencia as Record<string, unknown> | null;
-    const id = (
-      ref?.['pedir_presupuesto_id'] ??
+    const id = (ref?.['pedir_presupuesto_id'] ??
       ref?.['solicitud_id'] ??
       ref?.['presupuesto_solicitud_id'] ??
       notif?.referencia_id ??
-      null
-    ) as string | number | null;
+      null) as string | number | null;
 
     return id;
   }
@@ -223,7 +239,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   estadoPresupuesto(notif: Notificacion): string {
     const estado = notif?.referencia?.estado;
     if (!estado) return 'pendiente';
-    return estado.aceptado_empresa || estado.rechazado_empresa || estado.pendiente || 'pendiente';
+    return (
+      estado.aceptado_empresa ||
+      estado.rechazado_empresa ||
+      estado.pendiente ||
+      'pendiente'
+    );
   }
 
   modalidadReferencia(notif: Notificacion): string | null {
@@ -252,21 +273,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.echoSvc.init();
         this.unsubscribeNotificaciones?.();
 
-        this.unsubscribeNotificaciones = this.echoSvc.subscribeUserNotifications(
-          userId,
-          (data: Record<string, unknown>) => {
-            const nueva = this.mapNotificacionFromEvent(data);
-            if (!nueva) {
-              this.cargarNotificaciones();
-              return;
-            }
-            this._notificaciones.update((prev) => {
-              const existe = prev.some((n) => n.id === nueva.id);
-              return existe ? prev : [nueva, ...prev];
-            });
-            this.mostrarToast(nueva.titulo ?? 'Nueva notificación');
-          }
-        );
+        this.unsubscribeNotificaciones =
+          this.echoSvc.subscribeUserNotifications(
+            userId,
+            (data: Record<string, unknown>) => {
+              const nueva = this.mapNotificacionFromEvent(data);
+              if (!nueva) {
+                this.cargarNotificaciones();
+                return;
+              }
+              this._notificaciones.update((prev) => {
+                const existe = prev.some((n) => n.id === nueva.id);
+                return existe ? prev : [nueva, ...prev];
+              });
+              this.mostrarToast(nueva.titulo ?? 'Nueva notificación');
+            },
+          );
       })
       .catch((err) => console.error('Error preparando Echo:', err));
   }
@@ -281,55 +303,65 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   marcarTodasLeidas(): void {
-  const pendientes = this.notificaciones().filter((n) => !this.esLeida(n));
+    const pendientes = this.notificaciones().filter((n) => !this.esLeida(n));
 
-  if (!pendientes.length) {
-    this.mensajeAccion.set('No hay notificaciones pendientes.');
-    return;
-  }
-
-  this.notificacionesLoading.set(true);
-  this.mensajeAccion.set(null);
-
-  let completadas = 0;
-  let errores = 0;
-
-  pendientes.forEach((notif) => {
-    if (!notif.id) {
-      errores++;
-      completadas++;
+    if (!pendientes.length) {
+      this.mensajeAccion.set('No hay notificaciones pendientes.');
       return;
     }
 
-    this.notificacionesCtx.marcarLeida(notif.id).subscribe({
-      next: () => {
-        this._notificaciones.update((prev) =>
-          prev.map((n) => (n.id === notif.id ? { ...n, leido: true } : n))
-        );
+    this.notificacionesLoading.set(true);
+    this.mensajeAccion.set(null);
 
-        completadas++;
-        if (completadas === pendientes.length) {
-          this.notificacionesLoading.set(false);
-          this.mensajeAccion.set(
-            errores ? 'Algunas notificaciones no pudieron actualizarse.' : 'Todas las notificaciones se marcaron como leídas.'
-          );
-        }
-      },
-      error: () => {
+    let completadas = 0;
+    let errores = 0;
+
+    pendientes.forEach((notif) => {
+      if (!notif.id) {
         errores++;
         completadas++;
-        if (completadas === pendientes.length) {
-          this.notificacionesLoading.set(false);
-          this.mensajeAccion.set('Algunas notificaciones no pudieron actualizarse.');
-        }
+        return;
       }
-    });
-  });
-}
 
-  private mapNotificacionFromEvent(data: Record<string, unknown>): Notificacion | null {
+      this.notificacionesCtx.marcarLeida(notif.id).subscribe({
+        next: () => {
+          this._notificaciones.update((prev) =>
+            prev.map((n) => (n.id === notif.id ? { ...n, leido: true } : n)),
+          );
+
+          completadas++;
+          if (completadas === pendientes.length) {
+            this.notificacionesLoading.set(false);
+            this.mensajeAccion.set(
+              errores
+                ? 'Algunas notificaciones no pudieron actualizarse.'
+                : 'Todas las notificaciones se marcaron como leídas.',
+            );
+          }
+        },
+        error: () => {
+          errores++;
+          completadas++;
+          if (completadas === pendientes.length) {
+            this.notificacionesLoading.set(false);
+            this.mensajeAccion.set(
+              'Algunas notificaciones no pudieron actualizarse.',
+            );
+          }
+        },
+      });
+    });
+  }
+
+  private mapNotificacionFromEvent(
+    data: Record<string, unknown>,
+  ): Notificacion | null {
     const payload = (data?.['data'] ?? data) as Record<string, unknown>;
-    const id = payload?.['id'] ?? payload?.['id_notificacion'] ?? payload?.['notificacion_id'] ?? null;
+    const id =
+      payload?.['id'] ??
+      payload?.['id_notificacion'] ??
+      payload?.['notificacion_id'] ??
+      null;
     if (id == null) return null;
 
     return {
@@ -338,9 +370,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
       titulo: (payload?.['titulo'] as string) ?? 'Nueva notificación',
       mensaje: (payload?.['mensaje'] as string) ?? '',
       leido: false,
-      referencia_id: (payload?.['referencia_id'] as number | string | null) ?? null,
+      referencia_id:
+        (payload?.['referencia_id'] as number | string | null) ?? null,
       referencia_type: (payload?.['referencia_type'] as string | null) ?? null,
-      referencia: (payload?.['referencia'] as PedirPresupuestoInfo | null) ?? null,
+      referencia:
+        (payload?.['referencia'] as PedirPresupuestoInfo | null) ?? null,
     };
   }
 }

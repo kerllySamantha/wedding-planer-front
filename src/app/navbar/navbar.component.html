@@ -1,4 +1,3 @@
-
 @if (estaEnRuta('dashboard-empresas')) {
 
 <nav class="navbar navbar-expand-lg">
@@ -69,9 +68,9 @@
     @if (autServicectx.auth()) {
     <button class="d-lg-none order-3 mc-user-toggle" type="button" [matMenuTriggerFor]="userMenuHome">
       @if (fotoU()) {
-        <img [src]="fotoU()!" alt="Foto de perfil" class="mc-user-toggle__avatar">
+      <img [src]="fotoU()!" alt="Foto de perfil" class="mc-user-toggle__avatar">
       } @else {
-        <div class="mc-user-toggle__initials">{{ nombreU() }}</div>
+      <div class="mc-user-toggle__initials">{{ nombreU() }}</div>
       }
     </button>
     } @else {
@@ -84,6 +83,12 @@
     <div class="d-none d-lg-flex justify-content-center flex-grow-1">
 
       <ul class="navbar-nav flex-row gap-3">
+        <li class="nav-item">
+          <a [routerLink]="['/']" class="nav-link" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+        </li>
+
+        @if(isLoggedIn() && autServicectx.auth()?.rol === 'usuario'){
 
         <li class="nav-item">
 
@@ -95,17 +100,6 @@
           </a>
 
         </li>
-
-        <li class="nav-item">
-
-          <a class="nav-link" [routerLink]="['dashboard-proveedores']">
-
-            Proveedores
-
-          </a>
-
-        </li>
-
         <li class="nav-item">
 
           <a class="nav-link" [routerLink]="['/mis-reservas']" routerLinkActive="active"
@@ -116,6 +110,14 @@
           </a>
 
         </li>
+        }
+
+        <a class="nav-link" [routerLink]="['/dashboard-proveedores']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }">
+          Proveedores
+        </a>
+
+
 
       </ul>
 
@@ -135,6 +137,22 @@
       <div class="offcanvas-body mc-oc-body">
 
         <ul class="mc-nav-list">
+
+          <li class="mc-nav-item mc-nav-item--empresa" [routerLink]="['/']" data-bs-dismiss="offcanvas">
+            <span class="mc-nav-item__icon"><i class="bi bi-house"></i></span>
+            <span>Inicio</span>
+          </li>
+          @if (!autServicectx.auth() && autServicectx.rol() != 'usuario') {
+
+          <li>
+            <a class="mc-nav-item mc-nav-item--empresa" [routerLink]="['/dashboard-empresas']"
+              data-bs-dismiss="offcanvas">
+              <span class="mc-nav-item__icon"><i class="bi bi-briefcase"></i></span>
+              <span>Área Empresas</span>
+            </a>
+          </li>
+
+          }
           @if (autServicectx.rol() === 'usuario' && autServicectx.auth()) {
           <li>
             <a class="mc-nav-item" [routerLink]="['/mi-boda']" routerLinkActive="mc-nav-item--active"
@@ -160,15 +178,7 @@
             </a>
           </li>
           }
-          @if (!autServicectx.auth()) {
-          <li>
-            <a class="mc-nav-item mc-nav-item--empresa" [routerLink]="['/dashboard-empresas']"
-              data-bs-dismiss="offcanvas">
-              <span class="mc-nav-item__icon"><i class="bi bi-briefcase"></i></span>
-              <span>Área Empresas</span>
-            </a>
-          </li>
-          }
+
         </ul>
 
       </div>
@@ -380,5 +390,3 @@
 
   </div>
 </ng-template>
-
-
