@@ -1,20 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CategoriaNotaBoda, NotaBoda } from '../Interfaces/NotaBoda';
+import { NotasBodaApiService } from '../Services/NotasBoda/notas-boda-api.service';
+import { CountdownServiceService } from '../Services/countdown-service.service';
 
-type Categoria = 'flores' | 'musica' | 'decoracion' | 'catering' | 'vestido' | 'otros';
-
-type NotaBoda = {
-  id: string;
-  titulo: string;
-  contenido: string;
-  categoria: Categoria;
-  creadaEn: string;
-};
-
-const STORAGE_KEY = 'notas_boda';
-
-const CAT_COLORS: Record<Categoria, string> = {
+const CAT_COLORS: Record<CategoriaNotaBoda, string> = {
   flores:     '#f76c6f',
   musica:     '#9b7fe8',
   decoracion: '#f59e0b',
@@ -31,8 +22,10 @@ const CAT_COLORS: Record<Categoria, string> = {
   styleUrl: './notas-boda.component.scss',
 })
 export class NotasBodaComponent {
+  private notasBodaApi    = inject(NotasBodaApiService);
+  private countdownService = inject(CountdownServiceService);
 
-  readonly categorias: { id: Categoria; label: string; icon: string }[] = [
+  readonly categorias: { id: CategoriaNotaBoda; label: string; icon: string }[] = [
     { id: 'flores',     label: 'Flores',     icon: 'bi-flower1' },
     { id: 'musica',     label: 'Música',      icon: 'bi-music-note-beamed' },
     { id: 'decoracion', label: 'Decoración',  icon: 'bi-stars' },
@@ -41,13 +34,14 @@ export class NotasBodaComponent {
     { id: 'otros',      label: 'Otros',       icon: 'bi-journal-text' },
   ];
 
-  readonly notas           = signal<NotaBoda[]>(this.cargarNotas());
+  readonly notas           = signal<NotaBoda[]>([]);
+  readonly cargando        = signal(false);
   readonly mostrarForm     = signal(false);
-  readonly filtroCategoria = signal<Categoria | null>(null);
+  readonly filtroCategoria = signal<CategoriaNotaBoda | null>(null);
 
   nuevaTitulo    = '';
   nuevaContenido = '';
-  nuevaCategoria: Categoria = 'otros';
+  nuevaCategoria: CategoriaNotaBoda = 'otros';
 
   readonly notasFiltradas = computed(() => {
     const filtro = this.filtroCategoria();
@@ -57,6 +51,13 @@ export class NotasBodaComponent {
   readonly categoriasUsadas = computed(() =>
     [...new Set(this.notas().map(n => n.categoria))],
   );
+
+  constructor() {
+    effect(() => {
+      const bodaId = this.countdownService.bodaEncontrada()?.id;
+      if (bodaId) this.cargarNotas(bodaId);
+    });
+  }
 
   abrirForm(): void {
     this.mostrarForm.set(true);
@@ -72,40 +73,42 @@ export class NotasBodaComponent {
     const contenido = this.nuevaContenido.trim();
     if (!contenido) return;
 
-    const nota: NotaBoda = {
-      id:        Date.now().toString(36) + Math.random().toString(36).slice(2),
-      titulo:    this.nuevaTitulo.trim(),
+    const bodaId = this.countdownService.bodaEncontrada()?.id;
+    if (!bodaId) return;
+
+    this.notasBodaApi.create({
+      boda_id:   bodaId,
+      titulo:    this.nuevaTitulo.trim() || null,
       contenido,
       categoria: this.nuevaCategoria,
-      creadaEn:  new Date().toISOString(),
-    };
-
-    const lista = [nota, ...this.notas()];
-    this.notas.set(lista);
-    this.persistir(lista);
-    this.mostrarForm.set(false);
-    this.resetForm();
+    }).subscribe({
+      next: (nota) => {
+        this.notas.update(list => [nota, ...list]);
+        this.mostrarForm.set(false);
+        this.resetForm();
+      },
+    });
   }
 
-  eliminar(id: string): void {
-    const lista = this.notas().filter(n => n.id !== id);
-    this.notas.set(lista);
-    this.persistir(lista);
+  eliminar(id: number): void {
+    this.notasBodaApi.delete(id).subscribe({
+      next: () => this.notas.update(list => list.filter(n => n.id !== id)),
+    });
   }
 
-  toggleFiltro(cat: Categoria): void {
+  toggleFiltro(cat: CategoriaNotaBoda): void {
     this.filtroCategoria.set(this.filtroCategoria() === cat ? null : cat);
   }
 
-  labelCategoria(id: Categoria): string {
+  labelCategoria(id: CategoriaNotaBoda): string {
     return this.categorias.find(c => c.id === id)?.label ?? id;
   }
 
-  iconoCategoria(id: Categoria): string {
+  iconoCategoria(id: CategoriaNotaBoda): string {
     return this.categorias.find(c => c.id === id)?.icon ?? 'bi-journal-text';
   }
 
-  colorCategoria(id: Categoria): string {
+  colorCategoria(id: CategoriaNotaBoda): string {
     return CAT_COLORS[id] ?? '#94a3b8';
   }
 
@@ -115,22 +118,17 @@ export class NotasBodaComponent {
     });
   }
 
+  private cargarNotas(bodaId: number): void {
+    this.cargando.set(true);
+    this.notasBodaApi.getByBoda(bodaId).subscribe({
+      next:  (notas) => { this.notas.set(notas); this.cargando.set(false); },
+      error: ()      => this.cargando.set(false),
+    });
+  }
+
   private resetForm(): void {
     this.nuevaTitulo    = '';
     this.nuevaContenido = '';
     this.nuevaCategoria = 'otros';
-  }
-
-  private cargarNotas(): NotaBoda[] {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as NotaBoda[]) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  private persistir(notas: NotaBoda[]): void {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(notas)); } catch {}
   }
 }

@@ -6,26 +6,26 @@
   </section>
 
   @if (cargando()) {
-    <div class="skeleton-wrapper">
-      <div class="skeleton-row header">
-        <div class="skeleton-cell skeleton" style="width: 30%"></div>
-        <div class="skeleton-cell skeleton" style="width: 20%"></div>
-        <div class="skeleton-cell skeleton" style="width: 20%"></div>
-        <div class="skeleton-cell skeleton" style="width: 20%"></div>
-      </div>
-      @for (i of [1,2,3,4,5]; track i) {
-        <div class="skeleton-row">
-          <div class="skeleton-cell skeleton" style="width: 85%; height: 36px"></div>
-          <div class="skeleton-cell skeleton" style="width: 85%; height: 36px"></div>
-          <div class="skeleton-cell skeleton" style="width: 85%; height: 36px"></div>
-          <div class="skeleton-cell skeleton" style="width: 50%; height: 36px"></div>
-        </div>
-      }
+  <div class="skeleton-wrapper">
+    <div class="skeleton-row header">
+      <div class="skeleton-cell skeleton" style="width: 30%"></div>
+      <div class="skeleton-cell skeleton" style="width: 20%"></div>
+      <div class="skeleton-cell skeleton" style="width: 20%"></div>
+      <div class="skeleton-cell skeleton" style="width: 20%"></div>
     </div>
+    @for (i of [1,2,3,4,5]; track i) {
+    <div class="skeleton-row">
+      <div class="skeleton-cell skeleton" style="width: 85%; height: 36px"></div>
+      <div class="skeleton-cell skeleton" style="width: 85%; height: 36px"></div>
+      <div class="skeleton-cell skeleton" style="width: 85%; height: 36px"></div>
+      <div class="skeleton-cell skeleton" style="width: 50%; height: 36px"></div>
+    </div>
+    }
+  </div>
   }
 
   @else if (categoriaIdSeleccionada() !== null) {
-    <div class="table-wrapper">
+  <div class="table-wrapper">
     <table class="table tipos-table">
       <thead>
         <tr>
@@ -37,43 +37,42 @@
       </thead>
       <tbody>
         @for (detalle of (detallesPorCategoria()[categoriaIdSeleccionada()!] || []); track $index) {
-          <tr class="tipo-row">
-            <td>
-              <label class="visually-hidden" [attr.for]="'nombre_tipo_' + detalle.tipo_producto_id">Nombre del concepto</label>
-              <input [id]="'nombre_tipo_' + detalle.tipo_producto_id" type="text"
-                [formControl]="$any(detallesForm.at($index)).controls.nombre_tipo_personalizado"
-                class="input-tipo"
-                [readonly]="estaBloqueadoPorPago(detalle)"
-                [class.readonly]="estaBloqueadoPorPago(detalle)" />
-            </td>
-            <td>
-              <label class="visually-hidden" [attr.for]="'monto_estimado_' + detalle.tipo_producto_id">Coste estimado</label>
-              <input [id]="'monto_estimado_' + detalle.tipo_producto_id" type="number"
-                [formControl]="$any(detallesForm.at($index)).controls.monto_estimado"
-                [readonly]="!esMontoEstimadoEditable(detalle)"
-                class="input-tipo input-numero"
-                [class.readonly]="!esMontoEstimadoEditable(detalle)" />
-            </td>
-            <td>
-              <label class="visually-hidden" [attr.for]="'monto_pagado_' + detalle.tipo_producto_id">Monto pagado</label>
-              <input [id]="'monto_pagado_' + detalle.tipo_producto_id" type="number"
-                [formControl]="$any(detallesForm.at($index)).controls.monto_pagado"
-                class="input-tipo input-numero"
-                [readonly]="estaBloqueadoPorPago(detalle)"
-                [class.readonly]="estaBloqueadoPorPago(detalle)" />
-            </td>
-            <td>
-              <span class="diferencia-valor"
-                [class.positivo]="calcularDiferencia(detalle) >= 0"
-                [class.negativo]="calcularDiferencia(detalle) < 0">
-                {{ calcularDiferencia(detalle) }} €
-              </span>
-            </td>
-          </tr>
+        <tr class="tipo-row">
+          <td>
+            <label class="visually-hidden" [attr.for]="'nombre_tipo_' + detalle.tipo_producto_id">Nombre del
+              concepto</label>
+            <input [id]="'nombre_tipo_' + detalle.tipo_producto_id" type="text"
+              [formControl]="$any(detallesForm.at($index)).controls.nombre_tipo_personalizado" class="input-tipo"
+              [readonly]="estaBloqueadoPorPago(detalle)" [class.readonly]="estaBloqueadoPorPago(detalle)" />
+          </td>
+          <td>
+            <label class="visually-hidden" [attr.for]="'monto_estimado_' + detalle.tipo_producto_id">Coste
+              estimado</label>
+            <input [id]="'monto_estimado_' + detalle.tipo_producto_id" type="number"
+              [formControl]="$any(detallesForm.at($index)).controls.monto_estimado"
+              [readonly]="!esMontoEstimadoEditable(detalle)" class="input-tipo input-numero"
+              [class.readonly]="!esMontoEstimadoEditable(detalle)" />
+          </td>
+          <td>
+            <label class="visually-hidden" [attr.for]="'monto_pagado_' + detalle.tipo_producto_id">
+              Monto pagado
+            </label>
+
+            <input [id]="'monto_pagado_' + detalle.tipo_producto_id" type="number"
+              [formControl]="$any(detallesForm.at($index)).controls.monto_pagado" readonly
+              class="input-tipo input-numero readonly" />
+          </td>
+          <td>
+            <span class="diferencia-valor" [class.positivo]="calcularDiferencia(detalle) >= 0"
+              [class.negativo]="calcularDiferencia(detalle) < 0">
+              {{ calcularDiferencia(detalle) }} €
+            </span>
+          </td>
+        </tr>
         }
       </tbody>
     </table>
-    </div>
+  </div>
   }
 
 </form>

@@ -20,7 +20,7 @@ import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
   selector: 'app-mi-boda',
   imports: [MenuMiBodaComponent, NavbarComponent, ActividadesMiBodaComponent, AsyncPipe,
     MatCardModule, MatButtonModule, ReactiveFormsModule,
-    CardMibodaEmpresaComponent, RouterOutlet, RouterLink, FooterUserComponent, NotasBodaComponent, PaginadorComponent],
+    CardMibodaEmpresaComponent, RouterOutlet, FooterUserComponent, NotasBodaComponent, PaginadorComponent],
   templateUrl: './mi-boda.component.html',
   styleUrl: './mi-boda.component.scss'
 })

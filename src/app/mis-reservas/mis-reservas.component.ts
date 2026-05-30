@@ -5,6 +5,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
 import { FooterUserComponent } from '../footer-user/footer-user.component';
 import { PedirPresupuestoService } from '../Services/PedirPresupuestos/pedir-presupuesto.service';
 import { PedirPresupuestoInfo } from '../Interfaces/PedirPresupuesto';
+import { AuthenticationService } from '../Services/Autentication/authenticationService';
 
 type Filtro = 'todos' | 'pendiente' | 'aceptado' | 'rechazado';
 
@@ -16,7 +17,8 @@ type Filtro = 'todos' | 'pendiente' | 'aceptado' | 'rechazado';
   styleUrl: './mis-reservas.component.scss',
 })
 export class MisReservasComponent {
-  private svc = inject(PedirPresupuestoService);
+  private svc  = inject(PedirPresupuestoService);
+  private auth = inject(AuthenticationService);
 
   presupuestos = signal<PedirPresupuestoInfo[]>([]);
   loading = signal(true);
@@ -26,7 +28,11 @@ export class MisReservasComponent {
   ngOnInit() {
     this.svc.getPedirPresupuestos().subscribe({
       next: (res) => {
-        this.presupuestos.set(res ?? []);
+        const userId = this.auth.usuario_id();
+        const todos = res ?? [];
+        this.presupuestos.set(
+          userId ? todos.filter(p => Number(p.user_id) === Number(userId)) : todos
+        );
         this.loading.set(false);
       },
       error: () => {
