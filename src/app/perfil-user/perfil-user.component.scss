@@ -119,7 +119,7 @@ $shadow:      0 4px 24px rgba(82, 63, 105, 0.1);
 }
 
 .pf-hero__name {
-  margin: 0 0 0.75rem;
+  margin: 1.5rem 0 0.75rem;
   font-size: clamp(1.5rem, 2vw + 0.8rem, 2rem);
   font-weight: 700;
   color: $navy;
@@ -264,6 +264,27 @@ $shadow:      0 4px 24px rgba(82, 63, 105, 0.1);
   text-align: center;
   font-size: 0.8rem;
   color: #888;
+}
+
+.pf-boda-celebrada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 0;
+
+  &__icon {
+    font-size: 2rem;
+    color: $pink;
+  }
+
+  &__msg {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: $navy;
+    text-align: center;
+  }
 }
 
 // ── Finance ────────────────────────────────────────────
@@ -1012,4 +1033,103 @@ $shadow:      0 4px 24px rgba(82, 63, 105, 0.1);
   .pf-request__actions { align-items: stretch; .pf-btn { width: 100%; } }
   .pf-tabs { padding: 0 0.75rem; }
   .pf-tab-content { padding: 1.25rem; }
+}
+
+.rating-stars {
+  display: flex;
+  gap: .25rem;
+  margin-bottom: .5rem;
+}
+
+.pf-stars-row {
+  display: flex;
+  gap: 0.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.star-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1;
+
+  mat-icon {
+    width: 2rem;
+    height: 2rem;
+    font-size: 2rem;
+    color: #d1d5db;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  &--active mat-icon,
+  &:hover mat-icon {
+    color: #f59e0b;
+    transform: scale(1.1);
+  }
+}
+
+.pf-photo-dropzone {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border: 1.5px dashed rgba(247, 108, 111, 0.45);
+  border-radius: 10px;
+  background: #fffafb;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #727686;
+  transition: border-color 0.2s, background 0.2s;
+
+  i { color: #f76c6f; font-size: 1.1rem; }
+
+  &:hover {
+    border-color: #f76c6f;
+    background: #fff5f6;
+  }
+}
+
+.pf-photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+
+.pf-photo-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(247, 108, 111, 0.2);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.pf-photo-remove {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.92);
+  color: #374151;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  &:hover { background: #e63950; color: #fff; }
 }

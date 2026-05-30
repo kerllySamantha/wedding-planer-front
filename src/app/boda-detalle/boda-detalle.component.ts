@@ -66,7 +66,7 @@ export class BodaDetalleComponent {
     this.fotoSeleccionada.set(this.resolverUrl(foto.url, foto.path));
   }
 
-  estrellas(puntuacion: string): number[] {
+  estrellas(puntuacion: number): number[] {
     const n = Math.round(Number(puntuacion));
     return Array.from({ length: 5 }, (_, i) => (i < n ? 1 : 0));
   }

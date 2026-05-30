@@ -84,7 +84,6 @@ export class CalendarProveedoresComponent implements OnInit {
     eventClick: this.abrirDetalleReserva.bind(this),
     eventDisplay: 'block',
     showNonCurrentDates: false,
-    validRange: { start: this.todayStr() },
     fixedWeekCount: false,
     displayEventTime: true,
 

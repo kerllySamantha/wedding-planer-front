@@ -10,12 +10,11 @@
         [attr.aria-label]="'Avatar de ' + (perfil()?.data?.usuario?.name || 'usuario')">
 
         @if (uploadingFoto()) {
-          <i class="bi bi-arrow-repeat pf-spin"></i>
+        <i class="bi bi-arrow-repeat pf-spin"></i>
         } @else if (fotoPerfilUrl()) {
-          <img [src]="fotoPerfilUrl()" [alt]="perfil()?.data?.usuario?.name"
-            class="pf-hero__avatar-image">
+        <img [src]="fotoPerfilUrl()" [alt]="perfil()?.data?.usuario?.name" class="pf-hero__avatar-image">
         } @else {
-          {{ (perfil()?.data?.usuario?.name || '?').charAt(0).toUpperCase() }}
+        {{ (perfil()?.data?.usuario?.name || '?').charAt(0).toUpperCase() }}
         }
 
         <label class="pf-hero__avatar-overlay" title="Cambiar foto de perfil">
@@ -54,6 +53,18 @@
 
       <!-- Cuenta atrás -->
       <article class="pf-card">
+        @if (bodaYaPaso()) {
+        <p class="pf-card__eyebrow">
+          <i class="bi bi-check2-circle me-1"></i>Boda celebrada
+        </p>
+        <div class="pf-boda-celebrada">
+          <i class="bi bi-hearts pf-boda-celebrada__icon"></i>
+          <p class="pf-boda-celebrada__msg">¡Tu boda ya se ha celebrado!</p>
+        </div>
+        <p class="pf-countdown__date">
+          <i class="bi bi-calendar-check me-1"></i>{{ fechaFormateada() }}
+        </p>
+        } @else {
         <p class="pf-card__eyebrow">
           <i class="bi bi-hourglass-split me-1"></i>Cuenta atrás
         </p>
@@ -76,6 +87,7 @@
         <p class="pf-countdown__date">
           <i class="bi bi-calendar-check me-1"></i>{{ fechaFormateada() }}
         </p>
+        }
       </article>
 
       <!-- Mi boda rápido -->
@@ -105,7 +117,7 @@
             <i class="bi bi-grid"></i> Mi panel de boda
           </button>
           <button type="button" class="pf-btn pf-btn--ghost" (click)="descargarPdf()">
-          <i class="bi bi-filetype-pdf"></i> Informe Pagos
+            <i class="bi bi-filetype-pdf"></i> Informe Pagos
           </button>
         </div>
       </article>
@@ -412,50 +424,62 @@
           </div>
 
           <!-- ── Fotos de la boda ── -->
+          @if (puedeSubirFotosBoda()) {
           <div class="pf-form__field">
             <label class="pf-label">Fotos de la boda</label>
 
             <!-- Fotos existentes -->
             @if (fotosResultado().length > 0) {
-              <p class="pf-label--optional pf-photos-hint">Haz clic en una foto para marcarla y eliminarla al guardar</p>
-              <div class="pf-photos-edit">
-                @for (foto of fotosResultado(); track foto.url ?? $index) {
-                  <div class="pf-photo-thumb"
-                       [class.pf-photo-thumb--removing]="fotoMarcada(foto.url || foto.path || '')"
-                       (click)="toggleEliminarFoto(foto.url || foto.path || '')">
-                    <img [src]="foto.url || foto.path" alt="Foto boda">
-                    @if (fotoMarcada(foto.url || foto.path || '')) {
-                      <div class="pf-photo-thumb__overlay">
-                        <i class="bi bi-trash3-fill"></i>
-                      </div>
-                    }
-                  </div>
+            <p class="pf-label--optional pf-photos-hint">Haz clic en una foto para marcarla y eliminarla al guardar</p>
+            <div class="pf-photos-edit">
+              @for (foto of fotosResultado(); track foto.url ?? $index) {
+              <div class="pf-photo-thumb" [class.pf-photo-thumb--removing]="fotoMarcada(foto.url || foto.path || '')"
+                (click)="toggleEliminarFoto(foto.url || foto.path || '')">
+                <img [src]="foto.url || foto.path" alt="Foto boda">
+                @if (fotoMarcada(foto.url || foto.path || '')) {
+                <div class="pf-photo-thumb__overlay">
+                  <i class="bi bi-trash3-fill"></i>
+                </div>
                 }
               </div>
+              }
+            </div>
             }
 
             <!-- Preview fotos nuevas -->
             @if (nuevasFotosPreview().length > 0) {
-              <div class="pf-photos-edit pf-photos-edit--new">
-                @for (foto of nuevasFotosPreview(); track $index; let i = $index) {
-                  <div class="pf-photo-thumb pf-photo-thumb--new">
-                    <img [src]="foto.preview" alt="Nueva foto">
-                    <button type="button" class="pf-photo-remove" (click)="eliminarNuevaFoto(i)">
-                      <i class="bi bi-x-lg"></i>
-                    </button>
-                    <span class="pf-photo-badge">Nueva</span>
-                  </div>
-                }
+            <div class="pf-photos-edit pf-photos-edit--new">
+              @for (foto of nuevasFotosPreview(); track $index; let i = $index) {
+              <div class="pf-photo-thumb pf-photo-thumb--new">
+                <img [src]="foto.preview" alt="Nueva foto">
+                <button type="button" class="pf-photo-remove" (click)="eliminarNuevaFoto(i)">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+                <span class="pf-photo-badge">Nueva</span>
               </div>
+              }
+            </div>
             }
 
             <!-- Botón añadir -->
             <label class="pf-btn pf-btn--secondary pf-upload-label">
-              <input type="file" accept="image/jpeg,image/png,image/webp" multiple
-                     class="pf-visually-hidden" (change)="onFotosBodaSelected($event)">
+              <input type="file" accept="image/jpeg,image/png,image/webp" multiple class="pf-visually-hidden"
+                (change)="onFotosBodaSelected($event)">
               <i class="bi bi-images me-1"></i>Añadir fotos
             </label>
           </div>
+          } @else {
+          <div class="pf-notice pf-notice--info">
+            <i class="bi bi-images me-2"></i>
+            @if (!boda()) {
+            Crea tu boda primero para poder subir fotos del resultado del evento.
+            } @else if (!bodaYaPaso()) {
+            Podrás subir fotos del evento una vez que llegue la fecha de tu boda.
+            } @else {
+            Necesitas tener al menos un proveedor con reserva confirmada para subir fotos del evento.
+            }
+          </div>
+          }
 
           @if (subiendoFotosBoda()) {
           <div class="pf-notice pf-notice--info">
@@ -693,6 +717,7 @@
         </div>
         }
 
+        @if (puedeHacerResenias()) {
         <div class="pf-review-form-wrap">
           <div class="pf-section-head pf-section-head--mt">
             <h3 class="pf-section-title pf-section-title--sm">Añadir reseña</h3>
@@ -714,13 +739,16 @@
               </div>
               <div class="pf-form__field">
                 <label class="pf-label" for="puntuacionResenia">Puntuación</label>
-                <select id="puntuacionResenia" class="pf-input pf-input--select" formControlName="puntuacion"
-                  [class.pf-input--error]="isInvalidReseniaField('puntuacion')">
-                  <option value="">Selecciona una puntuación</option>
-                  @for (puntuacion of [5, 4, 3, 2, 1]; track puntuacion) {
-                  <option [value]="puntuacion">{{ puntuacion }} estrella(s)</option>
+                <div class="pf-stars-row">
+                  @for (star of [1,2,3,4,5]; track star) {
+                  <button type="button" class="star-btn"
+                    [class.star-btn--active]="star <= (reseniaForm.get('puntuacion')?.value ?? 0)"
+                    (click)="reseniaForm.get('puntuacion')?.setValue(star)"
+                    [attr.aria-label]="'Valorar con ' + star + ' estrellas'">
+                    <mat-icon>{{ star <= (reseniaForm.get('puntuacion')?.value ?? 0) ? 'star' : 'star_border' }}</mat-icon>
+                  </button>
                   }
-                </select>
+                </div>
                 @if (isInvalidReseniaField('puntuacion')) {
                 <span class="pf-error">{{ getReseniaFieldError('puntuacion') }}</span>
                 }
@@ -733,6 +761,28 @@
                 placeholder="Cuéntanos cómo fue tu experiencia"></textarea>
               @if (isInvalidReseniaField('comentario')) {
               <span class="pf-error">{{ getReseniaFieldError('comentario') }}</span>
+              }
+            </div>
+            <div class="pf-form__field">
+              <label class="pf-label">Fotos (opcional, máx. 6)</label>
+              <label class="pf-photo-dropzone" for="fotosResenia">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <span>Seleccionar fotos · JPG, PNG, WEBP · máx. 5 MB c/u</span>
+              </label>
+              <input id="fotosResenia" type="file" accept="image/*" multiple class="pf-visually-hidden"
+                (change)="onFotoReseniaSelected($event)">
+              @if (fotosReseniaError()) {
+              <span class="pf-error">{{ fotosReseniaError() }}</span>
+              }
+              @if (fotosReseniaSeleccionadas().length) {
+              <div class="pf-photo-grid">
+                @for (foto of fotosReseniaSeleccionadas(); track foto.previewUrl; let idx = $index) {
+                <div class="pf-photo-item">
+                  <img [src]="foto.previewUrl" alt="Vista previa">
+                  <button type="button" class="pf-photo-remove" (click)="eliminarFotoResenia(idx)">×</button>
+                </div>
+                }
+              </div>
               }
             </div>
 
@@ -750,6 +800,21 @@
             </div>
           </form>
         </div>
+        } @else {
+        <div class="pf-state pf-state--empty pf-state--locked">
+          <i class="bi bi-lock pf-state__icon"></i>
+          @if (!boda()) {
+          <strong>Sin boda registrada</strong>
+          <p>Crea tu boda para poder valorar a los proveedores que participaron en ella.</p>
+          } @else if (!bodaYaPaso()) {
+          <strong>Tu boda aún no ha llegado</strong>
+          <p>Podrás dejar reseñas a partir de la fecha de tu boda: <strong>{{ fechaFormateada() }}</strong>.</p>
+          } @else {
+          <strong>Sin proveedores confirmados</strong>
+          <p>Necesitas al menos una reserva confirmada con un proveedor para poder dejar una reseña.</p>
+          }
+        </div>
+        }
       </div>
       }
 

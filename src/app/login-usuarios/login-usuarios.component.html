@@ -6,14 +6,14 @@
             <div class="row g-0">
                 <!-- imagen -->
                 <div class="col-md-5 image-fondo d-none d-md-block"></div>
-                
+
                 <!-- formulario -->
                 <div class="col-12 col-md-7 column-login">
                     <div class="login-content">
 
                         <h2 class="text-center mb-3">Accede a tu cuenta</h2>
                         <p class="text-center mb-4">
-                            ¿No dispones de cuenta? 
+                            ¿No dispones de cuenta?
                             <a [routerLink]="['/registerUser']">Regístrate</a>
                         </p>
 
@@ -33,8 +33,10 @@
                                 }">
                                     <div class="input-group">
                                         <span class="input-group-text border-end-0 rounded-start-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
-                                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4" />
                                             </svg>
                                         </span>
                                         <input type="email" formControlName="email" placeholder="Tu email"
@@ -44,9 +46,10 @@
 
                                 <div class="bloque-info">
                                     <div class="text-danger small ms-1">
-                                        @if (form.get('email')?.errors && (form.get('email')?.touched || form.get('email')?.dirty)) {
-                                            @if (form.get('email')?.hasError('required')) {El campo es obligatorio}
-                                            @if (form.get('email')?.hasError('email')) {Debe contener formato válido}
+                                        @if (form.get('email')?.errors && (form.get('email')?.touched ||
+                                        form.get('email')?.dirty)) {
+                                        @if (form.get('email')?.hasError('required')) {El campo es obligatorio}
+                                        @if (form.get('email')?.hasError('email')) {Debe contener formato válido}
                                         }
                                     </div>
                                 </div>
@@ -60,37 +63,48 @@
                                 }">
                                     <div class="input-group">
                                         <span class="input-group-text border-end-0 rounded-start-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
-                                                <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5" />
-                                            </svg>
+                                            <i class="bi bi-key"></i>
+
                                         </span>
-                                        <input type="password" formControlName="password" placeholder="Tu contraseña"
-                                            class="form-control border-start-0 rounded-end-2" autocomplete="off">
+
+                                        <input [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+                                            placeholder="Tu contraseña" class="form-control border-start-0 border-end-0"
+                                            autocomplete="off">
+
+                                        <button type="button" class="input-group-text border-start-0 "
+                                            (click)="togglePassword()">
+
+                                            <mat-icon>
+                                                {{ showPassword() ? 'visibility_off' : 'visibility' }}
+                                            </mat-icon>
+
+                                        </button>
                                     </div>
                                 </div>
 
                                 <div class="bloque-info">
                                     <div class="text-danger small ms-1">
-                                        @if (form.get('password')?.errors && (form.get('password')?.touched || form.get('password')?.dirty)) {
-                                            @if (form.get('password')?.hasError('required')) {El campo es obligatorio}
-                                            @if (form.get('password')?.hasError('pattern')) {Debe incluir una mayúscula, un símbolo y un número}
+                                        @if (form.get('password')?.errors && (form.get('password')?.touched ||
+                                        form.get('password')?.dirty)) {
+                                        @if (form.get('password')?.hasError('required')) {El campo es obligatorio}
+                                        @if (form.get('password')?.hasError('pattern')) {Debe incluir una mayúscula, un
+                                        símbolo y un número}
                                         }
                                     </div>
                                 </div>
                             </div>
 
                             @if (message()) {
-                                <mat-card class="error-message mt-4 mb-4">
-                                    <span>{{ message() }} <mat-icon>error_outline</mat-icon></span>
-                                </mat-card>
+                            <mat-card class="error-message mt-4 mb-4">
+                                <span>{{ message() }} <mat-icon>error_outline</mat-icon></span>
+                            </mat-card>
                             }
 
-                            <div class="mb-3 text-end">
-                                <a href="/users-recover-password.php">¿Has olvidado tu contraseña?</a>
-                            </div>
+
 
                             <div class="d-grid mb-4">
-                                <button type="submit" class="btn submit-button btn-lg">Accede</button>
+                                <button type="submit" [disabled]="form.invalid"
+                                    class="btn submit-button btn-lg">Accede</button>
                             </div>
 
                             <p class="text-center mb-2">¿Eres profesional?</p>

@@ -3,7 +3,7 @@ import { EmpresaLigera, } from './Empresa';
 export interface Resenia {
     id: number,
     comentario: string,
-    puntuacion: string,
+    puntuacion: number,
     usuario: UsuarioLigero,
     empresa: EmpresaLigera
     fotos?: Foto[];
@@ -22,7 +22,7 @@ export interface Foto {
 export interface CreateResenia {
     user_id: string
     empresa_id: string
-    puntuacion: string
+    puntuacion: number
     comentario: string,
     fotos: Foto[]
 

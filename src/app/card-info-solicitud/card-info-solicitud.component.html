@@ -1,95 +1,155 @@
-<section class="request-detail">
-  <a class="back-link" [routerLink]="['/proveedor-dashboard/solicitudes']">
-    ← Volver a solicitudes
+<div class="sol-page">
+
+  <!-- Back -->
+  <a class="sol-back" [routerLink]="['/proveedor-dashboard/solicitudes']">
+    <i class="bi bi-arrow-left"></i>
+    Volver a solicitudes
   </a>
 
   @if (solicitud(); as item) {
-    <header class="detail-header">
-      <p class="detail-kicker">Solicitud de presupuesto</p>
-      <h1>{{ item.nombre || item.email }}</h1>
-      <div class="detail-header-meta">
-        <span class="estado-chip" [ngClass]="estadoVisual()">
-          {{ estadoLabel(item.estado) }}
-        </span>
-        @if (item.fecha) {
-          <span class="meta-fecha">Evento: {{ item.fecha | date:'dd/MM/yyyy' }}</span>
-        }
-      </div>
-    </header>
 
-    <div class="detail-grid">
-      <article class="detail-card">
-        <h2>Datos del cliente</h2>
-        <dl class="detail-list">
-          <div>
-            <dt>Nombre</dt>
-            <dd>{{ item.nombre || '—' }}</dd>
+    <!-- Hero -->
+    <div class="sol-hero">
+      <div class="sol-hero__avatar">
+        {{ (item.nombre || item.email || '?')[0].toUpperCase() }}
+      </div>
+      <div class="sol-hero__copy">
+        <p class="sol-hero__eyebrow">Solicitud de presupuesto</p>
+        <h1 class="sol-hero__name">{{ item.nombre || item.email }}</h1>
+        <div class="sol-hero__chips">
+          <span class="estado-chip" [ngClass]="estadoVisual()">
+            <i class="bi bi-circle-fill"></i>
+            {{ estadoLabel(item.estado) }}
+          </span>
+          @if (item.fecha) {
+            <span class="sol-hero__fecha">
+              <i class="bi bi-calendar3"></i>
+              Evento: {{ item.fecha | date:'dd/MM/yyyy' }}
+            </span>
+          }
+        </div>
+      </div>
+      @if (puedeResponder()) {
+        <a class="sol-hero__cta" [routerLink]="['/proveedor-dashboard', 'solicitudes', item.id, 'responder']">
+          <i class="bi bi-send-fill"></i>
+          Responder
+        </a>
+      }
+    </div>
+
+    <!-- Grid de info -->
+    <div class="sol-grid">
+
+      <!-- Datos del cliente -->
+      <article class="sol-card">
+        <header class="sol-card__head">
+          <i class="bi bi-person-lines-fill sol-card__icon"></i>
+          <h2 class="sol-card__title">Datos del cliente</h2>
+        </header>
+        <dl class="sol-dl">
+          <div class="sol-dl__row">
+            <i class="bi bi-person sol-dl__icon"></i>
+            <div>
+              <dt>Nombre</dt>
+              <dd>{{ item.nombre || '—' }}</dd>
+            </div>
           </div>
-          <div>
-            <dt>Email</dt>
-            <dd>{{ item.email }}</dd>
+          <div class="sol-dl__row">
+            <i class="bi bi-envelope sol-dl__icon"></i>
+            <div>
+              <dt>Email</dt>
+              <dd>{{ item.email }}</dd>
+            </div>
           </div>
-          <div>
-            <dt>Teléfono</dt>
-            <dd>{{ item.telefono || '—' }}</dd>
+          <div class="sol-dl__row">
+            <i class="bi bi-telephone sol-dl__icon"></i>
+            <div>
+              <dt>Teléfono</dt>
+              <dd>{{ item.telefono || '—' }}</dd>
+            </div>
           </div>
-          <div>
-            <dt>Invitados</dt>
-            <dd>{{ item.invitados }}</dd>
+          <div class="sol-dl__row">
+            <i class="bi bi-people sol-dl__icon"></i>
+            <div>
+              <dt>Invitados</dt>
+              <dd>{{ item.invitados }}</dd>
+            </div>
           </div>
-          <div>
-            <dt>Presupuesto del cliente</dt>
-            <dd>{{ (item.presupuesto || 0) | currency:'EUR':'symbol':'1.0-0':'es' }}</dd>
+          <div class="sol-dl__row sol-dl__row--highlight">
+            <i class="bi bi-wallet2 sol-dl__icon"></i>
+            <div>
+              <dt>Presupuesto del cliente</dt>
+              <dd class="sol-dl__amount">{{ (item.presupuesto || 0) | currency:'EUR':'symbol':'1.0-0':'es' }}</dd>
+            </div>
           </div>
         </dl>
       </article>
 
-      <article class="detail-card">
-        <h2>Estado de la propuesta</h2>
-        <dl class="detail-list">
-          <div>
-            <dt>Importe ofertado</dt>
-            <dd>{{ (item.importe_ofertado || 0) | currency:'EUR':'symbol':'1.0-0':'es' }}</dd>
+      <!-- Estado de la propuesta -->
+      <article class="sol-card">
+        <header class="sol-card__head">
+          <i class="bi bi-file-earmark-text-fill sol-card__icon"></i>
+          <h2 class="sol-card__title">Estado de la propuesta</h2>
+        </header>
+        <dl class="sol-dl">
+          <div class="sol-dl__row sol-dl__row--highlight">
+            <i class="bi bi-tag-fill sol-dl__icon"></i>
+            <div>
+              <dt>Importe ofertado</dt>
+              <dd class="sol-dl__amount">{{ (item.importe_ofertado || 0) | currency:'EUR':'symbol':'1.0-0':'es' }}</dd>
+            </div>
           </div>
-          <div>
-            <dt>Fecha de respuesta</dt>
-            <dd>{{ item.fecha_respuesta ? (item.fecha_respuesta | date:'dd/MM/yyyy HH:mm') : 'Pendiente' }}</dd>
+          <div class="sol-dl__row">
+            <i class="bi bi-calendar-check sol-dl__icon"></i>
+            <div>
+              <dt>Fecha de respuesta</dt>
+              <dd>{{ item.fecha_respuesta ? (item.fecha_respuesta | date:'dd/MM/yyyy · HH:mm') : '—' }}</dd>
+            </div>
           </div>
           @if (item.comentario_empresa) {
-            <div>
-              <dt>Comentario de empresa</dt>
-              <dd>{{ item.comentario_empresa }}</dd>
+            <div class="sol-dl__row">
+              <i class="bi bi-chat-left-text sol-dl__icon"></i>
+              <div>
+                <dt>Comentario de empresa</dt>
+                <dd>{{ item.comentario_empresa }}</dd>
+              </div>
             </div>
           }
         </dl>
       </article>
     </div>
 
+    <!-- Mensaje -->
     @if (item.mensaje) {
-      <article class="detail-card detail-card--wide">
-        <h2>Mensaje del cliente</h2>
-        <p class="detail-message">{{ item.mensaje }}</p>
+      <article class="sol-card sol-card--wide">
+        <header class="sol-card__head">
+          <i class="bi bi-chat-quote-fill sol-card__icon"></i>
+          <h2 class="sol-card__title">Mensaje del cliente</h2>
+        </header>
+        <p class="sol-message">{{ item.mensaje }}</p>
       </article>
     }
 
-    <div class="detail-actions">
-      <a class="btn-accion btn-ver" [routerLink]="['/proveedor-dashboard/solicitudes']">
+    <!-- Acciones -->
+    <div class="sol-actions">
+      <a class="sol-btn sol-btn--ghost" [routerLink]="['/proveedor-dashboard/solicitudes']">
+        <i class="bi bi-arrow-left"></i>
         Volver
       </a>
       @if (puedeResponder()) {
-        <a
-          class="btn-accion btn-responder"
-          [routerLink]="['/proveedor-dashboard', 'solicitudes', item.id, 'responder']"
-        >
+        <a class="sol-btn sol-btn--primary" [routerLink]="['/proveedor-dashboard', 'solicitudes', item.id, 'responder']">
+          <i class="bi bi-send-fill"></i>
           Responder solicitud
         </a>
       }
     </div>
 
   } @else {
-    <article class="detail-card detail-card--empty">
+    <article class="sol-card sol-card--empty">
+      <i class="bi bi-exclamation-circle sol-empty-icon"></i>
       <h2>Solicitud no disponible</h2>
       <p>No hemos podido cargar la información de esta solicitud.</p>
     </article>
   }
-</section>
+
+</div>
