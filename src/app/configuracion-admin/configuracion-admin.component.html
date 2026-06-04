@@ -388,6 +388,13 @@
                 <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio hasta (€)"
                   [value]="personalizado.precio_max"
                   (input)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
+                <select class="form-select form-select-sm"
+                  [value]="personalizado.modalidad"
+                  (change)="onProductoPersonalizadoFieldInput(tipoPermitido.tipoId, idx, 'modalidad', $any($event.target).value)">
+                  <option value="servicio">Servicio</option>
+                  <option value="producto">Producto</option>
+                  <option value="dia">Por día</option>
+                </select>
                 <button type="button" class="btn btn-sm btn-outline-danger product-edit-card__remove"
                   (click)="eliminarProductoPersonalizado(tipoPermitido.tipoId, idx)">
                   Quitar
@@ -409,6 +416,13 @@
                 <input class="form-control form-control-sm" type="number" min="0" placeholder="Precio hasta (€)"
                   [value]="nuevo.precio_max"
                   (input)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'precio_max', $any($event.target).value)">
+                <select class="form-select form-select-sm"
+                  [value]="nuevo.modalidad"
+                  (change)="onNuevoProductoFieldInput(tipoPermitido.tipoId, idx, 'modalidad', $any($event.target).value)">
+                  <option value="servicio">Servicio</option>
+                  <option value="producto">Producto</option>
+                  <option value="dia">Por día</option>
+                </select>
                 <button type="button" class="btn btn-sm btn-outline-danger product-edit-card__remove"
                   (click)="eliminarCampoNuevoProducto(tipoPermitido.tipoId, idx)">
                   Quitar

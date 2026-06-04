@@ -435,7 +435,7 @@ export class RegistroEmpresasComponent implements OnInit {
           localStorage.setItem('idEmpresa', JSON.stringify(empresaResponse?.data?.id));
 
           this.successMessage = '¡Cuenta creada con éxito!';
-          this.router.navigate(['proveedor-dashboard']);
+          window.location.href = '/proveedor-dashboard';
         },
         error: (err: any) => {
           this.loading = false;
@@ -519,23 +519,7 @@ export class RegistroEmpresasComponent implements OnInit {
           localStorage.setItem('empresa', JSON.stringify(empresaResponse?.data));
           localStorage.setItem('idEmpresa', JSON.stringify(empresaResponse?.data?.id));
 
-          this.submitted = false;
-
-          this.form.reset({
-            nombre_empresa: '',
-            tipos: '',
-            email: '',
-            telefono: '',
-            username: '',
-            password: '',
-            provincia: null,
-            localidad: null,
-            direccion: null,
-          });
-
-          this.form.controls.localidad.disable({ emitEvent: false });
-
-          this.router.navigate(['proveedor-dashboard']);
+          window.location.href = '/proveedor-dashboard';
         },
         error: (err) => {
           console.error('Error en el flujo completo:', err);

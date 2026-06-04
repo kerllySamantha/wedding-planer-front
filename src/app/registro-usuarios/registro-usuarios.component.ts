@@ -192,7 +192,7 @@ export class RegistroUsuariosComponent {
             if (response.token) localStorage.setItem('token', response.token);
             localStorage.setItem('ocultar_bodas_reales_nuevo_usuario', 'true');
             this.loading = false;
-            this.router.navigate(['/perfil-user']);
+            window.location.href = '/perfil-user';
           },
           error: () => {
             this.loading = false;

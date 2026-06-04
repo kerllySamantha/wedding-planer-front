@@ -25,6 +25,7 @@ export class CountdownServiceService {
   public fechaFormateada = signal<string>('');
   private totalesEdicion = signal<{ total: number; pagado: number; restante: number } | null>(null);
   public bodaEncontrada = computed(() => this.boda());
+  private _bodaCargando = false;
 
 private totalDesdeItems(presupuesto: any, campo: 'monto_estimado' | 'monto_pagado'): number | null {
   const items = presupuesto?.items_presupuesto ?? presupuesto?.items;
@@ -124,6 +125,8 @@ public totalRestante = computed(() => {
   }
 
   cargarBodaDelUsuario() {
+    if (this.boda() !== null || this._bodaCargando) return;
+
     const usuarioId = this.authService.usuario_id();
     if (!usuarioId) {
       this.error.set('No hay usuario logueado');
@@ -131,6 +134,7 @@ public totalRestante = computed(() => {
       return;
     }
 
+    this._bodaCargando = true;
     this.loading.set(true);
 
     this.bodaservicectx.getBodaByUserId(usuarioId).subscribe({
@@ -147,6 +151,7 @@ public totalRestante = computed(() => {
         this.loading.set(false);
       },
       error: (err) => {
+        this._bodaCargando = false;
         this.error.set(err.message);
         this.loading.set(false);
       }

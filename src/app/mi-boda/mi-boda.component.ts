@@ -10,6 +10,7 @@ import { map } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardMibodaEmpresaComponent } from '../card-miboda-empresa/card-miboda-empresa.component';
 import { NotasBodaComponent } from '../notas-boda/notas-boda.component';
+import { TareasMiBodaComponent } from '../tareas-mi-boda/tareas-mi-boda.component';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { InfoCategoria } from '../Interfaces/Categoria';
 import { FooterUserComponent } from "../footer-user/footer-user.component";
@@ -20,7 +21,7 @@ import { ServicioFiltrado } from '../Services/servicioFiltrado.service';
   selector: 'app-mi-boda',
   imports: [MenuMiBodaComponent, NavbarComponent, ActividadesMiBodaComponent, AsyncPipe,
     MatCardModule, MatButtonModule, ReactiveFormsModule,
-    CardMibodaEmpresaComponent, RouterOutlet, FooterUserComponent, NotasBodaComponent, PaginadorComponent],
+    CardMibodaEmpresaComponent, RouterOutlet, FooterUserComponent, NotasBodaComponent, TareasMiBodaComponent, PaginadorComponent],
   templateUrl: './mi-boda.component.html',
   styleUrl: './mi-boda.component.scss'
 })

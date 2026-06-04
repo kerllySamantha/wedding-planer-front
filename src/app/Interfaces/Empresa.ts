@@ -84,7 +84,8 @@ export interface CreateEmpresa  {
     precio_min?: number,
     tipo_producto_id?: number,
     tipo_producto_nombre?: string,
-    categoria_nombre?: string
+    categoria_nombre?: string,
+    modalidad?: string
   }[]
   productos_eliminados?: number[]
 

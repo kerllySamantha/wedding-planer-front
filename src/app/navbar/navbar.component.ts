@@ -267,30 +267,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const userId = this.autServicectx.usuario_id();
     if (!userId) return;
 
-    this.echoSvc
-      .prepare()
-      .then(() => {
-        this.echoSvc.init();
-        this.unsubscribeNotificaciones?.();
+    this.echoSvc.init();
+    this.unsubscribeNotificaciones?.();
 
-        this.unsubscribeNotificaciones =
-          this.echoSvc.subscribeUserNotifications(
-            userId,
-            (data: Record<string, unknown>) => {
-              const nueva = this.mapNotificacionFromEvent(data);
-              if (!nueva) {
-                this.cargarNotificaciones();
-                return;
-              }
-              this._notificaciones.update((prev) => {
-                const existe = prev.some((n) => n.id === nueva.id);
-                return existe ? prev : [nueva, ...prev];
-              });
-              this.mostrarToast(nueva.titulo ?? 'Nueva notificación');
-            },
-          );
-      })
-      .catch((err) => console.error('Error preparando Echo:', err));
+    this.unsubscribeNotificaciones =
+      this.echoSvc.subscribeUserNotifications(
+        userId,
+        (data: Record<string, unknown>) => {
+          const nueva = this.mapNotificacionFromEvent(data);
+          if (!nueva) {
+            this.cargarNotificaciones();
+            return;
+          }
+          this._notificaciones.update((prev) => {
+            const existe = prev.some((n) => n.id === nueva.id);
+            return existe ? prev : [nueva, ...prev];
+          });
+          this.mostrarToast(nueva.titulo ?? 'Nueva notificación');
+        },
+      );
   }
 
   private mostrarToast(mensaje: string): void {

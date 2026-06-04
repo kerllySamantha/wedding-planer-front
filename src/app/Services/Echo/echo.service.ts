@@ -14,11 +14,7 @@ export class EchoService {
   private userNotificationHandlers = new Map<string, Set<(data: any) => void>>();
 
   prepare(): Promise<void> {
-    if (this.csrfReady) return Promise.resolve();
-    const apiBaseUrl = environment.apiUrl.replace(/\/api\/?$/, '');
-    return firstValueFrom(
-      this.http.get(`${apiBaseUrl}/sanctum/csrf-cookie`, { withCredentials: true })
-    ).then(() => { this.csrfReady = true; });
+    return Promise.resolve();
   }
 
   init(): Echo<'reverb'> {
@@ -48,8 +44,13 @@ export class EchoService {
 
     const connection = this.echo.connector.pusher.connection;
 
+    let isFirstConnect = true;
     connection.bind('connected', () => {
       console.log('Reverb conectado');
+      if (!isFirstConnect) {
+        this.resubscribeAll();
+      }
+      isFirstConnect = false;
     });
 
     connection.bind('error', (err: any) => {
@@ -88,14 +89,7 @@ export class EchoService {
     handlers.add(handler);
 
     if (isFirst) {
-      this.instance
-        .private(channel)
-        .listen('.nueva-notificacion', (data: any) => {
-          console.log('📩 Notificación recibida:', data);
-          const current = this.userNotificationHandlers.get(channel);
-          if (!current || current.size === 0) return;
-          current.forEach(cb => cb(data));
-        });
+      this.listenChannel(channel);
     }
 
     return () => {
@@ -109,12 +103,38 @@ export class EchoService {
     };
   }
 
+  private listenChannel(channel: string) {
+    this.instance
+      .private(channel)
+      .listen('.nueva-notificacion', (data: any) => {
+        console.log('📩 Notificación recibida:', data);
+        const current = this.userNotificationHandlers.get(channel);
+        if (!current || current.size === 0) return;
+        current.forEach(cb => cb(data));
+      })
+      .error((err: any) => {
+        console.error('❌ Error canal privado', channel, err);
+        this.scheduleReconnect();
+      });
+  }
+
+  private resubscribeAll() {
+    this.userNotificationHandlers.forEach((handlers, channel) => {
+      if (handlers.size === 0) return;
+      try { this.echo?.leave(channel); } catch {}
+      this.listenChannel(channel);
+    });
+  }
+
   private scheduleReconnect() {
     if (this.reconnectTimer != null) return;
     this.reconnectTimer = window.setTimeout(() => {
       this.reconnectTimer = null;
       try {
-        if (this.echo?.connector?.pusher?.connection?.state !== 'connected') {
+        const state = this.echo?.connector?.pusher?.connection?.state;
+        if (state === 'connected') {
+          this.resubscribeAll();
+        } else {
           this.echo?.connector?.pusher?.connect();
         }
       } catch (err) {

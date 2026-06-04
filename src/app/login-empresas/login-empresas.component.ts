@@ -123,7 +123,7 @@ export class LoginEmpresasComponent {
             JSON.stringify(empresaResponse?.data.id),
           );
 
-          this.router.navigate(['proveedor-dashboard']);
+          window.location.href = '/proveedor-dashboard';
         },
         error: (err) => {
           this.loading = false;

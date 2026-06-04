@@ -1,0 +1,236 @@
+$coral:       #f76c6f;
+$coral-dark:  #e05558;
+$coral-light: #fff5f5;
+$coral-mid:   #fde8e8;
+$text:        #1e293b;
+$muted:       #64748b;
+$border:      #e2e8f0;
+$bg:          #f8fafc;
+$green:       #22c55e;
+$green-light: #f0fdf4;
+$red:         #ef4444;
+$red-light:   #fef2f2;
+
+.tareas-section {
+  padding: 2.5rem 0;
+  background: $bg;
+}
+
+.tareas-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.tareas-header {
+  margin-bottom: 1.5rem;
+}
+
+.tareas-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: $coral;
+  margin-bottom: .4rem;
+}
+
+.tareas-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: $text;
+  margin: 0 0 .25rem;
+}
+
+.tareas-sub {
+  font-size: .875rem;
+  color: $muted;
+  margin: 0;
+}
+
+.progreso-wrap {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1.5rem;
+}
+
+.progreso-bar {
+  flex: 1;
+  height: 8px;
+  background: $coral-mid;
+  border-radius: 99px;
+  overflow: hidden;
+
+  &__fill {
+    height: 100%;
+    background: linear-gradient(90deg, $coral, $coral-dark);
+    border-radius: 99px;
+    transition: width .4s ease;
+  }
+}
+
+.progreso-label {
+  font-size: .8rem;
+  font-weight: 700;
+  color: $coral;
+  min-width: 9ch;
+  text-align: right;
+}
+
+.tareas-loading {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: $muted;
+  font-size: .85rem;
+  padding: .75rem 0;
+}
+
+.tareas-grupo {
+  margin-bottom: 1.5rem;
+
+  &--done { opacity: .9; }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: $muted;
+    margin-bottom: .6rem;
+  }
+}
+
+.tareas-grupo--done .tareas-grupo__label {
+  color: $green;
+}
+
+.tareas-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.tarea-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .65rem;
+  padding: .85rem 1rem;
+  background: #fff;
+  border: 1px solid $border;
+  border-radius: 12px;
+  transition: box-shadow .15s;
+
+  &:hover { box-shadow: 0 1px 6px rgba($coral, .12); }
+
+  &--done    { background: $green-light; border-color: darken($green-light, 4%); }
+  &--vencida { background: $red-light;   border-color: lighten($red, 20%); }
+}
+
+.tarea-check {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: $border;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color .2s, transform .15s;
+  margin-top: .05rem;
+
+  &:hover       { color: $coral; transform: scale(1.15); }
+  &--done       { color: $green; }
+  &--done:hover { color: darken($green, 10%); transform: scale(1.1); }
+}
+
+.tarea-info { flex: 1; min-width: 0; }
+
+.tarea-titulo {
+  font-size: .9rem;
+  font-weight: 600;
+  color: $text;
+  display: block;
+
+  &--done {
+    text-decoration: line-through;
+    color: $muted;
+    font-weight: 400;
+  }
+}
+
+.tarea-desc {
+  font-size: .8rem;
+  color: $muted;
+  margin: .2rem 0 0;
+  line-height: 1.4;
+}
+
+.tarea-fecha {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  font-size: .76rem;
+  color: $muted;
+  margin-top: .3rem;
+
+  &--vencida { color: $red; font-weight: 600; }
+}
+
+.vencida-badge {
+  background: $red;
+  color: #fff;
+  font-size: .62rem;
+  font-weight: 700;
+  padding: .1rem .4rem;
+  border-radius: 99px;
+  text-transform: uppercase;
+}
+
+.tareas-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+
+  &__ring {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: $coral-light;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+
+  &__icon {
+    font-size: 1.75rem;
+    color: $coral;
+  }
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: $text;
+    margin: 0 0 .3rem;
+  }
+
+  &__sub {
+    font-size: .85rem;
+    color: $muted;
+    margin: 0;
+  }
+}

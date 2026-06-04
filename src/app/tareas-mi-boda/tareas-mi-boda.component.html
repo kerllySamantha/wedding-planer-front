@@ -1,0 +1,112 @@
+<section class="tareas-section">
+  <div class="tareas-wrap">
+
+    <!-- Cabecera -->
+    <div class="tareas-header">
+      <div class="tareas-header__copy">
+        <div class="tareas-kicker">
+          <i class="bi bi-check2-square"></i>
+          <span>Checklist nupcial</span>
+        </div>
+        <h2 class="tareas-title">Tareas de tu boda</h2>
+        <p class="tareas-sub">
+          @if (cargando()) {
+            Cargando tareas...
+          } @else if (total() > 0) {
+            {{ completadas() }} de {{ total() }} completadas
+          } @else {
+            Tu wedding planner irá añadiendo tareas aquí
+          }
+        </p>
+      </div>
+    </div>
+
+    <!-- Barra de progreso -->
+    @if (total() > 0) {
+      <div class="progreso-wrap">
+        <div class="progreso-bar">
+          <div class="progreso-bar__fill" [style.width.%]="progreso()"></div>
+        </div>
+        <span class="progreso-label">{{ progreso() }}% completado</span>
+      </div>
+    }
+
+    <!-- Estado de carga -->
+    @if (cargando()) {
+      <div class="tareas-loading">
+        <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+        <span>Cargando...</span>
+      </div>
+    }
+
+    <!-- Lista de tareas pendientes -->
+    @if (!cargando() && pendientes().length > 0) {
+      <div class="tareas-grupo">
+        <p class="tareas-grupo__label">
+          <i class="bi bi-circle"></i> Pendientes ({{ pendientes().length }})
+        </p>
+        <ul class="tareas-lista">
+          @for (tarea of pendientes(); track tarea.id) {
+            <li class="tarea-item" [class.tarea-item--vencida]="estaVencida(tarea)">
+              <button class="tarea-check" (click)="toggle(tarea)" aria-label="Marcar como completada">
+                <i class="bi bi-circle"></i>
+              </button>
+              <div class="tarea-info">
+                <span class="tarea-titulo">{{ tarea.titulo }}</span>
+                @if (tarea.descripcion) {
+                  <p class="tarea-desc">{{ tarea.descripcion }}</p>
+                }
+                @if (tarea.fecha_limite) {
+                  <span class="tarea-fecha" [class.tarea-fecha--vencida]="estaVencida(tarea)">
+                    <i class="bi bi-calendar3"></i>
+                    {{ formatearFecha(tarea.fecha_limite) }}
+                    @if (estaVencida(tarea)) { <span class="vencida-badge">Vencida</span> }
+                  </span>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Lista de tareas completadas -->
+    @if (!cargando() && hechas().length > 0) {
+      <div class="tareas-grupo tareas-grupo--done">
+        <p class="tareas-grupo__label">
+          <i class="bi bi-check-circle-fill"></i> Completadas ({{ hechas().length }})
+        </p>
+        <ul class="tareas-lista">
+          @for (tarea of hechas(); track tarea.id) {
+            <li class="tarea-item tarea-item--done">
+              <button class="tarea-check tarea-check--done" (click)="toggle(tarea)" aria-label="Marcar como pendiente">
+                <i class="bi bi-check-circle-fill"></i>
+              </button>
+              <div class="tarea-info">
+                <span class="tarea-titulo tarea-titulo--done">{{ tarea.titulo }}</span>
+                @if (tarea.fecha_limite) {
+                  <span class="tarea-fecha">
+                    <i class="bi bi-calendar3"></i>
+                    {{ formatearFecha(tarea.fecha_limite) }}
+                  </span>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Empty state -->
+    @if (!cargando() && total() === 0) {
+      <div class="tareas-empty">
+        <div class="tareas-empty__ring">
+          <i class="bi bi-check2-square tareas-empty__icon"></i>
+        </div>
+        <p class="tareas-empty__title">Sin tareas todavía</p>
+        <p class="tareas-empty__sub">Tu wedding planner asignará tareas para que puedas hacer seguimiento aquí.</p>
+      </div>
+    }
+
+  </div>
+</section>

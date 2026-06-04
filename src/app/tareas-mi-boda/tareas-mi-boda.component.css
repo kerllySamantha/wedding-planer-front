@@ -1,0 +1,247 @@
+:host {
+  display: block;
+  background: #fafafa;
+}
+
+.tareas-section {
+  padding: 2.5rem 1rem 3rem;
+}
+
+.tareas-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tareas-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tareas-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f76c6f;
+  margin-bottom: 0.4rem;
+}
+
+.tareas-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 0.3rem;
+}
+
+.tareas-sub {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.progreso-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progreso-bar {
+  flex: 1;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progreso-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f76c6f, #e05558);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.progreso-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f76c6f;
+  white-space: nowrap;
+  min-width: 7ch;
+  text-align: right;
+}
+
+.tareas-grupo__label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  margin: 0 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.tareas-grupo__label i {
+  font-size: 0.85rem;
+}
+.tareas-grupo--done .tareas-grupo__label {
+  color: #22c55e;
+}
+
+.tareas-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tarea-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 0.875rem 1rem;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.tarea-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+.tarea-item--done {
+  background: #f0fdf4;
+  border-color: rgb(217.5, 250, 227.5);
+  opacity: 0.8;
+}
+.tarea-item--vencida {
+  border-color: rgb(247.039408867, 161.960591133, 161.960591133);
+  background: #fef2f2;
+}
+
+.tarea-check {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  color: #e5e7eb;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, transform 0.15s;
+  margin-top: 0.05rem;
+}
+.tarea-check:hover {
+  color: #f76c6f;
+  transform: scale(1.15);
+}
+.tarea-check--done {
+  color: #22c55e;
+}
+.tarea-check--done:hover {
+  color: rgb(26.4935064935, 153.5064935065, 73.2467532468);
+}
+
+.tarea-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tarea-titulo {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  line-height: 1.3;
+}
+.tarea-titulo--done {
+  text-decoration: line-through;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.tarea-desc {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0;
+  line-height: 1.4;
+}
+
+.tarea-fecha {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: #6b7280;
+  margin-top: 0.35rem;
+}
+.tarea-fecha--vencida {
+  color: #ef4444;
+  font-weight: 600;
+}
+.tarea-fecha i {
+  font-size: 0.75rem;
+}
+
+.vencida-badge {
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tareas-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  padding: 1rem 0;
+}
+
+.tareas-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+}
+.tareas-empty__ring {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #fff0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+.tareas-empty__icon {
+  font-size: 1.8rem;
+  color: #f76c6f;
+}
+.tareas-empty__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 0.4rem;
+}
+.tareas-empty__sub {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+  max-width: 320px;
+  margin-inline: auto;
+}/*# sourceMappingURL=tareas-mi-boda.component.css.map */

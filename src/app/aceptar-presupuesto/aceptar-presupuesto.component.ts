@@ -80,9 +80,12 @@ export class AceptarPresupuestoComponent {
         this.loading.set(false);
       },
       error: (err) => {
-        console.error(err);
-        this.error.set('Error al cargar el presupuesto.');
         this.loading.set(false);
+        if (err?.status === 404) {
+          this.router.navigate(['/mi-boda'], { replaceUrl: true });
+          return;
+        }
+        this.error.set('Error al cargar el presupuesto.');
       },
     });
   }

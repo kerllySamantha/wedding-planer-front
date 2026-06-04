@@ -87,7 +87,7 @@ export class LoginUsuariosComponent {
         localStorage.setItem('rol', user.rol);
 
         const redirect = this.route.snapshot.queryParamMap.get('redirect');
-        this.router.navigateByUrl(redirect || '/');
+        window.location.href = redirect || '/';
       },
 
       error: (err) => {

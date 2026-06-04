@@ -8,6 +8,7 @@ export interface ProductoBase {
   descripcion: string;
   precio_max: number;
   precio_min: number;
+  modalidad: string;
 }
 
 export interface ProductoSimple {

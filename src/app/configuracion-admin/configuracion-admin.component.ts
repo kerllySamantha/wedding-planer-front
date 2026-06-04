@@ -47,6 +47,7 @@ export class ConfiguracionAdminComponent {
         descripcion: string;
         precio_min: string;
         precio_max: string;
+        modalidad: string;
       }>
     >
   >({});
@@ -59,6 +60,7 @@ export class ConfiguracionAdminComponent {
         descripcion: string;
         precio_min: string;
         precio_max: string;
+        modalidad: string;
       }>
     >
   >({});
@@ -354,7 +356,7 @@ export class ConfiguracionAdminComponent {
     const catalogoKeys = new Set(
       this.productosCatalogoGeneral().map((producto) => this.productoComparableKey(producto)),
     );
-    const porTipo: Record<number, Array<{ id: number; nombre: string; descripcion: string; precio_min: string; precio_max: string }>> = {};
+    const porTipo: Record<number, Array<{ id: number; nombre: string; descripcion: string; precio_min: string; precio_max: string; modalidad: string }>> = {};
     const porTipoKeys = new Map<number, Set<string>>();
 
     for (const producto of this.empresa()?.productos ?? []) {
@@ -382,6 +384,7 @@ export class ConfiguracionAdminComponent {
         descripcion: producto.descripcion ?? '',
         precio_min: String(producto.precio_min ?? ''),
         precio_max: String(producto.precio_max ?? ''),
+        modalidad: (producto as any).modalidad ?? producto.tipo_producto?.modalidad ?? 'servicio',
       });
     }
     this.productosPersonalizados.set(porTipo);
@@ -390,7 +393,7 @@ export class ConfiguracionAdminComponent {
   onProductoPersonalizadoFieldInput(
     tipoId: number,
     idx: number,
-    field: 'nombre' | 'descripcion' | 'precio_min' | 'precio_max',
+    field: 'nombre' | 'descripcion' | 'precio_min' | 'precio_max' | 'modalidad',
     value: string,
   ) {
     this.productosPersonalizados.update((prev) => {
@@ -483,7 +486,7 @@ export class ConfiguracionAdminComponent {
       ...prev,
       [tipoId]: [
         ...(prev[tipoId] ?? []),
-        { nombre: '', descripcion: '', precio_min: '', precio_max: '' },
+        { nombre: '', descripcion: '', precio_min: '', precio_max: '', modalidad: 'servicio' },
       ],
     }));
   }
@@ -501,7 +504,7 @@ export class ConfiguracionAdminComponent {
   onNuevoProductoFieldInput(
     tipoId: number,
     idx: number,
-    field: 'descripcion' | 'precio_min' | 'precio_max',
+    field: 'descripcion' | 'precio_min' | 'precio_max' | 'modalidad',
     value: string,
   ) {
     this.nuevosProductosPorTipo.update((prev) => {
@@ -803,6 +806,7 @@ export class ConfiguracionAdminComponent {
           descripcion: productoExistente.descripcion ?? '',
           precio_max: productoExistente.precio_max ?? 0,
           precio_min: productoExistente.precio_min ?? 0,
+          modalidad: (productoExistente as any).modalidad ?? productoExistente.tipo_producto?.modalidad ?? 'servicio',
           tipo_producto_id: productoExistente.tipo_producto?.id ?? undefined,
           tipo_producto_nombre: productoExistente.tipo_producto?.nombre ?? '',
           categoria_nombre: productoExistente.categoria?.nombre ?? '',
@@ -831,6 +835,11 @@ export class ConfiguracionAdminComponent {
             productoEmpresaEquivalente.precio_max ?? productoCatalogo.precio_max ?? 0,
           precio_min:
             productoEmpresaEquivalente.precio_min ?? productoCatalogo.precio_min ?? 0,
+          modalidad:
+            (productoEmpresaEquivalente as any).modalidad ??
+            productoEmpresaEquivalente.tipo_producto?.modalidad ??
+            productoCatalogo.tipo_producto?.modalidad ??
+            'servicio',
           tipo_producto_id:
             productoEmpresaEquivalente.tipo_producto?.id ?? productoCatalogo.tipo_producto?.id ?? undefined,
           tipo_producto_nombre:
@@ -846,12 +855,12 @@ export class ConfiguracionAdminComponent {
 
       const edicionCatalogo = this.edicionCatalogoPorId()[productoCatalogo.id ?? 0];
       payload.push({
-        // Para productos del sistema enviamos su id original; backend crea/copia para empresa sin tocar el global.
         id: productoCatalogo.id ?? null,
         nombre: productoCatalogo.nombre ?? '',
         descripcion: edicionCatalogo?.descripcion ?? productoCatalogo.descripcion ?? '',
         precio_max: edicionCatalogo?.precio_max ? Number(edicionCatalogo.precio_max) : (productoCatalogo.precio_max ?? 0),
         precio_min: edicionCatalogo?.precio_min ? Number(edicionCatalogo.precio_min) : (productoCatalogo.precio_min ?? 0),
+        modalidad: (productoCatalogo as any).modalidad ?? productoCatalogo.tipo_producto?.modalidad ?? 'servicio',
         tipo_producto_id: productoCatalogo.tipo_producto?.id ?? undefined,
         tipo_producto_nombre: productoCatalogo.tipo_producto?.nombre ?? '',
         categoria_nombre: this.findCategoriaNombreByTipoId(
@@ -872,6 +881,7 @@ export class ConfiguracionAdminComponent {
           descripcion: productoEditado.descripcion.trim() || undefined,
           precio_max: productoEditado.precio_max ? Number(productoEditado.precio_max) : undefined,
           precio_min: productoEditado.precio_min ? Number(productoEditado.precio_min) : undefined,
+          modalidad: productoEditado.modalidad || 'servicio',
           tipo_producto_id: Number(tipoIdStr),
           tipo_producto_nombre: tipoInfo.nombre,
           categoria_nombre: tipoInfo.categoriaNombre,
@@ -896,6 +906,7 @@ export class ConfiguracionAdminComponent {
             precio_min: productoNuevo.precio_min
               ? Number(productoNuevo.precio_min)
               : undefined,
+            modalidad: productoNuevo.modalidad || 'servicio',
             tipo_producto_id: Number(tipoIdStr),
             tipo_producto_nombre: tipoInfo.nombre,
             categoria_nombre: tipoInfo.categoriaNombre,
